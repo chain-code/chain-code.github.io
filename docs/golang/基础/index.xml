@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>基础 on Soulmate</title>
+    <link>http://example.org/docs/golang/%E5%9F%BA%E7%A1%80/</link>
+    <description>Recent content in 基础 on Soulmate</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 14 Sep 2022 09:58:30 +0800</lastBuildDate><atom:link href="http://example.org/docs/golang/%E5%9F%BA%E7%A1%80/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>go语言基础（一）</title>
+      <link>http://example.org/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/</link>
+      <pubDate>Wed, 07 Apr 2021 16:58:12 +0000</pubDate>
+      
+      <guid>http://example.org/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/</guid>
+      <description>第一章 概述 # go语言特征 # 简单
+并发模型
+go语言从根部将一切都并发化，运行时用Goroutine运行所有的一切，包括main.main入口函数。Goroutine是go的显著特征。它用类协程的方式处理并发单元，又在运行时层面做了更深度的优化处理。搭配channel,实现CSP模型。
+csp模型
+Actor 模型中 Actor 之间就是不能共享内存的，彼此之间通信只能依靠消息传递的方式。Golang 实现的 CSP 模型和 Actor 模型看上去非常相似，虽然 Golang 中协程之间，也能够以共享内存的方式通信，但是并不推荐；而推荐的以通信的方式共享内存，实际上指的就是协程之间以消息传递方式来通信。
+Channel模型中，worker之间不直接彼此联系，而是通过不同channel进行消息发布和侦听。消息的发送者和接收者之间通过Channel松耦合，发送者不知道自己消息被哪个接收者消费了，接收者也不知道是哪个发送者发送的消息。
+Go语言的CSP模型是由协程Goroutine与通道Channel实现：
+Go协程goroutine: 是一种轻量线程，它不是操作系统的线程，而是将一个操作系统线程分段使用，通过调度器实现协作式调度。是一种绿色线程，微线程，它与Coroutine协程也有区别，能够在发现堵塞后启动新的微线程。 通道channel: 类似Unix的Pipe，用于协程之间通讯和同步。协程之间虽然解耦，但是它们和Channel有着耦合。 内存分配
+刨去因配合垃圾回收器而修改的内容，内存分配器完整的保留了tcmalloc的原始架构。除偶尔因性能问题而被迫采用对象池和自主内存管理外，我们基本无须参与内存管理操作。
+垃圾回收
+​ go垃圾回收不咋地
+静态链接 只须编译一个可执行文件，无须附加任何东西就能部署。将运行时、依赖库直接打包到可执行文件内部，简化了部署和发布操作，无须事先安装运行环境和下载诸多第三方库。
+标准库 工具链 第二章 类型 # 变量 # 定义 # var a int //会自动初始化为0 var y=false //自动推断为bool类型 var x,y int x=1 y=2 //定义完变量后再赋值 var a int =2 var a,s=100,&amp;#34;abc&amp;#34; //初始化 var ( x,y int a,s=100,&amp;#34;abc&amp;#34; //字符串加“” ) a:=100 //自动推导类型 a,s:=100,&amp;#34;abc&amp;#34; 注意： * 定义变量，同时显示初始化 * 不能提供数据类型 * 只能用在函数内部 退化赋值 # 退化赋值的前提条件是：最少有一个新变量被定义，且必须是同一作用域。</description>
+    </item>
+    
+    <item>
+      <title>go语言基础（二）</title>
+      <link>http://example.org/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/</link>
+      <pubDate>Tue, 26 Oct 2021 15:04:57 +0000</pubDate>
+      
+      <guid>http://example.org/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/</guid>
+      <description>sort —— 排序算法 # sort包提供了对[]int切片、[]float64切片和[]string切片完整支持，主要包括：
+对基本数据类型切片的排序支持 基本数据元素查找 判断基本数据类型切片是否已经排好序 对排好序的数据集合逆序 对[]int切片排序是更常使用sort.Ints()，而不是直接使用IntSlice类型。
+s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据 sort.Ints(s) fmt.Println(s) //将会输出[1 2 3 4 5 6] 如果要使用降序排序，显然要用前面提到的Reverse()方法：
+s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据 sort.Sort(sort.Reverse(sort.IntSlice(s))) fmt.Println(s) //将会输出[6 5 4 3 2 1] 如果要查找整数x在切片a中的位置，相对于前面提到的Search()方法，sort包提供了SearchInts():
+func SearchInts(a []int, x int) int 注意，SearchInts()的使用条件为：切片a已经升序排序
+s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据 sort.Ints(s) //排序后的s为[1 2 3 4 5 6] fmt.</description>
+    </item>
+    
+    <item>
+      <title>go语言基础（三）</title>
+      <link>http://example.org/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/</link>
+      <pubDate>Wed, 14 Sep 2022 09:58:30 +0800</pubDate>
+      
+      <guid>http://example.org/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/</guid>
+      <description>Golang易错知识点 # GoMock # GoMock可以对interface打桩 GoMock可以对类成员函数打桩 GoMock可以对函数打桩 GoMock打桩后的依赖注入可以通过GoStub完成 GoStub # GoStub可以对全局变量打桩 GoStub可以对函数打桩 GoStub可以动态打桩，比如对一个函数打桩后，多次调用该函数会有不同的行为 作用域 # func main() { a := 12 { a := 13 _ = a // make compiler happy } fmt.Println(a) } 输出 12。 在作用域内的 a 在作用域外失效，所以输出 12。
+添加方法 # 可以给任意类型添加相应的方法。这一说法是否正确 false
+如果直接给int添加method会报错
+任意自定义类型(包括内置类型，但不包括指针类型)添加相应的方法。
+序列化 # type S struct { A int B *int C float64 d func() string e chan struct{} } func main() { s := S{ A: 1, B: nil, C: 12.</description>
+    </item>
+    
+    <item>
+      <title>数据结构-go</title>
+      <link>http://example.org/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/</link>
+      <pubDate>Sun, 27 Mar 2022 19:41:51 +0000</pubDate>
+      
+      <guid>http://example.org/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/</guid>
+      <description>链表 # 链表定义 # type ListNode struct{//单链表 Val int Next *ListNode } type DoubleNode struct{//双链表 Val int Prev *DoubleNode Next *DoubleNode } 创建链表 # func CreatListNode(list []int) (tai *ListNode ){ head := &amp;amp;ListNode{Val: list[0]} //无头节点情况 head:=&amp;amp;ListNode{} tail := head for i := 1; i &amp;lt; len(list); i++ { //有头节点，这里i=0 head.Next = &amp;amp;ListNode{Val: list[i]} head = head.Next } return tail } func CreatDoubleNode(list []int) (head *DoubleNode) { //创建双链表 p := &amp;amp;DoubleNode{} q := p for i := 0; i &amp;lt; len(list); i++ { p.</description>
+    </item>
+    
+    <item>
+      <title>gin框架</title>
+      <link>http://example.org/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/</link>
+      <pubDate>Mon, 27 Dec 2021 21:22:31 +0000</pubDate>
+      
+      <guid>http://example.org/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/</guid>
+      <description>简介 # 介绍 # Gin是一个golang的微框架，封装比较优雅，API友好，源码注释比较明确，具有快速灵活，容错方便等特点 对于golang而言，web框架的依赖要远比Python，Java之类的要小。自身的net/http足够简单，性能也非常不错 借助框架开发，不仅可以省去很多常用的封装带来的时间，也有助于团队的编码风格和形成规范 安装 # 要安装Gin软件包，您需要安装Go并首先设置Go工作区。
+1.首先需要安装Go（需要1.10+版本），然后可以使用下面的Go命令安装Gin。
+go get -u github.com/gin-gonic/gin
+2.将其导入您的代码中：
+import &amp;ldquo;github.com/gin-gonic/gin&amp;rdquo;
+3.（可选）导入net/http。例如，如果使用常量，则需要这样做http.StatusOK。
+import &amp;ldquo;net/http&amp;rdquo;
+hello word # package main import ( &amp;#34;net/http&amp;#34; &amp;#34;github.com/gin-gonic/gin&amp;#34; ) func main() { // 1.创建路由 r := gin.Default() // 2.绑定路由规则，执行的函数 // gin.Context，封装了request和response r.GET(&amp;#34;/&amp;#34;, func(c *gin.Context) { c.String(http.StatusOK, &amp;#34;hello World!&amp;#34;) }) // 3.监听端口，默认在8080 // Run(&amp;#34;里面不指定端口号默认为8080&amp;#34;) r.Run(&amp;#34;:8000&amp;#34;) } GORM # 特性 # 全功能 ORM 关联 (Has One，Has Many，Belongs To，Many To Many，多态，单表继承) Create，Save，Update，Delete，Find 中钩子方法 支持 Preload、Joins 的预加载 事务，嵌套事务，Save Point，Rollback To Saved Point Context、预编译模式、DryRun 模式 批量插入，FindInBatches，Find/Create with Map，使用 SQL 表达式、Context Valuer 进行 CRUD SQL 构建器，Upsert，数据库锁，Optimizer/Index/Comment Hint，命名参数，子查询 复合主键，索引，约束 Auto Migration 自定义 Logger 灵活的可扩展插件 API：Database Resolver（多数据库，读写分离）、Prometheus… 每个特性都经过了测试的重重考验 开发者友好 安装 # go get -u gorm.</description>
+    </item>
+    
+    <item>
+      <title>Beego框架</title>
+      <link>http://example.org/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/</link>
+      <pubDate>Sun, 07 Mar 2021 13:48:22 +0000</pubDate>
+      
+      <guid>http://example.org/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/</guid>
+      <description>beego框架 # beego框架了解 # Beego框架是go语言开发的web框架。
+beego是中国人开发的，开发文档比较详细
+beego网址 MVC架构 # Beego是MVC架构。MVC 是一种应用非常广泛的体系架构，几乎所有的编程语言都会使用到，而且所有的程序员在工作中都会遇到！用 MVC 的方式开发程序，可以让程序的结构更加合理和清晰。 我们画图说明
+环境搭建 # 这里默认大家已经搭建好了go语言的开发环境。
+需要安装Beego go get -u github.com/beego/bee/v2@master go install github.com/beego/bee/v2@master //上面没用就试试这个 而后运行 bee version | ___ \| |_/ / ___ ___| ___ \ / _ \ / _ \| |_/ /| __/| __/\____/ \___| \___| v2.0.2├── Beego : Beego is not installed. Please do consider installing it first: https://github.com/beego/beego/v2. If you are using go mod, and you don&amp;#39;t install the beego under $GOPATH/src/github.</description>
+    </item>
+    
+    <item>
+      <title>go语言底层基础</title>
+      <link>http://example.org/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Wed, 03 Aug 2022 10:46:26 +0000</pubDate>
+      
+      <guid>http://example.org/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/</guid>
+      <description>Go语言相关 # GMP模型 # G goroutine协程
+P processor处理器
+M thread线程
+Processor 它包含了运行goroutine的资源，如果线程想运行goroutine,必须先获取P，P中还包含了可运行的G队列。
+在Go中，线程是运行goroutine的实体，调度器的功能是把可运行的goroutine分配到工作线程上。
+全局队列：存放等待运行的G P的本地队列：同全局队列类似，存放的也是等待运行的G，存的数量有限，不超过256个。新建 G’时，G’优先加入到 P 的本地队列，如果队列满了，则会把本地队列中一半的 G 移动到全局队列。 P列表：所有的P都在程序启动时创建，并保存在数组中，最多有 GOMAXPROCS(可配置) 个。 M：线程想运行任务就得获取P，从P的本地队列获取G，P队列为空时，M 也会尝试从全局队列拿一批 G 放到 P 的本地队列，或从其他 P 的本地队列偷一半放到自己 P 的本地队列。M 运行 G，G 执行之后，M 会从 P 获取下一个 G，不断重复下去。 Goroutine 调度器和 OS 调度器是通过 M 结合起来的，每个 M 都代表了 1 个内核线程，OS 调度器负责把内核线程分配到 CPU 的核上执行。
+P和M的个数问题 # 1、P的数量：
+由启动时环境变量 $GOMAXPROCS 或者是由 runtime 的方法 GOMAXPROCS() 决定。这意味着在程序执行的任意时刻都只有 $GOMAXPROCS 个 goroutine 在同时运行。 2、M的数量：
+go 语言本身的限制：go 程序启动时，会设置 M 的最大数量，默认 10000.</description>
+    </item>
+    
+    <item>
+      <title>Gorm总结</title>
+      <link>http://example.org/docs/golang/%E5%9F%BA%E7%A1%80/2022-05-24-gorm%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Tue, 24 May 2022 15:47:27 +0000</pubDate>
+      
+      <guid>http://example.org/docs/golang/%E5%9F%BA%E7%A1%80/2022-05-24-gorm%E6%80%BB%E7%BB%93/</guid>
+      <description> 字段标签 # 标签是声明模型时可选的标记，标记不区分大小写，GORM 支持以下标记：
+声明model时，tag是可选的，GORM支持以下tag：tag名大小写不敏感，但建议使用camelcase风格
+标签名 说明 column 指定列名 type 列数据类型，推荐使用兼容性好的通用类型，例如：所有数据库都支持bool、int、uint、float、string、time、bytes并且可以和其他标签一起使用，例如：not null、size、autoIncrement&amp;hellip;像varbinary（8）这样指定数据库数据类型也是支持的。在使用指定数据库数据类型时，它需要是完整的数据库数据类型，如：MEDIUMINT、UNSIGNED、not、NULL、AUTO、INSTREMENT size 指定列大小，例如：size: 256 primaryKey 指定列为主键 unique 指定列为唯一 default 指定列的默认值 precision 指定列的精度 scale 指定列大小 not null 不能为空 autolncrement 指定列为自动增长 embedded 嵌套字段 embeddedPrefix 嵌入字段的列名前缀 autoCreateTime 创建时追踪当前时间，对于int字段，它会追踪时间戳秒数，您可以使用nano/milli来追踪纳秒、毫秒时间戳，例如autoCreateTime:nano autoUpdateTime 创建/更新时追踪当前时间，对于int字段，它会追踪时间戳秒数，您可以使用nano/milli来追踪纳秒、毫秒时间戳，例如：autoupdateTime:milli index 根据参数创建索引1，多个字段使用相同的名称则创建复合索引，查看索引获取详情 uniqueindex 与index相同，但创建的是唯一索引 check 创建检查约束，例如check:age＞13查看约束获取详情 &amp;lt;- 设置字段写入的权限，&amp;lt;-:create只创建、&amp;lt;-:update只更新、&amp;lt;-:false无写入权限、「&amp;lt;-创建和更新权限 -&amp;gt; 设置字段读的权限，-&amp;gt;:false无读权限 - 忽略该字段，-无读写权限 </description>
+    </item>
+    
+    <item>
+      <title>benchmark测试</title>
+      <link>http://example.org/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/</link>
+      <pubDate>Mon, 20 Dec 2021 17:44:59 +0000</pubDate>
+      
+      <guid>http://example.org/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/</guid>
+      <description>Go 中的基准测试在许多方面类似于单元测试，但有关键的不同之处，并且服务于不同的目的。由于它们不像 Go 中的单元测试那样广为人知，本文旨在介绍 Go 的基准测试：如何创建、如何运行它们、如何读取结果以及一些指向创建基准测试的一些高级主题的指针在去。
+基准测试是测试 Go 代码性能的函数，它们包含testing在标准 Go 库的包中，因此无需任何外部库的依赖即可使用。
+执行基准测试时，会向您提供有关执行时间的一些信息，如果需要，还会提供基准测试下代码的内存占用量。
+创建基准 # 创建cc_test.go文件
+要创建基准测试，您需要在 go 文件中导入testing包并以创建测试函数的类似方式创建基准测试函数。
+例如，在定义单元测试时，我们func TestAny(t *testing)以开头的形式编写函数，而在定义基准测试时，我们将创建一个**func BenchmarkAny(b \*testing.B)**.
+Go 的基准测试在单元测试方面的一个显着差异是从 0 到b.N. 事实上，基准测试会运行多次，以确保收集到足够的数据以提高基准测试下代码性能测量的准确性。
+该字段b.N不是固定值，而是动态调整以确保基准测试功能至少运行 1 秒。
+这里展示的是基准和测试函数之间的比较：
+func Benchmark1Sort(b *testing.B) { for i := 0; i &amp;lt; b.N; i++ { sort.Ints(generateSlice(1000)) } } func Test1Sort(t *testing.T) { slice := generateSlice(1000) if len(slice) != 1000 { t.Errorf(&amp;#34;unexpected slice size: %d&amp;#34;, len(slice)) } } 运行基准 # 运行 Go 的基准测试的起点是go test命令，在这里我们将看到我们需要确保我们不只是运行单元测试。</description>
+    </item>
+    
+  </channel>
+</rss>

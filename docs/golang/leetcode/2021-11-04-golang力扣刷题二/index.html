@@ -21,7 +21,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.6d5599f1f25debfdfb676f5074f599284cebe76e6d6ebfb076e2e530dd3e504f.css" integrity="sha256-bVWZ8fJd6/37Z29QdPWZKEzr525tbr&#43;wduLlMN0&#43;UE8=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.b31e32a0f97a4fdea43ca8ec16092691728c1b83b988a9fe5a98cfb31d1de656.js" integrity="sha256-sx4yoPl6T96kPKjsFgkmkXKMG4O5iKn&#43;WpjPsx0d5lY=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.e1dc648d975c3d25b3d12edd2aa77714aece508769021f3c5213f94fc71833da.js" integrity="sha256-4dxkjZdcPSWz0S7dKqd3FK7OUIdpAh88UhP5T8cYM9o=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -1337,6 +1337,7 @@ https://github.com/alex-shpak/hugo-book
             <li><a href="#lru缓存">LRU缓存</a></li>
             <li><a href="#寻找峰值">寻找峰值</a></li>
             <li><a href="#比较版本号">比较版本号</a></li>
+            <li><a href="#二叉树的右视图">二叉树的右视图</a></li>
           </ul>
         </li>
         <li><a href="#困难">困难</a></li>
@@ -2954,6 +2955,38 @@ lRUCache.get(4);    // 返回 4
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">执行用时</span><span style="color:#960050;background-color:#1e0010">：</span><span style="color:#ae81ff">0</span> <span style="color:#a6e22e">ms</span>, <span style="color:#a6e22e">在所有</span> <span style="color:#a6e22e">Go</span> <span style="color:#a6e22e">提交中击败了100</span><span style="color:#ae81ff">.00</span><span style="color:#f92672">%</span><span style="color:#a6e22e">的用户</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">内存消耗</span><span style="color:#960050;background-color:#1e0010">：</span><span style="color:#ae81ff">1.8</span> <span style="color:#a6e22e">MB</span>, <span style="color:#a6e22e">在所有</span> <span style="color:#a6e22e">Go</span> <span style="color:#a6e22e">提交中击败了82</span><span style="color:#ae81ff">.02</span><span style="color:#f92672">%</span><span style="color:#a6e22e">的用户</span>
+</span></span></code></pre></div><h3 id="二叉树的右视图">
+  二叉树的右视图
+  <a class="anchor" href="#%e4%ba%8c%e5%8f%89%e6%a0%91%e7%9a%84%e5%8f%b3%e8%a7%86%e5%9b%be">#</a>
+</h3>
+<p>给定一个二叉树的 <strong>根节点</strong> <code>root</code>，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209292050245.png" alt="" /></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">rightSideView</span>(<span style="color:#a6e22e">root</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">TreeNode</span>) []<span style="color:#66d9ef">int</span> {  <span style="color:#75715e">//层序遍历
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">root</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">treeNode</span>(<span style="color:#a6e22e">xianxu</span>,<span style="color:#a6e22e">zhongxu</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">arry</span><span style="color:#f92672">:=</span>[]<span style="color:#66d9ef">int</span>{}
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">root</span><span style="color:#f92672">==</span><span style="color:#66d9ef">nil</span>{       <span style="color:#75715e">//开始层序遍历
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">arry</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">queue</span><span style="color:#f92672">:=</span>[]<span style="color:#f92672">*</span><span style="color:#a6e22e">TreeNode</span>{}
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">queue</span>=append(<span style="color:#a6e22e">queue</span>,<span style="color:#a6e22e">root</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> len(<span style="color:#a6e22e">queue</span>)&gt;<span style="color:#ae81ff">0</span>{   <span style="color:#75715e">//注意这里条件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">length</span><span style="color:#f92672">:=</span>len(<span style="color:#a6e22e">queue</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">arry</span>=append(<span style="color:#a6e22e">arry</span>,<span style="color:#a6e22e">queue</span>[<span style="color:#a6e22e">length</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>].<span style="color:#a6e22e">Val</span>)    <span style="color:#75715e">//输出最右边的
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">j</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">0</span>;<span style="color:#a6e22e">j</span>&lt;<span style="color:#a6e22e">length</span>;<span style="color:#a6e22e">j</span><span style="color:#f92672">++</span>{
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">queue</span>[<span style="color:#a6e22e">j</span>].<span style="color:#a6e22e">Left</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">queue</span>=append(<span style="color:#a6e22e">queue</span>,<span style="color:#a6e22e">queue</span>[<span style="color:#a6e22e">j</span>].<span style="color:#a6e22e">Left</span>)
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">queue</span>[<span style="color:#a6e22e">j</span>].<span style="color:#a6e22e">Right</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">queue</span>=append(<span style="color:#a6e22e">queue</span>,<span style="color:#a6e22e">queue</span>[<span style="color:#a6e22e">j</span>].<span style="color:#a6e22e">Right</span>)
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }        
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">queue</span>=<span style="color:#a6e22e">queue</span>[<span style="color:#a6e22e">length</span>:]
+</span></span><span style="display:flex;"><span>    }   
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">arry</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">执行用时</span><span style="color:#960050;background-color:#1e0010">：</span><span style="color:#ae81ff">0</span> <span style="color:#a6e22e">ms</span>, <span style="color:#a6e22e">在所有</span> <span style="color:#a6e22e">Go</span> <span style="color:#a6e22e">提交中击败了100</span><span style="color:#ae81ff">.00</span><span style="color:#f92672">%</span><span style="color:#a6e22e">的用户</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">内存消耗</span><span style="color:#960050;background-color:#1e0010">：</span><span style="color:#ae81ff">2.1</span> <span style="color:#a6e22e">MB</span>, <span style="color:#a6e22e">在所有</span> <span style="color:#a6e22e">Go</span> <span style="color:#a6e22e">提交中击败了42</span><span style="color:#ae81ff">.83</span><span style="color:#f92672">%</span><span style="color:#a6e22e">的用户</span>
 </span></span></code></pre></div><h2 id="困难">
   困难
   <a class="anchor" href="#%e5%9b%b0%e9%9a%be">#</a>
@@ -3044,6 +3077,7 @@ lRUCache.get(4);    // 返回 4
             <li><a href="#lru缓存">LRU缓存</a></li>
             <li><a href="#寻找峰值">寻找峰值</a></li>
             <li><a href="#比较版本号">比较版本号</a></li>
+            <li><a href="#二叉树的右视图">二叉树的右视图</a></li>
           </ul>
         </li>
         <li><a href="#困难">困难</a></li>

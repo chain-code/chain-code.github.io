@@ -33,7 +33,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.6d5599f1f25debfdfb676f5074f599284cebe76e6d6ebfb076e2e530dd3e504f.css" integrity="sha256-bVWZ8fJd6/37Z29QdPWZKEzr525tbr&#43;wduLlMN0&#43;UE8=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.b31e32a0f97a4fdea43ca8ec16092691728c1b83b988a9fe5a98cfb31d1de656.js" integrity="sha256-sx4yoPl6T96kPKjsFgkmkXKMG4O5iKn&#43;WpjPsx0d5lY=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.e1dc648d975c3d25b3d12edd2aa77714aece508769021f3c5213f94fc71833da.js" integrity="sha256-4dxkjZdcPSWz0S7dKqd3FK7OUIdpAh88UhP5T8cYM9o=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -1352,6 +1352,19 @@ https://github.com/alex-shpak/hugo-book
             <li><a href="#判断是不是二叉搜索树">判断是不是二叉搜索树</a></li>
             <li><a href="#判断是不是完全二叉树">判断是不是完全二叉树</a></li>
             <li><a href="#判断是不是平衡二叉树">判断是不是平衡二叉树</a></li>
+            <li><a href="#二叉搜索树的最近公共祖先">二叉搜索树的最近公共祖先</a></li>
+            <li><a href="#在二叉树中找到两个节点的最近公共祖先">在二叉树中找到两个节点的最近公共祖先</a></li>
+            <li><a href="#序列化二叉树">序列化二叉树</a></li>
+            <li><a href="#重建二叉树">重建二叉树</a></li>
+            <li><a href="#输出二叉树的右视图">输出二叉树的右视图</a></li>
+          </ul>
+        </li>
+        <li><a href="#堆栈队列">堆/栈/队列</a>
+          <ul>
+            <li><a href="#用两个栈实现队列">用两个栈实现队列</a></li>
+            <li><a href="#包含min函数的栈">包含min函数的栈</a></li>
+            <li><a href="#有效括号序列">有效括号序列</a></li>
+            <li><a href="#滑动窗口的最大值">滑动窗口的最大值</a></li>
           </ul>
         </li>
         <li><a href="#题外">题外</a>
@@ -2600,7 +2613,469 @@ https://github.com/alex-shpak/hugo-book
 <p>输入一棵节点数为 n 二叉树，判断该二叉树是否是平衡二叉树。</p>
 <p>在这里，我们只需要考虑其平衡性，不需要考虑其是不是排序二叉树</p>
 <p><strong>平衡二叉树</strong>（Balanced Binary Tree），具有以下性质：它是一棵空树或它的左右两个子树的高度差的绝对值不超过1，并且左右两个子树都是一棵平衡二叉树。</p>
-<pre tabindex="0"><code></code></pre><h2 id="题外">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">IsBalanced_Solution</span>( <span style="color:#a6e22e">pRoot</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">TreeNode</span> ) <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">pRoot</span><span style="color:#f92672">==</span><span style="color:#66d9ef">nil</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">solution</span>(<span style="color:#a6e22e">pRoot</span>)<span style="color:#f92672">==-</span><span style="color:#ae81ff">1</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>   
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">solution</span>(<span style="color:#a6e22e">root</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">TreeNode</span>)<span style="color:#66d9ef">int</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">root</span><span style="color:#f92672">==</span><span style="color:#66d9ef">nil</span>{            <span style="color:#75715e">//最底层都让他等于1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">l</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">solution</span>(<span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Left</span>)   <span style="color:#75715e">//左边树高度
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">solution</span>(<span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Right</span>)  <span style="color:#75715e">//右边树高度
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">l</span><span style="color:#f92672">==-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">||</span><span style="color:#a6e22e">r</span><span style="color:#f92672">==-</span><span style="color:#ae81ff">1</span>{         <span style="color:#75715e">//-1就结束了 往上传
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">l</span><span style="color:#f92672">-</span><span style="color:#a6e22e">r</span>&gt;<span style="color:#ae81ff">1</span><span style="color:#f92672">||</span><span style="color:#a6e22e">r</span><span style="color:#f92672">-</span><span style="color:#a6e22e">l</span>&gt;<span style="color:#ae81ff">1</span>{         <span style="color:#75715e">//超了  就-1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">l</span>&gt;<span style="color:#a6e22e">r</span>{
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">l</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>   <span style="color:#75715e">//找最大的+1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">r</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="二叉搜索树的最近公共祖先">
+  二叉搜索树的最近公共祖先
+  <a class="anchor" href="#%e4%ba%8c%e5%8f%89%e6%90%9c%e7%b4%a2%e6%a0%91%e7%9a%84%e6%9c%80%e8%bf%91%e5%85%ac%e5%85%b1%e7%a5%96%e5%85%88">#</a>
+</h3>
+<p>给定一个二叉搜索树, 找到该树中两个指定节点的最近公共祖先。</p>
+<p>1.对于该题的最近的公共祖先定义:对于有根树T的两个节点p、q，最近公共祖先LCA(T,p,q)表示一个节点x，满足x是p和q的祖先且x的深度尽可能大。在这里，一个节点也可以是它自己的祖先.</p>
+<p>2.二叉搜索树是若它的左子树不空，则左子树上所有节点的值均小于它的根节点的值； 若它的右子树不空，则右子树上所有节点的值均大于它的根节点的值</p>
+<p>3.所有节点的值都是唯一的。</p>
+<p>4.p、q 为不同节点且均存在于给定的二叉搜索树中。</p>
+<p>数据范围:</p>
+<p>3&lt;=节点总数&lt;=10000</p>
+<p>0&lt;=节点值&lt;=10000</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209291723894.png" alt="" /></p>
+<pre tabindex="0"><code>输入：{7,1,12,0,4,11,14,#,#,3,5},1,12
+返回值：7
+说明：节点1 和 节点12的最近公共祖先是7 
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">lowestCommonAncestor</span>( <span style="color:#a6e22e">root</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">TreeNode</span> ,  <span style="color:#a6e22e">p</span> <span style="color:#66d9ef">int</span> ,  <span style="color:#a6e22e">q</span> <span style="color:#66d9ef">int</span> ) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">p</span>&gt;<span style="color:#a6e22e">q</span>{     <span style="color:#75715e">//如果第一个大 交换一下顺序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">p</span>,<span style="color:#a6e22e">q</span>=<span style="color:#a6e22e">q</span>,<span style="color:#a6e22e">p</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">m</span> <span style="color:#66d9ef">int</span>   <span style="color:#75715e">//定义一个记录值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">cestor</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">root</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">TreeNode</span>,<span style="color:#a6e22e">p</span> <span style="color:#66d9ef">int</span>,<span style="color:#a6e22e">q</span> <span style="color:#66d9ef">int</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">cestor</span>=<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">root</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">TreeNode</span>,<span style="color:#a6e22e">p</span> <span style="color:#66d9ef">int</span>,<span style="color:#a6e22e">q</span> <span style="color:#66d9ef">int</span>){
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">p</span>&lt;<span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Val</span><span style="color:#f92672">&amp;&amp;</span><span style="color:#a6e22e">q</span>&lt;<span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Val</span>{   <span style="color:#75715e">//都比根小 记录根  往左
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#a6e22e">m</span>=<span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Val</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">cestor</span>(<span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Left</span>,<span style="color:#a6e22e">p</span>,<span style="color:#a6e22e">q</span>)           
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">p</span>&gt;<span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Val</span><span style="color:#f92672">&amp;&amp;</span><span style="color:#a6e22e">q</span>&gt;<span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Val</span>{   <span style="color:#75715e">//都比根大，记录根 往右
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#a6e22e">cestor</span>(<span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Right</span>,<span style="color:#a6e22e">p</span>,<span style="color:#a6e22e">q</span>)
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">p</span>&lt;<span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Val</span><span style="color:#f92672">&amp;&amp;</span><span style="color:#a6e22e">q</span>&gt;<span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Val</span>{   <span style="color:#75715e">//一左一右 刚刚好 输出根
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#a6e22e">m</span>=<span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Val</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> 
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">p</span><span style="color:#f92672">==</span><span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Val</span><span style="color:#f92672">||</span><span style="color:#a6e22e">q</span><span style="color:#f92672">==</span><span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Val</span>{  <span style="color:#75715e">//相等了  也刚刚好 ，输出
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#a6e22e">m</span>=<span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Val</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> 
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">cestor</span>(<span style="color:#a6e22e">root</span>,<span style="color:#a6e22e">p</span>,<span style="color:#a6e22e">q</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">m</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="在二叉树中找到两个节点的最近公共祖先">
+  在二叉树中找到两个节点的最近公共祖先
+  <a class="anchor" href="#%e5%9c%a8%e4%ba%8c%e5%8f%89%e6%a0%91%e4%b8%ad%e6%89%be%e5%88%b0%e4%b8%a4%e4%b8%aa%e8%8a%82%e7%82%b9%e7%9a%84%e6%9c%80%e8%bf%91%e5%85%ac%e5%85%b1%e7%a5%96%e5%85%88">#</a>
+</h3>
+<p>给定一棵二叉树(保证非空)以及这棵树上的两个节点对应的val值 o1 和 o2，请找到 o1 和 o2 的最近公共祖先节点。</p>
+<p>数据范围：树上节点数满足 1≤n≤105 , 节点值val满足区间 [0,n)</p>
+<p>要求：时间复杂度 O(n)</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209292022582.png" alt="" /></p>
+<pre tabindex="0"><code>输入：{3,5,1,6,2,0,8,#,#,7,4},5,1
+返回值：3
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">lowestCommonAncestor</span>(<span style="color:#a6e22e">root</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">TreeNode</span>, <span style="color:#a6e22e">o1</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">o2</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> { <span style="color:#75715e">//两次查询
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">p</span>, <span style="color:#a6e22e">q</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">TreeNode</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">p</span>, <span style="color:#a6e22e">q</span> = <span style="color:#a6e22e">root</span>, <span style="color:#a6e22e">root</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">marry1</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">lowest</span>(<span style="color:#a6e22e">p</span>, <span style="color:#a6e22e">o1</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">marry2</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">lowest</span>(<span style="color:#a6e22e">q</span>, <span style="color:#a6e22e">o2</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">n1</span>,<span style="color:#a6e22e">n2</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">marry1</span>)&gt;len(<span style="color:#a6e22e">marry2</span>){   <span style="color:#75715e">//给他排个序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">n1</span>=len(<span style="color:#a6e22e">marry1</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">n2</span>=len(<span style="color:#a6e22e">marry2</span>)
+</span></span><span style="display:flex;"><span>    }<span style="color:#66d9ef">else</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">n2</span>=len(<span style="color:#a6e22e">marry1</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">n1</span>=len(<span style="color:#a6e22e">marry2</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">n1</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {  
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">==</span><span style="color:#a6e22e">n2</span>{                  <span style="color:#75715e">//这个是防止他前后都一样，例如 9    9，3，4 输出9
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">marry1</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">marry1</span>[<span style="color:#a6e22e">i</span>] <span style="color:#f92672">!=</span> <span style="color:#a6e22e">marry2</span>[<span style="color:#a6e22e">i</span>] {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">marry1</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">lowest</span>(<span style="color:#a6e22e">root</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">TreeNode</span>, <span style="color:#a6e22e">o</span> <span style="color:#66d9ef">int</span>) []<span style="color:#66d9ef">int</span> { <span style="color:#75715e">//找到那个点 并记录他的路径 返回
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">marry</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">x</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">find</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">root</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">TreeNode</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">find</span> = <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">root</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">TreeNode</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">root</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">marry</span> = append(<span style="color:#a6e22e">marry</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)   <span style="color:#75715e">//防止回退点时候退过头了
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">x</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">true</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">marry</span> = append(<span style="color:#a6e22e">marry</span>, <span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Val</span>)
+</span></span><span style="display:flex;"><span>		}  
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Val</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">o</span> {           <span style="color:#75715e">//找到之后给个标识，后面就不继续了
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#a6e22e">x</span> = <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">find</span>(<span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Left</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">x</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">true</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">marry</span> = <span style="color:#a6e22e">marry</span>[:len(<span style="color:#a6e22e">marry</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]  <span style="color:#75715e">//回退
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">find</span>(<span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Right</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">x</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">true</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">marry</span> = <span style="color:#a6e22e">marry</span>[:len(<span style="color:#a6e22e">marry</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">find</span>(<span style="color:#a6e22e">root</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">marry</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">lowestCommonAncestor</span>(<span style="color:#a6e22e">root</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">TreeNode</span>, <span style="color:#a6e22e">o1</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">o2</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> { <span style="color:#75715e">//递归
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">root</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {   <span style="color:#75715e">//到底了返回-1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Val</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">o1</span><span style="color:#f92672">||</span> <span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Val</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">o2</span> {  <span style="color:#75715e">//找到了 返回root.val
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Val</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">left</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">lowestCommonAncestor</span>(<span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Left</span>, <span style="color:#a6e22e">o1</span>, <span style="color:#a6e22e">o2</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">right</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">lowestCommonAncestor</span>(<span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Right</span>, <span style="color:#a6e22e">o1</span>, <span style="color:#a6e22e">o2</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">left</span> <span style="color:#f92672">!=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">right</span> <span style="color:#f92672">!=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> {  <span style="color:#75715e">//证明左右子树都返回的不是-1两边都找到了 返回
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Val</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">left</span> <span style="color:#f92672">==</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> {  <span style="color:#75715e">//左边找到了返回左边 左边没找到返回右边
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">right</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">left</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="序列化二叉树">
+  序列化二叉树
+  <a class="anchor" href="#%e5%ba%8f%e5%88%97%e5%8c%96%e4%ba%8c%e5%8f%89%e6%a0%91">#</a>
+</h3>
+<p>请实现两个函数，分别用来序列化和反序列化二叉树，不对序列化之后的字符串进行约束，但要求能够根据序列化之后的字符串重新构造出一棵与原二叉树相同的树。</p>
+<p>二叉树的序列化(Serialize)是指：把一棵二叉树按照某种遍历方式的结果以某种格式保存为字符串，从而使得内存中建立起来的二叉树可以持久保存。序列化可以基于先序、中序、后序、层序的二叉树等遍历方式来进行修改，序列化的结果是一个字符串，序列化时通过 某种符号表示空节点（#）</p>
+<p>二叉树的反序列化(Deserialize)是指：根据某种遍历顺序得到的序列化字符串结果str，重构二叉树。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209292045721.png" alt="" /></p>
+<p>层序序列化(即用函数Serialize转化)如上的二叉树转为&quot;{1,2,3,#,#,6,7}&quot;，再能够调用反序列化(Deserialize)将&quot;{1,2,3,#,#,6,7}&ldquo;构造成如上的二叉树。</p>
+<p>当然你也可以根据满二叉树结点位置的标号规律来序列化，还可以根据先序遍历和中序遍历的结果来序列化。不对序列化之后的字符串进行约束，所以欢迎各种奇思妙想。</p>
+<p>数据范围：节点数 n≤100，树上每个节点的值满足 0≤val≤150</p>
+<p>要求：序列化和反序列化都是空间复杂度 O(n)，时间复杂度 O(n)</p>
+<pre tabindex="0"><code>输入：{1,2,3,#,#,6,7}
+返回值：{1,2,3,#,#,6,7}
+</code></pre><pre tabindex="0"><code></code></pre><h3 id="重建二叉树">
+  重建二叉树
+  <a class="anchor" href="#%e9%87%8d%e5%bb%ba%e4%ba%8c%e5%8f%89%e6%a0%91">#</a>
+</h3>
+<p>给定节点数为 n 的二叉树的前序遍历和中序遍历结果，请重建出该二叉树并返回它的头结点。</p>
+<p>例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，则重建出如下图所示。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209292048286.png" alt="" /></p>
+<p>要求：空间复杂度 O(n)，时间复杂度 O(n)</p>
+<pre tabindex="0"><code>输入：[1,2,4,7,3,5,6,8],[4,7,2,1,5,3,8,6]
+返回值：{1,2,3,4,#,5,6,#,7,#,#,8}
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">reConstructBinaryTree</span>( <span style="color:#a6e22e">pre</span> []<span style="color:#66d9ef">int</span> ,  <span style="color:#a6e22e">vin</span> []<span style="color:#66d9ef">int</span> ) <span style="color:#f92672">*</span><span style="color:#a6e22e">TreeNode</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">pre</span>)<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span><span style="color:#f92672">||</span>len(<span style="color:#a6e22e">vin</span>)<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">n</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">findnode</span>(<span style="color:#a6e22e">vin</span>,<span style="color:#a6e22e">pre</span>[<span style="color:#ae81ff">0</span>])<span style="color:#75715e">//在中序遍历中找到前序遍历的第一个值的位置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">root</span><span style="color:#f92672">:=&amp;</span><span style="color:#a6e22e">TreeNode</span>{       <span style="color:#75715e">//递归构造树
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">Val</span>:<span style="color:#a6e22e">pre</span>[<span style="color:#ae81ff">0</span>],
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">Left</span>:<span style="color:#a6e22e">reConstructBinaryTree</span>(<span style="color:#a6e22e">pre</span>[<span style="color:#ae81ff">1</span>:<span style="color:#a6e22e">n</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>],<span style="color:#a6e22e">vin</span>[:<span style="color:#a6e22e">n</span>]),  <span style="color:#75715e">//注意pre[1:n+1]他的左子树就是到n+1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">Right</span>:<span style="color:#a6e22e">reConstructBinaryTree</span>(<span style="color:#a6e22e">pre</span>[<span style="color:#a6e22e">n</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>:],<span style="color:#a6e22e">vin</span>[<span style="color:#a6e22e">n</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>:]), <span style="color:#75715e">//不要写成pre[1:] 后面就不管了
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">root</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">findnode</span>(<span style="color:#a6e22e">vin</span> []<span style="color:#66d9ef">int</span>,<span style="color:#a6e22e">n</span> <span style="color:#66d9ef">int</span>)<span style="color:#66d9ef">int</span>{  <span style="color:#75715e">//找到他返回下标，方便下面分割
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">0</span>;<span style="color:#a6e22e">i</span>&lt;len(<span style="color:#a6e22e">vin</span>);<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">vin</span>[<span style="color:#a6e22e">i</span>]<span style="color:#f92672">==</span><span style="color:#a6e22e">n</span>{
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">i</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="输出二叉树的右视图">
+  输出二叉树的右视图
+  <a class="anchor" href="#%e8%be%93%e5%87%ba%e4%ba%8c%e5%8f%89%e6%a0%91%e7%9a%84%e5%8f%b3%e8%a7%86%e5%9b%be">#</a>
+</h3>
+<p>请根据二叉树的前序遍历，中序遍历恢复二叉树，并打印出二叉树的右视图</p>
+<p>数据范围： 0≤n≤100000≤<em>n</em>≤10000
+要求： 空间复杂度 O(n)，时间复杂度 O(n)</p>
+<p>如输入[1,2,4,5,3],[4,2,5,1,3]时，通过前序遍历的结果[1,2,4,5,3]和中序遍历的结果[4,2,5,1,3]可重建出以下二叉树：</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209292050245.png" alt="" /></p>
+<pre tabindex="0"><code>输入：[1,2,4,5,3],[4,2,5,1,3]
+返回值：[1,3,5]
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">solve</span>( <span style="color:#a6e22e">xianxu</span> []<span style="color:#66d9ef">int</span> ,  <span style="color:#a6e22e">zhongxu</span> []<span style="color:#66d9ef">int</span> ) []<span style="color:#66d9ef">int</span> {  <span style="color:#75715e">//构建二叉树加层序遍历
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">root</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">treeNode</span>(<span style="color:#a6e22e">xianxu</span>,<span style="color:#a6e22e">zhongxu</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">arry</span><span style="color:#f92672">:=</span>[]<span style="color:#66d9ef">int</span>{}
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">root</span><span style="color:#f92672">==</span><span style="color:#66d9ef">nil</span>{       <span style="color:#75715e">//开始层序遍历
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">arry</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">queue</span><span style="color:#f92672">:=</span>[]<span style="color:#f92672">*</span><span style="color:#a6e22e">TreeNode</span>{}
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">queue</span>=append(<span style="color:#a6e22e">queue</span>,<span style="color:#a6e22e">root</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> len(<span style="color:#a6e22e">queue</span>)&gt;<span style="color:#ae81ff">0</span>{   <span style="color:#75715e">//注意这里条件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">length</span><span style="color:#f92672">:=</span>len(<span style="color:#a6e22e">queue</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">arry</span>=append(<span style="color:#a6e22e">arry</span>,<span style="color:#a6e22e">queue</span>[<span style="color:#a6e22e">length</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>].<span style="color:#a6e22e">Val</span>)    <span style="color:#75715e">//输出最右边的
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">j</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">0</span>;<span style="color:#a6e22e">j</span>&lt;<span style="color:#a6e22e">length</span>;<span style="color:#a6e22e">j</span><span style="color:#f92672">++</span>{           
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">queue</span>[<span style="color:#a6e22e">j</span>].<span style="color:#a6e22e">Left</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">queue</span>=append(<span style="color:#a6e22e">queue</span>,<span style="color:#a6e22e">queue</span>[<span style="color:#a6e22e">j</span>].<span style="color:#a6e22e">Left</span>)
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">queue</span>[<span style="color:#a6e22e">j</span>].<span style="color:#a6e22e">Right</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">queue</span>=append(<span style="color:#a6e22e">queue</span>,<span style="color:#a6e22e">queue</span>[<span style="color:#a6e22e">j</span>].<span style="color:#a6e22e">Right</span>)
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }        
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">queue</span>=<span style="color:#a6e22e">queue</span>[<span style="color:#a6e22e">length</span>:]
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">arry</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">treeNode</span>(<span style="color:#a6e22e">xianxu</span> []<span style="color:#66d9ef">int</span> ,  <span style="color:#a6e22e">zhongxu</span> []<span style="color:#66d9ef">int</span>)<span style="color:#f92672">*</span><span style="color:#a6e22e">TreeNode</span>{ <span style="color:#75715e">//构建树
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">xianxu</span>)<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span><span style="color:#f92672">||</span>len(<span style="color:#a6e22e">zhongxu</span>)<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">n</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">find</span>(<span style="color:#a6e22e">zhongxu</span>,<span style="color:#a6e22e">xianxu</span>[<span style="color:#ae81ff">0</span>])    
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">root</span><span style="color:#f92672">:=&amp;</span><span style="color:#a6e22e">TreeNode</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">Val</span>:<span style="color:#a6e22e">xianxu</span>[<span style="color:#ae81ff">0</span>],
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">Left</span>:<span style="color:#a6e22e">treeNode</span>(<span style="color:#a6e22e">xianxu</span>[<span style="color:#ae81ff">1</span>:<span style="color:#a6e22e">n</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>],<span style="color:#a6e22e">zhongxu</span>[:<span style="color:#a6e22e">n</span>]),
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">Right</span>:<span style="color:#a6e22e">treeNode</span>(<span style="color:#a6e22e">xianxu</span>[<span style="color:#a6e22e">n</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>:],<span style="color:#a6e22e">zhongxu</span>[<span style="color:#a6e22e">n</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>:]),
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">root</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">find</span>(<span style="color:#a6e22e">zhongxu</span> []<span style="color:#66d9ef">int</span>,<span style="color:#a6e22e">val</span> <span style="color:#66d9ef">int</span>)<span style="color:#66d9ef">int</span>{   <span style="color:#75715e">//查找根节点在中序遍历中的位置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">0</span>;<span style="color:#a6e22e">i</span>&lt;len(<span style="color:#a6e22e">zhongxu</span>);<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">zhongxu</span>[<span style="color:#a6e22e">i</span>]<span style="color:#f92672">==</span><span style="color:#a6e22e">val</span>{
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">i</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="堆栈队列">
+  堆/栈/队列
+  <a class="anchor" href="#%e5%a0%86%e6%a0%88%e9%98%9f%e5%88%97">#</a>
+</h2>
+<h3 id="用两个栈实现队列">
+  用两个栈实现队列
+  <a class="anchor" href="#%e7%94%a8%e4%b8%a4%e4%b8%aa%e6%a0%88%e5%ae%9e%e7%8e%b0%e9%98%9f%e5%88%97">#</a>
+</h3>
+<p>用两个栈来实现一个队列，使用n个元素来完成 n 次在队列尾部插入整数(push)和n次在队列头部删除整数(pop)的功能。 队列中的元素为int类型。保证操作合法，即保证pop操作时队列内已有元素。</p>
+<p>数据范围： n≤1000<em>n</em>≤1000</p>
+<p>要求：存储n个元素的空间复杂度为 O(n) ，插入与删除的时间复杂度都是 O(1)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">stack1</span> [] <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">stack2</span> [] <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Push</span>(<span style="color:#a6e22e">node</span> <span style="color:#66d9ef">int</span>) {   <span style="color:#75715e">//入栈就是其中一个入
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">stack1</span>=append(<span style="color:#a6e22e">stack1</span>,<span style="color:#a6e22e">node</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Pop</span>() <span style="color:#66d9ef">int</span>{    <span style="color:#75715e">//出的时候 如果第二个不为空，出第二个，如果第二个为空，将第一个全部放到第二个，然后出
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">stack2</span>)&gt;<span style="color:#ae81ff">0</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">m</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">stack2</span>[len(<span style="color:#a6e22e">stack2</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">stack2</span>=<span style="color:#a6e22e">stack2</span>[:len(<span style="color:#a6e22e">stack2</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">m</span>
+</span></span><span style="display:flex;"><span>    }<span style="color:#66d9ef">else</span>{   <span style="color:#75715e">//如果stack2为空
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span>len(<span style="color:#a6e22e">stack1</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;<span style="color:#a6e22e">i</span><span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">0</span>;<span style="color:#a6e22e">i</span><span style="color:#f92672">--</span>{
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">stack2</span>=append(<span style="color:#a6e22e">stack2</span>,<span style="color:#a6e22e">stack1</span>[<span style="color:#a6e22e">i</span>])        
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">stack1</span>=[]<span style="color:#66d9ef">int</span>{}
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">n</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">stack2</span>[len(<span style="color:#a6e22e">stack2</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">stack2</span>=<span style="color:#a6e22e">stack2</span>[:len(<span style="color:#a6e22e">stack2</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">n</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="包含min函数的栈">
+  包含min函数的栈
+  <a class="anchor" href="#%e5%8c%85%e5%90%abmin%e5%87%bd%e6%95%b0%e7%9a%84%e6%a0%88">#</a>
+</h3>
+<p>定义栈的数据结构，请在该类型中实现一个能够得到栈中所含最小元素的 min 函数，输入操作时保证 pop、top 和 min 函数操作时，栈中一定有元素。</p>
+<p>此栈包含的方法有：</p>
+<p>push(value):将value压入栈中</p>
+<p>pop():弹出栈顶元素</p>
+<p>top():获取栈顶元素</p>
+<p>min():获取栈中最小元素</p>
+<p>数据范围：操作数量满足 0≤n≤300 0≤<em>n</em>≤300 ，输入的元素满足 ∣val∣≤100000
+进阶：栈的各个操作的时间复杂度是 O(1)，空间复杂度是 O(n)</p>
+<pre tabindex="0"><code>输入：[&#34;PSH-1&#34;,&#34;PSH2&#34;,&#34;MIN&#34;,&#34;TOP&#34;,&#34;POP&#34;,&#34;PSH1&#34;,&#34;TOP&#34;,&#34;MIN&#34;]
+返回值：-1,2,1,-1
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">stack</span> []<span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Push</span>(<span style="color:#a6e22e">node</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">stack</span>=append(<span style="color:#a6e22e">stack</span>,<span style="color:#a6e22e">node</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Pop</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">stack</span>=<span style="color:#a6e22e">stack</span>[:len(<span style="color:#a6e22e">stack</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Top</span>() <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">m</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">stack</span>[len(<span style="color:#a6e22e">stack</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">m</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Min</span>() <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">stack</span>)&gt;<span style="color:#ae81ff">0</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">m</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">stack</span>[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">1</span>;<span style="color:#a6e22e">i</span>&lt;len(<span style="color:#a6e22e">stack</span>);<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>{
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">m</span>&gt;<span style="color:#a6e22e">stack</span>[<span style="color:#a6e22e">i</span>]{
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">m</span>=<span style="color:#a6e22e">stack</span>[<span style="color:#a6e22e">i</span>]
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">m</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="有效括号序列">
+  有效括号序列
+  <a class="anchor" href="#%e6%9c%89%e6%95%88%e6%8b%ac%e5%8f%b7%e5%ba%8f%e5%88%97">#</a>
+</h3>
+<p>给出一个仅包含字符&rsquo;(&rsquo;,&rsquo;)&rsquo;,&rsquo;{&rsquo;,&rsquo;}&rsquo;,&rsquo;[&lsquo;和&rsquo;]&rsquo;,的字符串，判断给出的字符串是否是合法的括号序列
+括号必须以正确的顺序关闭，&rdquo;()&ldquo;和&rdquo;()[]{}&ldquo;都是合法的括号序列，但&rdquo;(]&ldquo;和&rdquo;([)]&ldquo;不合法。</p>
+<p>数据范围：字符串长度 0≤n≤10000</p>
+<p>要求：空间复杂度 O(n)，时间复杂度 O(n)</p>
+<pre tabindex="0"><code>输入：&#34;[&#34;
+返回值：false
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">isValid</span>( <span style="color:#a6e22e">s</span> <span style="color:#66d9ef">string</span> ) <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">marry</span><span style="color:#f92672">:=</span>[]<span style="color:#66d9ef">byte</span>{}
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>,<span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#66d9ef">range</span> <span style="color:#a6e22e">s</span>{
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> byte(<span style="color:#a6e22e">i</span>)<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;(&#39;</span><span style="color:#f92672">||</span>byte(<span style="color:#a6e22e">i</span>)<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;[&#39;</span><span style="color:#f92672">||</span>byte(<span style="color:#a6e22e">i</span>)<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;{&#39;</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">marry</span>=append(<span style="color:#a6e22e">marry</span>,byte(<span style="color:#a6e22e">i</span>))
+</span></span><span style="display:flex;"><span>      }<span style="color:#66d9ef">else</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">marry</span>)<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>{ <span style="color:#75715e">//如果栈空，就得到}，返回false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>          <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">marry</span>[len(<span style="color:#a6e22e">marry</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;(&#39;</span><span style="color:#f92672">&amp;&amp;</span>byte(<span style="color:#a6e22e">i</span>)<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;)&#39;</span><span style="color:#f92672">||</span><span style="color:#a6e22e">marry</span>[len(<span style="color:#a6e22e">marry</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;[&#39;</span><span style="color:#f92672">&amp;&amp;</span>byte(<span style="color:#a6e22e">i</span>)<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;]&#39;</span><span style="color:#f92672">||</span><span style="color:#a6e22e">marry</span>[len(<span style="color:#a6e22e">marry</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;{&#39;</span><span style="color:#f92672">&amp;&amp;</span>byte(<span style="color:#a6e22e">i</span>)<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;}&#39;</span>{   <span style="color:#75715e">//如果成对 出栈      
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>              <span style="color:#a6e22e">marry</span>=<span style="color:#a6e22e">marry</span>[:len(<span style="color:#a6e22e">marry</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>        }<span style="color:#66d9ef">else</span>{  <span style="color:#75715e">//不成对 返回false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>          <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">marry</span>)<span style="color:#f92672">!=</span><span style="color:#ae81ff">0</span>{  <span style="color:#75715e">//如果栈不为空返回false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Stack</span> <span style="color:#66d9ef">struct</span> {            <span style="color:#75715e">//定义栈
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">size</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">top</span>  <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">data</span> []<span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">isValid</span>(<span style="color:#a6e22e">s</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">s1</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Stack</span>{}                  <span style="color:#75715e">//初始化栈
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">s1</span>.<span style="color:#a6e22e">size</span> = len(<span style="color:#a6e22e">s</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">s1</span>.<span style="color:#a6e22e">top</span> = <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">s1</span>.<span style="color:#a6e22e">data</span> = make([]<span style="color:#66d9ef">string</span>, len(<span style="color:#a6e22e">s</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">a</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">s</span> {             <span style="color:#75715e">//遍历s
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">b</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> string(<span style="color:#a6e22e">a</span>) <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;)&#34;</span> {           <span style="color:#75715e">//设置出栈条件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#a6e22e">b</span> = <span style="color:#e6db74">&#34;(&#34;</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> string(<span style="color:#a6e22e">a</span>) <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;}&#34;</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">b</span> = <span style="color:#e6db74">&#34;{&#34;</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> string(<span style="color:#a6e22e">a</span>) <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;]&#34;</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">b</span> = <span style="color:#e6db74">&#34;[&#34;</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">s1</span>.<span style="color:#a6e22e">top</span> &gt; <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">s1</span>.<span style="color:#a6e22e">data</span>[<span style="color:#a6e22e">s1</span>.<span style="color:#a6e22e">top</span>] <span style="color:#f92672">==</span> <span style="color:#a6e22e">b</span> { <span style="color:#75715e">//相等出栈
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#a6e22e">s1</span>.<span style="color:#a6e22e">top</span><span style="color:#f92672">--</span>
+</span></span><span style="display:flex;"><span>		} <span style="color:#66d9ef">else</span> {                                <span style="color:#75715e">//不等入栈
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#a6e22e">s1</span>.<span style="color:#a6e22e">top</span><span style="color:#f92672">++</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">s1</span>.<span style="color:#a6e22e">data</span>[<span style="color:#a6e22e">s1</span>.<span style="color:#a6e22e">top</span>] = string(<span style="color:#a6e22e">a</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">s1</span>.<span style="color:#a6e22e">top</span> <span style="color:#f92672">==</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> {                             <span style="color:#75715e">//判断栈空为true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>	} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="滑动窗口的最大值">
+  滑动窗口的最大值
+  <a class="anchor" href="#%e6%bb%91%e5%8a%a8%e7%aa%97%e5%8f%a3%e7%9a%84%e6%9c%80%e5%a4%a7%e5%80%bc">#</a>
+</h3>
+<p>给定一个长度为 n 的数组 num 和滑动窗口的大小 size ，找出所有滑动窗口里数值的最大值。</p>
+<p>例如，如果输入数组{2,3,4,2,6,2,5,1}及滑动窗口的大小3，那么一共存在6个滑动窗口，他们的最大值分别为{4,4,6,6,6,5}； 针对数组{2,3,4,2,6,2,5,1}的滑动窗口有以下6个： {[2,3,4],2,6,2,5,1}， {2,[3,4,2],6,2,5,1}， {2,3,[4,2,6],2,5,1}， {2,3,4,[2,6,2],5,1}， {2,3,4,2,[6,2,5],1}， {2,3,4,2,6,[2,5,1]}。</p>
+<p>窗口大于数组长度或窗口长度为0的时候，返回空。</p>
+<p>数据范围： 1≤n≤10000，0≤size≤10000，数组中每个元素的值满足 ∣val∣≤10000</p>
+<p>要求：空间复杂度 O(n)，时间复杂度 O(n)</p>
+<pre tabindex="0"><code>输入：[2,3,4,2,6,2,5,1],3
+返回值：[4,4,6,6,6,5]
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">maxInWindows</span>(<span style="color:#a6e22e">num</span> []<span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">size</span> <span style="color:#66d9ef">int</span>) []<span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">marry</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">size</span> &gt; len(<span style="color:#a6e22e">num</span>) <span style="color:#f92672">||</span> <span style="color:#a6e22e">size</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">marry</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">size</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">num</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">queue</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">queue</span> = append(<span style="color:#a6e22e">queue</span>, <span style="color:#a6e22e">num</span>[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">max</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">num</span>[<span style="color:#ae81ff">0</span>]               <span style="color:#75715e">//最大值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">x</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>                      <span style="color:#75715e">//最大值下标
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">size</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> { <span style="color:#75715e">//第一个滑块插入队列
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">queue</span> = append(<span style="color:#a6e22e">queue</span>, <span style="color:#a6e22e">num</span>[<span style="color:#a6e22e">i</span>])
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">num</span>[<span style="color:#a6e22e">i</span>] &gt; <span style="color:#a6e22e">max</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">max</span> = <span style="color:#a6e22e">num</span>[<span style="color:#a6e22e">i</span>]
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">x</span> = <span style="color:#a6e22e">i</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">marry</span> = append(<span style="color:#a6e22e">marry</span>, <span style="color:#a6e22e">max</span>) <span style="color:#75715e">//第一个滑块的最大值先加进去
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">size</span>; <span style="color:#a6e22e">i</span> &lt; len(<span style="color:#a6e22e">num</span>); <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">queue</span> = <span style="color:#a6e22e">queue</span>[<span style="color:#ae81ff">1</span>:]
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">queue</span> = append(<span style="color:#a6e22e">queue</span>, <span style="color:#a6e22e">num</span>[<span style="color:#a6e22e">i</span>])
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#a6e22e">x</span> &lt; <span style="color:#a6e22e">size</span> { <span style="color:#75715e">//证明它没出去
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">num</span>[<span style="color:#a6e22e">i</span>] &gt; <span style="color:#a6e22e">max</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">max</span> = <span style="color:#a6e22e">num</span>[<span style="color:#a6e22e">i</span>]
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">x</span> = <span style="color:#a6e22e">i</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">max</span>, <span style="color:#a6e22e">x</span> = <span style="color:#a6e22e">find</span>(<span style="color:#a6e22e">queue</span>, <span style="color:#a6e22e">i</span>)  <span style="color:#75715e">//查找最大值和下标
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">marry</span> = append(<span style="color:#a6e22e">marry</span>, <span style="color:#a6e22e">max</span>)  <span style="color:#75715e">//加入最大值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">marry</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">find</span>(<span style="color:#a6e22e">queue</span> []<span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">n</span> <span style="color:#66d9ef">int</span>) (<span style="color:#a6e22e">max</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span>) {   <span style="color:#75715e">//这样搞如果全是递减的话 时间复杂度就超了
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">maxc</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">queue</span>[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">xx</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">i</span> &lt; len(<span style="color:#a6e22e">queue</span>); <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">queue</span>[<span style="color:#a6e22e">i</span>] &gt; <span style="color:#a6e22e">maxc</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">maxc</span> = <span style="color:#a6e22e">queue</span>[<span style="color:#a6e22e">i</span>]
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">xx</span> = <span style="color:#a6e22e">i</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">maxc</span>, <span style="color:#a6e22e">n</span> <span style="color:#f92672">-</span> (len(<span style="color:#a6e22e">queue</span>) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">-</span> <span style="color:#a6e22e">xx</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">maxInWindows</span>(<span style="color:#a6e22e">num</span> []<span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">size</span> <span style="color:#66d9ef">int</span>) []<span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	  <span style="color:#a6e22e">marry</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{}
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">size</span><span style="color:#f92672">==</span><span style="color:#ae81ff">0</span><span style="color:#f92672">||</span>len(<span style="color:#a6e22e">num</span>)<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span><span style="color:#f92672">||</span><span style="color:#a6e22e">size</span>&gt;len(<span style="color:#a6e22e">num</span>){
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">marry</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>	  <span style="color:#a6e22e">queue</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{}
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">push</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">i</span> <span style="color:#66d9ef">int</span>) <span style="color:#75715e">//插入队列
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">push</span>=<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">i</span> <span style="color:#66d9ef">int</span>){  <span style="color:#75715e">//你是大的就循环把你前面小的拿走 //因为小的没用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">for</span> len(<span style="color:#a6e22e">queue</span>)&gt;<span style="color:#ae81ff">0</span><span style="color:#f92672">&amp;&amp;</span><span style="color:#a6e22e">num</span>[<span style="color:#a6e22e">i</span>]&gt;<span style="color:#a6e22e">num</span>[<span style="color:#a6e22e">queue</span>[len(<span style="color:#a6e22e">queue</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]]{ <span style="color:#75715e">//如果比最右边大，则把最右的拿出来，再加入，比你小直接加入，比你大的话你就没用了 ，比你小怕你下一个就出去
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#a6e22e">queue</span>=<span style="color:#a6e22e">queue</span>[:len(<span style="color:#a6e22e">queue</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">queue</span> = append(<span style="color:#a6e22e">queue</span>, <span style="color:#a6e22e">i</span>)  <span style="color:#75715e">//下标插进去 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">0</span>;<span style="color:#a6e22e">i</span>&lt;<span style="color:#a6e22e">size</span>;<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>{ <span style="color:#75715e">//现将前几个都插入
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">push</span>(<span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">marry</span>=append(<span style="color:#a6e22e">marry</span>,<span style="color:#a6e22e">num</span>[<span style="color:#a6e22e">queue</span>[<span style="color:#ae81ff">0</span>]]) <span style="color:#75715e">//第一个最大值插入
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">size</span>;<span style="color:#a6e22e">i</span>&lt;len(<span style="color:#a6e22e">num</span>);<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">push</span>(<span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">queue</span>[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">&lt;=</span><span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#a6e22e">size</span>{ <span style="color:#75715e">//看你是不是被划出去了 如果是，队列退出一个
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#a6e22e">queue</span>=<span style="color:#a6e22e">queue</span>[<span style="color:#ae81ff">1</span>:]
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">marry</span>=append(<span style="color:#a6e22e">marry</span>,<span style="color:#a6e22e">num</span>[<span style="color:#a6e22e">queue</span>[<span style="color:#ae81ff">0</span>]])
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">marry</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="题外">
   题外
   <a class="anchor" href="#%e9%a2%98%e5%a4%96">#</a>
 </h2>
@@ -2758,6 +3233,19 @@ https://github.com/alex-shpak/hugo-book
             <li><a href="#判断是不是二叉搜索树">判断是不是二叉搜索树</a></li>
             <li><a href="#判断是不是完全二叉树">判断是不是完全二叉树</a></li>
             <li><a href="#判断是不是平衡二叉树">判断是不是平衡二叉树</a></li>
+            <li><a href="#二叉搜索树的最近公共祖先">二叉搜索树的最近公共祖先</a></li>
+            <li><a href="#在二叉树中找到两个节点的最近公共祖先">在二叉树中找到两个节点的最近公共祖先</a></li>
+            <li><a href="#序列化二叉树">序列化二叉树</a></li>
+            <li><a href="#重建二叉树">重建二叉树</a></li>
+            <li><a href="#输出二叉树的右视图">输出二叉树的右视图</a></li>
+          </ul>
+        </li>
+        <li><a href="#堆栈队列">堆/栈/队列</a>
+          <ul>
+            <li><a href="#用两个栈实现队列">用两个栈实现队列</a></li>
+            <li><a href="#包含min函数的栈">包含min函数的栈</a></li>
+            <li><a href="#有效括号序列">有效括号序列</a></li>
+            <li><a href="#滑动窗口的最大值">滑动窗口的最大值</a></li>
           </ul>
         </li>
         <li><a href="#题外">题外</a>

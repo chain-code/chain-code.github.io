@@ -6,22 +6,45 @@
     <description>Recent content in 高阶 on Soulmate</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 07 Sep 2022 15:43:23 +0800</lastBuildDate><atom:link href="http://example.org/docs/golang/%E9%AB%98%E9%98%B6/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 03 Nov 2022 13:46:27 +0800</lastBuildDate><atom:link href="http://example.org/docs/golang/%E9%AB%98%E9%98%B6/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Go语言高阶（一）</title>
-      <link>http://example.org/docs/golang/%E9%AB%98%E9%98%B6/go%E8%AF%AD%E8%A8%80%E9%AB%98%E9%98%B6%E4%B8%80/</link>
+      <title>Go高阶-语言基础</title>
+      <link>http://example.org/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/</link>
       <pubDate>Wed, 07 Sep 2022 15:43:23 +0800</pubDate>
       
-      <guid>http://example.org/docs/golang/%E9%AB%98%E9%98%B6/go%E8%AF%AD%E8%A8%80%E9%AB%98%E9%98%B6%E4%B8%80/</guid>
-      <description>语言基础 # 语言类库 # 反射 # 反射是指计算机程序在运行时可以访问、检测和修改它本身状态或行为的一种能力。
-用比喻来说，反射就是程序在运行的时候能够观察并纠正自己的行为。
-Go语言提供了一种机制在运行时更新变量和检查它们的值、调用它们的方法，但是在编译时并不知道这些变量的具体类型，这称为反射机制。
-使用场景 # 不能明确接口调用那个函数，需要根据传入的参数在运行时决定。 不能明确传入参数的参数类型，需要在运行时处理任意对象。 不推荐使用原因 # 与反射相关的代码，难以阅读。 编译器无法提前发现一些类型错误，可能会运行很久后才会出错，会造成严重后果。 反射影响程序性能，比正常代码运行速度慢一到两个数量级。 高级特性 # 垃圾回收 # 认识 # 有了垃圾回收，为什么还会发生内存泄露？ # 在Go中，由于goroutine的存在，所谓的内存泄露除了附着在长期对象上之外，还存在多种不同的形式。
+      <guid>http://example.org/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/</guid>
+      <description>数据容器 # 数组与切片 # 异同 # Go推荐使用slice而不是数组
+Go语言中，切片是对数组的封装，数组固定长度，不能更改，切片可以动态扩容，且切片的类型和长度无关。
+数组长度不一致，不属于同一类型，无法进行比较。
+type slice struct{ array unsafe.Pointer //元素指针 len int //长度 cap int //容量 } 底层数组可以被多个切片同时指向，因此对一个切片的元素进行操作有可能会影响到其他切片。
+切片截取 # 基于已有slice创建新slice对象，被称为replace，共用底层数组。如果因为执行append操作使得新slice或老slice底层数组扩容，移动到了新的位置，两者就不会相互影响了。
+func main(){//想想为什么 slice:=[]int{0,1,2,3,4,5,6,7,8,9} //容量10 s1:=slice[2:5] //[2,3,4]len=3 cap=8 后面的还在， s2:=s1[2:6:7] //[low,high,max]要求max&amp;gt;=high&amp;gt;=low high和max必须在老slice的容量cap范围内 //[4] len=4 cap=5 s2=append(s2,100) //第一次追加，容量够用，会修改原始数组对应位置的元素。 s2=append(s2,200) //第二次追加，容量不够，另起炉灶，将原来元素复制到新位置，扩大容量，故不再变化。 s1[2]=20 fmt.Println(s1) fmt.Println(s2) fmt.Println(slice) } [2 3 20] [4 5 6 7 100 200] [0 1 2 3 20 5 6 7 100 9] 切片扩容 # 一般都是在向切片追加元素之后，由于容量不足，才会引起扩容。调用append函数</description>
+    </item>
+    
+    <item>
+      <title>Go高阶 高级特性</title>
+      <link>http://example.org/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/</link>
+      <pubDate>Thu, 03 Nov 2022 13:46:27 +0800</pubDate>
+      
+      <guid>http://example.org/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/</guid>
+      <description>垃圾回收 # 认识 # 有了垃圾回收，为什么还会发生内存泄露？ # 在Go中，由于goroutine的存在，所谓的内存泄露除了附着在长期对象上之外，还存在多种不同的形式。
 预期能被快速释放的内存因被根对象引用而没有得到迅速释放
 当有一个全局对象时，可能不经意间将某个变量附着其上，且忽略了将其进行释放，则该内存永远不会得到释放。
 goroutine泄露
 goroutine作为逻辑上理解的轻量级线程，需要维护执行用户代码的上下文信息。在运行过程中也需要消耗一定的内存来保存这类信息，而这些内存在Go中时不会被释放的。因此，如果一个程序持续不断地产生新的goroutine、且不结束已经创建的goroutine并复用这部分内存，就会造成内存泄露。
 这种形式的goroutine泄露还可能由channel泄露导致。而channel的泄漏本质上与goroutine泄漏存在直接联系。channel作为一种同步原句，会连接两个不同的goroutine，如果一个goroutine尝试向一个没有接收方的无缓冲channel发送消息，则该goroutine会被永久的休眠，整个goroutine及其执行栈都得不到释放。</description>
+    </item>
+    
+    <item>
+      <title>Go高阶 语言类库</title>
+      <link>http://example.org/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/</link>
+      <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
+      
+      <guid>http://example.org/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/</guid>
+      <description> 反射 # 反射是指计算机程序在运行时可以访问、检测和修改它本身状态或行为的一种能力。
+用比喻来说，反射就是程序在运行的时候能够观察并纠正自己的行为。
+Go语言提供了一种机制在运行时更新变量和检查它们的值、调用它们的方法，但是在编译时并不知道这些变量的具体类型，这称为反射机制。
+使用场景 # 不能明确接口调用那个函数，需要根据传入的参数在运行时决定。 不能明确传入参数的参数类型，需要在运行时处理任意对象。 不推荐使用原因 # 与反射相关的代码，难以阅读。 编译器无法提前发现一些类型错误，可能会运行很久后才会出错，会造成严重后果。 反射影响程序性能，比正常代码运行速度慢一到两个数量级。 </description>
     </item>
     
   </channel>

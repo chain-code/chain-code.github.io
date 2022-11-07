@@ -3,20 +3,27 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="">
+<meta name="description" content=" 反射 # 反射是指计算机程序在运行时可以访问、检测和修改它本身状态或行为的一种能力。
+用比喻来说，反射就是程序在运行的时候能够观察并纠正自己的行为。
+Go语言提供了一种机制在运行时更新变量和检查它们的值、调用它们的方法，但是在编译时并不知道这些变量的具体类型，这称为反射机制。
+使用场景 # 不能明确接口调用那个函数，需要根据传入的参数在运行时决定。 不能明确传入参数的参数类型，需要在运行时处理任意对象。 不推荐使用原因 # 与反射相关的代码，难以阅读。 编译器无法提前发现一些类型错误，可能会运行很久后才会出错，会造成严重后果。 反射影响程序性能，比正常代码运行速度慢一到两个数量级。 ">
 <meta name="theme-color" content="#FFFFFF">
-<meta name="color-scheme" content="light dark"><meta property="og:title" content="IPFS" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="http://example.org/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/" />
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="Go高阶 语言类库" />
+<meta property="og:description" content=" 反射 # 反射是指计算机程序在运行时可以访问、检测和修改它本身状态或行为的一种能力。
+用比喻来说，反射就是程序在运行的时候能够观察并纠正自己的行为。
+Go语言提供了一种机制在运行时更新变量和检查它们的值、调用它们的方法，但是在编译时并不知道这些变量的具体类型，这称为反射机制。
+使用场景 # 不能明确接口调用那个函数，需要根据传入的参数在运行时决定。 不能明确传入参数的参数类型，需要在运行时处理任意对象。 不推荐使用原因 # 与反射相关的代码，难以阅读。 编译器无法提前发现一些类型错误，可能会运行很久后才会出错，会造成严重后果。 反射影响程序性能，比正常代码运行速度慢一到两个数量级。 " />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" /><meta property="article:section" content="docs" />
+<meta property="article:published_time" content="2022-11-03T13:46:08+08:00" />
+<meta property="article:modified_time" content="2022-11-03T13:46:08+08:00" />
 
-<title>IPFS | Soulmate</title>
+<title>Go高阶 语言类库 | Soulmate</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.6d5599f1f25debfdfb676f5074f599284cebe76e6d6ebfb076e2e530dd3e504f.css" integrity="sha256-bVWZ8fJd6/37Z29QdPWZKEzr525tbr&#43;wduLlMN0&#43;UE8=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
   <script defer src="/en.search.min.3bbecd7a3d493b220eba14d800e74a125e1f40c216a43aa244ac9a935ac74443.js" integrity="sha256-O77Nej1JOyIOuhTYAOdKEl4fQMIWpDqiRKyak1rHREM=" crossorigin="anonymous"></script>
-<link rel="alternate" type="application/rss+xml" href="http://example.org/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/index.xml" title="Soulmate" />
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -318,7 +325,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle"  />
+    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle" checked />
     <label for="section-c453881a62c640f6a4cceec99c02477e" class="flex justify-between">
       <a role="button" class="">高阶</a>
     </label>
@@ -360,7 +367,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="active">Go高阶 语言类库</a>
   
 
         </li>
@@ -852,9 +859,9 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle" checked />
+    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle"  />
     <label for="section-ff5477999ef29208270c84e8b56b2758" class="flex justify-between">
-      <a role="button" class="active">IPFS</a>
+      <a role="button" class="">IPFS</a>
     </label>
   
 
@@ -1310,7 +1317,7 @@ https://github.com/alex-shpak/hugo-book
     <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
   </label>
 
-  <strong>IPFS</strong>
+  <strong>Go高阶 语言类库</strong>
 
   <label for="toc-control">
     
@@ -1324,7 +1331,19 @@ https://github.com/alex-shpak/hugo-book
   <aside class="hidden clearfix">
     
   
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#反射">反射</a>
+      <ul>
+        <li>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
 
 
 
@@ -1335,7 +1354,31 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown"></article>
+  <article class="markdown"><h1 id="反射">
+  反射
+  <a class="anchor" href="#%e5%8f%8d%e5%b0%84">#</a>
+</h1>
+<p>反射是指计算机程序在运行时可以访问、检测和修改它本身状态或行为的一种能力。</p>
+<p>用比喻来说，反射就是程序在运行的时候能够观察并纠正自己的行为。</p>
+<p>Go语言提供了一种机制在运行时更新变量和检查它们的值、调用它们的方法，但是在编译时并不知道这些变量的具体类型，这称为反射机制。</p>
+<h4 id="使用场景">
+  使用场景
+  <a class="anchor" href="#%e4%bd%bf%e7%94%a8%e5%9c%ba%e6%99%af">#</a>
+</h4>
+<ul>
+<li>不能明确接口调用那个函数，需要根据传入的参数在运行时决定。</li>
+<li>不能明确传入参数的参数类型，需要在运行时处理任意对象。</li>
+</ul>
+<h4 id="不推荐使用原因">
+  不推荐使用原因
+  <a class="anchor" href="#%e4%b8%8d%e6%8e%a8%e8%8d%90%e4%bd%bf%e7%94%a8%e5%8e%9f%e5%9b%a0">#</a>
+</h4>
+<ul>
+<li>与反射相关的代码，难以阅读。</li>
+<li>编译器无法提前发现一些类型错误，可能会运行很久后才会出错，会造成严重后果。</li>
+<li>反射影响程序性能，比正常代码运行速度慢一到两个数量级。</li>
+</ul>
+</article>
  
       
 
@@ -1360,6 +1403,10 @@ https://github.com/alex-shpak/hugo-book
 
       
   
+  <div class="book-comments">
+
+</div>
+  
  
 
       <label for="menu-control" class="hidden book-menu-overlay"></label>
@@ -1370,7 +1417,19 @@ https://github.com/alex-shpak/hugo-book
       <div class="book-toc-content">
         
   
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#反射">反射</a>
+      <ul>
+        <li>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
 
 
  

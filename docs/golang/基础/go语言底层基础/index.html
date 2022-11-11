@@ -31,9 +31,9 @@ P和M的个数问题 # 1、P的数量：
 <title>go语言底层基础 | Soulmate</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.6d5599f1f25debfdfb676f5074f599284cebe76e6d6ebfb076e2e530dd3e504f.css" integrity="sha256-bVWZ8fJd6/37Z29QdPWZKEzr525tbr&#43;wduLlMN0&#43;UE8=" crossorigin="anonymous">
+<link rel="stylesheet" href="/book.min.10729415b29e6b73726f67e7fe3e0530d637b1fa3799fff7784cfbbf0c3d9576.css" integrity="sha256-EHKUFbKea3Nyb2fn/j4FMNY3sfo3mf/3eEz7vww9lXY=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.3bbecd7a3d493b220eba14d800e74a125e1f40c216a43aa244ac9a935ac74443.js" integrity="sha256-O77Nej1JOyIOuhTYAOdKEl4fQMIWpDqiRKyak1rHREM=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.092d1ccaafbeef9b18a719ce2eaee30fcc5600fdd1546646bfdf2c8d0d0dba61.js" integrity="sha256-CS0cyq&#43;&#43;75sYpxnOLq7jD8xWAP3RVGZGv98sjQ0NumE=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -1351,8 +1351,6 @@ https://github.com/alex-shpak/hugo-book
             <li><a href="#gmp模型">GMP模型</a></li>
             <li><a href="#channel">channel</a></li>
             <li><a href="#defer函数">defer函数</a></li>
-            <li><a href="#new和make">new和make</a></li>
-            <li><a href="#interface">interface</a></li>
             <li><a href="#sync包">sync包</a></li>
             <li><a href="#垃圾回收gc">垃圾回收(GC)</a></li>
           </ul>
@@ -1785,14 +1783,6 @@ main 正常结束</p>
   <a class="anchor" href="#defer%e5%87%bd%e6%95%b0%e7%9a%84%e4%bd%bf%e7%94%a8%e5%9c%ba%e6%99%af">#</a>
 </h4>
 <p>延迟Close、recover panic</p>
-<h3 id="new和make">
-  new和make
-  <a class="anchor" href="#new%e5%92%8cmake">#</a>
-</h3>
-<h3 id="interface">
-  interface
-  <a class="anchor" href="#interface">#</a>
-</h3>
 <h3 id="sync包">
   sync包
   <a class="anchor" href="#sync%e5%8c%85">#</a>
@@ -2195,7 +2185,7 @@ mutex.Unlock()
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">extra</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">mapextra</span> <span style="color:#75715e">// 存储溢出桶，这个字段是为了优化GC扫描而设计的，下面详细介绍
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
 </span></span></code></pre></div><p><strong>bmap结构体</strong></p>
-<p><code>bmap</code> 就是我们常说的“桶”，一个桶里面会<strong>最多装 8 个 key</strong>，这些 key 之所以会落入同一个桶，是因为它们经过哈希计算后，哈希结果的低8位是相同的，关于key的定位我们在map的查询中详细说明。在桶内，又会根据 key 计算出来的 hash 值的高 8 位来决定 key 到底落入桶内的哪个位置（一个桶内最多有8个位置)。</p>
+<p><code>bmap</code> 就是我们常说的“桶”，一个桶里面会<strong>最多装 8 个 key</strong>，这些 key 之所以会落入同一个桶，是因为它们经过哈希计算后，哈希结果的低B位是相同的，关于key的定位我们在map的查询中详细说明。在桶内，又会根据 key 计算出来的 hash 值的高 8 位来决定 key 到底落入桶内的哪个位置（一个桶内最多有8个位置)。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">bmap</span> <span style="color:#66d9ef">struct</span> { <span style="color:#75715e">// A bucket for a Go map.
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">tophash</span> [<span style="color:#a6e22e">bucketCnt</span>]<span style="color:#66d9ef">uint8</span>        
 </span></span><span style="display:flex;"><span><span style="color:#75715e">// len为8的数组
@@ -2313,8 +2303,6 @@ mutex.Unlock()
             <li><a href="#gmp模型">GMP模型</a></li>
             <li><a href="#channel">channel</a></li>
             <li><a href="#defer函数">defer函数</a></li>
-            <li><a href="#new和make">new和make</a></li>
-            <li><a href="#interface">interface</a></li>
             <li><a href="#sync包">sync包</a></li>
             <li><a href="#垃圾回收gc">垃圾回收(GC)</a></li>
           </ul>

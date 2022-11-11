@@ -3,20 +3,54 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="数据容器 # 数组与切片 # 异同 # Go推荐使用slice而不是数组
-Go语言中，切片是对数组的封装，数组固定长度，不能更改，切片可以动态扩容，且切片的类型和长度无关。
-数组长度不一致，不属于同一类型，无法进行比较。
-type slice struct{ array unsafe.Pointer //元素指针 len int //长度 cap int //容量 } 底层数组可以被多个切片同时指向，因此对一个切片的元素进行操作有可能会影响到其他切片。
-切片截取 # 基于已有slice创建新slice对象，被称为replace，共用底层数组。如果因为执行append操作使得新slice或老slice底层数组扩容，移动到了新的位置，两者就不会相互影响了。
-func main(){//想想为什么 slice:=[]int{0,1,2,3,4,5,6,7,8,9} //容量10 s1:=slice[2:5] //[2,3,4]len=3 cap=8 后面的还在， s2:=s1[2:6:7] //[low,high,max]要求max&gt;=high&gt;=low high和max必须在老slice的容量cap范围内 //[4] len=4 cap=5 s2=append(s2,100) //第一次追加，容量够用，会修改原始数组对应位置的元素。 s2=append(s2,200) //第二次追加，容量不够，另起炉灶，将原来元素复制到新位置，扩大容量，故不再变化。 s1[2]=20 fmt.Println(s1) fmt.Println(s2) fmt.Println(slice) } [2 3 20] [4 5 6 7 100 200] [0 1 2 3 20 5 6 7 100 9] 切片扩容 # 一般都是在向切片追加元素之后，由于容量不足，才会引起扩容。调用append函数">
+<meta name="description" content="逃逸分析 # Go语言中，调用new函数得到的内存不一定在堆上，还有可能在栈上。这是因为在Go语言中，堆和栈的区别被“模糊化”了，当然这一切都是Go编译器在后台完成的。
+一个变量是在堆上分配，还是在栈上分配，是经过编译器的逃逸分析之后得出的“结论”。
+Go语言里就是指编译器的逃逸分析：它是编译器执行静态代码分析后，对内存管理进行的优化和简化。
+在编译原理中，分析指针动态范围的方法被称为逃逸分析。通俗来讲，当一个对象的指针被多个方法或线程引用时，则称这个指针发生了逃逸。逃逸分析决定一个变量是分配在堆上还是分配在栈上。
+作用 # 逃逸分析把变量合理地分配到它该去的地方，“找准自己的位置”。即使是用new函数申请到的内存，如果编译器发现这块内存在退出函数后就没有使用了，那就分配到栈上，毕竟栈上的内存分配比堆上块很多；反之，即使表面上只是一个普通的变量，但是经过编译器的逃逸分析后发现，在函数之外还有其他的地方在引用，那就分配到堆上。真正做到了按需分配。
+如果变量都分配到堆上，堆不像栈可以自动清理。就会引起Go频繁的进行垃圾回收，而垃圾回收会占用比较大的系统开销。
+堆和栈相比，堆适合不可预知大小的的内存分配。但是为此付出的代价是分配速度较慢，而且会形成内存碎片；栈内存分配则会非常快。栈分配内存只需要通过PUSH指令，并且会被自动释放；而堆分配内存首先需要去找一个大小合适的内存块，之后要通过垃圾回收才能释放。
+通过逃逸分析，可以尽量把哪些不需要分配到堆上的变量直接分配到栈上，堆上的压力变小了，会减轻堆内存分配开销，同时也会减轻垃圾回收的压力，提高程序运行速度。
+原则 # Go语言逃逸分析最基本的原则是：如果一个函数返回对一个变量的引用，那么这个变量就会发生逃逸。
+Go中的变量只有在编译器可以证明在函数返回后不再被引用的，才分配到栈上，其他情况都分配到堆上。
+编译器会根据变量是否被外部引用来决定是否逃逸：
+如果变量在函数外部没有引用，则优先放到栈上。 如果变量在函数外部存在引用，则必定放到堆上。 针对第一条，放到堆上的情形：定义了一个很大的数组，需要申请的内存过大，超过了栈的存储能力。
+判断 # Go提供了相关的命令，可以查看变量是否发生逃逸。
+go build -gcflags &#39;-m -l&#39; main.go 其中-gcflags参数用于启动编译器支持的额外标志。例如，-m用于输出编译器的优化细节（包括使用逃逸分析这种优化），相反可以使用-N来关闭编译器优化；而-l则用于禁用foo函数的内联优化，防止逃逸被编译器通过内联彻底抹除。
+GO与C/C&#43;&#43;中的堆和栈是同一个概念吗 # 不是
+C/C&#43;&#43;中提及的“程序堆栈”本质上是操作系统层级的概念，它通过C/C&#43;&#43;语言的编译器和所在的系统环境来共同决定。在程序启动时，操纵系统会自动维护一个所启动程序消耗内存的地址空间，并自动将这个空间从逻辑上划分为堆内存空间和栈内存空间。这时，“栈”的概念是指程序运行时自动获得的一小块内存，而后续的函数调用所消耗的栈大小，会在编译期间有编译器决定，用于保存局部变量或者保存函数调用栈。如果在C/C&#43;&#43;中声明一个局部变量，则会执行逻辑上的压栈操作，在栈中记录局部变量。而当局部变量离开作用域之后，所谓的自动释放本质上是该位置的内存在下一次函数调用压栈过程中，可以被无条件的覆盖；对于堆而言，每当程序通过系统调用向操作系统申请内存时，会将所需的空间从维护的堆内存地址空间中分配出去，而在归还时则会将归还的内存合并到所维护的地址空间中。
+Go程序也是运行在操作系统上的程序，自然同样拥有前面提到的堆和栈的概念。但区别在于传统意义上的“栈”被Go语言的运行时全部消耗了，用于维护运行时各个组件之间的协调，例如调度器、垃圾回收、系统调用等。而对于用户态的Go代码而言，他们所消耗的“堆和栈”，其实只是Go运行时通过管理向操作系统申请的堆内存，构造的逻辑上的“堆和栈”，它们的本质都是从操作系统申请而来的堆内存。
+延迟语句 # 延迟语句defer，能把资源的释放语句与申请语句放到距离相近的位置，从而减少资源泄露的发生。
+defer是Go语言提供的一种用于注册延迟调用的机制：让函数或语句可以在当前函数执行完毕后（包括通过return正常结束或者Panic导致的异常结束）执行。通常用于一些成对操作的场景：打开连接/关闭连接、加锁/释放锁、打开文件/关闭文件等。
+defer会有短暂延迟，对时间要求特别高的程序，可以避免使用它。
+defer的执行顺序 # defer语句并不会马上执行，而是会进入一个栈，函数return前，会按先进后出的顺序执行。先进后出的原因是后面定义的函数可能会依赖前面的资源，自然要先执行；否则，如果前面的先执行了，那后面的函数依赖就没有了，因而可能会出错。
+在defer函数定义时，对外部变量的引用有两种方式：函数参数、闭包引用。前者在defer定义时就把值传递给defer，并且被cache起来；后者则会在defer函数真正调用时根据整个上下文确定参数当前的值。
+func main(){ var whatever [3]struct{} for i:=range whatever{ defer func(){ fmt.Println(i) }() } } 2 2 2 defer 后面跟的是一个闭包，i是“引用”类型的变量，for循环结束后i的值为2，因此后面打印了3个2. type number int func (n number)print(){fmt.Println(n)} func (n *number)pprint(){fmt.">
 <meta name="theme-color" content="#FFFFFF">
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="Go高阶-语言基础" />
-<meta property="og:description" content="数据容器 # 数组与切片 # 异同 # Go推荐使用slice而不是数组
-Go语言中，切片是对数组的封装，数组固定长度，不能更改，切片可以动态扩容，且切片的类型和长度无关。
-数组长度不一致，不属于同一类型，无法进行比较。
-type slice struct{ array unsafe.Pointer //元素指针 len int //长度 cap int //容量 } 底层数组可以被多个切片同时指向，因此对一个切片的元素进行操作有可能会影响到其他切片。
-切片截取 # 基于已有slice创建新slice对象，被称为replace，共用底层数组。如果因为执行append操作使得新slice或老slice底层数组扩容，移动到了新的位置，两者就不会相互影响了。
-func main(){//想想为什么 slice:=[]int{0,1,2,3,4,5,6,7,8,9} //容量10 s1:=slice[2:5] //[2,3,4]len=3 cap=8 后面的还在， s2:=s1[2:6:7] //[low,high,max]要求max&gt;=high&gt;=low high和max必须在老slice的容量cap范围内 //[4] len=4 cap=5 s2=append(s2,100) //第一次追加，容量够用，会修改原始数组对应位置的元素。 s2=append(s2,200) //第二次追加，容量不够，另起炉灶，将原来元素复制到新位置，扩大容量，故不再变化。 s1[2]=20 fmt.Println(s1) fmt.Println(s2) fmt.Println(slice) } [2 3 20] [4 5 6 7 100 200] [0 1 2 3 20 5 6 7 100 9] 切片扩容 # 一般都是在向切片追加元素之后，由于容量不足，才会引起扩容。调用append函数" />
+<meta property="og:description" content="逃逸分析 # Go语言中，调用new函数得到的内存不一定在堆上，还有可能在栈上。这是因为在Go语言中，堆和栈的区别被“模糊化”了，当然这一切都是Go编译器在后台完成的。
+一个变量是在堆上分配，还是在栈上分配，是经过编译器的逃逸分析之后得出的“结论”。
+Go语言里就是指编译器的逃逸分析：它是编译器执行静态代码分析后，对内存管理进行的优化和简化。
+在编译原理中，分析指针动态范围的方法被称为逃逸分析。通俗来讲，当一个对象的指针被多个方法或线程引用时，则称这个指针发生了逃逸。逃逸分析决定一个变量是分配在堆上还是分配在栈上。
+作用 # 逃逸分析把变量合理地分配到它该去的地方，“找准自己的位置”。即使是用new函数申请到的内存，如果编译器发现这块内存在退出函数后就没有使用了，那就分配到栈上，毕竟栈上的内存分配比堆上块很多；反之，即使表面上只是一个普通的变量，但是经过编译器的逃逸分析后发现，在函数之外还有其他的地方在引用，那就分配到堆上。真正做到了按需分配。
+如果变量都分配到堆上，堆不像栈可以自动清理。就会引起Go频繁的进行垃圾回收，而垃圾回收会占用比较大的系统开销。
+堆和栈相比，堆适合不可预知大小的的内存分配。但是为此付出的代价是分配速度较慢，而且会形成内存碎片；栈内存分配则会非常快。栈分配内存只需要通过PUSH指令，并且会被自动释放；而堆分配内存首先需要去找一个大小合适的内存块，之后要通过垃圾回收才能释放。
+通过逃逸分析，可以尽量把哪些不需要分配到堆上的变量直接分配到栈上，堆上的压力变小了，会减轻堆内存分配开销，同时也会减轻垃圾回收的压力，提高程序运行速度。
+原则 # Go语言逃逸分析最基本的原则是：如果一个函数返回对一个变量的引用，那么这个变量就会发生逃逸。
+Go中的变量只有在编译器可以证明在函数返回后不再被引用的，才分配到栈上，其他情况都分配到堆上。
+编译器会根据变量是否被外部引用来决定是否逃逸：
+如果变量在函数外部没有引用，则优先放到栈上。 如果变量在函数外部存在引用，则必定放到堆上。 针对第一条，放到堆上的情形：定义了一个很大的数组，需要申请的内存过大，超过了栈的存储能力。
+判断 # Go提供了相关的命令，可以查看变量是否发生逃逸。
+go build -gcflags &#39;-m -l&#39; main.go 其中-gcflags参数用于启动编译器支持的额外标志。例如，-m用于输出编译器的优化细节（包括使用逃逸分析这种优化），相反可以使用-N来关闭编译器优化；而-l则用于禁用foo函数的内联优化，防止逃逸被编译器通过内联彻底抹除。
+GO与C/C&#43;&#43;中的堆和栈是同一个概念吗 # 不是
+C/C&#43;&#43;中提及的“程序堆栈”本质上是操作系统层级的概念，它通过C/C&#43;&#43;语言的编译器和所在的系统环境来共同决定。在程序启动时，操纵系统会自动维护一个所启动程序消耗内存的地址空间，并自动将这个空间从逻辑上划分为堆内存空间和栈内存空间。这时，“栈”的概念是指程序运行时自动获得的一小块内存，而后续的函数调用所消耗的栈大小，会在编译期间有编译器决定，用于保存局部变量或者保存函数调用栈。如果在C/C&#43;&#43;中声明一个局部变量，则会执行逻辑上的压栈操作，在栈中记录局部变量。而当局部变量离开作用域之后，所谓的自动释放本质上是该位置的内存在下一次函数调用压栈过程中，可以被无条件的覆盖；对于堆而言，每当程序通过系统调用向操作系统申请内存时，会将所需的空间从维护的堆内存地址空间中分配出去，而在归还时则会将归还的内存合并到所维护的地址空间中。
+Go程序也是运行在操作系统上的程序，自然同样拥有前面提到的堆和栈的概念。但区别在于传统意义上的“栈”被Go语言的运行时全部消耗了，用于维护运行时各个组件之间的协调，例如调度器、垃圾回收、系统调用等。而对于用户态的Go代码而言，他们所消耗的“堆和栈”，其实只是Go运行时通过管理向操作系统申请的堆内存，构造的逻辑上的“堆和栈”，它们的本质都是从操作系统申请而来的堆内存。
+延迟语句 # 延迟语句defer，能把资源的释放语句与申请语句放到距离相近的位置，从而减少资源泄露的发生。
+defer是Go语言提供的一种用于注册延迟调用的机制：让函数或语句可以在当前函数执行完毕后（包括通过return正常结束或者Panic导致的异常结束）执行。通常用于一些成对操作的场景：打开连接/关闭连接、加锁/释放锁、打开文件/关闭文件等。
+defer会有短暂延迟，对时间要求特别高的程序，可以避免使用它。
+defer的执行顺序 # defer语句并不会马上执行，而是会进入一个栈，函数return前，会按先进后出的顺序执行。先进后出的原因是后面定义的函数可能会依赖前面的资源，自然要先执行；否则，如果前面的先执行了，那后面的函数依赖就没有了，因而可能会出错。
+在defer函数定义时，对外部变量的引用有两种方式：函数参数、闭包引用。前者在defer定义时就把值传递给defer，并且被cache起来；后者则会在defer函数真正调用时根据整个上下文确定参数当前的值。
+func main(){ var whatever [3]struct{} for i:=range whatever{ defer func(){ fmt.Println(i) }() } } 2 2 2 defer 后面跟的是一个闭包，i是“引用”类型的变量，for循环结束后i的值为2，因此后面打印了3个2. type number int func (n number)print(){fmt.Println(n)} func (n *number)pprint(){fmt." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://example.org/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" /><meta property="article:section" content="docs" />
 <meta property="article:published_time" content="2022-09-07T15:43:23+08:00" />
@@ -25,9 +59,9 @@ func main(){//想想为什么 slice:=[]int{0,1,2,3,4,5,6,7,8,9} //容量10 s1:=s
 <title>Go高阶-语言基础 | Soulmate</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.6d5599f1f25debfdfb676f5074f599284cebe76e6d6ebfb076e2e530dd3e504f.css" integrity="sha256-bVWZ8fJd6/37Z29QdPWZKEzr525tbr&#43;wduLlMN0&#43;UE8=" crossorigin="anonymous">
+<link rel="stylesheet" href="/book.min.10729415b29e6b73726f67e7fe3e0530d637b1fa3799fff7784cfbbf0c3d9576.css" integrity="sha256-EHKUFbKea3Nyb2fn/j4FMNY3sfo3mf/3eEz7vww9lXY=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.3bbecd7a3d493b220eba14d800e74a125e1f40c216a43aa244ac9a935ac74443.js" integrity="sha256-O77Nej1JOyIOuhTYAOdKEl4fQMIWpDqiRKyak1rHREM=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.092d1ccaafbeef9b18a719ce2eaee30fcc5600fdd1546646bfdf2c8d0d0dba61.js" integrity="sha256-CS0cyq&#43;&#43;75sYpxnOLq7jD8xWAP3RVGZGv98sjQ0NumE=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -1337,6 +1371,31 @@ https://github.com/alex-shpak/hugo-book
   
 <nav id="TableOfContents">
   <ul>
+    <li><a href="#逃逸分析">逃逸分析</a>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#作用">作用</a></li>
+            <li><a href="#原则">原则</a></li>
+            <li><a href="#判断">判断</a></li>
+            <li><a href="#go与cc中的堆和栈是同一个概念吗">GO与C/C++中的堆和栈是同一个概念吗</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#延迟语句">延迟语句</a>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#defer的执行顺序">defer的执行顺序</a></li>
+            <li><a href="#拆解延迟语句">拆解延迟语句</a></li>
+            <li><a href="#闭包">闭包</a></li>
+            <li><a href="#延迟语句如何配合恢复语句">延迟语句如何配合恢复语句</a></li>
+            <li><a href="#为什么无法从父goroutine恢复子goroutine的panic">为什么无法从父goroutine恢复子goroutine的Panic</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
     <li><a href="#数据容器">数据容器</a>
       <ul>
         <li><a href="#数组与切片">数组与切片</a>
@@ -1393,6 +1452,11 @@ https://github.com/alex-shpak/hugo-book
     </li>
     <li><a href="#接口">接口</a>
       <ul>
+        <li>
+          <ul>
+            <li><a href="#go与鸭子类型的关系">Go与“鸭子类型”的关系</a></li>
+          </ul>
+        </li>
         <li><a href="#相关问题-1">相关问题</a>
           <ul>
             <li><a href="#go语言与鸭子类型的关系">Go语言与“鸭子类型”的关系</a></li>
@@ -1419,7 +1483,294 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown"><h1 id="数据容器">
+  <article class="markdown"><h1 id="逃逸分析">
+  逃逸分析
+  <a class="anchor" href="#%e9%80%83%e9%80%b8%e5%88%86%e6%9e%90">#</a>
+</h1>
+<p>Go语言中，调用new函数得到的内存不一定在堆上，还有可能在栈上。这是因为在Go语言中，堆和栈的区别被“模糊化”了，当然这一切都是Go编译器在后台完成的。</p>
+<p>一个变量是在堆上分配，还是在栈上分配，是经过编译器的逃逸分析之后得出的“结论”。</p>
+<p>Go语言里就是指编译器的逃逸分析：<strong>它是编译器执行静态代码分析后，对内存管理进行的优化和简化。</strong></p>
+<p>在编译原理中，<strong>分析指针动态范围的方法被称为逃逸分析</strong>。通俗来讲，当一个对象的指针被多个方法或线程引用时，则称这个指针发生了逃逸。<strong>逃逸分析决定一个变量是分配在堆上还是分配在栈上</strong>。</p>
+<h3 id="作用">
+  作用
+  <a class="anchor" href="#%e4%bd%9c%e7%94%a8">#</a>
+</h3>
+<p>逃逸分析把变量合理地分配到它该去的地方，“找准自己的位置”。即使是用new函数申请到的内存，如果编译器发现这块内存在退出函数后就没有使用了，那就分配到栈上，毕竟栈上的内存分配比堆上块很多；反之，即使表面上只是一个普通的变量，但是经过编译器的逃逸分析后发现，在函数之外还有其他的地方在引用，那就分配到堆上。真正做到了按需分配。</p>
+<p>如果变量都分配到堆上，堆不像栈可以自动清理。就会引起Go频繁的进行垃圾回收，而垃圾回收会占用比较大的系统开销。</p>
+<p><strong>堆和栈相比，堆适合不可预知大小的的内存分配</strong>。<u>但是为此付出的代价是分配速度较慢，而且会形成内存碎片；栈内存分配则会非常快。栈分配内存只需要通过PUSH指令，并且会被自动释放；而堆分配内存首先需要去找一个大小合适的内存块，之后要通过垃圾回收才能释放。</u></p>
+<p><strong>通过逃逸分析，可以尽量把哪些不需要分配到堆上的变量直接分配到栈上，堆上的压力变小了，会减轻堆内存分配开销，同时也会减轻垃圾回收的压力，提高程序运行速度。</strong></p>
+<h3 id="原则">
+  原则
+  <a class="anchor" href="#%e5%8e%9f%e5%88%99">#</a>
+</h3>
+<p>Go语言逃逸分析最基本的原则是：<font color="red">如果一个函数返回对一个变量的引用，那么这个变量就会发生逃逸。</font></p>
+<p>Go中的变量只有在编译器可以证明在函数返回后不再被引用的，才分配到栈上，其他情况都分配到堆上。</p>
+<p>编译器会根据变量是否被外部引用来决定是否逃逸：</p>
+<ul>
+<li>如果变量在函数外部<strong>没有引用</strong>，则<strong>优先</strong>放到栈上。</li>
+<li>如果变量在函数外部<strong>存在引用</strong>，则<strong>必定</strong>放到堆上。</li>
+</ul>
+<p>针对第一条，放到堆上的情形：定义了一个很大的数组，需要申请的内存过大，超过了栈的存储能力。</p>
+<h3 id="判断">
+  判断
+  <a class="anchor" href="#%e5%88%a4%e6%96%ad">#</a>
+</h3>
+<p>Go提供了相关的命令，可以查看变量是否发生逃逸。</p>
+<pre tabindex="0"><code>go build -gcflags &#39;-m -l&#39; main.go
+</code></pre><p>其中-gcflags参数用于启动编译器支持的额外标志。例如，-m用于输出编译器的优化细节（包括使用逃逸分析这种优化），相反可以使用-N来关闭编译器优化；而-l则用于禁用foo函数的内联优化，防止逃逸被编译器通过内联彻底抹除。</p>
+<h3 id="go与cc中的堆和栈是同一个概念吗">
+  GO与C/C++中的堆和栈是同一个概念吗
+  <a class="anchor" href="#go%e4%b8%8ecc%e4%b8%ad%e7%9a%84%e5%a0%86%e5%92%8c%e6%a0%88%e6%98%af%e5%90%8c%e4%b8%80%e4%b8%aa%e6%a6%82%e5%bf%b5%e5%90%97">#</a>
+</h3>
+<p>不是</p>
+<p>C/C++中提及的“程序堆栈”本质上是操作系统层级的概念，它通过C/C++语言的编译器和所在的系统环境来共同决定。在程序启动时，操纵系统会自动维护一个所启动程序消耗内存的地址空间，并自动将这个空间从逻辑上划分为堆内存空间和栈内存空间。这时，“栈”的概念是指程序运行时自动获得的一小块内存，而后续的函数调用所消耗的栈大小，会在编译期间有编译器决定，用于保存局部变量或者保存函数调用栈。如果在C/C++中声明一个局部变量，则会执行逻辑上的压栈操作，在栈中记录局部变量。而当局部变量离开作用域之后，所谓的自动释放本质上是该位置的内存在下一次函数调用压栈过程中，可以被无条件的覆盖；对于堆而言，每当程序通过系统调用向操作系统申请内存时，会将所需的空间从维护的堆内存地址空间中分配出去，而在归还时则会将归还的内存合并到所维护的地址空间中。</p>
+<p>Go程序也是运行在操作系统上的程序，自然同样拥有前面提到的堆和栈的概念。但区别在于传统意义上的“栈”被Go语言的运行时全部消耗了，用于维护运行时各个组件之间的协调，例如调度器、垃圾回收、系统调用等。而对于用户态的Go代码而言，他们所消耗的“堆和栈”，其实只是Go运行时通过管理向操作系统申请的堆内存，构造的逻辑上的“堆和栈”，它们的本质都是从操作系统申请而来的堆内存。</p>
+<h1 id="延迟语句">
+  延迟语句
+  <a class="anchor" href="#%e5%bb%b6%e8%bf%9f%e8%af%ad%e5%8f%a5">#</a>
+</h1>
+<p>延迟语句defer，能把资源的释放语句与申请语句放到距离相近的位置，从而减少资源泄露的发生。</p>
+<p>defer是Go语言提供的一种用于注册延迟调用的机制：让函数或语句可以在当前函数执行完毕后（包括通过return正常结束或者Panic导致的异常结束）执行。通常用于一些成对操作的场景：打开连接/关闭连接、加锁/释放锁、打开文件/关闭文件等。</p>
+<p><strong>defer会有短暂延迟，对时间要求特别高的程序，可以避免使用它。</strong></p>
+<h3 id="defer的执行顺序">
+  defer的执行顺序
+  <a class="anchor" href="#defer%e7%9a%84%e6%89%a7%e8%a1%8c%e9%a1%ba%e5%ba%8f">#</a>
+</h3>
+<p>defer语句并不会马上执行，而是会进入一个栈，函数return前，会按先进后出的顺序执行。<strong>先进后出的原因</strong><u>是后面定义的函数可能会依赖前面的资源，自然要先执行；否则，如果前面的先执行了，那后面的函数依赖就没有了，因而可能会出错。</u></p>
+<p>在defer函数定义时，对外部变量的引用有两种方式：<strong>函数参数</strong>、<strong>闭包引用</strong>。前者在defer定义时就把值传递给defer，并且被cache起来；后者则会在defer函数真正调用时根据整个上下文确定参数当前的值。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">whatever</span> [<span style="color:#ae81ff">3</span>]<span style="color:#66d9ef">struct</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#66d9ef">range</span> <span style="color:#a6e22e">whatever</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>		}()
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>2
+2
+2
+defer 后面跟的是一个闭包，i是“引用”类型的变量，for循环结束后i的值为2，因此后面打印了3个2.
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">number</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">n</span> <span style="color:#a6e22e">number</span>)print(){<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">n</span>)}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">n</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">number</span>)<span style="color:#a6e22e">pprint</span>(){<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">n</span>)}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">n</span> <span style="color:#a6e22e">number</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">n</span>.print()             <span style="color:#75715e">//刚开始n=0,已经传入了0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">pprint</span>()            <span style="color:#75715e">//引用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){<span style="color:#a6e22e">n</span>.print()}()   <span style="color:#75715e">//闭包引用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){<span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">pprint</span>()}()  <span style="color:#75715e">//闭包引用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">n</span>=<span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>3
+3
+3
+0
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;befer return&#34;</span>)
+</span></span><span style="display:flex;"><span>  }()
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#66d9ef">true</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;during retrun&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span>    <span style="color:#75715e">//这里return了，后面的defer函数没有注册  不执行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;after return&#34;</span>)
+</span></span><span style="display:flex;"><span>  }()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>during return
+befer return
+</code></pre><p>在某些情况下，会故意用到defer的“先求值，再延迟调用”的性质，像这样的场景：在一个函数里，需要打开两个文件进行合并操作，合并完成后，在函数结束前关闭打开的文件句柄。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">mergeFile</span>()<span style="color:#66d9ef">error</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//打开文件1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">f</span>,<span style="color:#a6e22e">_</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#e6db74">&#34;file1.txt&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">f</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">f</span> <span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">Closer</span>){   <span style="color:#75715e">//定义时，参数已经复制
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">f</span>.<span style="color:#a6e22e">Closer</span>();<span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;defer close file1.txt err %v\n&#34;</span>,<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }(<span style="color:#a6e22e">f</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//打开文件2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">f</span>,<span style="color:#a6e22e">_</span>=<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#e6db74">&#34;file2.txt&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">f</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">f</span> <span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">Closer</span>){    <span style="color:#75715e">// 定义时，参数已经复制
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">f</span>.<span style="color:#a6e22e">Close</span>();<span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{    <span style="color:#75715e">//关闭的就是正确的文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;defer close file2.txt err %v\n&#34;</span>,<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }(<span style="color:#a6e22e">f</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>在调用close（）函数时，要注意一点：<strong>先判断调用主体是否为空，否则可能会解引用了一个空指针，进而Panic。</strong></p>
+<h3 id="拆解延迟语句">
+  拆解延迟语句
+  <a class="anchor" href="#%e6%8b%86%e8%a7%a3%e5%bb%b6%e8%bf%9f%e8%af%ad%e5%8f%a5">#</a>
+</h3>
+<pre tabindex="0"><code>return xxx
+</code></pre><p>上面这条语句经过编译之后，实际上生成了3条指令：</p>
+<ol>
+<li>返回值=xxx</li>
+<li>调用defer函数</li>
+<li>空的return</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">f</span>() (<span style="color:#a6e22e">r</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">r</span> <span style="color:#66d9ef">int</span>) {<span style="color:#75715e">//1.先赋值，r=1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">r</span> = <span style="color:#a6e22e">r</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">5</span>        <span style="color:#75715e">//2.这里改的r是之前传进去的r，不会改变返回的那个r
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}(<span style="color:#a6e22e">r</span>)  <span style="color:#75715e">//改变的是传值进去的r，是形参的一个复制值，不会影响实参r。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>  <span style="color:#75715e">//3.空的return
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><pre tabindex="0"><code>1
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">f</span>() (<span style="color:#a6e22e">r</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">t</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">5</span> <span style="color:#75715e">//1.赋值，r=5
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>() { <span style="color:#75715e">//2.defer被插入到赋值与返回之间执行，这个例子中返回值r没有被修改过
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">t</span> = <span style="color:#a6e22e">t</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">t</span>  <span style="color:#75715e">//3.最后执行空的return指令
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><pre tabindex="0"><code>5
+</code></pre><h3 id="闭包">
+  闭包
+  <a class="anchor" href="#%e9%97%ad%e5%8c%85">#</a>
+</h3>
+<p><strong>闭包是由函数及其相关引用环境组合而成的实体，即：闭包=函数+引用环境。</strong></p>
+<p>匿名函数不能独立存在，但可以直接调用或者赋值于某个变量。匿名函数也被称为闭包，一个闭包继承了函数声明时的作用域。<strong><u>在Go语言中，所有的匿名函数都是闭包。</u></strong></p>
+<blockquote>
+<p>可以把闭包看成是一个类，一个闭包函数调用就是实例化一个类。闭包在运行时可以有很多个实例，它会将同一个作用域里的变量和常量捕获下来，无论闭包在什么地方被调用（实例化）时，都可以使用这些变量和常量。</p>
+<p>闭包捕获的变量和常量时引用传递，不是值传递。</p>
+</blockquote>
+<h3 id="延迟语句如何配合恢复语句">
+  延迟语句如何配合恢复语句
+  <a class="anchor" href="#%e5%bb%b6%e8%bf%9f%e8%af%ad%e5%8f%a5%e5%a6%82%e4%bd%95%e9%85%8d%e5%90%88%e6%81%a2%e5%a4%8d%e8%af%ad%e5%8f%a5">#</a>
+</h3>
+<blockquote>
+<p>Go函数总是会返回一个error，留给调用者处理；而如果是致命的错误，比如程序执行初始化的时候出问题，最好直接Panic掉，避免上线运行后出更大的问题。</p>
+<p>有些时候，需要从异常中恢复。<u>比如服务器程序遇到严重问题，防止客户端一直等待等</u>；并且单个请求导致的Panic，也不影响整个服务器程序的运行。</p>
+<p>Panic会停掉当前正在执行的程序，而不只是当前的线程。在这之前，它会有序地执行完当前线程defer列表里的语句，其他协程里定义的defer语句不做保证。<strong>所以在defer里定义一个recover语句，防止程序直接挂掉。</strong></p>
+</blockquote>
+<p><strong>注意：recover（）函数只在defer的函数中直接调用才有效。</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;defer main&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">user</span>=<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Getenv</span>(<span style="color:#e6db74">&#34;USER_&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;defer caller&#34;</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">:=</span>recover();<span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;recover success .err&#34;</span>,<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;defer here&#34;</span>)
+</span></span><span style="display:flex;"><span>      }()
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">user</span><span style="color:#f92672">==</span><span style="color:#e6db74">&#34;&#34;</span>{
+</span></span><span style="display:flex;"><span>        panic(<span style="color:#e6db74">&#34;should se user env.&#34;</span>)
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">//此处不会执行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;after panic&#34;</span>)
+</span></span><span style="display:flex;"><span>    }()
+</span></span><span style="display:flex;"><span>  }()
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">100</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;end of main function&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>defer here
+defer caller
+recover success.err: should set user env.
+end of main function
+defer main
+</code></pre><p>代码中的Panic最终会被recover捕获到。这样的处理方式在一个http server的主流程常常会被用到。一次偶然的请求可能会触发某个bug，这时用recover捕获Panic，稳住主流程，不影响其他请求。</p>
+<h4 id="recover函数调用位置">
+  recover（）函数调用位置
+  <a class="anchor" href="#recover%e5%87%bd%e6%95%b0%e8%b0%83%e7%94%a8%e4%bd%8d%e7%bd%ae">#</a>
+</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">f</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">painc</span>(<span style="color:#ae81ff">404</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">f</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">e</span><span style="color:#f92672">:=</span>recover();<span style="color:#a6e22e">e</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;recover&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">能调用</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">在defer的函数中调用</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">生效</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  recover()
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">painc</span>(<span style="color:#ae81ff">404</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">不能</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">直接调用recover</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">返回nil</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">defer</span> recover()
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">painc</span>(<span style="color:#ae81ff">404</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">不能</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">要在defer函数里调用recover</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">e</span><span style="color:#f92672">:=</span>recover();<span style="color:#a6e22e">e</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;recover&#34;</span>)
+</span></span><span style="display:flex;"><span>  	}
+</span></span><span style="display:flex;"><span>  }()
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">painc</span>(<span style="color:#ae81ff">404</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">能</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">在defer的函数中调用</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">生效</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>    recover()
+</span></span><span style="display:flex;"><span>  }()
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">painc</span>(<span style="color:#ae81ff">404</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">能</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">在defer的函数中调用</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">生效</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>  	<span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>    	recover()
+</span></span><span style="display:flex;"><span>  	}()
+</span></span><span style="display:flex;"><span>  }()
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">painc</span>(<span style="color:#ae81ff">404</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">不能</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">多重defer嵌套</span>
+</span></span></code></pre></div><h3 id="为什么无法从父goroutine恢复子goroutine的panic">
+  为什么无法从父goroutine恢复子goroutine的Panic
+  <a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e6%97%a0%e6%b3%95%e4%bb%8e%e7%88%b6goroutine%e6%81%a2%e5%a4%8d%e5%ad%90goroutine%e7%9a%84panic">#</a>
+</h3>
+<p>即为什么无法recover其他goroutine里产生的Panic？？？</p>
+<p><font color='red'><strong>因为goroutine被设计为一个独立的代码执行单元，拥有自己的执行栈，不与其他goroutine共享任何数据。这意味着，无法让goroutine拥有返回值、也无法让goroutine拥有自身的ID编号等。</strong></font><font color='green'>若需要与其他goroutine产生交互，要么可以使用channel的方式与其他goroutine进行通信，要么通过共享内存同步方式对共享的内存添加读写锁。</font></p>
+<p>如果希望有一个全局的恐慌捕获中心，那么可以通过创建一个恐慌通知channel，并在产生恐慌时，通过recover字段将其恢复，并将发生的错误通过channel通知给这个全局的恐慌通知器：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">notifier</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">interface</span>{}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">startGlobalPanicCapturing</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">notifier</span>=make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">interface</span>{})
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>{
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">select</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">r</span><span style="color:#f92672">:=&lt;-</span><span style="color:#a6e22e">notifier</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">r</span>)
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">startGlobalPanicCapturing</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//产生恐慌，但该恐慌会被捕获
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">Go</span>(<span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">a</span><span style="color:#f92672">:=</span>make([]<span style="color:#66d9ef">int</span>,<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>    println(<span style="color:#a6e22e">a</span>[<span style="color:#ae81ff">1</span>])
+</span></span><span style="display:flex;"><span>  })
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//Go是一个恐慌安全的goroutine
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Go</span>(<span style="color:#a6e22e">f</span> <span style="color:#66d9ef">func</span>()){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span>recover();<span style="color:#a6e22e">r</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">notifier</span><span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">r</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }()
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">f</span>()
+</span></span><span style="display:flex;"><span>  }()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>上面的func Go（f func())本质上是对go关键字进行了一层封装，确保在执行并发单元前插入一个defer，从而保证恢复一些可恢复的错误。</p>
+<p>这个方案并不完美，原因是如果函数f内部不在使用Go函数来创建goroutine，而且含有继续产生必然恐慌的代码，那么仍然会出现不可恢复的情况。或者还有一些不可恢复的运行时恐慌（例如并发读写map),如果这类恐慌一旦发生，那么任何补救都是徒劳的。</p>
+<h1 id="数据容器">
   数据容器
   <a class="anchor" href="#%e6%95%b0%e6%8d%ae%e5%ae%b9%e5%99%a8">#</a>
 </h1>
@@ -1776,6 +2127,7 @@ count:元素个数，2^B总的bucket数量
   channel
   <a class="anchor" href="#channel">#</a>
 </h1>
+<p>channel是线程安全的</p>
 <h2 id="通道有哪些应用">
   通道有哪些应用
   <a class="anchor" href="#%e9%80%9a%e9%81%93%e6%9c%89%e5%93%aa%e4%ba%9b%e5%ba%94%e7%94%a8">#</a>
@@ -2096,8 +2448,37 @@ channel closed,data invalid
   接口
   <a class="anchor" href="#%e6%8e%a5%e5%8f%a3">#</a>
 </h1>
-<p>接口定义了一种规范，描述了类的行为和功能，而不做具体实现。Go采用“非侵入式”接口设计，不需要显示声明，只需要实现接口定义的函数，编译器就会自动识别。Go通过itab中的fun字段来实现接口变量调用是实体类型的函数。Go的itab中的fun字段是在运行期间自动生成的。</p>
-<h2 id="相关问题-1">
+<p>接口定义了一种规范，描述了类的行为和功能，而不做具体实现。Go采用“<strong>非侵入式</strong>”接口设计，不需要显示声明，只需要实现接口定义的函数，编译器就会自动识别。Go通过itab中的fun字段来实现接口变量调用是实体类型的函数。Go的itab中的fun字段是在运行期间自动生成的。</p>
+<h3 id="go与鸭子类型的关系">
+  Go与“鸭子类型”的关系
+  <a class="anchor" href="#go%e4%b8%8e%e9%b8%ad%e5%ad%90%e7%b1%bb%e5%9e%8b%e7%9a%84%e5%85%b3%e7%b3%bb">#</a>
+</h3>
+<p>Go语言作为一门静态语言，它通过接口的方式完美支持鸭子类型。</p>
+<p>静态语言在编译期间就能发现类型不匹配的错误，而动态语言，必须运行到那一行代码才会报错。</p>
+<p>Go语言不要求类型显示地声明实现了某个接口，只要实现了相关方法即可，因为编译器能够检测到。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">IGreeting</span> <span style="color:#66d9ef">interface</span>{  <span style="color:#75715e">//定义接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">sayHello</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">sayHello</span>(<span style="color:#a6e22e">i</span> <span style="color:#a6e22e">IGreeting</span>){ <span style="color:#75715e">//定义以此接口为参数的函数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">i</span>.<span style="color:#a6e22e">sayHello</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Go</span> <span style="color:#66d9ef">struct</span>{}  <span style="color:#75715e">//定义结构体
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">g</span> <span style="color:#a6e22e">Go</span>)<span style="color:#a6e22e">sayHello</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Hi,I am GO!&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">PHP</span> <span style="color:#66d9ef">struct</span>{}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">p</span> <span style="color:#a6e22e">PHP</span>)<span style="color:#a6e22e">sayHello</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Hi, I am PHP!&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">golang</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">Go</span>{}
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">php</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">PHP</span>{}
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">sayHello</span>(<span style="color:#a6e22e">golang</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">sayHEllo</span>(<span style="color:#a6e22e">php</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>Hi,I am GO!
+Hi,I am PHP!
+</code></pre><h2 id="相关问题-1">
   相关问题
   <a class="anchor" href="#%e7%9b%b8%e5%85%b3%e9%97%ae%e9%a2%98-1">#</a>
 </h2>
@@ -2174,6 +2555,31 @@ channel closed,data invalid
   
 <nav id="TableOfContents">
   <ul>
+    <li><a href="#逃逸分析">逃逸分析</a>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#作用">作用</a></li>
+            <li><a href="#原则">原则</a></li>
+            <li><a href="#判断">判断</a></li>
+            <li><a href="#go与cc中的堆和栈是同一个概念吗">GO与C/C++中的堆和栈是同一个概念吗</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#延迟语句">延迟语句</a>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#defer的执行顺序">defer的执行顺序</a></li>
+            <li><a href="#拆解延迟语句">拆解延迟语句</a></li>
+            <li><a href="#闭包">闭包</a></li>
+            <li><a href="#延迟语句如何配合恢复语句">延迟语句如何配合恢复语句</a></li>
+            <li><a href="#为什么无法从父goroutine恢复子goroutine的panic">为什么无法从父goroutine恢复子goroutine的Panic</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
     <li><a href="#数据容器">数据容器</a>
       <ul>
         <li><a href="#数组与切片">数组与切片</a>
@@ -2230,6 +2636,11 @@ channel closed,data invalid
     </li>
     <li><a href="#接口">接口</a>
       <ul>
+        <li>
+          <ul>
+            <li><a href="#go与鸭子类型的关系">Go与“鸭子类型”的关系</a></li>
+          </ul>
+        </li>
         <li><a href="#相关问题-1">相关问题</a>
           <ul>
             <li><a href="#go语言与鸭子类型的关系">Go语言与“鸭子类型”的关系</a></li>

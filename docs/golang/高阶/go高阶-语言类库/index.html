@@ -3,13 +3,37 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content=" 反射 # 反射是指计算机程序在运行时可以访问、检测和修改它本身状态或行为的一种能力。
+<meta name="description" content=" unsafe # context # 译作“上下文”，准确说它是goroutine的上下文。主要用来在goroutine之间传递上下文信息，包括：取消信号、超时时间、截止时间、k-v等。
+使用context几乎成为并发控制和超时控制的标准做法，与它协作的API都可以由外部控制执行“取消”操作，例如：取消一个HTTP请求的执行。
+另外，context.Context可以协调多个goroutine中的代码执行“取消”操作，并且可以存储键值对，最重要的是它是并发安全的操作。
+在Go的server里，对每个Request(请求)都会启动若干个goroutine同时工作：有些去内存查一些数据，有些去数据库拿数据，有些调用第三方接口获取相关数据等。
+这些goroutine需要共享请求的基本信息：例如登陆token，处理请求的最大超时时间（如果超过此值再返回数据，请求方会因为超时接收不到）等。当请求被取消或是处理时间太长，这有可能是使用者关闭了浏览器或是已经超过了请求方规定的超时时间，请求方直接放弃了这次请求结果。这时，所有正在为这个请求工作的goroutine需要快速退出，因为它们的“工作成果”不再被需要了。
+**Go语言中的server实际上是一个“协程模型”，处理一个请求需要多个协程。**例如在业务的高峰期，某个下游服务器的响应速度变慢，而当前系统的请求又没有超时控制，或者超过时间设置过大，那么等待下游服务器返回数据的协程就会越来越多。而协程师要消耗资源的，后果就是协程数激增，内存占用飙涨，Go调度器和GC不堪重用，甚至导致服务不可用。更严重的会导致雪崩效应，整个服务器对外表现为不可用，这肯定是P0级别的事故。
+其实前面描述的P0级别的事故，通过设置“允许下游最长处理时间”就可以避免。例如，给下游设置timeout是50ms，如果超过这个值还没有接收到返回数据，就直接向客户端返回一个默认值或者错误。例如返回商品的一个默认库数量。注意，这里设置的超时时间和创建一个HTTP client设置的读写超时时间不一样，后者表示一次TCP传输的时间，而一次请求可能包含多次TCP传输，前者则表示所有传输的总时间。
+而context包就是为了解决上面所说的问题开发的：在一组goroutine之间传递共享的值、取消信号、deadline等。
+在Go里，不能直接杀死协程，协程的关闭一般采用channel和select的方式来控制。但是在某些场景下，例如处理一个请求衍生了很多协程，这些协程之间是相互关联的：需要共享一些全局变量、有共同的deadline等，而且可以同时被关闭。用channel和select就会比较麻烦，这时可以通过context来实现。
+context用来解决goroutine之间退出通知、元数据传递的功能问题。
+context会在函数中间传递，只需要在适当的时间调用Cancel函数向goroutine发出取消信号或者调用Value函数取出context中的值。
+对使用context的几点建议：
+不要将context塞到结构体里。直接将context类型作为函数的第一参数，而且一般都命名为ctx。 不要向函数传入一个含有nil属性的context，如果实在不知道传什么，标准库准备好了一个context：todo。 不要把本应该作为函数参数的类型塞到context中，context存储的应该是一些共同的数据。例如，登陆的session、cookie等。 同一个context可能会传递到多个groutine，但别担心，context是并发安全的。 如何使用context # 传递共享的数据 # 定时取消 # 防止goroutine泄漏 # context底层原理 # error # 计时器 # 反射 # 反射是指计算机程序在运行时可以访问、检测和修改它本身状态或行为的一种能力。
 用比喻来说，反射就是程序在运行的时候能够观察并纠正自己的行为。
 Go语言提供了一种机制在运行时更新变量和检查它们的值、调用它们的方法，但是在编译时并不知道这些变量的具体类型，这称为反射机制。
 使用场景 # 不能明确接口调用那个函数，需要根据传入的参数在运行时决定。 不能明确传入参数的参数类型，需要在运行时处理任意对象。 不推荐使用原因 # 与反射相关的代码，难以阅读。 编译器无法提前发现一些类型错误，可能会运行很久后才会出错，会造成严重后果。 反射影响程序性能，比正常代码运行速度慢一到两个数量级。 ">
 <meta name="theme-color" content="#FFFFFF">
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="Go高阶 语言类库" />
-<meta property="og:description" content=" 反射 # 反射是指计算机程序在运行时可以访问、检测和修改它本身状态或行为的一种能力。
+<meta property="og:description" content=" unsafe # context # 译作“上下文”，准确说它是goroutine的上下文。主要用来在goroutine之间传递上下文信息，包括：取消信号、超时时间、截止时间、k-v等。
+使用context几乎成为并发控制和超时控制的标准做法，与它协作的API都可以由外部控制执行“取消”操作，例如：取消一个HTTP请求的执行。
+另外，context.Context可以协调多个goroutine中的代码执行“取消”操作，并且可以存储键值对，最重要的是它是并发安全的操作。
+在Go的server里，对每个Request(请求)都会启动若干个goroutine同时工作：有些去内存查一些数据，有些去数据库拿数据，有些调用第三方接口获取相关数据等。
+这些goroutine需要共享请求的基本信息：例如登陆token，处理请求的最大超时时间（如果超过此值再返回数据，请求方会因为超时接收不到）等。当请求被取消或是处理时间太长，这有可能是使用者关闭了浏览器或是已经超过了请求方规定的超时时间，请求方直接放弃了这次请求结果。这时，所有正在为这个请求工作的goroutine需要快速退出，因为它们的“工作成果”不再被需要了。
+**Go语言中的server实际上是一个“协程模型”，处理一个请求需要多个协程。**例如在业务的高峰期，某个下游服务器的响应速度变慢，而当前系统的请求又没有超时控制，或者超过时间设置过大，那么等待下游服务器返回数据的协程就会越来越多。而协程师要消耗资源的，后果就是协程数激增，内存占用飙涨，Go调度器和GC不堪重用，甚至导致服务不可用。更严重的会导致雪崩效应，整个服务器对外表现为不可用，这肯定是P0级别的事故。
+其实前面描述的P0级别的事故，通过设置“允许下游最长处理时间”就可以避免。例如，给下游设置timeout是50ms，如果超过这个值还没有接收到返回数据，就直接向客户端返回一个默认值或者错误。例如返回商品的一个默认库数量。注意，这里设置的超时时间和创建一个HTTP client设置的读写超时时间不一样，后者表示一次TCP传输的时间，而一次请求可能包含多次TCP传输，前者则表示所有传输的总时间。
+而context包就是为了解决上面所说的问题开发的：在一组goroutine之间传递共享的值、取消信号、deadline等。
+在Go里，不能直接杀死协程，协程的关闭一般采用channel和select的方式来控制。但是在某些场景下，例如处理一个请求衍生了很多协程，这些协程之间是相互关联的：需要共享一些全局变量、有共同的deadline等，而且可以同时被关闭。用channel和select就会比较麻烦，这时可以通过context来实现。
+context用来解决goroutine之间退出通知、元数据传递的功能问题。
+context会在函数中间传递，只需要在适当的时间调用Cancel函数向goroutine发出取消信号或者调用Value函数取出context中的值。
+对使用context的几点建议：
+不要将context塞到结构体里。直接将context类型作为函数的第一参数，而且一般都命名为ctx。 不要向函数传入一个含有nil属性的context，如果实在不知道传什么，标准库准备好了一个context：todo。 不要把本应该作为函数参数的类型塞到context中，context存储的应该是一些共同的数据。例如，登陆的session、cookie等。 同一个context可能会传递到多个groutine，但别担心，context是并发安全的。 如何使用context # 传递共享的数据 # 定时取消 # 防止goroutine泄漏 # context底层原理 # error # 计时器 # 反射 # 反射是指计算机程序在运行时可以访问、检测和修改它本身状态或行为的一种能力。
 用比喻来说，反射就是程序在运行的时候能够观察并纠正自己的行为。
 Go语言提供了一种机制在运行时更新变量和检查它们的值、调用它们的方法，但是在编译时并不知道这些变量的具体类型，这称为反射机制。
 使用场景 # 不能明确接口调用那个函数，需要根据传入的参数在运行时决定。 不能明确传入参数的参数类型，需要在运行时处理任意对象。 不推荐使用原因 # 与反射相关的代码，难以阅读。 编译器无法提前发现一些类型错误，可能会运行很久后才会出错，会造成严重后果。 反射影响程序性能，比正常代码运行速度慢一到两个数量级。 " />
@@ -21,9 +45,9 @@ Go语言提供了一种机制在运行时更新变量和检查它们的值、调
 <title>Go高阶 语言类库 | Soulmate</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.6d5599f1f25debfdfb676f5074f599284cebe76e6d6ebfb076e2e530dd3e504f.css" integrity="sha256-bVWZ8fJd6/37Z29QdPWZKEzr525tbr&#43;wduLlMN0&#43;UE8=" crossorigin="anonymous">
+<link rel="stylesheet" href="/book.min.10729415b29e6b73726f67e7fe3e0530d637b1fa3799fff7784cfbbf0c3d9576.css" integrity="sha256-EHKUFbKea3Nyb2fn/j4FMNY3sfo3mf/3eEz7vww9lXY=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.3bbecd7a3d493b220eba14d800e74a125e1f40c216a43aa244ac9a935ac74443.js" integrity="sha256-O77Nej1JOyIOuhTYAOdKEl4fQMIWpDqiRKyak1rHREM=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.092d1ccaafbeef9b18a719ce2eaee30fcc5600fdd1546646bfdf2c8d0d0dba61.js" integrity="sha256-CS0cyq&#43;&#43;75sYpxnOLq7jD8xWAP3RVGZGv98sjQ0NumE=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -1333,6 +1357,21 @@ https://github.com/alex-shpak/hugo-book
   
 <nav id="TableOfContents">
   <ul>
+    <li><a href="#unsafe">unsafe</a></li>
+    <li><a href="#context">context</a>
+      <ul>
+        <li><a href="#如何使用context">如何使用context</a>
+          <ul>
+            <li><a href="#传递共享的数据">传递共享的数据</a></li>
+            <li><a href="#定时取消">定时取消</a></li>
+            <li><a href="#防止goroutine泄漏">防止goroutine泄漏</a></li>
+          </ul>
+        </li>
+        <li><a href="#context底层原理">context底层原理</a></li>
+      </ul>
+    </li>
+    <li><a href="#error">error</a></li>
+    <li><a href="#计时器">计时器</a></li>
     <li><a href="#反射">反射</a>
       <ul>
         <li>
@@ -1354,7 +1393,63 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown"><h1 id="反射">
+  <article class="markdown"><h1 id="unsafe">
+  unsafe
+  <a class="anchor" href="#unsafe">#</a>
+</h1>
+<h1 id="context">
+  context
+  <a class="anchor" href="#context">#</a>
+</h1>
+<p>译作“上下文”，准确说它是goroutine的上下文。主要用来在goroutine之间传递上下文信息，包括：取消信号、超时时间、截止时间、k-v等。</p>
+<p>使用context几乎成为并发控制和超时控制的标准做法，与它协作的API都可以由外部控制执行“取消”操作，例如：取消一个HTTP请求的执行。</p>
+<p>另外，context.Context可以协调多个goroutine中的代码执行“取消”操作，并且可以存储键值对，最重要的是它是并发安全的操作。</p>
+<blockquote>
+<p><strong>在Go的server里，对每个Request(请求)都会启动若干个goroutine同时工作</strong>：有些去内存查一些数据，有些去数据库拿数据，有些调用第三方接口获取相关数据等。</p>
+<p>这些goroutine需要共享请求的基本信息：例如登陆token，处理请求的最大超时时间（如果超过此值再返回数据，请求方会因为超时接收不到）等。当请求被取消或是处理时间太长，这有可能是使用者关闭了浏览器或是已经超过了请求方规定的超时时间，请求方直接放弃了这次请求结果。这时，所有正在为这个请求工作的goroutine需要快速退出，因为它们的“工作成果”不再被需要了。</p>
+<p>**Go语言中的server实际上是一个“协程模型”，处理一个请求需要多个协程。**例如在业务的高峰期，某个下游服务器的响应速度变慢，<u>而当前系统的请求又没有超时控制，或者超过时间设置过大，那么等待下游服务器返回数据的协程就会越来越多。而协程师要消耗资源的，后果就是协程数激增，内存占用飙涨，Go调度器和GC不堪重用，甚至导致服务不可用</u>。更严重的会导致雪崩效应，整个服务器对外表现为不可用，这肯定是P0级别的事故。</p>
+<p>其实前面描述的P0级别的事故，通过设置“允许下游最长处理时间”就可以避免。例如，给下游设置timeout是50ms，如果超过这个值还没有接收到返回数据，就直接向客户端返回一个默认值或者错误。例如返回商品的一个默认库数量。注意，这里设置的超时时间和创建一个HTTP client设置的读写超时时间不一样，后者表示一次TCP传输的时间，而一次请求可能包含多次TCP传输，前者则表示所有传输的总时间。</p>
+</blockquote>
+<p>而context包就是为了解决上面所说的问题开发的：<font color='red'>在一组goroutine之间传递共享的值、取消信号、deadline等。</font></p>
+<p><font color='red'>在Go里，不能直接杀死协程，协程的关闭一般采用channel和select的方式来控制。</font><font color='green'><u>但是在某些场景下，例如处理一个请求衍生了很多协程，这些协程之间是相互关联的：需要共享一些全局变量、有共同的deadline等，而且可以同时被关闭。用channel和select就会比较麻烦，这时可以通过context来实现。</u></font></p>
+<p><font color='red'><strong>context用来解决goroutine之间退出通知、元数据传递的功能问题。</strong></font></p>
+<p><strong>context会在函数中间传递，只需要在适当的时间调用Cancel函数向goroutine发出取消信号或者调用Value函数取出context中的值。</strong></p>
+<p>对使用context的几点建议：</p>
+<ol>
+<li>不要将context塞到结构体里。直接将context类型作为函数的第一参数，而且一般都命名为ctx。</li>
+<li>不要向函数传入一个含有nil属性的context，如果实在不知道传什么，标准库准备好了一个context：todo。</li>
+<li>不要把本应该作为函数参数的类型塞到context中，context存储的应该是一些共同的数据。例如，登陆的session、cookie等。</li>
+<li>同一个context可能会传递到多个groutine，但别担心，context是并发安全的。</li>
+</ol>
+<h2 id="如何使用context">
+  如何使用context
+  <a class="anchor" href="#%e5%a6%82%e4%bd%95%e4%bd%bf%e7%94%a8context">#</a>
+</h2>
+<h3 id="传递共享的数据">
+  传递共享的数据
+  <a class="anchor" href="#%e4%bc%a0%e9%80%92%e5%85%b1%e4%ba%ab%e7%9a%84%e6%95%b0%e6%8d%ae">#</a>
+</h3>
+<h3 id="定时取消">
+  定时取消
+  <a class="anchor" href="#%e5%ae%9a%e6%97%b6%e5%8f%96%e6%b6%88">#</a>
+</h3>
+<h3 id="防止goroutine泄漏">
+  防止goroutine泄漏
+  <a class="anchor" href="#%e9%98%b2%e6%ad%a2goroutine%e6%b3%84%e6%bc%8f">#</a>
+</h3>
+<h2 id="context底层原理">
+  context底层原理
+  <a class="anchor" href="#context%e5%ba%95%e5%b1%82%e5%8e%9f%e7%90%86">#</a>
+</h2>
+<h1 id="error">
+  error
+  <a class="anchor" href="#error">#</a>
+</h1>
+<h1 id="计时器">
+  计时器
+  <a class="anchor" href="#%e8%ae%a1%e6%97%b6%e5%99%a8">#</a>
+</h1>
+<h1 id="反射">
   反射
   <a class="anchor" href="#%e5%8f%8d%e5%b0%84">#</a>
 </h1>
@@ -1419,6 +1514,21 @@ https://github.com/alex-shpak/hugo-book
   
 <nav id="TableOfContents">
   <ul>
+    <li><a href="#unsafe">unsafe</a></li>
+    <li><a href="#context">context</a>
+      <ul>
+        <li><a href="#如何使用context">如何使用context</a>
+          <ul>
+            <li><a href="#传递共享的数据">传递共享的数据</a></li>
+            <li><a href="#定时取消">定时取消</a></li>
+            <li><a href="#防止goroutine泄漏">防止goroutine泄漏</a></li>
+          </ul>
+        </li>
+        <li><a href="#context底层原理">context底层原理</a></li>
+      </ul>
+    </li>
+    <li><a href="#error">error</a></li>
+    <li><a href="#计时器">计时器</a></li>
     <li><a href="#反射">反射</a>
       <ul>
         <li>

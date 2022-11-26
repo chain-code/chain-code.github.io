@@ -61,7 +61,7 @@ func main(){ var whatever [3]struct{} for i:=range whatever{ defer func(){ fmt.P
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.10729415b29e6b73726f67e7fe3e0530d637b1fa3799fff7784cfbbf0c3d9576.css" integrity="sha256-EHKUFbKea3Nyb2fn/j4FMNY3sfo3mf/3eEz7vww9lXY=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.092d1ccaafbeef9b18a719ce2eaee30fcc5600fdd1546646bfdf2c8d0d0dba61.js" integrity="sha256-CS0cyq&#43;&#43;75sYpxnOLq7jD8xWAP3RVGZGv98sjQ0NumE=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.a61c585502ff630a5bda6465a3a1f261e5502c0c1b4d9cd3003d65487b55675d.js" integrity="sha256-phxYVQL/Ywpb2mRlo6HyYeVQLAwbTZzTAD1lSHtVZ10=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -307,6 +307,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/sync%E5%8C%85%E8%AF%A6%E8%A7%A3/" class="">Sync包详解</a>
   
 
         </li>
@@ -1457,11 +1470,16 @@ https://github.com/alex-shpak/hugo-book
             <li><a href="#go与鸭子类型的关系">Go与“鸭子类型”的关系</a></li>
           </ul>
         </li>
+        <li><a href="#值接收者和指针接收者的区别">值接收者和指针接收者的区别</a>
+          <ul>
+            <li><a href="#方法">方法</a></li>
+            <li><a href="#值接收者和指针接收者">值接收者和指针接收者</a></li>
+            <li><a href="#两者分别在何时使用">两者分别在何时使用</a></li>
+          </ul>
+        </li>
         <li><a href="#相关问题-1">相关问题</a>
           <ul>
-            <li><a href="#go语言与鸭子类型的关系">Go语言与“鸭子类型”的关系</a></li>
             <li><a href="#iface和eface的区别">iface和eface的区别</a></li>
-            <li><a href="#值接收者和指针接收者的区别">值接收者和指针接收者的区别</a></li>
             <li><a href="#如何用interface实现多态">如何用interface实现多态</a></li>
             <li><a href="#接口的动态类型和动态值">接口的动态类型和动态值</a></li>
             <li><a href="#接口的转换原理">接口的转换原理</a></li>
@@ -1693,18 +1711,18 @@ defer main
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span>
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span><span style="color:#a6e22e">能调用</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">在defer的函数中调用</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">生效</span>
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//能调用，在defer的函数中调用，生效
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
 </span></span><span style="display:flex;"><span>  recover()
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">painc</span>(<span style="color:#ae81ff">404</span>)
 </span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span><span style="color:#a6e22e">不能</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">直接调用recover</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">返回nil</span>
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//不能，直接调用recover，返回nil
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">defer</span> recover()
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">painc</span>(<span style="color:#ae81ff">404</span>)
 </span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span><span style="color:#a6e22e">不能</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">要在defer函数里调用recover</span>
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//不能，要在defer函数里调用recover
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">e</span><span style="color:#f92672">:=</span>recover();<span style="color:#a6e22e">e</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;recover&#34;</span>)
@@ -1712,15 +1730,15 @@ defer main
 </span></span><span style="display:flex;"><span>  }()
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">painc</span>(<span style="color:#ae81ff">404</span>)
 </span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span><span style="color:#a6e22e">能</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">在defer的函数中调用</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">生效</span>
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//能，在defer的函数中调用，生效
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
 </span></span><span style="display:flex;"><span>    recover()
 </span></span><span style="display:flex;"><span>  }()
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">painc</span>(<span style="color:#ae81ff">404</span>)
 </span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span><span style="color:#a6e22e">能</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">在defer的函数中调用</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">生效</span>
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//能，在defer的函数中调用，生效
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
 </span></span><span style="display:flex;"><span>  	<span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
 </span></span><span style="display:flex;"><span>    	recover()
@@ -1728,8 +1746,8 @@ defer main
 </span></span><span style="display:flex;"><span>  }()
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">painc</span>(<span style="color:#ae81ff">404</span>)
 </span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span><span style="color:#a6e22e">不能</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">多重defer嵌套</span>
-</span></span></code></pre></div><h3 id="为什么无法从父goroutine恢复子goroutine的panic">
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//不能，多重defer嵌套
+</span></span></span></code></pre></div><h3 id="为什么无法从父goroutine恢复子goroutine的panic">
   为什么无法从父goroutine恢复子goroutine的Panic
   <a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e6%97%a0%e6%b3%95%e4%bb%8e%e7%88%b6goroutine%e6%81%a2%e5%a4%8d%e5%ad%90goroutine%e7%9a%84panic">#</a>
 </h3>
@@ -2478,43 +2496,411 @@ channel closed,data invalid
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><pre tabindex="0"><code>Hi,I am GO!
 Hi,I am PHP!
-</code></pre><h2 id="相关问题-1">
+</code></pre><p>在main函数中，调用sayHello（）函数时，传入golang、php对象，它们并没有显式地声明实现IGreeting接口，知识实现了接口规定的sayHello()函数。</p>
+<h2 id="值接收者和指针接收者的区别">
+  值接收者和指针接收者的区别
+  <a class="anchor" href="#%e5%80%bc%e6%8e%a5%e6%94%b6%e8%80%85%e5%92%8c%e6%8c%87%e9%92%88%e6%8e%a5%e6%94%b6%e8%80%85%e7%9a%84%e5%8c%ba%e5%88%ab">#</a>
+</h2>
+<h3 id="方法">
+  方法
+  <a class="anchor" href="#%e6%96%b9%e6%b3%95">#</a>
+</h3>
+<p>方法能给用户自定义的类型添加新的行为，它和函数的区别在于方法有一个接收者，给一个函数添加一个接收者，它就变成了方法。<strong>接收者可以是值接收者，也可以是指针接收者。</strong></p>
+<p>在调用方法的时候，<u>不管方法的接收者是什么类型，该类型的值和指针都可以调用，不必严格符合接收者的类型</u>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Person</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">age</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#a6e22e">Person</span>)<span style="color:#a6e22e">howOld</span>()<span style="color:#66d9ef">int</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">age</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Person</span>)<span style="color:#a6e22e">growUp</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">age</span><span style="color:#f92672">+=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">qcrao</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">Person</span>{<span style="color:#a6e22e">age</span>:<span style="color:#ae81ff">18</span>} <span style="color:#75715e">//值类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">qcrao</span>.<span style="color:#a6e22e">howOld</span>()) <span style="color:#75715e">//调用接收者是值类型的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">qcrao</span>.<span style="color:#a6e22e">growUp</span>()<span style="color:#75715e">//调用接收者是指针类型的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">qcrao</span>.<span style="color:#a6e22e">howOld</span>())
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">stefo</span><span style="color:#f92672">:=&amp;</span><span style="color:#a6e22e">Person</span>{<span style="color:#a6e22e">age</span>:<span style="color:#ae81ff">100</span>} <span style="color:#75715e">//指针类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">stefo</span>.<span style="color:#a6e22e">howOld</span>())<span style="color:#75715e">//调用接收者是值类型的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">stefno</span>.<span style="color:#a6e22e">growUp</span>() <span style="color:#75715e">//调用接收者是指针类型的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">stefno</span>.<span style="color:#a6e22e">howOld</span>())
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>18
+19
+100
+101
+</code></pre><table>
+<thead>
+<tr>
+<th></th>
+<th>值接收者</th>
+<th>指针接收者</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>值类型调用者</td>
+<td>方法会使用调用者的一个副本，类似于“传值”</td>
+<td>使用值的引用来调用方法，上例中，qcrao.growUp()实际上是（&amp;qcrao).growUp()</td>
+</tr>
+<tr>
+<td>指针类型调用者</td>
+<td>指针被解引用为值，上例中，stefno.howOld()实际上是（*stefno).howOld()</td>
+<td>实际上也是传值，方法里的操作会影响到调用者，类似于指针传惨，复制了一份指针。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="值接收者和指针接收者">
+  值接收者和指针接收者
+  <a class="anchor" href="#%e5%80%bc%e6%8e%a5%e6%94%b6%e8%80%85%e5%92%8c%e6%8c%87%e9%92%88%e6%8e%a5%e6%94%b6%e8%80%85">#</a>
+</h3>
+<p><font color='red'>实现了接收者是值类型的方法，相当于自动实现了接收者是指针类型的方法；而实现了接收者是指针类型的方法，不会自动生成对应接收者是值类型的方法。</font></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">coder</span> <span style="color:#66d9ef">interface</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">code</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">debug</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Gopher</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">language</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">p</span> <span style="color:#a6e22e">Gopher</span>)<span style="color:#a6e22e">code</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;I am coding %s language\n&#34;</span>,<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">language</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Gopher</span>)<span style="color:#a6e22e">debug</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;I am debuging %s language\n&#34;</span>,<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">language</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">c</span> <span style="color:#a6e22e">coder</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Gopher</span>{<span style="color:#e6db74">&#34;Go&#34;</span>}  <span style="color:#75715e">//var c coer = Gopher{&#34;Go&#34;}  则会报错
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">code</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">debug</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>I am coding Go language
+I am debuging Go language
+</code></pre><p>接收者是指针类型的方法，很可能在方法中会对接收者的属性进行更改操作，从而影响接收者；而对于接收者是值类型的方法，在方法中不会对接收者本身产生影响。</p>
+<p>当实现了一个接收者是值类型的方法，就可以自动生成一个接收者对应指针类型的方法，因为两者都不会影响接收者；</p>
+<p><font color='red'>如果实现了接收者是值类型的方法，会隐含地也实现了接收者是指针类型的方法。</font></p>
+<h3 id="两者分别在何时使用">
+  两者分别在何时使用
+  <a class="anchor" href="#%e4%b8%a4%e8%80%85%e5%88%86%e5%88%ab%e5%9c%a8%e4%bd%95%e6%97%b6%e4%bd%bf%e7%94%a8">#</a>
+</h3>
+<p>如果方法的接收者是值类型，无论调用者是对象还是对象指针，修改的都是对象的副本，不影响调用者；如果方法的接收者是指针类型，则调用者修改的是指针指向的对象本身。</p>
+<p>使用指针作为方法的接收者的理由如下：</p>
+<ul>
+<li>方法能够修改接收者指向的值</li>
+<li>避免在每次调用方法时复制该值，在值的类型为大型结构体时，这样做会更加高效。</li>
+</ul>
+<h2 id="相关问题-1">
   相关问题
   <a class="anchor" href="#%e7%9b%b8%e5%85%b3%e9%97%ae%e9%a2%98-1">#</a>
 </h2>
-<h3 id="go语言与鸭子类型的关系">
-  Go语言与“鸭子类型”的关系
-  <a class="anchor" href="#go%e8%af%ad%e8%a8%80%e4%b8%8e%e9%b8%ad%e5%ad%90%e7%b1%bb%e5%9e%8b%e7%9a%84%e5%85%b3%e7%b3%bb">#</a>
-</h3>
 <h3 id="iface和eface的区别">
   iface和eface的区别
   <a class="anchor" href="#iface%e5%92%8ceface%e7%9a%84%e5%8c%ba%e5%88%ab">#</a>
 </h3>
-<h3 id="值接收者和指针接收者的区别">
-  值接收者和指针接收者的区别
-  <a class="anchor" href="#%e5%80%bc%e6%8e%a5%e6%94%b6%e8%80%85%e5%92%8c%e6%8c%87%e9%92%88%e6%8e%a5%e6%94%b6%e8%80%85%e7%9a%84%e5%8c%ba%e5%88%ab">#</a>
-</h3>
-<h3 id="如何用interface实现多态">
+<p>类型iface和eface都是Go中描述接口的底层结构体，区别在于<strong>iface描述的接口包含方法</strong>，而<strong>eface则是不包含任何方法的空接口interface{}。</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">iface</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">tab</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">itab</span> <span style="color:#75715e">//指向一个itab实体，表示接口的类型以及赋给这个接口的实体类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">data</span> <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span> <span style="color:#75715e">//指向接口具体的值，一般是一个指向堆内存的指针
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">itab</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">inter</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">interfacetype</span>  <span style="color:#75715e">//接口类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">_type</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">_type</span> <span style="color:#75715e">//描述了实体的类型，包括内存对齐方式、大小等
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">link</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">itab</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">hash</span> <span style="color:#66d9ef">uint32</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">_</span>    [<span style="color:#ae81ff">4</span>]<span style="color:#66d9ef">byte</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fun</span>  [<span style="color:#ae81ff">1</span>]   <span style="color:#75715e">//放置和接口方法对应的具体数据类型的方法地址，实现接口调用方法的动态分派
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">interfacetype</span> <span style="color:#66d9ef">struct</span>{ 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">_type</span> <span style="color:#75715e">//描述Go语言中各种数据类型的结构体
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">pkgpath</span> <span style="color:#a6e22e">name</span> <span style="color:#75715e">//定义接口的包名
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">mhdr</span> []<span style="color:#a6e22e">imethod</span> <span style="color:#75715e">//接口所定义的函数列表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">eface</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">_type</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">_type</span>   <span style="color:#75715e">//表示空接口所承载地具体的实体类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">data</span> <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span> <span style="color:#75715e">//描述具体的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><h3 id="如何用interface实现多态">
   如何用interface实现多态
   <a class="anchor" href="#%e5%a6%82%e4%bd%95%e7%94%a8interface%e5%ae%9e%e7%8e%b0%e5%a4%9a%e6%80%81">#</a>
 </h3>
+<p>Go语言通过接口非常优雅地支持了面向对象的特性。</p>
+<p>多态是一种运行期的行为，它有以下几个特点：</p>
+<ul>
+<li>一种类型具有多种类型的能力</li>
+<li>允许不同的对象对同一消息作出灵活的反应</li>
+<li>以一种通用的方式对待使用的对象</li>
+<li>非动态语言必须通过继承和接口的方式来实现</li>
+</ul>
 <h3 id="接口的动态类型和动态值">
   接口的动态类型和动态值
   <a class="anchor" href="#%e6%8e%a5%e5%8f%a3%e7%9a%84%e5%8a%a8%e6%80%81%e7%b1%bb%e5%9e%8b%e5%92%8c%e5%8a%a8%e6%80%81%e5%80%bc">#</a>
 </h3>
-<h3 id="接口的转换原理">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">iface</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">tab</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">itab</span> <span style="color:#75715e">//指向一个itab实体，表示接口的类型以及赋给这个接口的实体类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">data</span> <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span> <span style="color:#75715e">//指向接口具体的值，一般是一个指向堆内存的指针
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>data是数据指针，指向具体的数据，它们分别被称为动态类型和动态值，而<strong>接口值则包括动态类型和动态值。</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//当切仅当动态类型和动态值这两部分的值都为nil的情况下，接口值==nil为true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Coder</span> <span style="color:#66d9ef">interface</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">code</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Gopher</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">g</span> <span style="color:#a6e22e">Gopher</span>)<span style="color:#a6e22e">code</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%s is coding\n&#34;</span>,<span style="color:#a6e22e">g</span>.<span style="color:#a6e22e">name</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">c</span> <span style="color:#a6e22e">Coder</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">c</span><span style="color:#f92672">==</span><span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;c:%T,%v\n&#34;</span>,<span style="color:#a6e22e">c</span>,<span style="color:#a6e22e">c</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">g</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Gopher</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">g</span><span style="color:#f92672">==</span><span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">c</span>=<span style="color:#a6e22e">g</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">c</span><span style="color:#f92672">==</span><span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;c:%T,%v\n&#34;</span>,<span style="color:#a6e22e">c</span>,<span style="color:#a6e22e">c</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>true
+c:&lt;nil&gt;,&lt;nil&gt;
+true
+false
+c:*main.Gopher,&lt;nil&gt;  //动态类型为*main.Gopher 动态值为nil
+</code></pre><h3 id="接口的转换原理">
   接口的转换原理
   <a class="anchor" href="#%e6%8e%a5%e5%8f%a3%e7%9a%84%e8%bd%ac%e6%8d%a2%e5%8e%9f%e7%90%86">#</a>
 </h3>
+<p>iface包含接口的类型interfacetype和实体类型的类型_type，两者都是iface的字段itab的成员。也就是说生存一个itab同时需要<strong>接口的类型</strong>和<strong>实体的类型</strong>。</p>
+<pre tabindex="0"><code>&lt;interface 类型，实体类型&gt;-&gt;itab
+</code></pre><p><font color='red'>当判定一种类型是否满足某个接口时，Go将类型的方法集和接口所需的方法集进行匹配，如果类型的方法集完全包含接口的方法集，则可认为该类型实现了该接口。</font></p>
+<p>例如某类型有 m 个方法，某接口有 n 个方法，则很容易知道这种判定的时间复杂度为 O(mn)，Go 会对方法集的函数按照函数名的字典序进行排序，所以实际的时间复杂度为 O(m+n)。这里我们来探索将一个接口转换给另外一个接口背后的原理，当然，能转换的原因必然是类型兼容。
+直接来看一个例子：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">coder</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">code</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">run</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">runner</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">run</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Gopher</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">language</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">g</span> <span style="color:#a6e22e">Gopher</span>) <span style="color:#a6e22e">code</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">g</span> <span style="color:#a6e22e">Gopher</span>) <span style="color:#a6e22e">run</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">c</span> <span style="color:#a6e22e">coder</span> = <span style="color:#a6e22e">Gopher</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">r</span> <span style="color:#a6e22e">runner</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">r</span> = <span style="color:#a6e22e">c</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">c</span>, <span style="color:#a6e22e">r</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>简单解释下上述代码：定义了两个 interface: coder 和 runner。定义了一个实体类型 Gopher，类型 Gopher 实现了两个方法，分别是 run() 和 code()。main 函数里定义了一个接口变量 c，绑定了一个 Gopher 对象，之后将 c 赋值给另外一个接口变量 r 。赋值成功的原因是 c 中包含 run() 方法。这样，两个接口变量完成了转换。</p>
 <h3 id="类型转换和断言的区别">
   类型转换和断言的区别
   <a class="anchor" href="#%e7%b1%bb%e5%9e%8b%e8%bd%ac%e6%8d%a2%e5%92%8c%e6%96%ad%e8%a8%80%e7%9a%84%e5%8c%ba%e5%88%ab">#</a>
 </h3>
-<h3 id="如何让编译器自动检测类型是否实现了接口">
+<p>Go语言中不允许隐式类型转换，也就是说符号“=”两边，不允许出现类型不相同的变量。</p>
+<p>类型转换、类型断言本质都是把一个类型转换成另外一个类型，不同之处在于类型断言是对接口变量进行的操作。</p>
+<h4 id="断言">
+  断言
+  <a class="anchor" href="#%e6%96%ad%e8%a8%80">#</a>
+</h4>
+<p>因为空接口interface{}没有定义任何函数，因此Go中所有类型都实现了空接口。低昂一个函数的形参是interface{}，那么在函数中，需要对形参进行断言，从而得到它的真实类型。</p>
+<p>语法：</p>
+<pre tabindex="0"><code>&lt;目标类型的值&gt;,&lt;布尔参数&gt;:=&lt;表达式&gt;.(目标类型)//安全型类型断言
+&lt;目标类型的值&gt;:=&lt;表达式&gt;.(目标类型)  //非安全类型断言
+</code></pre><p>类型转换和类型断言有些相似，不同之处，在于类型断言是对接口进行的操作。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Student</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Age</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i</span> <span style="color:#66d9ef">interface</span>{}=new(<span style="color:#a6e22e">Student</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">s</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">i</span>.(<span style="color:#a6e22e">Student</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>panic:interface conversion:interface{}is *main.Student,not main.Student
+</code></pre><p>因为i是*Student类型，并非Student类型，所以断言失败。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){  <span style="color:#75715e">//安全方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i</span> <span style="color:#66d9ef">interface</span>{}=new(<span style="color:#a6e22e">Student</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">s</span>,<span style="color:#a6e22e">ok</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">i</span>.(<span style="color:#a6e22e">Student</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ok</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>断言还有另外一种形式，就是用switch语句判断接口的类型，每一个case会被顺序地考虑。当命中一个case时，就会执行case中的语句，因此case语句的顺序是很重要的，因为可能会有多个case匹配的情况。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i</span> <span style="color:#66d9ef">interface</span>{} = new(<span style="color:#a6e22e">Student</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//var i interface{} = (*Student)(nil)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">//var i interface{}
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%p %v\n&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">judge</span>(<span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">judge</span>(<span style="color:#a6e22e">v</span> <span style="color:#66d9ef">interface</span>{}) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%p %v&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">v</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">v</span>.(<span style="color:#66d9ef">type</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#66d9ef">nil</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%p %v&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">v</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;nil type[%T]%v&#34;</span>, <span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">v</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">Student</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%p %v&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">v</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Student type[%T]%v&#34;</span>, <span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">v</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Student</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%p %v&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">v</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;*Student type[%T]%v&#34;</span>, <span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">v</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%p %v&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">v</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;unknow\n&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Student</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Age</span>  <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>在main函数里有三行不同的声明，按顺序每次运行一行，得到三组结果：</p>
+<pre tabindex="0"><code>//var i interface{} = new(Student)
+0x14000110210 &amp;{ 0}
+0x14000110230 &amp;{ 0}
+0x14000120020 &amp;{ 0}
+*Student type[*main.Student]&amp;{ 0}
+因为i是*Student类型，匹配第三个case。从打印的3个地址来看，这3处的变量实际上都是不一样的。在main函数里有一个局部变量i,调用函数时，实际上是复制了一份参数，因此函数里又有一个变量V,它是i的复制。断言之后，又生成了一份新的复制。所以最终打印的三个变量的地址都不一样。
+//var i interface{} = (*Student)(nil)
+0x14000110210 &lt;nil&gt;
+0x14000110220 &lt;nil&gt;
+0x14000120020 &lt;nil&gt;
+i在这里的动态类型是*Student，数据为nil，它的类型并不是nil，它与nil做比较的时候，得到的结果也是false.
+*Student type[*main.Student]&lt;nil&gt;
+
+//var i interface{}
+0x14000188050 &lt;nil&gt;
+0x14000188060 &lt;nil&gt;
+0x14000188070 &lt;nil&gt;
+nil type[&lt;nil&gt;]&lt;nil&gt;
+这里i才是nil类型
+</code></pre><p>代码v.(type)中，v只能是一个接口类型，如果是其他类型，例如int型，会编译不通过。</p>
+<p><font color='red'>函数fmt.Println的参数是interface。对于内置类型，函数内部会用穷举法，得出它的真实类型，然后转换为字符串打印。而对于自定义类型，首先确定该类型是否实现了Stirng()方法，如果实现了，则直接打印输出String（）方法的结果；否则，会通过反射来遍历对象的成员进行打印。</font></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Student</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Age</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">s</span>=<span style="color:#a6e22e">Student</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Name</span>:<span style="color:#e6db74">&#34;qcrao&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Age</span>:<span style="color:#ae81ff">18</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>{qcrao 18}
+</code></pre><p>因为Student结构体没有实现Sting()方法，所以fmt.Println会利用反射挨个打印成员变量；</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#a6e22e">Student</span>)<span style="color:#a6e22e">String</span>()<span style="color:#66d9ef">string</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;[Name:%s],[Age:%d]&#34;</span>,<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Name</span>,<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Age</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>[Name:qcrao],[Age:18]  //如果实现了String()方法，则结果如下
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Student</span>)<span style="color:#a6e22e">String</span>()<span style="color:#66d9ef">string</span>{   <span style="color:#75715e">//这种要用fmt.Println(&amp;s)来打印
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;[Name:%s],[Age:%d]&#34;</span>,<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Name</span>,<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Age</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>{qcrao 18}
+</code></pre><p><font color='red'>类型T只有接受者是T的方法：而类型*T拥有接受者是T和*T的方法。语法上T能直接调用*T的方法仅仅是通过Go语言的语法糖。</font></p>
+<h4 id="防止有关自定义string方法时无限递归">
+  防止有关自定义String（）方法时无限递归
+  <a class="anchor" href="#%e9%98%b2%e6%ad%a2%e6%9c%89%e5%85%b3%e8%87%aa%e5%ae%9a%e4%b9%89string%e6%96%b9%e6%b3%95%e6%97%b6%e6%97%a0%e9%99%90%e9%80%92%e5%bd%92">#</a>
+</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#a6e22e">Student</span>)<span style="color:#a6e22e">String</span>()<span style="color:#66d9ef">string</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%v&#34;</span>,<span style="color:#a6e22e">s</span>) <span style="color:#75715e">//格式化输出  导致递归调用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">s</span>=<span style="color:#a6e22e">Student</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Name</span>:<span style="color:#e6db74">&#34;qcrao&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Age</span>:<span style="color:#ae81ff">18</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;%v&#34;</span>,<span style="color:#a6e22e">s</span>) <span style="color:#75715e">//格式化输出，
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>直接运行，最后会导致栈溢出：</p>
+<pre tabindex="0"><code>fatal error:stack overflow
+</code></pre><p><strong>如果类型实现了String()方法，格式化输出时就会自动调用String（）方法。</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#a6e22e">Student</span>)<span style="color:#a6e22e">String</span>()<span style="color:#66d9ef">string</span>{ <span style="color:#75715e">//改进方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%v&#34;</span>,<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Name</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Itoa</span>(<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Age</span>)) 
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="switch用法">
+  switch用法
+  <a class="anchor" href="#switch%e7%94%a8%e6%b3%95">#</a>
+</h4>
+<p>于C/C++、java等不同的是，Go的switch语句从上到下进行匹配，仅执行第一个匹配成功的分支。因此Go不用在每个分支里都增加break语句。另外一个不同点在于，Go switch语句的case值不需要是常量，也不必是整数。</p>
+<p><strong>用法一：比较单个值和多个值</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Print</span>(<span style="color:#e6db74">&#34;Go runs on&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">os</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">runtime</span>.<span style="color:#a6e22e">GOOS</span>;<span style="color:#a6e22e">os</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;darwin&#34;</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;OS X.&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;linux&#34;</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Linux.&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#75715e">//freebsd,openbsd,
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    	<span style="color:#75715e">//plan9,windows...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%s.\n&#34;</span>,<span style="color:#a6e22e">os</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//直接在switch语句内声明os变量，使得os的作用范围仅在switch语句内。
+</span></span></span></code></pre></div><p><strong>用法二：每个分支单独设置比较条件</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">t</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">swtich</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Hour</span>()&lt;<span style="color:#ae81ff">12</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Good moring!&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Hour</span>()&lt;<span style="color:#ae81ff">17</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Good afternoon!&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Good evening!&#34;</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//直接在case语句中判断表达式的真假，并且只会执行第一个满足条件的case。
+</span></span></span></code></pre></div><p><strong>用法三：使用fallthrough关键字</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">t</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">switch</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Hour</span>()&lt;<span style="color:#ae81ff">12</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Good moring!&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fallthrough</span>              <span style="color:#75715e">//表示支持下一个分支
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Hour</span>()&lt;<span style="color:#ae81ff">17</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Good afternoon!&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Good evening!&#34;</span>)
+</span></span><span style="display:flex;"><span>  	}  
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">t</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">switch</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Hour</span>()&lt;<span style="color:#ae81ff">12</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Hour</span>()&lt;<span style="color:#ae81ff">15</span>: <span style="color:#75715e">//可以使用,分隔，合并成一个分支
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Good moring!&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fallthrough</span>              <span style="color:#75715e">//表示支持下一个分支
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Hour</span>()&lt;<span style="color:#ae81ff">17</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Good afternoon!&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Good evening!&#34;</span>)
+</span></span><span style="display:flex;"><span>  	}  
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="如何让编译器自动检测类型是否实现了接口">
   如何让编译器自动检测类型是否实现了接口
   <a class="anchor" href="#%e5%a6%82%e4%bd%95%e8%ae%a9%e7%bc%96%e8%af%91%e5%99%a8%e8%87%aa%e5%8a%a8%e6%a3%80%e6%b5%8b%e7%b1%bb%e5%9e%8b%e6%98%af%e5%90%a6%e5%ae%9e%e7%8e%b0%e4%ba%86%e6%8e%a5%e5%8f%a3">#</a>
 </h3>
-</article>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">myWriter</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*func (w myWriter)Write(p []byte)(n int,err error){
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  return
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">}*/</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//检查*myWriter类型是否实现了io.Writer接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">_io</span>.<span style="color:#a6e22e">Writer</span>=(<span style="color:#f92672">*</span><span style="color:#a6e22e">myWriter</span>)(<span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//检查myWriter类型是否实现了io.Writer接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">_io</span>.<span style="color:#a6e22e">Writer</span>=<span style="color:#a6e22e">myWriter</span>{}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></article>
  
       
 
@@ -2641,11 +3027,16 @@ Hi,I am PHP!
             <li><a href="#go与鸭子类型的关系">Go与“鸭子类型”的关系</a></li>
           </ul>
         </li>
+        <li><a href="#值接收者和指针接收者的区别">值接收者和指针接收者的区别</a>
+          <ul>
+            <li><a href="#方法">方法</a></li>
+            <li><a href="#值接收者和指针接收者">值接收者和指针接收者</a></li>
+            <li><a href="#两者分别在何时使用">两者分别在何时使用</a></li>
+          </ul>
+        </li>
         <li><a href="#相关问题-1">相关问题</a>
           <ul>
-            <li><a href="#go语言与鸭子类型的关系">Go语言与“鸭子类型”的关系</a></li>
             <li><a href="#iface和eface的区别">iface和eface的区别</a></li>
-            <li><a href="#值接收者和指针接收者的区别">值接收者和指针接收者的区别</a></li>
             <li><a href="#如何用interface实现多态">如何用interface实现多态</a></li>
             <li><a href="#接口的动态类型和动态值">接口的动态类型和动态值</a></li>
             <li><a href="#接口的转换原理">接口的转换原理</a></li>

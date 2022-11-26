@@ -17,7 +17,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.10729415b29e6b73726f67e7fe3e0530d637b1fa3799fff7784cfbbf0c3d9576.css" integrity="sha256-EHKUFbKea3Nyb2fn/j4FMNY3sfo3mf/3eEz7vww9lXY=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.092d1ccaafbeef9b18a719ce2eaee30fcc5600fdd1546646bfdf2c8d0d0dba61.js" integrity="sha256-CS0cyq&#43;&#43;75sYpxnOLq7jD8xWAP3RVGZGv98sjQ0NumE=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.a61c585502ff630a5bda6465a3a1f261e5502c0c1b4d9cd3003d65487b55675d.js" integrity="sha256-phxYVQL/Ywpb2mRlo6HyYeVQLAwbTZzTAD1lSHtVZ10=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -263,6 +263,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/sync%E5%8C%85%E8%AF%A6%E8%A7%A3/" class="">Sync包详解</a>
   
 
         </li>
@@ -3107,6 +3120,7 @@ void put(int key, int value) 如果关键字 key 已经存在，则变更其�
 <p><strong>即使在最坏情况下，其时间复杂度也为O(n*logn)。</strong></p>
 </blockquote>
 <p>堆排序主要包括两个过程：一是构建堆；二是交换堆顶元素与最后一个元素的位置。</p>
+<p>具有n个结点的完全二叉树深度为(log2n)+1,其中(log2n)+1是向下取整。</p>
 <pre tabindex="0"><code>完全二叉树性质：
 下标为i的结点的父结点下标：（i-1)/2
 下标为i的结点的左孩子结点下标：i*2+1
@@ -3134,7 +3148,7 @@ void put(int key, int value) 如果关键字 key 已经存在，则变更其�
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">length</span> <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">1</span> {
 </span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">arr</span>
 </span></span><span style="display:flex;"><span>	} <span style="color:#66d9ef">else</span> {
-</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">depth</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">length</span><span style="color:#f92672">/</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span> <span style="color:#75715e">//节点下标,n,2*n+1,2*n+2
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">depth</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">length</span><span style="color:#f92672">/</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span> <span style="color:#75715e">//节点下标,n,2*n+1,2*n+2 最大父节点下标
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">depth</span>; <span style="color:#a6e22e">i</span> <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">--</span> {
 </span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">topmax</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">i</span>  <span style="color:#75715e">//指向父结点
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#a6e22e">left</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">*</span><span style="color:#a6e22e">i</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>  <span style="color:#75715e">//左孩子下标
@@ -3185,10 +3199,10 @@ void put(int key, int value) 如果关键字 key 已经存在，则变更其�
 </span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">right</span>
 </span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">temp</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">arry</span>[<span style="color:#a6e22e">i</span>] <span style="color:#75715e">//用于交换值
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">j</span> {
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">j</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">arry</span>[<span style="color:#a6e22e">j</span>] <span style="color:#f92672">&gt;=</span> <span style="color:#a6e22e">temp</span> { <span style="color:#75715e">//从后往前 如过后面的大于前面的 则j--
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">j</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">arry</span>[<span style="color:#a6e22e">j</span>] &gt; <span style="color:#a6e22e">temp</span> { <span style="color:#75715e">//从后往前 如过后面的大于前面的 则j--
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#a6e22e">j</span><span style="color:#f92672">--</span>
 </span></span><span style="display:flex;"><span>		}
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">j</span> { <span style="color:#75715e">//到这里证明arry[i]&gt;arry[j]
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">j</span> { <span style="color:#75715e">//到这里证明arry[i]&gt;=arry[j]
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#a6e22e">arry</span>[<span style="color:#a6e22e">i</span>] = <span style="color:#a6e22e">arry</span>[<span style="color:#a6e22e">j</span>] <span style="color:#75715e">//让arry[i]=arry[j]
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>               <span style="color:#75715e">//向后移
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		}
@@ -3199,10 +3213,10 @@ void put(int key, int value) 如果关键字 key 已经存在，则变更其�
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#a6e22e">arry</span>[<span style="color:#a6e22e">j</span>] = <span style="color:#a6e22e">arry</span>[<span style="color:#a6e22e">i</span>]
 </span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">j</span><span style="color:#f92672">--</span>
 </span></span><span style="display:flex;"><span>		}
-</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">arry</span>[<span style="color:#a6e22e">i</span>] = <span style="color:#a6e22e">temp</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">sort</span>(<span style="color:#a6e22e">arry</span>, <span style="color:#a6e22e">left</span>, <span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#75715e">//左右放入递归
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">sort</span>(<span style="color:#a6e22e">arry</span>, <span style="color:#a6e22e">i</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">right</span>)
 </span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">arry</span>[<span style="color:#a6e22e">i</span>] = <span style="color:#a6e22e">temp</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sort</span>(<span style="color:#a6e22e">arry</span>, <span style="color:#a6e22e">left</span>, <span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) <span style="color:#75715e">//左右放入递归
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">sort</span>(<span style="color:#a6e22e">arry</span>, <span style="color:#a6e22e">i</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">right</span>)
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">QuickSort</span>(<span style="color:#a6e22e">arry</span> []<span style="color:#66d9ef">int</span>) {
 </span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sort</span>(<span style="color:#a6e22e">arry</span>, <span style="color:#ae81ff">0</span>, len(<span style="color:#a6e22e">arry</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)

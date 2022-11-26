@@ -27,7 +27,7 @@ s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据 sort.Ints(s) //排序�
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.10729415b29e6b73726f67e7fe3e0530d637b1fa3799fff7784cfbbf0c3d9576.css" integrity="sha256-EHKUFbKea3Nyb2fn/j4FMNY3sfo3mf/3eEz7vww9lXY=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.092d1ccaafbeef9b18a719ce2eaee30fcc5600fdd1546646bfdf2c8d0d0dba61.js" integrity="sha256-CS0cyq&#43;&#43;75sYpxnOLq7jD8xWAP3RVGZGv98sjQ0NumE=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.a61c585502ff630a5bda6465a3a1f261e5502c0c1b4d9cd3003d65487b55675d.js" integrity="sha256-phxYVQL/Ywpb2mRlo6HyYeVQLAwbTZzTAD1lSHtVZ10=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -273,6 +273,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/sync%E5%8C%85%E8%AF%A6%E8%A7%A3/" class="">Sync包详解</a>
   
 
         </li>
@@ -1436,6 +1449,36 @@ fmt.Println(slStr) // 输出 [Alpha Bravo Delta Go Gopher Grin]
 </span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#a6e22e">i</span>)
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">输出</span><span style="color:#960050;background-color:#1e0010">：</span><span style="color:#ae81ff">1</span>
+</span></span></code></pre></div><h4 id="sortslice">
+  sort.Slice
+  <a class="anchor" href="#sortslice">#</a>
+</h4>
+<p><code>sort.Slice</code>是go 1.8版本引入的一个强大排序函数。第一个参数是待排序的任意类型<code>slice</code>；第二个参数是<code>less function</code>，用于比较 i 和 j 对应的元素大小，&ldquo;较小&quot;的排在前面。注意这里并不真的按照&quot;大小&quot;排序，而是根据<code>less func</code>的定义来决定排序。
+<code>func Slice(x any, less func(i, j int) bool)</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Slice</span>(<span style="color:#a6e22e">x</span> <span style="color:#66d9ef">interface</span>{}, <span style="color:#a6e22e">less</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">bool</span>) 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 第一个形参是：待排序数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">x</span> <span style="color:#66d9ef">interface</span>{}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 第二个形参是：排序判断方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 形参i 代表后一个元素
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 形参j 代表前一元素
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 返回值：代表i，j是否交换。true：交换，false：不交换。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">less</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">bool</span> 
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">people</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">Age</span>  <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>    }{
+</span></span><span style="display:flex;"><span>        {<span style="color:#e6db74">&#34;Gopher&#34;</span>, <span style="color:#ae81ff">7</span>},
+</span></span><span style="display:flex;"><span>        {<span style="color:#e6db74">&#34;Alice&#34;</span>, <span style="color:#ae81ff">55</span>},
+</span></span><span style="display:flex;"><span>        {<span style="color:#e6db74">&#34;Vera&#34;</span>, <span style="color:#ae81ff">24</span>},
+</span></span><span style="display:flex;"><span>        {<span style="color:#e6db74">&#34;Bob&#34;</span>, <span style="color:#ae81ff">75</span>},
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">sort</span>.<span style="color:#a6e22e">Slice</span>(<span style="color:#a6e22e">people</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">bool</span> { <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">people</span>[<span style="color:#a6e22e">i</span>].<span style="color:#a6e22e">Name</span> &lt; <span style="color:#a6e22e">people</span>[<span style="color:#a6e22e">j</span>].<span style="color:#a6e22e">Name</span> })
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;By name:&#34;</span>, <span style="color:#a6e22e">people</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">sort</span>.<span style="color:#a6e22e">Slice</span>(<span style="color:#a6e22e">people</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">bool</span> { <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">people</span>[<span style="color:#a6e22e">i</span>].<span style="color:#a6e22e">Age</span> &lt; <span style="color:#a6e22e">people</span>[<span style="color:#a6e22e">j</span>].<span style="color:#a6e22e">Age</span> })
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;By age:&#34;</span>, <span style="color:#a6e22e">people</span>)
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h3 id="strconv-字符串和数字相互转换">
   strconv 字符串和数字相互转换
   <a class="anchor" href="#strconv-%e5%ad%97%e7%ac%a6%e4%b8%b2%e5%92%8c%e6%95%b0%e5%ad%97%e7%9b%b8%e4%ba%92%e8%bd%ac%e6%8d%a2">#</a>

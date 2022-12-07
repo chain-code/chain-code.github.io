@@ -24,7 +24,7 @@
 输入：{1,2,3} 返回值：{3,2,1} func ReverseList( pHead *ListNode ) *ListNode { if pHead==nil||pHead.Next==nil{ return pHead } p:=&amp;ListNode{Val:-1,Next:pHead} //设置一个头节点，防止冲突 pHead=p p=pHead.Next q:=p for p.Next!=nil{ q=p.Next p.Next=q.Next q.Next=pHead.Next //这道题的重点在这里=头节点的下一个 pHead.Next=q } return pHead.Next } 链表内指定区间反转 # 将一个节点数为 size 链表 m 位置到 n 位置之间的区间反转，要求时间复杂度 O(n)O(n)，空间复杂度 O(1)O(1)。
 例如： 给出的链表为 1→2→3→4→5→NULL1→2→3→4→5→NULL, m=2,n=4, 返回 1→4→3→2→5→NULL1→4→3→2→5→NULL. func reverseBetween( head *ListNode , m int , n int ) *ListNode { // write code here if head." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="http://example.org/docs/golang/leetcode/%E5%BF%85%E5%88%B7top101/" /><meta property="article:section" content="docs" />
+<meta property="og:url" content="https://chain-code.github.io/docs/golang/leetcode/%E5%BF%85%E5%88%B7top101/" /><meta property="article:section" content="docs" />
 <meta property="article:published_time" content="2022-09-17T11:40:17+08:00" />
 <meta property="article:modified_time" content="2022-09-17T11:40:17+08:00" />
 
@@ -33,7 +33,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.10729415b29e6b73726f67e7fe3e0530d637b1fa3799fff7784cfbbf0c3d9576.css" integrity="sha256-EHKUFbKea3Nyb2fn/j4FMNY3sfo3mf/3eEz7vww9lXY=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.a61c585502ff630a5bda6465a3a1f261e5502c0c1b4d9cd3003d65487b55675d.js" integrity="sha256-phxYVQL/Ywpb2mRlo6HyYeVQLAwbTZzTAD1lSHtVZ10=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.0ba198db7bcdaa5eca45e63b13796c38e83d4c8b84f865c092b0f148b5f7d724.js" integrity="sha256-C6GY23vNql7KReY7E3lsOOg9TIuE&#43;GXAkrDxSLX31yQ=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -377,7 +377,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
   
 
         </li>
@@ -390,7 +390,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
   
 
         </li>
@@ -1292,6 +1292,24 @@ https://github.com/alex-shpak/hugo-book
         </li>
       
     
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/" class="">工具库</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
   </ul>
 
 
@@ -1461,10 +1479,27 @@ https://github.com/alex-shpak/hugo-book
             <li><a href="#编辑距离1">编辑距离1</a></li>
             <li><a href="#正则表达式匹配">正则表达式匹配</a></li>
             <li><a href="#最长的括号子串">最长的括号子串</a></li>
+            <li><a href="#打家劫舍1">打家劫舍1</a></li>
+            <li><a href="#打家劫舍2">打家劫舍2</a></li>
+            <li><a href="#打家劫舍3">打家劫舍3</a></li>
+            <li><a href="#买卖股票的最好时机1">买卖股票的最好时机1</a></li>
+            <li><a href="#买卖股票的最好时机2">买卖股票的最好时机2</a></li>
+            <li><a href="#买卖股票的最好时机3">买卖股票的最好时机3</a></li>
           </ul>
         </li>
-        <li><a href="#字符串">字符串</a></li>
-        <li><a href="#双指针">双指针</a></li>
+        <li><a href="#字符串">字符串</a>
+          <ul>
+            <li><a href="#字符串变形">字符串变形</a></li>
+            <li><a href="#最长公共前缀">最长公共前缀</a></li>
+            <li><a href="#验证ip地址">验证IP地址</a></li>
+            <li><a href="#大数加法">大数加法</a></li>
+          </ul>
+        </li>
+        <li><a href="#双指针">双指针</a>
+          <ul>
+            <li><a href="#合并两个有序数组">合并两个有序数组</a></li>
+          </ul>
+        </li>
         <li><a href="#贪心算法">贪心算法</a></li>
         <li><a href="#模拟">模拟</a></li>
         <li><a href="#题外">题外</a>
@@ -4564,7 +4599,39 @@ https://github.com/alex-shpak/hugo-book
 <p>注意：ip地址是由四段数字组成的数字序列，格式如 &ldquo;x.x.x.x&rdquo;，其中 x 的范围应当是 [0,255]。</p>
 <pre tabindex="0"><code>输入：&#34;25525522135&#34;
 返回值：[&#34;255.255.22.135&#34;,&#34;255.255.221.35&#34;]
-</code></pre><pre tabindex="0"><code></code></pre><h3 id="编辑距离1">
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">restoreIpAddresses</span>( <span style="color:#a6e22e">s</span> <span style="color:#66d9ef">string</span> ) []<span style="color:#66d9ef">string</span> { <span style="color:#75715e">//枚举法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">length</span><span style="color:#f92672">:=</span>len(<span style="color:#a6e22e">s</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">s1</span><span style="color:#f92672">:=</span>[]byte(<span style="color:#a6e22e">s</span>) 
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">num</span><span style="color:#f92672">:=</span>[]<span style="color:#66d9ef">string</span>{}
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">1</span>;<span style="color:#a6e22e">i</span>&lt;<span style="color:#ae81ff">4</span><span style="color:#f92672">&amp;&amp;</span><span style="color:#a6e22e">i</span>&lt;<span style="color:#a6e22e">length</span><span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>;<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>{<span style="color:#75715e">//第一段从0 到倒数第四个 第一段长度不能超过4个 不能为0个  这里从1开始，&lt;4，是为了后面好截取
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">j</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">i</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;<span style="color:#a6e22e">j</span>&lt;<span style="color:#a6e22e">i</span><span style="color:#f92672">+</span><span style="color:#ae81ff">4</span><span style="color:#f92672">&amp;&amp;</span><span style="color:#a6e22e">j</span>&lt;<span style="color:#a6e22e">length</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;<span style="color:#a6e22e">j</span><span style="color:#f92672">++</span>{<span style="color:#75715e">//第二段，从第一段后开始，到倒数第三个
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">k</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">j</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;<span style="color:#a6e22e">k</span>&lt;<span style="color:#a6e22e">j</span><span style="color:#f92672">+</span><span style="color:#ae81ff">4</span><span style="color:#f92672">&amp;&amp;</span><span style="color:#a6e22e">k</span>&lt;<span style="color:#a6e22e">length</span>;<span style="color:#a6e22e">k</span><span style="color:#f92672">++</span>{ <span style="color:#75715e">//第三段
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">length</span><span style="color:#f92672">-</span><span style="color:#a6e22e">k</span><span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">4</span>{ <span style="color:#75715e">//剩下的字段长度超了
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">a</span><span style="color:#f92672">:=</span>string(<span style="color:#a6e22e">s1</span>[<span style="color:#ae81ff">0</span>:<span style="color:#a6e22e">i</span>])
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">b</span><span style="color:#f92672">:=</span>string(<span style="color:#a6e22e">s1</span>[<span style="color:#a6e22e">i</span>:<span style="color:#a6e22e">j</span>])
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">c</span><span style="color:#f92672">:=</span>string(<span style="color:#a6e22e">s1</span>[<span style="color:#a6e22e">j</span>:<span style="color:#a6e22e">k</span>])
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">d</span><span style="color:#f92672">:=</span>string(<span style="color:#a6e22e">s1</span>[<span style="color:#a6e22e">k</span>:])
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">a1</span>,<span style="color:#a6e22e">_</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Atoi</span>(<span style="color:#a6e22e">a</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">b1</span>,<span style="color:#a6e22e">_</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Atoi</span>(<span style="color:#a6e22e">b</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">c1</span>,<span style="color:#a6e22e">_</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Atoi</span>(<span style="color:#a6e22e">c</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">d1</span>,<span style="color:#a6e22e">_</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Atoi</span>(<span style="color:#a6e22e">d</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">a1</span>&gt;<span style="color:#ae81ff">255</span><span style="color:#f92672">||</span><span style="color:#a6e22e">b1</span>&gt;<span style="color:#ae81ff">255</span><span style="color:#f92672">||</span><span style="color:#a6e22e">c1</span>&gt;<span style="color:#ae81ff">255</span><span style="color:#f92672">||</span><span style="color:#a6e22e">d1</span>&gt;<span style="color:#ae81ff">255</span>{ <span style="color:#75715e">//排除数字大于255
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (len(<span style="color:#a6e22e">a</span>)<span style="color:#f92672">!=</span><span style="color:#ae81ff">1</span><span style="color:#f92672">&amp;&amp;</span><span style="color:#a6e22e">a</span>[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;0&#39;</span>)<span style="color:#f92672">||</span>(len(<span style="color:#a6e22e">b</span>)<span style="color:#f92672">!=</span><span style="color:#ae81ff">1</span><span style="color:#f92672">&amp;&amp;</span><span style="color:#a6e22e">b</span>[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;0&#39;</span>)<span style="color:#f92672">||</span>(len(<span style="color:#a6e22e">c</span>)<span style="color:#f92672">!=</span><span style="color:#ae81ff">1</span><span style="color:#f92672">&amp;&amp;</span><span style="color:#a6e22e">c</span>[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;0&#39;</span>)<span style="color:#f92672">||</span>(len(<span style="color:#a6e22e">d</span>)<span style="color:#f92672">!=</span><span style="color:#ae81ff">1</span><span style="color:#f92672">&amp;&amp;</span><span style="color:#a6e22e">d</span>[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;0&#39;</span>) {  <span style="color:#75715e">//排除先导0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">s</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">a</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;.&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">b</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;.&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">c</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;.&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">d</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">num</span> = append(<span style="color:#a6e22e">num</span>, <span style="color:#a6e22e">s</span>)
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">num</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202211261908737.gif" alt="" /></p>
+<pre tabindex="0"><code></code></pre><h3 id="编辑距离1">
   编辑距离1
   <a class="anchor" href="#%e7%bc%96%e8%be%91%e8%b7%9d%e7%a6%bb1">#</a>
 </h3>
@@ -4579,7 +4646,39 @@ https://github.com/alex-shpak/hugo-book
 说明：
 &#34;nowcoder&#34;=&gt;&#34;newcoder&#34;(将&#39;o&#39;替换为&#39;e&#39;)，修改操作1次
 &#34;nowcoder&#34;=&gt;&#34;new&#34;(删除&#34;coder&#34;)，删除操作5次  
-</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"></code></pre></div><h3 id="正则表达式匹配">
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">editDistance</span>(<span style="color:#a6e22e">str1</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">str2</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">n1</span> <span style="color:#f92672">:=</span> len(<span style="color:#a6e22e">str1</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">n2</span> <span style="color:#f92672">:=</span> len(<span style="color:#a6e22e">str2</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">dp</span> <span style="color:#f92672">:=</span> make([][]<span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">n1</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>) <span style="color:#75715e">//创建动态规划数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">dp</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>] = make([]<span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">n2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">n1</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">j</span> &lt; <span style="color:#a6e22e">n2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">j</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> { <span style="color:#75715e">//当其中一个字符串长度为0时，值就等于另一个字符串的长度，增加
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">j</span>] = <span style="color:#a6e22e">j</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">j</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">j</span>] = <span style="color:#a6e22e">i</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">str1</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">==</span> <span style="color:#a6e22e">str2</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] { <span style="color:#75715e">//如果相同，就等于上一个
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">j</span>] = <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>			} <span style="color:#66d9ef">else</span> { <span style="color:#75715e">//不同找最小值，加一  如果这两个字符不相同，那么这两个字符需要编辑，但是此时的最短的距离不一定是修改这最后一位，也有可能是删除某个字符或者增加某个字符，因此我们选取这三种情况的最小值增加一个编辑距离
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">j</span>] = <span style="color:#a6e22e">min</span>(<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], <span style="color:#a6e22e">min</span>(<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#a6e22e">j</span>], <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">n1</span>][<span style="color:#a6e22e">n2</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">min</span>(<span style="color:#a6e22e">a</span>, <span style="color:#a6e22e">b</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">a</span> &gt; <span style="color:#a6e22e">b</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">b</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">a</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="正则表达式匹配">
   正则表达式匹配
   <a class="anchor" href="#%e6%ad%a3%e5%88%99%e8%a1%a8%e8%be%be%e5%bc%8f%e5%8c%b9%e9%85%8d">#</a>
 </h3>
@@ -4595,7 +4694,35 @@ https://github.com/alex-shpak/hugo-book
 <pre tabindex="0"><code>输入：&#34;aad&#34;,&#34;c*a*d&#34;
 返回值：true
 说明：因为这里 c 为 0 个，a被重复一次， * 表示零个或多个a。因此可以匹配字符串 &#34;aad&#34;。 
-</code></pre><pre tabindex="0"><code></code></pre><h3 id="最长的括号子串">
+</code></pre><p><a href="https://leetcode.cn/problems/regular-expression-matching/solutions/1444108/by-flix-musv/">正则表达式匹配详解</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">match</span>(<span style="color:#a6e22e">str</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">pattern</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">n1</span>, <span style="color:#a6e22e">n2</span> <span style="color:#f92672">:=</span> len(<span style="color:#a6e22e">str</span>), len(<span style="color:#a6e22e">pattern</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">dp</span> <span style="color:#f92672">:=</span> make([][]<span style="color:#66d9ef">bool</span>, <span style="color:#a6e22e">n1</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">dp</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>] = make([]<span style="color:#66d9ef">bool</span>, <span style="color:#a6e22e">n2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">dp</span>[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>] = <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">j</span> &lt; <span style="color:#a6e22e">n2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">j</span><span style="color:#f92672">++</span> { <span style="color:#75715e">//搞定第一行，*代表0个或多个，前两个能匹配上，它就能匹配上
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">pattern</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;*&#39;</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">dp</span>[<span style="color:#ae81ff">0</span>][<span style="color:#a6e22e">j</span>] = <span style="color:#a6e22e">dp</span>[<span style="color:#ae81ff">0</span>][<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>]
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">n1</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">j</span> &lt; <span style="color:#a6e22e">n2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">j</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">str</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">==</span> <span style="color:#a6e22e">pattern</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">||</span> <span style="color:#a6e22e">pattern</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;.&#39;</span> {<span style="color:#75715e">//如果相等
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">j</span>] = <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#75715e">//是否匹配取决于前一个是否匹配
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">pattern</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;*&#39;</span> { <span style="color:#75715e">//如果不相等，切pattern[j-1] == &#39;*&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">str</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">!=</span> <span style="color:#a6e22e">pattern</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>] <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">pattern</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>] <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;.&#39;</span> { <span style="color:#75715e">//前一个也不等，前一个也不是 . 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>					<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">j</span>] = <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>]  <span style="color:#75715e">//代表* 为0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				} <span style="color:#66d9ef">else</span> { <span style="color:#75715e">//str[i-1] == pattern[j-2]  pattern前一个跟str相等，这里有0个或多个
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>					<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">j</span>] = <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>] <span style="color:#f92672">||</span> <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#a6e22e">j</span>]<span style="color:#75715e">// 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				}
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">n1</span>][<span style="color:#a6e22e">n2</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="最长的括号子串">
   最长的括号子串
   <a class="anchor" href="#%e6%9c%80%e9%95%bf%e7%9a%84%e6%8b%ac%e5%8f%b7%e5%ad%90%e4%b8%b2">#</a>
 </h3>
@@ -4604,16 +4731,618 @@ https://github.com/alex-shpak/hugo-book
 <p>例2：对于字符串 &ldquo;)()())&rdquo; , 来说, 最长的格式正确的子串是 &ldquo;()()&rdquo; ，长度为 4 .</p>
 <p>字符串长度：0≤n≤5∗105</p>
 <p>要求时间复杂度 O(n),空间复杂度 O(n)</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202211301437184.png" alt="" /></p>
 <pre tabindex="0"><code>输入：&#34;(())&#34;
 返回值：4
-</code></pre><pre tabindex="0"><code></code></pre><h2 id="字符串">
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">longestValidParentheses</span>( <span style="color:#a6e22e">s</span> <span style="color:#66d9ef">string</span> ) <span style="color:#66d9ef">int</span> {<span style="color:#75715e">//动态规划
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">maxAns</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">dp</span><span style="color:#f92672">:=</span>make([]<span style="color:#66d9ef">int</span>,len(<span style="color:#a6e22e">s</span>))
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">1</span>;<span style="color:#a6e22e">i</span>&lt;len(<span style="color:#a6e22e">s</span>);<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>{
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">s</span>[<span style="color:#a6e22e">i</span>]<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;)&#39;</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">s</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;(&#39;</span>{<span style="color:#75715e">//()(()()
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>          <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">2</span>{
+</span></span><span style="display:flex;"><span>              <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>]=<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>]<span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>          }<span style="color:#66d9ef">else</span>{
+</span></span><span style="display:flex;"><span>              <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>]=<span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>        }<span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]&gt;<span style="color:#ae81ff">0</span><span style="color:#f92672">&amp;&amp;</span><span style="color:#a6e22e">s</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;(&#39;</span>{<span style="color:#75715e">//i-dp[i-1]-1 往前数多一个（）的位置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">2</span>{
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>]=<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">+</span><span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>]<span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>            }<span style="color:#66d9ef">else</span>{
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>]=<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">maxAns</span>=<span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">maxAns</span>,<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>])
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">maxAns</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span> <span style="color:#66d9ef">int</span>)<span style="color:#66d9ef">int</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">a</span>&gt;<span style="color:#a6e22e">b</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">a</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">b</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>对于遇到的每个 ‘(’，我们将它的下标放入栈中</li>
+<li>对于遇到的每个 ‘)’ ，我们先弹出栈顶元素表示匹配了当前右括号：
+<ul>
+<li>如果栈为空，说明当前的右括号为没有被匹配的右括号，我们将其下标放入栈中来更新我们之前提到的「最后一个没有被匹配的右括号的下标」</li>
+<li>如果栈不为空，当前右括号的下标减去栈顶元素即为「以该右括号为结尾的最长有效括号的长度」</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">longestValidParentheses</span>( <span style="color:#a6e22e">s</span> <span style="color:#66d9ef">string</span> ) <span style="color:#66d9ef">int</span> {<span style="color:#75715e">//栈
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">maxAns</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">n</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">dp</span><span style="color:#f92672">:=</span>[]<span style="color:#66d9ef">int</span>{<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>} <span style="color:#75715e">//里面先放一个-1，1--1=2 也防止刚上来就出栈，导致Panic
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">0</span>;<span style="color:#a6e22e">i</span>&lt;len(<span style="color:#a6e22e">s</span>);<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">s</span>[<span style="color:#a6e22e">i</span>]<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;(&#39;</span>{<span style="color:#75715e">//入栈
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#a6e22e">dp</span>=append(<span style="color:#a6e22e">dp</span>,<span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>        }<span style="color:#66d9ef">else</span>{ <span style="color:#75715e">//)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>          <span style="color:#a6e22e">dp</span>=<span style="color:#a6e22e">dp</span>[:len(<span style="color:#a6e22e">dp</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#75715e">//先出栈 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">dp</span>)<span style="color:#f92672">!=</span><span style="color:#ae81ff">0</span>{
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">n</span>=<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#a6e22e">dp</span>[len(<span style="color:#a6e22e">dp</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>            }<span style="color:#66d9ef">else</span>{   <span style="color:#75715e">//如果栈为空，则继续入栈， 故栈中一直有数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#a6e22e">dp</span>=append(<span style="color:#a6e22e">dp</span>, <span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">maxAns</span>=<span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">maxAns</span>,<span style="color:#a6e22e">n</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">maxAns</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span> <span style="color:#66d9ef">int</span>)<span style="color:#66d9ef">int</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">a</span>&gt;<span style="color:#a6e22e">b</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">a</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">b</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="打家劫舍1">
+  打家劫舍1
+  <a class="anchor" href="#%e6%89%93%e5%ae%b6%e5%8a%ab%e8%88%8d1">#</a>
+</h3>
+<p>你是一个经验丰富的小偷，准备偷沿街的一排房间，每个房间都存有一定的现金，为了防止被发现，你不能偷相邻的两家，即，如果偷了第一家，就不能再偷第二家；如果偷了第二家，那么就不能偷第一家和第三家。</p>
+<p>给定一个整数数组nums，数组中的元素表示每个房间存有的现金数额，请你计算在不被发现的前提下最多的偷窃金额。</p>
+<p>数据范围：数组长度满足 1≤n≤2×105  ，数组中每个值满足 1≤num[i]≤5000</p>
+<pre tabindex="0"><code>输入：[1,2,3,4]
+返回值：6
+说明：最优方案是偷第 2，4 个房间
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">rob</span>( <span style="color:#a6e22e">nums</span> []<span style="color:#66d9ef">int</span> ) <span style="color:#66d9ef">int</span> { 
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">length</span><span style="color:#f92672">:=</span>len(<span style="color:#a6e22e">nums</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">length</span><span style="color:#f92672">==</span><span style="color:#ae81ff">1</span>{ <span style="color:#75715e">//排除长度为1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">nums</span>[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">length</span><span style="color:#f92672">==</span><span style="color:#ae81ff">2</span>{<span style="color:#75715e">//排除长度为2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">nums</span>[<span style="color:#ae81ff">0</span>],<span style="color:#a6e22e">nums</span>[<span style="color:#ae81ff">1</span>])
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">dp</span><span style="color:#f92672">:=</span>make([]<span style="color:#66d9ef">int</span>,<span style="color:#a6e22e">length</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">dp</span>[<span style="color:#ae81ff">0</span>],<span style="color:#a6e22e">dp</span>[<span style="color:#ae81ff">1</span>]=<span style="color:#a6e22e">nums</span>[<span style="color:#ae81ff">0</span>],<span style="color:#a6e22e">nums</span>[<span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">2</span>;<span style="color:#a6e22e">i</span>&lt;<span style="color:#a6e22e">length</span>;<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>{<span style="color:#75715e">//长度大于2时
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">3</span><span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">0</span>{
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>]=<span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>],<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>])<span style="color:#f92672">+</span><span style="color:#a6e22e">nums</span>[<span style="color:#a6e22e">i</span>] <span style="color:#75715e">//dp[i]=前两或前三的最大值 加本值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">==</span><span style="color:#ae81ff">2</span>{ <span style="color:#75715e">//只有前二
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>]=<span style="color:#a6e22e">dp</span>[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">+</span><span style="color:#a6e22e">nums</span>[<span style="color:#a6e22e">i</span>]
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">length</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>],<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">length</span><span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>]) <span style="color:#75715e">//找最后两位的最大值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span> <span style="color:#66d9ef">int</span>)<span style="color:#66d9ef">int</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">a</span>&gt;<span style="color:#a6e22e">b</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">a</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">b</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>具体做法：</strong></p>
+<ul>
+<li>step 1：用dp[i]表示长度为i的数组，最多能偷取到多少钱，只要每次转移状态逐渐累加就可以得到整个数组能偷取的钱。</li>
+<li>step 2：<strong>（初始状态）</strong> 如果数组长度为1，只有一家人，肯定是把这家人偷了，收益最大，因此dp[1]=nums[0]。</li>
+<li>step 3：<strong>（状态转移）</strong> 每次对于一个人家，我们选择偷他或者不偷他，如果我们选择偷那么前一家必定不能偷，因此累加的上上级的最多收益，同理如果选择不偷他，那我们最多可以累加上一级的收益。因此转移方程为dp[i]=max(dp[i−1],nums[i−1]+dp[i−2])。这里的i在dp中为数组长度，在nums中为下标。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">rob</span>( <span style="color:#a6e22e">nums</span> []<span style="color:#66d9ef">int</span> ) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">length</span><span style="color:#f92672">:=</span>len(<span style="color:#a6e22e">nums</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">dp</span><span style="color:#f92672">:=</span>make([]<span style="color:#66d9ef">int</span>,<span style="color:#a6e22e">length</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">dp</span>[<span style="color:#ae81ff">1</span>]=<span style="color:#a6e22e">nums</span>[<span style="color:#ae81ff">0</span>] <span style="color:#75715e">//长度为1 只能偷一家
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">2</span>;<span style="color:#a6e22e">i</span>&lt;<span style="color:#a6e22e">length</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>]=<span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>],<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>]<span style="color:#f92672">+</span><span style="color:#a6e22e">nums</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]) <span style="color:#75715e">//选择偷或者不偷这家的最大值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">length</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span> <span style="color:#66d9ef">int</span>)<span style="color:#66d9ef">int</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">a</span>&gt;<span style="color:#a6e22e">b</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">a</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">b</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="打家劫舍2">
+  打家劫舍2
+  <a class="anchor" href="#%e6%89%93%e5%ae%b6%e5%8a%ab%e8%88%8d2">#</a>
+</h3>
+<p>你是一个经验丰富的小偷，准备偷沿湖的一排房间，每个房间都存有一定的现金，为了防止被发现，你不能偷相邻的两家，即，如果偷了第一家，就不能再偷第二家，如果偷了第二家，那么就不能偷第一家和第三家。沿湖的房间组成一个闭合的圆形，即第一个房间和最后一个房间视为相邻。</p>
+<p>给定一个长度为n的整数数组nums，数组中的元素表示每个房间存有的现金数额，请你计算在不被发现的前提下最多的偷窃金额。</p>
+<p>数据范围：数组长度满足 1≤n≤2×105  ，数组中每个值满足 1≤nums[i]≤5000</p>
+<pre tabindex="0"><code>输入：[1,2,3,4]
+返回值：6
+说明：最优方案是偷第 2 4 个房间
+</code></pre><pre tabindex="0"><code>输入：[1,3,6]
+返回值：6
+说明：由于 1 和 3 是相邻的，因此最优方案是偷第 3 个房间      
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">rob</span>( <span style="color:#a6e22e">nums</span> []<span style="color:#66d9ef">int</span> ) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">nums</span>)<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">nums</span>[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">nums</span>)<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">nums</span>[<span style="color:#ae81ff">0</span>],<span style="color:#a6e22e">nums</span>[<span style="color:#ae81ff">1</span>])
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">a</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">robmax</span>(<span style="color:#a6e22e">nums</span>[:len(<span style="color:#a6e22e">nums</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])<span style="color:#75715e">//假设偷了第一件间 则把最好一间拿掉
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">b</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">robmax</span>(<span style="color:#a6e22e">nums</span>[<span style="color:#ae81ff">1</span>:]) <span style="color:#75715e">//假设没偷第一间，把第一间拿掉
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span>)  <span style="color:#75715e">//返回最大值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">robmax</span>(<span style="color:#a6e22e">nums</span> []<span style="color:#66d9ef">int</span>)<span style="color:#66d9ef">int</span>{<span style="color:#75715e">//跟打家劫舍一类似
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">dp</span><span style="color:#f92672">:=</span>make([]<span style="color:#66d9ef">int</span>,len(<span style="color:#a6e22e">nums</span>))
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">dp</span>[<span style="color:#ae81ff">0</span>]=<span style="color:#a6e22e">nums</span>[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">dp</span>[<span style="color:#ae81ff">1</span>]=<span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">nums</span>[<span style="color:#ae81ff">0</span>],<span style="color:#a6e22e">nums</span>[<span style="color:#ae81ff">1</span>])
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">2</span>;<span style="color:#a6e22e">i</span>&lt;len(<span style="color:#a6e22e">nums</span>);<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>]=<span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>],<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>]<span style="color:#f92672">+</span><span style="color:#a6e22e">nums</span>[<span style="color:#a6e22e">i</span>])
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">dp</span>[len(<span style="color:#a6e22e">nums</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span> <span style="color:#66d9ef">int</span>)<span style="color:#66d9ef">int</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">a</span>&gt;<span style="color:#a6e22e">b</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">a</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">b</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="打家劫舍3">
+  打家劫舍3
+  <a class="anchor" href="#%e6%89%93%e5%ae%b6%e5%8a%ab%e8%88%8d3">#</a>
+</h3>
+<p>小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为 <code>root</code> 。</p>
+<p>除了 <code>root</code> 之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列类似于一棵二叉树”。 如果 <strong>两个直接相连的房子在同一天晚上被打劫</strong> ，房屋将自动报警。</p>
+<p>给定二叉树的 <code>root</code> 。返回 <em><strong>在不触动警报的情况下</strong> ，小偷能够盗取的最高金额</em> 。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202212011521468.jpg" alt="" /></p>
+<pre tabindex="0"><code>输入: root = [3,2,3,null,3,null,1]
+输出: 7 
+解释: 小偷一晚能够盗取的最高金额 3 + 3 + 1 = 7
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">rob</span>(<span style="color:#a6e22e">root</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">TreeNode</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">dfs</span>(<span style="color:#a6e22e">root</span>))
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">dfs</span>(<span style="color:#a6e22e">root</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">TreeNode</span>)(<span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span> <span style="color:#66d9ef">int</span>){<span style="color:#75715e">//a表示选择这个节点，b表示不选择这个节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">root</span><span style="color:#f92672">==</span><span style="color:#66d9ef">nil</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">a1</span>,<span style="color:#a6e22e">b1</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">dfs</span>(<span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Left</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">a2</span>,<span style="color:#a6e22e">b2</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">dfs</span>(<span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Right</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//如果选择这个节点，则它左右子树就不能选择，则为这个节点值，加左右子树不选择这个点的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">a</span>=<span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">Val</span><span style="color:#f92672">+</span><span style="color:#a6e22e">b1</span><span style="color:#f92672">+</span><span style="color:#a6e22e">b2</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//如果不选择这个节点，则b为选择它左右子树节点和不选择它左右子树节点 的最大值的和
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">b</span>=<span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">a1</span>,<span style="color:#a6e22e">b1</span>)<span style="color:#f92672">+</span><span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">a2</span>,<span style="color:#a6e22e">b2</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span> <span style="color:#66d9ef">int</span>)<span style="color:#66d9ef">int</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">a</span>&gt;<span style="color:#a6e22e">b</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">a</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">b</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="买卖股票的最好时机1">
+  买卖股票的最好时机1
+  <a class="anchor" href="#%e4%b9%b0%e5%8d%96%e8%82%a1%e7%a5%a8%e7%9a%84%e6%9c%80%e5%a5%bd%e6%97%b6%e6%9c%ba1">#</a>
+</h3>
+<p>假设你有一个数组prices，长度为n，其中prices[i]是股票在第i天的价格，请根据这个价格数组，返回买卖股票能获得的最大收益</p>
+<p>1.你可以买入一次股票和卖出一次股票，并非每天都可以买入或卖出一次，总共只能买入和卖出一次，且买入必须在卖出的前面的某一天</p>
+<p>2.如果不能获取到任何利润，请返回0</p>
+<p>3.假设买入卖出均无手续费</p>
+<p>数据范围： 0≤n≤105,0≤val≤104</p>
+<p>要求：空间复杂度 O(1)，时间复杂度 O(n)</p>
+<pre tabindex="0"><code>输入：[8,9,2,5,4,7,1]
+返回值：5
+说明：在第3天(股票价格 = 2)的时候买入，在第6天(股票价格 = 7)的时候卖出，最大利润 = 7-2 = 5 ，不能选择在第2天买入，第3天卖出，这样就亏损7了；同时，你也不能在买入前卖出股票。            
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">dp[i][0]：规定了今天不持股，有以下两种情况：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    昨天不持股，今天什么都不做；
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    昨天持股，今天卖出股票（现金数增加），
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    状态转移方程：dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">dp[i][1]：规定了今天持股，有以下两种情况：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    昨天持股，今天什么都不做（现金数与昨天一样）；
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    昨天不持股，今天买入股票（注意：只允许交易一次，因此手上的现金数就是当天的股价的相反数）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    状态转移方程：dp[i][1] = Math.max(dp[i - 1][1], -prices[i]);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">maxProfit</span>( <span style="color:#a6e22e">prices</span> []<span style="color:#66d9ef">int</span> ) <span style="color:#66d9ef">int</span> {<span style="color:#75715e">//动态规划
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">length</span><span style="color:#f92672">:=</span>len(<span style="color:#a6e22e">prices</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">length</span>&lt;<span style="color:#ae81ff">2</span>{
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">dp</span><span style="color:#f92672">:=</span>make([][<span style="color:#ae81ff">2</span>]<span style="color:#66d9ef">int</span>,<span style="color:#a6e22e">length</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">dp</span>[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>]=<span style="color:#ae81ff">0</span><span style="color:#75715e">//下标为 i 这天结束的时候，不持股，手上拥有的现金数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">dp</span>[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">1</span>]=<span style="color:#f92672">-</span><span style="color:#a6e22e">prices</span>[<span style="color:#ae81ff">0</span>]<span style="color:#75715e">//下标为 i 这天结束的时候，持股，手上拥有的现金数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">1</span>;<span style="color:#a6e22e">i</span>&lt;<span style="color:#a6e22e">length</span>;<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#ae81ff">0</span>]=<span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">prices</span>[<span style="color:#a6e22e">i</span>]<span style="color:#f92672">+</span><span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">1</span>],<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#ae81ff">1</span>]=<span style="color:#a6e22e">max</span>(<span style="color:#f92672">-</span><span style="color:#a6e22e">prices</span>[<span style="color:#a6e22e">i</span>],<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">1</span>])
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">dp</span>[len(<span style="color:#a6e22e">prices</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span> <span style="color:#66d9ef">int</span>)<span style="color:#66d9ef">int</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">a</span>&gt;<span style="color:#a6e22e">b</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">a</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">b</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">maxProfit</span>( <span style="color:#a6e22e">prices</span> []<span style="color:#66d9ef">int</span> ) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">minprices</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">prices</span>[<span style="color:#ae81ff">0</span>]<span style="color:#75715e">//里面的最小值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">maxprices</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">0</span> <span style="color:#75715e">//最大值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">1</span>;<span style="color:#a6e22e">i</span>&lt;len(<span style="color:#a6e22e">prices</span>);<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>{
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">prices</span>[<span style="color:#a6e22e">i</span>]<span style="color:#f92672">-</span><span style="color:#a6e22e">minprices</span>&gt;<span style="color:#a6e22e">maxprices</span>{ <span style="color:#75715e">//存在最大值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">maxprices</span>=<span style="color:#a6e22e">prices</span>[<span style="color:#a6e22e">i</span>]<span style="color:#f92672">-</span><span style="color:#a6e22e">minprices</span> <span style="color:#75715e">//更新
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">prices</span>[<span style="color:#a6e22e">i</span>]&lt;<span style="color:#a6e22e">minprices</span>{ <span style="color:#75715e">//如果存在最小值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">minprices</span>=<span style="color:#a6e22e">prices</span>[<span style="color:#a6e22e">i</span>]
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">maxprices</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="买卖股票的最好时机2">
+  买卖股票的最好时机2
+  <a class="anchor" href="#%e4%b9%b0%e5%8d%96%e8%82%a1%e7%a5%a8%e7%9a%84%e6%9c%80%e5%a5%bd%e6%97%b6%e6%9c%ba2">#</a>
+</h3>
+<p>假设你有一个数组prices，长度为n，其中prices[i]是某只股票在第i天的价格，请根据这个价格数组，返回买卖股票能获得的最大收益</p>
+<ol>
+<li>
+<p>你可以多次买卖该只股票，但是再次购买前必须卖出之前的股票</p>
+</li>
+<li>
+<p>如果不能获取收益，请返回0</p>
+</li>
+<li>
+<p>假设买入卖出均无手续费</p>
+</li>
+</ol>
+<p>数据范围： 1≤n≤1×105， 1≤prices[i]≤104</p>
+<p>要求：空间复杂度 O(n)，时间复杂度 O(n)</p>
+<p>进阶：空间复杂度 O(1)，时间复杂度 O(n)</p>
+<pre tabindex="0"><code>输入：[8,9,2,5,4,7,1]
+返回值：7
+说明：
+在第1天(股票价格=8)买入，第2天(股票价格=9)卖出，获利9-8=1
+在第3天(股票价格=2)买入，第4天(股票价格=5)卖出，获利5-2=3
+在第5天(股票价格=4)买入，第6天(股票价格=7)卖出，获利7-4=3
+总获利1+3+3=7，返回7        
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">maxProfit</span>( <span style="color:#a6e22e">prices</span> []<span style="color:#66d9ef">int</span> ) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">ans</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">1</span>;<span style="color:#a6e22e">i</span>&lt;len(<span style="color:#a6e22e">prices</span>);<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">prices</span>[<span style="color:#a6e22e">i</span>]&gt;<span style="color:#a6e22e">prices</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]{  <span style="color:#75715e">//遇到比前一天大就自动买入买出
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#a6e22e">ans</span>=<span style="color:#a6e22e">ans</span><span style="color:#f92672">+</span><span style="color:#a6e22e">prices</span>[<span style="color:#a6e22e">i</span>]<span style="color:#f92672">-</span><span style="color:#a6e22e">prices</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">ans</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">step 1：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">用dp[i][0]表示第i天不持股到该天为止的最大收益，
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">dp[i][1]表示第i天持股，到该天为止的最大收益。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">step 2：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">（初始状态） 第一天不持股，则总收益为0，
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">dp[0][0]=0；第一天持股，则总收益为买股票的花费，此时为负数，
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">dp[0][1]=−prices[0]。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">step 3：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">（状态转移） 对于之后的每一天，如果当天不持股，有可能是前面的若干天中卖掉了或是还没买，因此到此为止的总收益和前一天相同，也有可能是当天卖掉股票，我们选择较大的状态
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">dp[i][0]=max(dp[i−1][0],dp[i−1][1]+prices[i])；
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">step4：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">如果当天持股，可能是前几天买入的还没卖，因此收益与前一天相同，也有可能是当天买入，减去买入的花费，同样是选取最大值：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">dp[i][1]=max(dp[i−1][1],dp[i−1][0]−prices[i])。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">maxProfit</span>( <span style="color:#a6e22e">prices</span> []<span style="color:#66d9ef">int</span> ) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">length</span><span style="color:#f92672">:=</span>len(<span style="color:#a6e22e">prices</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">dp</span><span style="color:#f92672">:=</span>make([][<span style="color:#ae81ff">2</span>]<span style="color:#66d9ef">int</span>,<span style="color:#a6e22e">length</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">dp</span>[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>]=<span style="color:#ae81ff">0</span><span style="color:#75715e">//第一天不持股，总收益为0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">dp</span>[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">1</span>]=<span style="color:#f92672">-</span><span style="color:#a6e22e">prices</span>[<span style="color:#ae81ff">0</span>]<span style="color:#75715e">//第一天持股，总收益为减去该天的股价
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">1</span>;<span style="color:#a6e22e">i</span>&lt;<span style="color:#a6e22e">length</span>;<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#ae81ff">0</span>]=<span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">1</span>]<span style="color:#f92672">+</span><span style="color:#a6e22e">prices</span>[<span style="color:#a6e22e">i</span>],<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#ae81ff">1</span>]=<span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">1</span>],<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">0</span>]<span style="color:#f92672">-</span><span style="color:#a6e22e">prices</span>[<span style="color:#a6e22e">i</span>])
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">length</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span> <span style="color:#66d9ef">int</span>)<span style="color:#66d9ef">int</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">a</span>&gt;<span style="color:#a6e22e">b</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">a</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">b</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="买卖股票的最好时机3">
+  买卖股票的最好时机3
+  <a class="anchor" href="#%e4%b9%b0%e5%8d%96%e8%82%a1%e7%a5%a8%e7%9a%84%e6%9c%80%e5%a5%bd%e6%97%b6%e6%9c%ba3">#</a>
+</h3>
+<p>假设你有一个数组prices，长度为n，其中prices[i]是某只股票在第i天的价格，请根据这个价格数组，返回买卖股票能获得的最大收益</p>
+<ol>
+<li>你最多可以对该股票有两笔交易操作，一笔交易代表着一次买入与一次卖出，但是再次购买前必须卖出之前的股票</li>
+<li>如果不能获取收益，请返回0</li>
+<li>假设买入卖出均无手续费</li>
+</ol>
+<p>数据范围：1≤n≤105，股票的价格满足 1≤val≤104</p>
+<p>要求: 空间复杂度 O(n)，时间复杂度 O(n)</p>
+<p>进阶：空间复杂度 O(1)，时间复杂度 O(n)</p>
+<pre tabindex="0"><code>输入：[8,9,3,5,1,3]
+返回值：4
+说明：
+第三天(股票价格=3)买进，第四天(股票价格=5)卖出，收益为2
+第五天(股票价格=1)买进，第六天(股票价格=3)卖出，收益为2
+总收益为4。              
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">这道题与BM80.买卖股票的最好时机(一)的区别在于最多可以买入卖出2次，那实际上相当于它的状态多了几个，对于每天有到此为止的最大收益和持股情况两个状态，持股情况有了5种变化，我们用：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">dp[i][0]表示到第i天为止没有买过股票的最大收益
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">dp[i][1]表示到第i天为止买过一次股票还没有卖出的最大收益
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">dp[i][2]表示到第i天为止买过一次也卖出过一次股票的最大收益
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">dp[i][3]表示到第i天为止买过两次只卖出过一次股票的最大收益
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">dp[i][4]表示到第i天为止买过两次同时也买出过两次股票的最大收益
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">于是使用动态规划，有了如下的状态转移
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">具体做法：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">step 1：（初始状态） 与上述提到的题类似，第0天有买入了和没有买两种状态：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">dp[0][0]=0、dp[0][1]=−prices[0]。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">step 2：状态转移： 对于后续的每一天，如果当天还是状态0，则与前一天相同，没有区别；
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">step 3：如果当天状态为1，可能是之前买过了或者当天才第一次买入，选取较大值：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">dp[i][1]=max(dp[i−1][1],dp[i−1][0]−prices[i])；
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">step 4：如果当天状态是2，那必须是在1的状态下（已经买入了一次）当天卖出第一次，或者早在之前就卖出只是还没买入第二次，选取较大值：dp[i][2]=max(dp[i−1][2],dp[i−1][1]+prices[i])；
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">step 5：如果当天状态是3，那必须是在2的状态下（已经卖出了第一次）当天买入了第二次，或者早在之前就买入了第二次，只是还没卖出，选取较大值：dp[i][3]=max(dp[i−1][3],dp[i−1][2]−prices[i]);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">step 6：如果当天是状态4，那必须是在3的状态下（已经买入了第二次）当天再卖出第二次，或者早在之前就卖出了第二次，选取较大值：dp[i][4]=max(dp[i−1][4],dp[i−1][3]+prices[i])。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">step 7：最后我们还要从0、第一次卖出、第二次卖出中选取最大值，因为有可能没有收益，也有可能只交易一次收益最大。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span></code></pre></div><p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202212051824783.gif" alt="" /></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">maxProfit</span>( <span style="color:#a6e22e">prices</span> []<span style="color:#66d9ef">int</span> ) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">length</span><span style="color:#f92672">:=</span>len(<span style="color:#a6e22e">prices</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">dp</span><span style="color:#f92672">:=</span>make([][]<span style="color:#66d9ef">int</span>,<span style="color:#a6e22e">length</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#66d9ef">range</span> <span style="color:#a6e22e">dp</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>]=[]<span style="color:#66d9ef">int</span>{<span style="color:#f92672">-</span><span style="color:#ae81ff">10000</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">10000</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">10000</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">10000</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">10000</span>}
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">dp</span>[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>]=<span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">dp</span>[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">1</span>]=<span style="color:#f92672">-</span><span style="color:#a6e22e">prices</span>[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">1</span>;<span style="color:#a6e22e">i</span>&lt;<span style="color:#a6e22e">length</span>;<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#ae81ff">0</span>]=<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">0</span>]<span style="color:#75715e">//到第i天为止，没有买过股票的最大收益一直为0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#ae81ff">1</span>]=<span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">1</span>],<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">0</span>]<span style="color:#f92672">-</span><span style="color:#a6e22e">prices</span>[<span style="color:#a6e22e">i</span>])<span style="color:#75715e">//表示到第i天为止买过一次股票还没有卖出的最大收益
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#ae81ff">2</span>]=<span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">2</span>],<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">1</span>]<span style="color:#f92672">+</span><span style="color:#a6e22e">prices</span>[<span style="color:#a6e22e">i</span>])<span style="color:#75715e">//表示到第i天为止买过一次股票也卖出过一次股票的最大收益
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#ae81ff">3</span>]=<span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">3</span>],<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">2</span>]<span style="color:#f92672">-</span><span style="color:#a6e22e">prices</span>[<span style="color:#a6e22e">i</span>])<span style="color:#75715e">//表示到第i天为止买过两次股票只卖出一次的最大收益
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span>][<span style="color:#ae81ff">4</span>]=<span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">4</span>],<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">3</span>]<span style="color:#f92672">+</span><span style="color:#a6e22e">prices</span>[<span style="color:#a6e22e">i</span>])<span style="color:#75715e">//表示到第i天为止买过两次股票也卖出两次股票的最大收益
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">length</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">2</span>],<span style="color:#a6e22e">max</span>(<span style="color:#ae81ff">0</span>,<span style="color:#a6e22e">dp</span>[<span style="color:#a6e22e">length</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">4</span>]))
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span> <span style="color:#66d9ef">int</span>)<span style="color:#66d9ef">int</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">a</span>&gt;<span style="color:#a6e22e">b</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">a</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">b</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//简化版
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">maxProfit</span>(<span style="color:#a6e22e">prices</span> []<span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">n</span><span style="color:#f92672">:=</span>len(<span style="color:#a6e22e">prices</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">a1</span>,<span style="color:#a6e22e">b1</span><span style="color:#f92672">:=-</span><span style="color:#a6e22e">prices</span>[<span style="color:#ae81ff">0</span>],<span style="color:#ae81ff">0</span><span style="color:#75715e">//只进行过一次买操作,进行了一次买操作和一次卖操作，即完成了一笔交易；
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">a2</span>,<span style="color:#a6e22e">b2</span><span style="color:#f92672">:=-</span><span style="color:#a6e22e">prices</span>[<span style="color:#ae81ff">0</span>],<span style="color:#ae81ff">0</span><span style="color:#75715e">//在完成了一笔交易的前提下，进行了第二次买操作；完成了全部两笔交易。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">1</span>;<span style="color:#a6e22e">i</span>&lt;<span style="color:#a6e22e">n</span>;<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">a1</span>=<span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">a1</span>,<span style="color:#f92672">-</span><span style="color:#a6e22e">prices</span>[<span style="color:#a6e22e">i</span>])
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">b1</span>=<span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">b1</span>,<span style="color:#a6e22e">a1</span><span style="color:#f92672">+</span><span style="color:#a6e22e">prices</span>[<span style="color:#a6e22e">i</span>])
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">a2</span>=<span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">a2</span>,<span style="color:#a6e22e">b1</span><span style="color:#f92672">-</span><span style="color:#a6e22e">prices</span>[<span style="color:#a6e22e">i</span>])
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">b2</span>=<span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">b2</span>,<span style="color:#a6e22e">a2</span><span style="color:#f92672">+</span><span style="color:#a6e22e">prices</span>[<span style="color:#a6e22e">i</span>])
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">b1</span>,<span style="color:#a6e22e">max</span>(<span style="color:#ae81ff">0</span>,<span style="color:#a6e22e">b2</span>))
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">max</span>(<span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span> <span style="color:#66d9ef">int</span>)<span style="color:#66d9ef">int</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">a</span>&gt;<span style="color:#a6e22e">b</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">a</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">b</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="字符串">
   字符串
   <a class="anchor" href="#%e5%ad%97%e7%ac%a6%e4%b8%b2">#</a>
 </h2>
-<h2 id="双指针">
+<h3 id="字符串变形">
+  字符串变形
+  <a class="anchor" href="#%e5%ad%97%e7%ac%a6%e4%b8%b2%e5%8f%98%e5%bd%a2">#</a>
+</h3>
+<p>对于一个长度为 n 字符串，我们需要对它做一些变形。</p>
+<p>首先这个字符串中包含着一些空格，就像&quot;Hello World&quot;一样，然后我们要做的是把这个字符串中由空格隔开的单词反序，同时反转每个字符的大小写。</p>
+<p>比如&quot;Hello World&quot;变形后就变成了&quot;wORLD hELLO&quot;。</p>
+<p>数据范围: 1≤n≤106 , 字符串中包括大写英文字母、小写英文字母、空格。</p>
+<p>进阶：空间复杂度 O(n)， 时间复杂度 O(n)</p>
+<pre tabindex="0"><code>输入：&#34;This is a sample&#34;,16
+返回值：&#34;SAMPLE A IS tHIS&#34;
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">trans</span>(<span style="color:#a6e22e">s</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">n</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">s1</span> <span style="color:#f92672">:=</span> []byte(<span style="color:#a6e22e">s</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">0</span>;<span style="color:#a6e22e">i</span>&lt;<span style="color:#a6e22e">n</span>;<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>{  <span style="color:#75715e">//遇到小写变大写，大写变小写
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">s1</span>[<span style="color:#a6e22e">i</span>] <span style="color:#f92672">&gt;=</span> <span style="color:#e6db74">&#39;A&#39;</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">s1</span>[<span style="color:#a6e22e">i</span>] <span style="color:#f92672">&lt;=</span> <span style="color:#e6db74">&#39;Z&#39;</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">s1</span>[<span style="color:#a6e22e">i</span>] = <span style="color:#a6e22e">s1</span>[<span style="color:#a6e22e">i</span>] <span style="color:#f92672">-</span> <span style="color:#e6db74">&#39;A&#39;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;a&#39;</span>
+</span></span><span style="display:flex;"><span>		} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">s1</span>[<span style="color:#a6e22e">i</span>] <span style="color:#f92672">&gt;=</span> <span style="color:#e6db74">&#39;a&#39;</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">s1</span>[<span style="color:#a6e22e">i</span>] <span style="color:#f92672">&lt;=</span> <span style="color:#e6db74">&#39;z&#39;</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">s1</span>[<span style="color:#a6e22e">i</span>] = <span style="color:#a6e22e">s1</span>[<span style="color:#a6e22e">i</span>] <span style="color:#f92672">-</span> <span style="color:#e6db74">&#39;a&#39;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;A&#39;</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">s2</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">Split</span>(string(<span style="color:#a6e22e">s1</span>),<span style="color:#e6db74">&#34; &#34;</span>)<span style="color:#75715e">//以“ ”为断点 先切片 返回字符串切片
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span>,<span style="color:#a6e22e">j</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">0</span>,len(<span style="color:#a6e22e">s2</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;<span style="color:#a6e22e">i</span>&lt;<span style="color:#a6e22e">j</span>;{
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">s2</span>[<span style="color:#a6e22e">i</span>],<span style="color:#a6e22e">s2</span>[<span style="color:#a6e22e">j</span>]=<span style="color:#a6e22e">s2</span>[<span style="color:#a6e22e">j</span>],<span style="color:#a6e22e">s2</span>[<span style="color:#a6e22e">i</span>]
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">j</span><span style="color:#f92672">--</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">Join</span>(<span style="color:#a6e22e">s2</span>,<span style="color:#e6db74">&#34; &#34;</span>)<span style="color:#75715e">//以“ ”为连接点，连接成字符串
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><h3 id="最长公共前缀">
+  最长公共前缀
+  <a class="anchor" href="#%e6%9c%80%e9%95%bf%e5%85%ac%e5%85%b1%e5%89%8d%e7%bc%80">#</a>
+</h3>
+<p>给你一个大小为 n 的字符串数组 strs ，其中包含n个字符串 , 编写一个函数来查找字符串数组中的最长公共前缀，返回这个公共前缀。</p>
+<p>数据范围： 0≤n≤5000， 0≤len(strsi)≤5000</p>
+<p>进阶：空间复杂度 O(1)，时间复杂度 O(n∗len)</p>
+<pre tabindex="0"><code>输入：[&#34;abca&#34;,&#34;abc&#34;,&#34;abca&#34;,&#34;abc&#34;,&#34;abcc&#34;]
+返回值：&#34;abc&#34;
+</code></pre><p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202212052136123.png" alt="" /></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">longestCommonPrefix</span>(<span style="color:#a6e22e">strs</span> []<span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">strs</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">strs</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; len(<span style="color:#a6e22e">strs</span>[<span style="color:#ae81ff">0</span>]); <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strs</span>[<span style="color:#ae81ff">0</span>][<span style="color:#a6e22e">i</span>]
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">j</span> &lt; len(<span style="color:#a6e22e">strs</span>); <span style="color:#a6e22e">j</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">==</span> len(<span style="color:#a6e22e">strs</span>[<span style="color:#a6e22e">j</span>]) <span style="color:#f92672">||</span> <span style="color:#a6e22e">s</span> <span style="color:#f92672">!=</span> <span style="color:#a6e22e">strs</span>[<span style="color:#a6e22e">j</span>][<span style="color:#a6e22e">i</span>] {<span style="color:#75715e">//长度到了，或者出现问题，直接输出
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#66d9ef">return</span> string(<span style="color:#a6e22e">strs</span>[<span style="color:#ae81ff">0</span>][:<span style="color:#a6e22e">i</span>])
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">strs</span>[<span style="color:#ae81ff">0</span>] <span style="color:#75715e">//其他的输出strs[0]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><h3 id="验证ip地址">
+  验证IP地址
+  <a class="anchor" href="#%e9%aa%8c%e8%af%81ip%e5%9c%b0%e5%9d%80">#</a>
+</h3>
+<p>编写一个函数来验证输入的字符串是否是有效的 IPv4 或 IPv6 地址</p>
+<p>IPv4 地址由十进制数和点来表示，每个地址包含4个十进制数，其范围为 0 - 255， 用(&quot;.&quot;)分割。比如，172.16.254.1；
+同时，IPv4 地址内的数不会以 0 开头。比如，地址 172.16.254.01 是不合法的。</p>
+<p>IPv6 地址由8组16进制的数字来表示，每组表示 16 比特。这些组数字通过 (&quot;:&quot;)分割。比如, 2001:0db8:85a3:0000:0000:8a2e:0370:7334 是一个有效的地址。而且，我们可以加入一些以 0 开头的数字，字母可以使用大写，也可以是小写。所以， 2001:db8:85a3:0:0:8A2E:0370:7334 也是一个有效的 IPv6 address地址 (即，忽略 0 开头，忽略大小写)。</p>
+<p>然而，我们不能因为某个组的值为 0，而使用一个空的组，以至于出现 (::) 的情况。 比如， 2001:0db8:85a3::8A2E:0370:7334 是无效的 IPv6 地址。
+同时，在 IPv6 地址中，多余的 0 也是不被允许的。比如， 02001:0db8:85a3:0000:0000:8a2e:0370:7334 是无效的。</p>
+<p>说明: 你可以认为给定的字符串里没有空格或者其他特殊字符。</p>
+<p>数据范围：字符串长度满足 5≤n≤50</p>
+<p>进阶：空间复杂度 O(n)，时间复杂度 O(n)</p>
+<pre tabindex="0"><code>输入：&#34;172.16.254.1&#34;
+返回值：&#34;IPv4&#34;
+说明：这是一个有效的 IPv4 地址, 所以返回 &#34;IPv4&#34; 
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//自己写的菜代码
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">judgement</span>(<span style="color:#a6e22e">ip1</span> []<span style="color:#66d9ef">byte</span>, <span style="color:#a6e22e">c</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">bool</span> {<span style="color:#75715e">//判断  
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">ip1</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span> len(<span style="color:#a6e22e">ip1</span>) &gt; <span style="color:#ae81ff">4</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;IPv4&#34;</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">a</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Atoi</span>(string(<span style="color:#a6e22e">ip1</span>))
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">a</span> &gt; <span style="color:#ae81ff">255</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">ip1</span>[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">ip1</span>[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">a</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {<span style="color:#75715e">//ip1[0] != 0 &amp;&amp; a == 0  判断1a1这种情况
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;IPv6&#34;</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; len(<span style="color:#a6e22e">ip1</span>); <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ip1</span>[<span style="color:#a6e22e">i</span>] <span style="color:#f92672">&gt;=</span> <span style="color:#e6db74">&#39;A&#39;</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">ip1</span>[<span style="color:#a6e22e">i</span>] <span style="color:#f92672">&lt;=</span> <span style="color:#e6db74">&#39;F&#39;</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">ip1</span>[<span style="color:#a6e22e">i</span>] <span style="color:#f92672">&gt;=</span> <span style="color:#e6db74">&#39;a&#39;</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">ip1</span>[<span style="color:#a6e22e">i</span>] <span style="color:#f92672">&lt;=</span> <span style="color:#e6db74">&#39;f&#39;</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">ip1</span>[<span style="color:#a6e22e">i</span>] <span style="color:#f92672">&gt;=</span> <span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">ip1</span>[<span style="color:#a6e22e">i</span>] <span style="color:#f92672">&lt;=</span> <span style="color:#e6db74">&#39;9&#39;</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>			} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">solve</span>(<span style="color:#a6e22e">IP</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ip</span> <span style="color:#f92672">:=</span> []byte(<span style="color:#a6e22e">IP</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">length</span> <span style="color:#f92672">:=</span> len(<span style="color:#a6e22e">IP</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ipv4</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ipv6</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">j</span> &lt; <span style="color:#a6e22e">length</span>; <span style="color:#a6e22e">j</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ip</span>[<span style="color:#a6e22e">j</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;.&#39;</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">ipv4</span> = <span style="color:#e6db74">&#34;IPv4&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">judgement</span>(<span style="color:#a6e22e">ip</span>[<span style="color:#a6e22e">i</span>:<span style="color:#a6e22e">j</span>], <span style="color:#a6e22e">ipv4</span>) {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">i</span> = <span style="color:#a6e22e">j</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>			} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;Neither&#34;</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ip</span>[<span style="color:#a6e22e">j</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;:&#39;</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">ipv6</span> = <span style="color:#e6db74">&#34;IPv6&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">judgement</span>(<span style="color:#a6e22e">ip</span>[<span style="color:#a6e22e">i</span>:<span style="color:#a6e22e">j</span>], <span style="color:#a6e22e">ipv6</span>) {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">i</span> = <span style="color:#a6e22e">j</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>			} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;Neither&#34;</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ipv4</span> <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;&#34;</span> {<span style="color:#75715e">//最后剩下的加进去
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">judgement</span>(<span style="color:#a6e22e">ip</span>[<span style="color:#a6e22e">i</span>:], <span style="color:#a6e22e">ipv4</span>) {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">ipv4</span>
+</span></span><span style="display:flex;"><span>		} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;Neither&#34;</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ipv6</span> <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;&#34;</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">judgement</span>(<span style="color:#a6e22e">ip</span>[<span style="color:#a6e22e">i</span>:], <span style="color:#a6e22e">ipv6</span>) {<span style="color:#75715e">//最后剩下的加进去
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">ipv6</span>
+</span></span><span style="display:flex;"><span>		} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;Neither&#34;</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">ipv6</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">judgementIPv4</span>(<span style="color:#a6e22e">IP</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">bool</span> { <span style="color:#75715e">//判断
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">ip</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">Split</span>(<span style="color:#a6e22e">IP</span>, <span style="color:#e6db74">&#34;.&#34;</span>)<span style="color:#75715e">//&#34;20EE:FGb8:85a3:0:0:8A2E:0370:7334&#34;  长度则为1原样输出
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">ip</span>) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">4</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#ae81ff">4</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">ip</span>[<span style="color:#a6e22e">i</span>]) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span> len(<span style="color:#a6e22e">ip</span>[<span style="color:#a6e22e">i</span>]) &gt; <span style="color:#ae81ff">3</span> { <span style="color:#75715e">//有一个分割为零，说明两个点相连 255 2555
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">ip</span>[<span style="color:#a6e22e">i</span>]) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">ip</span>[<span style="color:#a6e22e">i</span>][<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;0&#39;</span> { <span style="color:#75715e">//先导不能为0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">IP1</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Atoi</span>(<span style="color:#a6e22e">ip</span>[<span style="color:#a6e22e">i</span>]) <span style="color:#75715e">//	转换为int型比较
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">IP1</span> &gt; <span style="color:#ae81ff">255</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">judgementIPv6</span>(<span style="color:#a6e22e">IP</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ip</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">Split</span>(<span style="color:#a6e22e">IP</span>, <span style="color:#e6db74">&#34;:&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">ip</span>) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">8</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#ae81ff">8</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">ip</span>[<span style="color:#a6e22e">i</span>]) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span> len(<span style="color:#a6e22e">ip</span>[<span style="color:#a6e22e">i</span>]) &gt; <span style="color:#ae81ff">4</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">j</span> &lt; len(<span style="color:#a6e22e">ip</span>[<span style="color:#a6e22e">i</span>]); <span style="color:#a6e22e">j</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> !(<span style="color:#a6e22e">ip</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">j</span>] <span style="color:#f92672">&gt;=</span> <span style="color:#e6db74">&#39;A&#39;</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">ip</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">j</span>] <span style="color:#f92672">&lt;=</span> <span style="color:#e6db74">&#39;F&#39;</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">ip</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">j</span>] <span style="color:#f92672">&gt;=</span> <span style="color:#e6db74">&#39;a&#39;</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">ip</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">j</span>] <span style="color:#f92672">&lt;=</span> <span style="color:#e6db74">&#39;f&#39;</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">ip</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">j</span>] <span style="color:#f92672">&gt;=</span> <span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">ip</span>[<span style="color:#a6e22e">i</span>][<span style="color:#a6e22e">j</span>] <span style="color:#f92672">&lt;=</span> <span style="color:#e6db74">&#39;9&#39;</span>) {
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">solve</span>(<span style="color:#a6e22e">IP</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">IP</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;Neither&#34;</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">judgementIPv4</span>(<span style="color:#a6e22e">IP</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;IPv4&#34;</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">judgementIPv6</span>(<span style="color:#a6e22e">IP</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;IPv6&#34;</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;Neither&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="大数加法">
+  大数加法
+  <a class="anchor" href="#%e5%a4%a7%e6%95%b0%e5%8a%a0%e6%b3%95">#</a>
+</h3>
+<p>以字符串的形式读入两个数字，编写一个函数计算它们的和，以字符串形式返回。</p>
+<p>数据范围：s.length,t.length≤100000，字符串仅由'0&rsquo;~‘9’构成</p>
+<p>要求：时间复杂度 O(n)</p>
+<pre tabindex="0"><code>输入：&#34;1&#34;,&#34;99&#34;
+返回值：&#34;100&#34;
+说明：1+99=100
+</code></pre><pre tabindex="0"><code></code></pre><h2 id="双指针">
   双指针
   <a class="anchor" href="#%e5%8f%8c%e6%8c%87%e9%92%88">#</a>
 </h2>
+<h3 id="合并两个有序数组">
+  合并两个有序数组
+  <a class="anchor" href="#%e5%90%88%e5%b9%b6%e4%b8%a4%e4%b8%aa%e6%9c%89%e5%ba%8f%e6%95%b0%e7%bb%84">#</a>
+</h3>
 <h2 id="贪心算法">
   贪心算法
   <a class="anchor" href="#%e8%b4%aa%e5%bf%83%e7%ae%97%e6%b3%95">#</a>
@@ -4837,10 +5566,27 @@ https://github.com/alex-shpak/hugo-book
             <li><a href="#编辑距离1">编辑距离1</a></li>
             <li><a href="#正则表达式匹配">正则表达式匹配</a></li>
             <li><a href="#最长的括号子串">最长的括号子串</a></li>
+            <li><a href="#打家劫舍1">打家劫舍1</a></li>
+            <li><a href="#打家劫舍2">打家劫舍2</a></li>
+            <li><a href="#打家劫舍3">打家劫舍3</a></li>
+            <li><a href="#买卖股票的最好时机1">买卖股票的最好时机1</a></li>
+            <li><a href="#买卖股票的最好时机2">买卖股票的最好时机2</a></li>
+            <li><a href="#买卖股票的最好时机3">买卖股票的最好时机3</a></li>
           </ul>
         </li>
-        <li><a href="#字符串">字符串</a></li>
-        <li><a href="#双指针">双指针</a></li>
+        <li><a href="#字符串">字符串</a>
+          <ul>
+            <li><a href="#字符串变形">字符串变形</a></li>
+            <li><a href="#最长公共前缀">最长公共前缀</a></li>
+            <li><a href="#验证ip地址">验证IP地址</a></li>
+            <li><a href="#大数加法">大数加法</a></li>
+          </ul>
+        </li>
+        <li><a href="#双指针">双指针</a>
+          <ul>
+            <li><a href="#合并两个有序数组">合并两个有序数组</a></li>
+          </ul>
+        </li>
         <li><a href="#贪心算法">贪心算法</a></li>
         <li><a href="#模拟">模拟</a></li>
         <li><a href="#题外">题外</a>

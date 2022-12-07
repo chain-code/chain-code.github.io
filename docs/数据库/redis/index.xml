@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Redis on Soulmate</title>
-    <link>http://example.org/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/</link>
+    <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/</link>
     <description>Recent content in Redis on Soulmate</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Mon, 21 Mar 2022 15:23:09 +0000</lastBuildDate><atom:link href="http://example.org/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 21 Mar 2022 15:23:09 +0000</lastBuildDate><atom:link href="https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Redis集群搭建</title>
-      <link>http://example.org/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</link>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</link>
       <pubDate>Mon, 21 Mar 2022 15:23:09 +0000</pubDate>
       
-      <guid>http://example.org/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</guid>
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</guid>
       <description>有空再说
 https://www.cnblogs.com/wuxl360/p/5920330.html
 还没整理
@@ -42,10 +42,10 @@ port 7001 bind 192.168.110.37 daemonize yes pidfile 7001.pid cluster-enabled yes
     
     <item>
       <title>Redis基础</title>
-      <link>http://example.org/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/</link>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/</link>
       <pubDate>Sun, 20 Mar 2022 14:47:04 +0000</pubDate>
       
-      <guid>http://example.org/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/</guid>
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/</guid>
       <description>Redis # 是一种高性能的Key-Value数据库
 NoSQL介绍 # NoSQL：一类新出现的数据库(not only sql)，它的特点：
 1.不支持SQL语法
@@ -62,10 +62,10 @@ Redis安装（Mac） # 直接brew安装</description>
     
     <item>
       <title>redis面试总结</title>
-      <link>http://example.org/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/</link>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/</link>
       <pubDate>Sun, 02 May 2021 20:45:09 +0000</pubDate>
       
-      <guid>http://example.org/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/</guid>
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/</guid>
       <description>1、什么是redis? 2、Reids的特点 3、使用redis有哪些好处？ 4、redis相比memcached有哪些优势？ 5、Memcache与Redis的区别都有哪些？ 6、redis适用于的场景? 7、redis的缓存失效策略和主键失效机制 8、为什么redis需要把所有数据放到内存中? 9、Redis是单进程单线程的 10、redis的并发竞争问题如何解决? 11、redis常见性能问题和解决方案 12、redis事物的了解CAS(check-and-set 操作实现乐观锁 )? 13、WATCH命令和基于CAS的乐观锁? 14、使用过Redis分布式锁么，它是什么回事？ 15、假如Redis里面有1亿个key，其中有10w个key是以某个固定的已知的前缀开头的，如果将它们全部找出来？ 16、使用过Redis做异步队列么，你是怎么用的？ 17、如果有大量的key需要设置同一时间过期，一般需要注意什么？ 18、Redis如何做持久化的？ 19、Pipeline有什么好处，为什么要用pipeline？ 20、Redis的同步机制了解么？ 21、是否使用过Redis集群，集群的原理是什么？ 1、什么是redis? # redis是一个高性能的key-value数据库，它是完全开源免费的，而且redis是一个NOSQL类型数据库，是为了解决高并发、高扩展，大数据存储等一系列的问题而产生的数据库解决方案，是一个非关系型的数据库
 2、Reids的特点 # Redis本质上是一个Key-Value类型的内存数据库，很像memcached，整个数据库统统加载在内存当中进行操作，定期通过异步操作把数据库数据flush到硬盘上进行保存。因为是纯内存操作，Redis的性能非常出色，每秒可以处理超过 10万次读写操作，是已知性能最快的Key-Value DB。
 Redis的出色之处不仅仅是性能，Redis最大的魅力是支持保存多种数据结构，此外单个value的最大限制是1GB，不像 memcached只能保存1MB的数据，因此Redis可以用来实现很多有用的功能，比方说用他的List来做FIFO双向链表，实现一个轻量级的高性 能消息队列服务，用他的Set可以做高性能的tag系统等等。另外Redis也可以对存入的Key-Value设置expire时间，因此也可以被当作一 个功能加强版的memcached来用。

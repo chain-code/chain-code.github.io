@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Docker on Soulmate</title>
-    <link>http://example.org/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/</link>
+    <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/</link>
     <description>Recent content in Docker on Soulmate</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 21 Sep 2022 17:04:41 +0800</lastBuildDate><atom:link href="http://example.org/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 21 Sep 2022 17:04:41 +0800</lastBuildDate><atom:link href="https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Docker基础</title>
-      <link>http://example.org/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/</link>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/</link>
       <pubDate>Mon, 19 Sep 2022 21:02:07 +0800</pubDate>
       
-      <guid>http://example.org/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/</guid>
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/</guid>
       <description>Docker简介 # Docker是一个开源的容器引擎，它基于LCX容器技术，使用Go语言开发。
 源代码托管在Github上，并遵从Apache2.0协议。
 Docker采用C/S架构，其可以轻松的为任何应用创建一个轻量级的、可移植的、自给自足的容器。
@@ -35,10 +35,10 @@ docker特点 # 三大理念: # 构建:龙珠里的胶囊，将你需要的场景
     
     <item>
       <title>Dockerfile</title>
-      <link>http://example.org/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/</link>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/</link>
       <pubDate>Wed, 21 Sep 2022 17:04:41 +0800</pubDate>
       
-      <guid>http://example.org/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/</guid>
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/</guid>
       <description>简介 # Dockerfile类似于我们学习过的脚本，将我们在上面学到的docker镜像，使用自动化的方式实现出来。
 Dockerfile的作用：
 找一个镜像: ubuntu 创建一个容器: docker run ubuntu 进入容器: docker exec -it 容器 命令 操作: 各种应用配置&amp;hellip;. 构造新镜像: docker commit Dockerfile 使用准则：
@@ -49,10 +49,10 @@ Dockerfile的作用：
     
     <item>
       <title>docker常用知识总结</title>
-      <link>http://example.org/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</link>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</link>
       <pubDate>Fri, 30 Apr 2021 19:43:22 +0000</pubDate>
       
-      <guid>http://example.org/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</guid>
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</guid>
       <description>docker常用基础命令 # docker rmi -f $(docker images -q) 删除镜像 docker rm -f .... 删除容器 docker exec -it ca.org1.example.com bash 进入容器 docker exec -it peer0.org1.example.com sh exit 退出容器 control+P+Q 退出容器 docker stop $(docker ps -q) 停止所有容器 docker rm $(docker ps -aq) 删除所有容器 sudo docker volume prune sudo docker network prune docker logs id 查看docker容器日志 docker文件管理 # docker cp 容器 ID 或名称: 容器目录 物理机目录 docker目录拷贝到物理机 docker cp 物理机目录 容器 ID 或名称: 容器目录 物理机目录拷贝到docker docker cp /home/lishuma b2860e937844:/home/ 如果是把上一条命令结尾斜杠去掉，那么意思就变成了将物理机/home/lishuma 目录拷贝到容器根目录中，并且拷贝进去的目录重命名为 home。 docker cp b2860e937844:/home/lishuma /home/lishuma/test/ 反过来容器向外拷贝的命令如果去掉最后一个斜杠，那么意思同样是变成拷贝出来后，重命名为 test。 docker文件挂载 # docker run -v /home/tianzhiwei/hyperledger/catest/crypto-config/peerOrganizations/:/etc/hyperledger/fabric-ca-server-config/msp hyperledger/fabric-ca:1.</description>
     </item>
     

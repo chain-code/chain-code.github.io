@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>共识算法 on Soulmate</title>
-    <link>http://example.org/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/</link>
+    <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/</link>
     <description>Recent content in 共识算法 on Soulmate</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 14 Aug 2022 11:07:25 +0000</lastBuildDate><atom:link href="http://example.org/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 14 Aug 2022 11:07:25 +0000</lastBuildDate><atom:link href="https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>共识算法基础</title>
-      <link>http://example.org/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/</link>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/</link>
       <pubDate>Sun, 14 Aug 2022 11:07:25 +0000</pubDate>
       
-      <guid>http://example.org/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/</guid>
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/</guid>
       <description>PoW # 概念 # PoW（工作量证明，Proof of Work），比特币，俗称挖矿。Pow是指系统为达到某一目标而设置的度量方法。简单理解就是一份证明，用来确认你做过一定量的工作。监测工作的整个过程通常是极为低效的，而通过对工作的结果进行认证来证明完成了相应的工作量，则是一种非常高效的方式。
 工作量证明（Pow）通过计算一个数值（nonce），使得拼凑上交易数据后内容的Hash值满足规定的上限。在结点成功找到满足的Hash值之后，会马上对全网进行广播打包区块，网络的结点收到广播打包区块，会立刻对其进行验证。
 如何才能创建一个新区块呢？通过解决一个问题：即找到一个nonce值，使得新区块头的哈希值小于某个指定的值，即区块头结构中的“难度目标”。
@@ -59,10 +59,10 @@ Pow的优缺点 # 优点：
     
     <item>
       <title>Raft共识算法</title>
-      <link>http://example.org/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/</link>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/</link>
       <pubDate>Sat, 26 Mar 2022 21:22:14 +0000</pubDate>
       
-      <guid>http://example.org/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/</guid>
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/</guid>
       <description>分布式共识算法 # 首先我们先明确这个问题：为什么需要分布式共识算法？
 这就要从当前的分布式系统设计的缺陷来看了，假设我们的集群现在有两个客户端和三个服务端，如下图：
 在这个分布式系统的设计中，往往要满足CAP理论，而分布式共识算法解决的就是CAP理论中的一致性问题。整个一致性问题分为三种问题：

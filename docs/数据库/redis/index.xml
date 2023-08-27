@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Redis on Soulmate</title>
+    <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/</link>
+    <description>Recent content in Redis on Soulmate</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 21 Mar 2022 15:23:09 +0000</lastBuildDate><atom:link href="https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Redis集群搭建</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Mon, 21 Mar 2022 15:23:09 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</guid>
+      <description>有空再说
+https://www.cnblogs.com/wuxl360/p/5920330.html
+还没整理
+为什么要有集群
+a) 服务器可能因为代码原因，人为原因，或者自然灾害等造成服务器损坏。数据服务就挂掉了
+b) 大公司都会有很多的服务器(华东地区、华南地区、华中地区、华北地区、西北地区、西南地区、东北地区、台港澳地区机房)
+集群的概念
+集群是一组相互独立的、通过高速网络互联的计算机，它们构成了一个组，并以单一系统的模式加以管理。一个客户与集群相互作用时，集群像是一个独立的服务器。集群配置是用于提高可用性和可缩放性。
+当请求到来首先由负载均衡服务器处理，把请求转发到另外的一台服务器上。
+百度的ip地址 119.75.217.109/
+​ 61.135.169.121/
+Redis集群
+分类
+Ø 软件层面
+Ø 硬件层面
+软件层面：只有一台电脑，在这台电脑上启动了多台redis服务
+硬件层面：存在多台实体电脑,每台电脑都启动了一个redis或者多个redis服务
+参考阅读
+Redis搭建集群http://www.cnblogs.com/wuxl360/p/5920330.html
+go语言redis-cluster开源客户端https://github.com/gitstliu/go-redis-cluster
+配置机器1 # Ø 在演示中，192.168.110.37为当前ubuntu机器的ip
+Ø 在192.168.110.37上进⼊Desktop⽬录，创建conf⽬录
+Ø 在conf⽬录下创建⽂件7000.conf，编辑内容如下
+port 7000 bind 192.168.110.37 daemonize yes pidfile 7000.pid cluster-enabled yes cluster-config-file 7000_node.conf cluster-node-timeout 15000 appendonly yese Ø 在conf⽬录下创建⽂件7001.conf，编辑内容如下
+port 7001 bind 192.168.110.37 daemonize yes pidfile 7001.pid cluster-enabled yes cluster-config-file 7001_node.conf cluster-node-timeout 15000 appendonly yes Ø 在conf⽬录下创建⽂件7002.conf，编辑内容如下</description>
+    </item>
+    
+    <item>
+      <title>Redis基础</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Sun, 20 Mar 2022 14:47:04 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/</guid>
+      <description>Redis # 是一种高性能的Key-Value数据库
+NoSQL介绍 # NoSQL：一类新出现的数据库(not only sql)，它的特点：
+1.不支持SQL语法
+2.存储结构跟传统关系型数据库中的那种关系表完全不同，nosql中存储的数据都是Key-Value形式
+3.NoSQL的世界中没有一种通用的语言，每种nosql数据库都有自己的api和语法，以及擅长的业务场景
+NoSQL和SQL数据库的比较： # 适用场景不同：sql数据库适合用于关系特别复杂的数据查询场景，nosql反之
+两者在不断地取长补短，呈现融合趋势
+Redis简介 # Redis是一个开源的使用ANSI C语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。从2010年3月15日起，Redis的开发工作由VMware主持。从2013年5月开始，Redis的开发由Pivotal赞助。
+Redis是 NoSQL技术阵营中的一员，它通过多种键值数据类型来适应不同场景下的存储需求，借助一些高层级的接口使用其可以胜任，如缓存、队列系统的不同角色。
+Redis特性 # Redis 与其他 key - value 缓存产品有以下三个特点：
+Redis支持数据的持久化，可以将内存中的数据保存在磁盘中，重启的时候可以再次加载进行使用。 Redis不仅仅支持简单的key-value类型的数据，同时还提供list列表，set集合，zset有序集合，hash等数据结构的存储。 Redis支持数据的备份，即master-slave模式的数据备份。 Redis 优势 # 性能极高 – Redis能读的速度是110000次/s,写的速度是81000次/s 。 丰富的数据类型 – Redis支持二进制案例的 Strings, Lists, Hashes, Sets 及 Ordered Sets 数据类型操作。 原子 – Redis的所有操作都是原子性的，同时Redis还支持对几个操作全并后的原子性执行。 丰富的特性 – Redis还支持 publish/subscribe, 通知, key 过期等等特性。 Redis应用场景 # 用来做缓存(ehcache/memcached)——redis的所有数据是放在内存中的（内存数据库） 可以在某些特定应用场景下替代传统数据库——比如社交类的应用 在一些大型系统中，巧妙地实现一些特定的功能：session共享、购物车 只要你有丰富的想象力，redis可以用在可以给你无限的惊喜……. 中文官网
+Redis安装（Mac） # 直接brew安装</description>
+    </item>
+    
+    <item>
+      <title>redis面试总结</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Sun, 02 May 2021 20:45:09 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/</guid>
+      <description>1、什么是redis? 2、Reids的特点 3、使用redis有哪些好处？ 4、redis相比memcached有哪些优势？ 5、Memcache与Redis的区别都有哪些？ 6、redis适用于的场景? 7、redis的缓存失效策略和主键失效机制 8、为什么redis需要把所有数据放到内存中? 9、Redis是单进程单线程的 10、redis的并发竞争问题如何解决? 11、redis常见性能问题和解决方案 12、redis事物的了解CAS(check-and-set 操作实现乐观锁 )? 13、WATCH命令和基于CAS的乐观锁? 14、使用过Redis分布式锁么，它是什么回事？ 15、假如Redis里面有1亿个key，其中有10w个key是以某个固定的已知的前缀开头的，如果将它们全部找出来？ 16、使用过Redis做异步队列么，你是怎么用的？ 17、如果有大量的key需要设置同一时间过期，一般需要注意什么？ 18、Redis如何做持久化的？ 19、Pipeline有什么好处，为什么要用pipeline？ 20、Redis的同步机制了解么？ 21、是否使用过Redis集群，集群的原理是什么？ 1、什么是redis? # redis是一个高性能的key-value数据库，它是完全开源免费的，而且redis是一个NOSQL类型数据库，是为了解决高并发、高扩展，大数据存储等一系列的问题而产生的数据库解决方案，是一个非关系型的数据库
+2、Reids的特点 # Redis本质上是一个Key-Value类型的内存数据库，很像memcached，整个数据库统统加载在内存当中进行操作，定期通过异步操作把数据库数据flush到硬盘上进行保存。因为是纯内存操作，Redis的性能非常出色，每秒可以处理超过 10万次读写操作，是已知性能最快的Key-Value DB。
+Redis的出色之处不仅仅是性能，Redis最大的魅力是支持保存多种数据结构，此外单个value的最大限制是1GB，不像 memcached只能保存1MB的数据，因此Redis可以用来实现很多有用的功能，比方说用他的List来做FIFO双向链表，实现一个轻量级的高性 能消息队列服务，用他的Set可以做高性能的tag系统等等。另外Redis也可以对存入的Key-Value设置expire时间，因此也可以被当作一 个功能加强版的memcached来用。
+Redis的主要缺点是数据库容量受到物理内存的限制，不能用作海量数据的高性能读写，因此Redis适合的场景主要局限在较小数据量的高性能操作和运算上。
+3、使用redis有哪些好处？ # 3.1 速度快，因为数据存在内存中，类似于HashMap，HashMap的优势就是查找和操作的时间复杂度都是O(1)
+3.2 支持丰富数据类型，支持string，list，set，sorted set，hash
+String # 常用命令 ：set/get/decr/incr/mget等；
+应用场景 ：String是最常用的一种数据类型，普通的key/value存储都可以归为此类；
+实现方式：String在redis内部存储默认就是一个字符串，被redisObject所引用，当遇到incr、decr等操作时会转成数值型进行计算，此时redisObject的encoding字段为int。
+Hash # 常用命令 ：hget/hset/hgetall等
+应用场景 ：我们要存储一个用户信息对象数据，其中包括用户ID、用户姓名、年龄和生日，通过用户ID我们希望获取该用户的姓名或者年龄或者生日；
+实现方式：Redis的Hash实际是内部存储的Value为一个HashMap，并提供了直接存取这个Map成员的接口。如图所示，Key是用户ID, value是一个Map。这个Map的key是成员的属性名，value是属性值。这样对数据的修改和存取都可以直接通过其内部Map的Key(Redis里称内部Map的key为field)，也就是通过 key(用户ID) + field(属性标签) 就可以操作对应属性数据。当前HashMap的实现有两种方式：当HashMap的成员比较少时Redis为了节省内存会采用类似一维数组的方式来紧凑存储，而不会采用真正的HashMap结构，这时对应的value的redisObject的encoding为zipmap，当成员数量增大时会自动转成真正的HashMap,此时redisObject的encoding字段为int。
+List # 常用命令 ：lpush/rpush/lpop/rpop/lrange等；
+应用场景 ：Redis list的应用场景 非常多，也是Redis最重要的数据结构之一，比如twitter的关注列表，粉丝列表等都可以用Redis的list结构来实现；</description>
+    </item>
+    
+  </channel>
+</rss>

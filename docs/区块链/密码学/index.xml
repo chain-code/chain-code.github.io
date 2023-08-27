@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>密码学 on Soulmate</title>
+    <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/</link>
+    <description>Recent content in 密码学 on Soulmate</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 15 Aug 2022 10:16:44 +0000</lastBuildDate><atom:link href="https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>区块链安全基础</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Mon, 15 Aug 2022 10:16:44 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/</guid>
+      <description> 双花攻击 # 双花攻击(double spend attack)又叫双重消费攻击。就是一笔资金，攻击者通过不停发起和撤销交易，将一定数额的代币反复在账号之间转账实现获利。
+对于双花问题，区块链网络是这么应对的：
+1、每笔交易都需要先确认对应比特币之前的状态，如果它之前已经被标记为花掉，那么新的交易会被拒绝。
+2、如果先发起一笔交易，在它被确认前，也就是这个时间段的交易还未被记账成区块block时，进行矛盾的第二笔交易，那么在记账时，这些交易会被拒绝。
+如果诈骗者可以把第一笔交易向一半网络进行广播，把第二笔交易向另一半网络广播，然后两边正好有两个矿工几乎同时取得记账权，把各自的block发布给大家的话（这个概率很低），网络是不会混乱的。
+区块链的规则是这样的：先选择任意一个账本都可以，这时候原来统一的账本出现了分叉：
+但是在两个账本中各只有一笔交易，诈骗者不会有好处。接下来，下一个矿工选择在A基础上继续记账的话，A分支就会比B分支更长，根据区块链的规则，最长的分支会被认可，短的分支会被放弃，账本还是会回归为一个，交易也只有一笔有效：
+那么这个诈骗犯会这么做：如果是A分支被认可（B也一样），相应交易确认，拿到商品之后，立刻自己变身矿工，争取到连续两次记账权，然后在B分支上连加两个block：
+于是B分支成为认可的分支，A被舍弃，A分支中的交易不再成立，但他已经拿到商品，诈骗成功。
+在B分支落后的情况下要强行让它超过A分支，其实是挺难的，假设诈骗者掌握了全网1%的计算能力，那么他争取到记账权的概率就是1%，两次就是10的负4次方。但这个概率还没有太低。
+如果诈骗者算力占据绝对优势，那么，即使落后很多，他追上也只是时间问题，这就是比特币的“51%攻击”，也就能实现双花攻击了。
+区块链网络是一个分布式系统，没有一个绝对的控制中心能够监控整个系统，自然很难发现哪个节点可能会控制超过51%算力。而当某个节点掌控超过51%算力，并且对区块链网络系统进行双花攻击时，人们能够做的仅是让合作的交易所暂时提升交易确认次数。但这并不能从根本上阻止攻击者，只不过提升了其攻击成本。
+DDos攻击 # </description>
+    </item>
+    
+    <item>
+      <title>椭圆曲线加密</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/</link>
+      <pubDate>Mon, 12 Apr 2021 12:17:45 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/</guid>
+      <description>通过椭圆曲线加密实现数字签名 # 私钥公钥如何产生？ # 随机生成一个256位的二进制数
+11011100111110101100101010000100111100101000011&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;
+dcfaca84f325f65a&amp;hellip;,&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip; 16进制
+一、为什么叫椭圆曲线 # 圆锥曲线可以用二次方程表示。椭圆曲线是用三次方程表示，如下： 其中，a 和 b 的取值不同，椭圆曲线的形状会有所改变，经典的形状如下图所示：
+椭圆曲线有以下两个特点：
+画一条直线跟椭圆曲线相交，它们最多有三个交点； 关于 X 轴对称。 A（x,y) k* A
+二、椭圆曲线运算法则 # 1. 椭圆曲线加法 # 根据上面介绍的椭圆曲线的特性“画一条直线跟椭圆曲线相交，它们最多有三个交点”，可以进行以下定义：
+假设椭圆曲线上有 P、Q 两个点，经过这两个点做一条直线和椭圆曲线相交于第三点 R，然后做关于 x 轴的对称点 -R，-R 即是 R 的逆元，根据阿贝尔群的定义，-R 也一定在椭圆曲线上。定义 P+Q = -R，也就是说椭圆曲线上任意两点的和也在椭圆曲线上，同样可以引申出椭圆曲线上任意三点的和为 0 即 P+Q+R = 0。如图：
+假如 P=Q，则作椭圆曲线在 P 点的切线，与曲线相交于 R，则 R = P+P = 2P 2. 椭圆曲线乘法 # 根据上面椭圆曲线的加法可以得出下列等式：P+P = 2P（过点 P 切线作一条直线）P+2P = 3P（过点 P 和 2P 作一条直线）P+3P = 4P（过点 P 和 3P 作一条直线）假设 P 是椭圆曲线上的一个点，正整数 K 乘以 P 可以总结成公式为：(k-1) * P + P = k * P如果把 k 看作是两个数相乘即 k = m * n，则可以得出满足以下性质（在椭圆曲线密钥交换中会用到）：(m * n) * P = m * (n * P) = (n * m)p = n * (m*P)</description>
+    </item>
+    
+    <item>
+      <title>密码学基础</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Thu, 04 Mar 2021 15:29:17 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/</guid>
+      <description>DES 数据加密标准 # 不安全 ，分组密码，8
+3DES # 安全，进行了3次des加密
+加密过程：加密，解密，加密
+解密过程：解密，加密，解密
+CBC 密码块链模式 # 特点：密文没有规律，经常使用
+最后一个明文分组需要填充
+需要初始化向量-一个数组
+明文分组的填充 刚好够也需要填充 填充明文分组代码实现 # package main //编写填充函数，如果最后一个分组字数不够，填充 //、、、、、字数刚好合适，添加一个新的分组 //填充的字节的值==缺少的字节数 func paddingLastGroup(plainText []byte, bloclSize int) []byte { //plainText 参数：明文 bloclSize 明文分组字节长度 []byte 返回值 //1、求出最后一个组中剩余的字节数 28%8=3..4 32%8=4.。0 padNum:=ploclSize-len(plainText)%bloclSize //填充的字数 //2、创建新的切片，长度==padNum, 每个字节值byte(padNum) char :=[]byte{byte(padNum)} //长度1， //切片创建，并初始化 newPlan := bytes.Repeat(char,padNum) //3、newPlain数组追加到原始明文的后边 newText := append(plainText,newPlain..) return newText } 删除尾部明文分组实现 # func unPaddingLastGrooup(plainText []byte) []byte { //1、拿去切片中的最后一个字节 length := len(plainText) lastChar :=plainText[length -1] //byte 类型 number :=int (lastChar) //尾部填充的字节个数 return plainText[:length -number] } 对称加密实现（go） # #加密流程： 1、创建一个底层使用des/3des/aes的密码接口 &amp;#34;crypto/des&amp;#34; func NewCipher(key []byte) (cipher.</description>
+    </item>
+    
+  </channel>
+</rss>

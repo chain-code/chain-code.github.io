@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Docker on Soulmate</title>
+    <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/</link>
+    <description>Recent content in Docker on Soulmate</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 21 Sep 2022 17:04:41 +0800</lastBuildDate><atom:link href="https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Docker基础</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Mon, 19 Sep 2022 21:02:07 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/</guid>
+      <description>Docker简介 # Docker是一个开源的容器引擎，它基于LCX容器技术，使用Go语言开发。
+源代码托管在Github上，并遵从Apache2.0协议。
+Docker采用C/S架构，其可以轻松的为任何应用创建一个轻量级的、可移植的、自给自足的容器。
+Docker就是一种快速解决生产问题的一种技术手段,开发，运行和部署应用程序的开放管理平台。
+Docker提供了在一个完全隔离的环境中打包和运行应用程序的能力，这个隔离的环境被称为容器。 由于容器的隔离性和安全性，因此可以在一个主机(宿主机)上同时运行多个相互隔离的容器，互不干预。
+Docker主要解决的问题:
+保证程序运行环境的一致性; 降低配置开发环境、生产环境的复杂度和成本; 实现程序的快速部署和分发。
+架构与结构 # 架构图 # Docker是采用了(c/s)架构模式的应用程序
+Client dockerCLI :客户端docker命令行
+REST API : 一套介于客户端与服务端的之间进行通信并指示其执行的接口
+Server docker daemon:服务端dacker守护进程等待客户端发送命令来执行
+Docker的四大核心技术
+IMAGE-镜像 CONTAINER-容器 DATA VOLUMES-数据卷 NETWORK-网络 结构图 # Docker客户端(Docker Client) # Docker客户端(Docker Client)是用户与Docker进行交互的最主要方式。当在终端输入docker命令时，对应的就会 在服务端产生对应的作用，并把结果返回给客户端。Docker Client除了连接本地服务端，通过更改或指定 DOCKER_HOST连接远程服务端。
+Docker服务端(Docker Server) # Docker Daemon其实就是Docker 的服务端。它负责监听Docker API请求(如Docker Client)并管理Docker对象(Docker Objects)，如镜像、容器、网络、数据卷等
+Docker Registries # 俗称Docker仓库，专门用于存储镜像的云服务环境.
+Docker Hub就是一个公有的存放镜像的地方，类似Github存储代码文件。同样的也可以类似Github那样搭建私有 的仓库。
+Docker 对象(Docker Objects) # 镜像:一个Docker的可执行文件，其中包括运行应用程序所需的所有代码内容、依赖库、环境变量和配置文件等。 容器:镜像被运行起来后的实例。 网络:外部或者容器间如何互相访问的网络方式，如host模式、bridge模式。 数据卷:容器与宿主机之间、容器与容器之间共享存储方式，类似虚拟机与主机之间的共享文件目录。
+docker特点 # 三大理念: # 构建:龙珠里的胶囊，将你需要的场景构建好，装在一个小胶囊里</description>
+    </item>
+    
+    <item>
+      <title>Dockerfile</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/</link>
+      <pubDate>Wed, 21 Sep 2022 17:04:41 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/</guid>
+      <description>简介 # Dockerfile类似于我们学习过的脚本，将我们在上面学到的docker镜像，使用自动化的方式实现出来。
+Dockerfile的作用：
+找一个镜像: ubuntu 创建一个容器: docker run ubuntu 进入容器: docker exec -it 容器 命令 操作: 各种应用配置&amp;hellip;. 构造新镜像: docker commit Dockerfile 使用准则：
+大: 首字母必须大写D 空: 尽量将Dockerfile放在空目录中。 单: 每个容器尽量只有一个功能。 少: 执行的命令越少越好。 Dockerfile文件内容:
+首行注释信息 指令(大写) 参数 #构建镜像命令格式: docker build -t [镜像名]:[版本号][Dockerfile所在目录] #构建样例: docker build -t nginx:v0.2 /opt/dockerfile/nginx/ #参数详解: -t 指定构建后的镜像信息， /opt/dockerfile/nginx/ 则代表Dockerfile存放位置，如果是当前目录，则用 .(点)表示 快速入门 # 接下来我们快速的使用Dockerfile来基于ubuntu创建一个定制化的镜像:nginx。
+#创建Dockerfile专用目录 $ mkdir ./docker/images/nginx -p $ cd docker/images/nginx/ #创建Dockerfile文件 :~/docker/images/nginx$ vim Dockerfile # 构建一个基于ubuntu的docker定制镜像 # 基础镜像 FROM ubuntu # 镜像作者 MAINTAINER panda kstwoak47@163.</description>
+    </item>
+    
+    <item>
+      <title>docker常用知识总结</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Fri, 30 Apr 2021 19:43:22 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</guid>
+      <description>docker常用基础命令 # docker rmi -f $(docker images -q) 删除镜像 docker rm -f .... 删除容器 docker exec -it ca.org1.example.com bash 进入容器 docker exec -it peer0.org1.example.com sh exit 退出容器 control+P+Q 退出容器 docker stop $(docker ps -q) 停止所有容器 docker rm $(docker ps -aq) 删除所有容器 sudo docker volume prune sudo docker network prune docker logs id 查看docker容器日志 docker文件管理 # docker cp 容器 ID 或名称: 容器目录 物理机目录 docker目录拷贝到物理机 docker cp 物理机目录 容器 ID 或名称: 容器目录 物理机目录拷贝到docker docker cp /home/lishuma b2860e937844:/home/ 如果是把上一条命令结尾斜杠去掉，那么意思就变成了将物理机/home/lishuma 目录拷贝到容器根目录中，并且拷贝进去的目录重命名为 home。 docker cp b2860e937844:/home/lishuma /home/lishuma/test/ 反过来容器向外拷贝的命令如果去掉最后一个斜杠，那么意思同样是变成拷贝出来后，重命名为 test。 docker文件挂载 # docker run -v /home/tianzhiwei/hyperledger/catest/crypto-config/peerOrganizations/:/etc/hyperledger/fabric-ca-server-config/msp hyperledger/fabric-ca:1.</description>
+    </item>
+    
+  </channel>
+</rss>

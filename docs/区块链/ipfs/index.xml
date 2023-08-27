@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>IPFS on Soulmate</title>
+    <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/</link>
+    <description>Recent content in IPFS on Soulmate</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 05 Dec 2021 21:28:22 +0000</lastBuildDate><atom:link href="https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>go-ipfs-api</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/</link>
+      <pubDate>Sun, 05 Dec 2021 21:28:22 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/</guid>
+      <description>json文件 # 上传获取数据 # package main import ( &amp;#34;bytes&amp;#34; &amp;#34;encoding/json&amp;#34; &amp;#34;fmt&amp;#34; &amp;#34;io/ioutil&amp;#34; shell &amp;#34;github.com/ipfs/go-ipfs-api&amp;#34; ) var sh *shell.Shell //交易结构体(未来的通道) type Transaction struct { Person1 string `json:&amp;#34;person1,omitempty&amp;#34; xml:&amp;#34;person1&amp;#34;` Person2 string `json:&amp;#34;person2,omitempty&amp;#34; xml:&amp;#34;person2&amp;#34;` Person1money string `json:&amp;#34;person1Money,omitempty&amp;#34; xml:&amp;#34;person1Money&amp;#34;` Person2money string `json:&amp;#34;person2Money,omitempty&amp;#34; xml:&amp;#34;person2Money&amp;#34;` } //数据上传到ipfs func UploadIPFS(str string) string { sh = shell.NewShell(&amp;#34;localhost:5001&amp;#34;) //连接客户端 hash, err := sh.Add(bytes.NewBufferString(str)) if err != nil { fmt.Println(&amp;#34;上传ipfs时错误：&amp;#34;, err) } return hash } //从ipfs获取数据 只读 func CatIPFS(hash string) string { sh = shell.</description>
+    </item>
+    
+    <item>
+      <title>ipfs-webui可视化工具搭建</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Mon, 12 Jul 2021 20:27:55 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/</guid>
+      <description>介绍 # 注意这里是私链搭建webui，公链没有这么麻烦
+在IPFS项目的组织架构中，有一个IPFS-GUI工作组，主要目的是开发IPFS可视化工具，并使工具更简单、更易用、更美观。
+IPFS WebUI是IPFS的Web界面，可以用来检查您的节点统计信息，展示由IPLD驱动的默克尔树结构，查看世界各地的节点并管理您的文件，而无需触摸命令行工具。
+这都是粘贴的，废话不多说，直接开始安装
+安装 # 拉取ipfs-webui文件 cd ~ git clone https://github.com/ipfs/ipfs-webui.git 进入安装 cd ipfs-webui npm install 报错：
+request to https://dist.ipfs.io/go-ipfs/versions failed, reason: connect ECONNREFUSED 69.171.233.24:443 。。。。。。。。。。。。 。。。。。。。。。。。。 npm ERR! code ELIFECYCLE npm ERR! errno 1 npm ERR! go-ipfs-dep@0.4.18 install: `node src/bin.js` npm ERR! Exit status 1 npm ERR! npm ERR! Failed at the go-ipfs-dep@0.4.18 install script. npm ERR! This is probably not a problem with npm.</description>
+    </item>
+    
+    <item>
+      <title>IPFS基本原理（一）</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/</link>
+      <pubDate>Thu, 08 Jul 2021 17:46:47 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/</guid>
+      <description>IPFS基础 # 1.1 IPFS 概述 # IPFS（InterPlanetary File System)是一个基于内容寻址的、分布式的、新型超媒体传输协议。IPFS支持创建完全分布式的应用。它旨在使网络更快、更安全、更开放。IPFS是一个分布式文件系统，它的目标是将所有计算设备连接到同一个文件系统，从而成为一个全球统一的存储系统。
+IPFS项目通过整合已有的技术（BitTorrent、DHT、Git和SFS），创建一种点对点超媒体协议，试图打造一个更加快速、安全、开放的下一代互联网，实现互联网中永久可用、数据可以永久保存的全球文件存储系统。同时，该协议有内容寻址、版本化特性，尝试补充甚至最终取代超文本传输协议（HTTP协议）。IPFS是一个协议，也是一个P2P网络，它类似于现在的BT网络，只是拥有更强大的功能，使得IPFS拥有可以取代HTTP的潜力。
+它提供了更加便宜、安全、可快速集成的存储解决方案。
+1.1.1 HTTP四大问题 # 极易受到攻击，防范攻击成本搞。 数据存储成本高。 数据中心化带来泄露风险。 大规模数据存储、传输和维护难。 1.1.2 IPFS优势 # 下载速度快
+IPFS使用了BitTorrent协议作为数据传输方式，使得IPFS系统在数据传输速度上大幅度提高，并且能够节省约60%的网络带宽。
+优化全球存储
+IPFS采用为数据块内容建立哈希去重的方式存储数据，数据的存储成本将会显著下降。
+更加安全
+IPFS、Filecoin的分布式特性与加密算法使得数据存储更加安全，甚至可以抵挡黑客攻击。
+数据的可持续保存
+IPFS提供了一种使互联网数据可以被可持续保存的存储方式，并且提供数据历史版本（Git)的回溯功能。
+1.2 IPFS借鉴的技术 # 1.2.1 哈希表DHT # 全称为分布式哈希表（Distributed Hash Table)，是一种分布式存储方法。DHT的原理是：在不需要服务器的情况下，每一个客户端存储一小部分数据，并负责一定区域的检索，进而实现整个DHT网络的寻址和检索。
+1.2.2 Kademlia # 在Kademlia网络中，所有信息均以哈希表条目的形式加以存储，这些信息被分散的存储在各个节点上，从而形成一张巨大的分布式哈希表。
+1.2.3 Git # Git存储时会把文件拆成若干部分，并计算各个部分的哈希值，利用这些构建起于文件对应的有向无环图（DAG），DAG的根节点也就是该文件的哈希值。
+如果需要修改文件，那么只需要修改少数图中节点即可；需要分享文件，等价于分享这个图；需要传输全部的文件，按照图中的哈希值下载合并即可。
+1.2.4 默克尔树 # 在IPFS项目里，也借鉴了默克尔树的思想。数据分块存放在有向无环图中，如果数据被修改了，只需要修改对应默克尔有向无环图中的节点数据，而不需要向网络重新更新整个文件。
+1.2.5 IPFS 补充区块链两大缺陷 # 区块链存储效率低，成本高。 跨链需要各个链之间协同配合，难以协调。 1.3 IPFS的优势与价值 # 1.3.1 技术优势 # IPFS技术可以分为多层子协议栈，从上至下为身份层、网络层、路由层、交换层、对象层、文件层、命名层，每个协议栈各司其职，又互相协同。
+身份层和路由层 # 对等节点身份信息的生成以及路由规则是通过Kademlia协议生成制定的，该协议实质上是构建了一个分布式哈希表，简称DHT。每个加入这个DHT网络的节点都要生成自己的身份信息，然后才能通过这个身份信息去负责存储这个网络里的资源信息和其他成员的联系信息。
+网络层 # 比较核心，所使用的Libp2p可以支持主流传输层协议。NAT技术能让哪网中的设备共用同一个外网IP。</description>
+    </item>
+    
+    <item>
+      <title>IPFS私有网络搭建</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Wed, 02 Jun 2021 15:42:42 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/</guid>
+      <description>IPFS私有网络集群搭建 # 前期准备 # 对于联盟链的业务中搭建一个私有网络的 IPFS 集群还是很有必要的，私有网络集群允许 IPFS 节点只连接到拥有共享密钥的其他对等节点，网络中的节点不响应来自网络外节点的通信。 IPFS-Cluster 是一个独立的应用程序和一个 CLI 客户端，它跨一组 IPFS 守护进程分配、复制和跟踪 pin。它使用基于 Raft 一致性算法来协调存储，将数据集分布到参与节点上。对于我们要将一个 peer 上的存储同步备份到所有集群上其他的 peers 时，或者对集群的节点管理，这时 IPFS-Cluster 就会起到一个很好的作用。
+本人使用三台虚拟机 主机列表
+节点 名称 IP 管理节点peer0 Ubuntu1.0 10.211.55.7 peer1 Ubuntu2.0 10.211.55.9 peer2 Ubuntu3.0 10.211.55.10 IPFS 和 IPFS-Cluster 默认的端口: IPFS：
+4001 – 与其他节点同学端口 5001 – API server 8080 – Gateway server IPFS-CLUSTER：
+9094 – HTTP API endpoint 9095 – IPFS proxy endpoint 9096 – Cluster swarm 集群几点通信端口 安装Golang # IPFS 官方提供的安装方式有安装包方式，ipfs-update 方式，源码编译安装方式，具体可以查看 https://docs.</description>
+    </item>
+    
+  </channel>
+</rss>

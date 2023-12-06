@@ -1,0 +1,1914 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="CGO # Golang 自带的 CGO 可以支持与 C 语言接口的互通。
+libewf_handle_t *handle, 2.1 快速入门 · Go语言高级编程 (studygolang.com)
+Go 与 C 的桥梁：cgo 入门，剖析与实践 - 知乎 (zhihu.com)
+赵志强的博客_云社区-华为云 (huaweicloud.com)
+(1105条消息) 使用cgo，由于内存释放导致内存无效，引起的http crash_go 内存申请失败_冬生0的博客-CSDN博客
+cgo阻塞调用引起golang线程暴增 – 峰云就她了 (xiaorui.cc)
+【Free Style】CGO: Go与C互操作技术（三）：Go调C性能分析及优化-云社区-华为云 (huaweicloud.com)
+C.libewf_handle_initialize(&amp;this.pFile, &amp;this.poLibewfErr) != 1 该函数的作用是初始化一个ewf_handle_t类型的结构体，该结构体代表了一个EnCase数据文件(.E01)的处理器。 EnCase是一种数字取证软件，可以用来收集和分析电脑上的证据数据。EnCase数据文件是通过将证据数据打包成一个或多个E01文件来创建的，这些文件可以使用libewf库进行处理。
+int libewf_handle_initialize(ewf_handle_t handle, int verify) 该函数的参数说明如下：
+handle：需要进行初始化的ewf_handle_t类型的结构体指针； verify：在初始化过程中是否进行验证，0表示不验证，1表示验证，整数类型。 C.libewf_handle_open(this.pFile, &amp;cpath, 1, LIBEWF_ACCESS_FLAG_WRITE, &amp;this.poLibewfErr) != 1 该函数的作用是打开一个EnCase数据文件(.E01)并返回一个ewf_handle_t类型的结构体指针，该结构体代表了打开的EnCase数据文件。
+ewf_handle_t libewf_handle_open(const char *filename, const char *password, int32_t offset, int32_t read_only, int32_t verify) 该函数的参数说明如下：">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="CGo" />
+<meta property="og:description" content="CGO # Golang 自带的 CGO 可以支持与 C 语言接口的互通。
+libewf_handle_t *handle, 2.1 快速入门 · Go语言高级编程 (studygolang.com)
+Go 与 C 的桥梁：cgo 入门，剖析与实践 - 知乎 (zhihu.com)
+赵志强的博客_云社区-华为云 (huaweicloud.com)
+(1105条消息) 使用cgo，由于内存释放导致内存无效，引起的http crash_go 内存申请失败_冬生0的博客-CSDN博客
+cgo阻塞调用引起golang线程暴增 – 峰云就她了 (xiaorui.cc)
+【Free Style】CGO: Go与C互操作技术（三）：Go调C性能分析及优化-云社区-华为云 (huaweicloud.com)
+C.libewf_handle_initialize(&amp;this.pFile, &amp;this.poLibewfErr) != 1 该函数的作用是初始化一个ewf_handle_t类型的结构体，该结构体代表了一个EnCase数据文件(.E01)的处理器。 EnCase是一种数字取证软件，可以用来收集和分析电脑上的证据数据。EnCase数据文件是通过将证据数据打包成一个或多个E01文件来创建的，这些文件可以使用libewf库进行处理。
+int libewf_handle_initialize(ewf_handle_t handle, int verify) 该函数的参数说明如下：
+handle：需要进行初始化的ewf_handle_t类型的结构体指针； verify：在初始化过程中是否进行验证，0表示不验证，1表示验证，整数类型。 C.libewf_handle_open(this.pFile, &amp;cpath, 1, LIBEWF_ACCESS_FLAG_WRITE, &amp;this.poLibewfErr) != 1 该函数的作用是打开一个EnCase数据文件(.E01)并返回一个ewf_handle_t类型的结构体指针，该结构体代表了打开的EnCase数据文件。
+ewf_handle_t libewf_handle_open(const char *filename, const char *password, int32_t offset, int32_t read_only, int32_t verify) 该函数的参数说明如下：" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/cgo/" /><meta property="article:section" content="docs" />
+
+
+<title>CGo | Soulmate</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" >
+<link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.2ec525465e0a46f57c0f2768a0b27f21a366d2db635a738d0ad321524c985c7b.js" integrity="sha256-LsUlRl4KRvV8DydooLJ/IaNm0ttjWnONCtMhUkyYXHs=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo.png" alt="Logo" /><span>Soulmate</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-074eed0fb8c6f9d99dfeff898388792f" class="toggle"  />
+    <label for="section-074eed0fb8c6f9d99dfeff898388792f" class="flex justify-between">
+      <a role="button" class="">计算机基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="">计算机网络基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/linux%E5%9F%BA%E7%A1%80/" class="">Linux基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/git%E5%9F%BA%E7%A1%80/" class="">Git基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Golang</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-670eda717a06f31447c52422ec93a159" class="toggle" checked />
+    <label for="section-670eda717a06f31447c52422ec93a159" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/" class="">go语言基础（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/cgo/" class="active">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/flag/" class="">Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/grpc/" class="">Grpc</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/" class="">ProtoBuf</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/" class="">go语言基础（三）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/" class="">go语言底层基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/" class="">benchmark测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/idea%E6%B3%A8%E9%87%8A/" class="">ID Ea注释</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle"  />
+    <label for="section-c453881a62c640f6a4cceec99c02477e" class="flex justify-between">
+      <a role="button" class="">高阶</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" class="">Go高阶-语言基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f235e88e751d2cb18d527c1784763605" class="toggle"  />
+    <label for="section-f235e88e751d2cb18d527c1784763605" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/atomic/" class="">Atomic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/os/" class="">Os</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strconv/" class="">Strconv</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sort/" class="">Sort</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strings/" class="">Strings</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/reflect/" class="">Reflect</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/time/" class="">Time</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sync/" class="">Sync</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ee53da12118bfd3e9b35f3e9494ab55b" class="toggle"  />
+    <label for="section-ee53da12118bfd3e9b35f3e9494ab55b" class="flex justify-between">
+      <a role="button" class="">LeetCode</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/" class="">golang力扣刷题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/" class="">golang力扣刷题（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/%E5%BF%85%E5%88%B7top101/" class="">必刷top101</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" class="">LeetCode算法总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>数据库</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle"  />
+    <label for="section-94f26238d1ca3b5bcd40eadc7a88d726" class="flex justify-between">
+      <a role="button" class="">MySql</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" class="">MySql基础总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="">Mac连接数据库所遇到的问题</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="toggle"  />
+    <label for="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="flex justify-between">
+      <a role="button" class="">Redis</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="">Redis集群搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/" class="">Redis基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="">redis面试总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8be9c2251abd1fe110e3c1520cac6177" class="toggle"  />
+    <label for="section-8be9c2251abd1fe110e3c1520cac6177" class="flex justify-between">
+      <a role="button" class="">SQLite</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/" class="">Sqlite</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/" class="">Xorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>区块链</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle"  />
+    <label for="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="flex justify-between">
+      <a role="button" class="">Fabric</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">fabric相关机制与原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/" class="">智能合约</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/" class="">fabric-sdk-go详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/" class="">fabric-ca详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle"  />
+    <label for="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="flex justify-between">
+      <a role="button" class="">环境测试</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/" class="">fabric网络中的报错（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/" class="">fabric网络中的报错（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">fabric环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/" class="">solo节点测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/" class="">fabric多机搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/" class="">部署tape测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/" class="">手动生成ca证书搭建fabric网络</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/" class="">centos安装fabric1.2</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-25aef1d59a561fcefcaecb043ef8afd2" class="toggle"  />
+    <label for="section-25aef1d59a561fcefcaecb043ef8afd2" class="flex justify-between">
+      <a role="button" class="">配置文件</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/" class="">cryptogen生成的证书详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">docker-compose.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">configtx.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">crypto-config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/" class="">升级链码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/" class="">区块链网络添加组织</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/" class="">fabric浏览器搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/" class="">如何在已有组织中增加节点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/" class="">Fabric1.4多通道实验</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b07621083aa30b12de4c0333941e479f" class="toggle"  />
+    <label for="section-b07621083aa30b12de4c0333941e479f" class="flex justify-between">
+      <a role="button" class="">比特币</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">比特币相关机制与原理</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle"  />
+    <label for="section-ff5477999ef29208270c84e8b56b2758" class="flex justify-between">
+      <a role="button" class="">IPFS</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/" class="">go-ipfs-api</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" class="">ipfs-webui可视化工具搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/" class="">IPFS基本原理（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/" class="">IPFS私有网络搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-77a0a17b06e8d04cfb0fba9952941706" class="toggle"  />
+    <label for="section-77a0a17b06e8d04cfb0fba9952941706" class="flex justify-between">
+      <a role="button" class="">密码学</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" class="">区块链安全基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/" class="">椭圆曲线加密</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/" class="">密码学基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2e4d10b323fd668021dbd532575d8790" class="toggle"  />
+    <label for="section-2e4d10b323fd668021dbd532575d8790" class="flex justify-between">
+      <a role="button" class="">Docker</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/" class="">Docker基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/" class="">Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" class="">docker常用知识总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-70383d7f28a7ae4bf840a844eb61aa16" class="toggle"  />
+    <label for="section-70383d7f28a7ae4bf840a844eb61aa16" class="flex justify-between">
+      <a role="button" class="">共识算法</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">共识算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" class="">Raft共识算法</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>前端</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
+    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
+      <a role="button" class="">博客</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%9B%BE%E4%B9%A6/" class="">图书</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/" class="">工具库</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="https://gitee.com/chaincode"  target="_blank" rel="noopener">
+        Gitee
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>CGo</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#cgo">CGO</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h2 id="cgo">
+  CGO
+  <a class="anchor" href="#cgo">#</a>
+</h2>
+<p>Golang 自带的 CGO 可以支持与 C 语言接口的互通。</p>
+<pre tabindex="0"><code>libewf_handle_t *handle,
+</code></pre><p><a href="https://books.studygolang.com/advanced-go-programming-book/ch2-cgo/ch2-01-hello-cgo.html">2.1 快速入门 · Go语言高级编程 (studygolang.com)</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/349197066">Go 与 C 的桥梁：cgo 入门，剖析与实践 - 知乎 (zhihu.com)</a></p>
+<p><a href="https://bbs.huaweicloud.com/community/usersnew/id_1510903197647472">赵志强的博客_云社区-华为云 (huaweicloud.com)</a></p>
+<p><a href="https://blog.csdn.net/wei_gw2012/article/details/86666506">(1105条消息) 使用cgo，由于内存释放导致内存无效，引起的http crash_go 内存申请失败_冬生0的博客-CSDN博客</a></p>
+<p><a href="https://xiaorui.cc/archives/5408">cgo阻塞调用引起golang线程暴增 – 峰云就她了 (xiaorui.cc)</a></p>
+<p><a href="https://bbs.huaweicloud.com/blogs/117132">【Free Style】CGO: Go与C互操作技术（三）：Go调C性能分析及优化-云社区-华为云 (huaweicloud.com)</a></p>
+<pre tabindex="0"><code>C.libewf_handle_initialize(&amp;this.pFile, &amp;this.poLibewfErr) != 1
+</code></pre><blockquote>
+<p>该函数的作用是初始化一个ewf_handle_t类型的结构体，该结构体代表了一个EnCase数据文件(.E01)的处理器。
+EnCase是一种数字取证软件，可以用来收集和分析电脑上的证据数据。EnCase数据文件是通过将证据数据打包成一个或多个E01文件来创建的，这些文件可以使用libewf库进行处理。</p>
+</blockquote>
+<pre tabindex="0"><code>int libewf_handle_initialize(ewf_handle_t handle, int verify)
+</code></pre><blockquote>
+<p>该函数的参数说明如下：</p>
+<ul>
+<li><code>handle</code>：需要进行初始化的ewf_handle_t类型的结构体指针；</li>
+<li><code>verify</code>：在初始化过程中是否进行验证，0表示不验证，1表示验证，整数类型。</li>
+</ul>
+</blockquote>
+<pre tabindex="0"><code>C.libewf_handle_open(this.pFile, &amp;cpath, 1, LIBEWF_ACCESS_FLAG_WRITE, &amp;this.poLibewfErr) != 1 
+</code></pre><blockquote>
+<p>该函数的作用是打开一个EnCase数据文件(.E01)并返回一个ewf_handle_t类型的结构体指针，该结构体代表了打开的EnCase数据文件。</p>
+</blockquote>
+<pre tabindex="0"><code>ewf_handle_t libewf_handle_open(const char *filename,
+                                const char *password, 
+                                int32_t offset,
+                                int32_t read_only, 
+                                int32_t verify)
+</code></pre><blockquote>
+<p>该函数的参数说明如下：</p>
+<ul>
+<li><code>filename</code>：需要打开的EnCase数据文件的文件名，字符串类型；</li>
+<li><code>password</code>：打开EnCase数据文件所需的密码，如果不需要密码则为NULL，字符串类型；</li>
+<li><code>offset</code>：EnCase数据文件的偏移量，以字节为单位，整数类型；</li>
+<li><code>read_only</code>：打开EnCase数据文件的方式，0表示可读可写，1表示只读，整数类型；</li>
+<li><code>verify</code>：在打开EnCase数据文件时是否进行验证，0表示不验证，1表示验证，整数类型。</li>
+</ul>
+</blockquote>
+<pre tabindex="0"><code>C.libewf_handle_open_wide(this.pFile, &amp;cpath, 1, LIBEWF_ACCESS_FLAG_WRITE, &amp;this.poLibewfErr) != 1
+</code></pre><blockquote>
+<p>该函数返回一个ewf_handle_t类型的指针，代表已经打开的EnCase数据文件。这个指针可以被传递给其他libewf库中的函数，以进行数据的读取和处理。</p>
+<p><code>C.libewf_handle_open_wide</code> 函数与 <code>C.libewf_handle_open</code> 函数相似，但其可以接受宽字符类型的文件名和密码。在处理Unicode或其他宽字符编码的文件名时，可以使用这个函数打开EnCase数据文件。</p>
+</blockquote>
+<pre tabindex="0"><code>ewf_handle_t libewf_handle_open_wide(const wchar_t *filename,
+                                     const wchar_t *password,
+                                     int32_t offset, 
+                                     int32_t read_only,
+                                     int32_t verify)
+</code></pre><blockquote>
+<p>该函数的参数说明如下：</p>
+<ul>
+<li><code>filename</code>：需要打开的EnCase数据文件的文件名，宽字符类型；</li>
+<li><code>password</code>：打开EnCase数据文件所需的密码，如果不需要密码则为NULL，宽字符类型；</li>
+<li><code>offset</code>：EnCase数据文件的偏移量，以字节为单位，整数类型；</li>
+<li><code>read_only</code>：打开EnCase数据文件的方式，0表示可读可写，1表示只读，整数类型；</li>
+<li><code>verify</code>：在打开EnCase数据文件时是否进行验证，0表示不验证，1表示验证，整数类型。</li>
+</ul>
+</blockquote>
+<pre tabindex="0"><code>C.libewf_handle_set_format(this.pFile, (C.uchar)(this.format), &amp;this.poLibewfErr) != 1
+</code></pre><blockquote>
+<p>该函数返回一个整数类型的值，表示设置操作的状态。如果返回值为0，则表示设置成功；如果返回值为负数，则表示设置失败并且可能会返回错误代码。</p>
+<p><code>C.libewf_handle_set_format</code> 函数的作用是设置代表EnCase数据文件的格式。EnCase数据文件可以采用多种格式，例如Encase 1、Encase 2、Encase 3、Encase 4等等。通过调用此函数，可以设置代表EnCase数据文件的格式，以便在处理数据时正确地解释和使用数据。该函数需要一个代表处理器的指针、一个代表EnCase数据文件格式的字符串和一个选项字符串作为参数。</p>
+<p>选项字符串的格式因格式而异，可以为空字符串或包含各种参数。例如，对于Encase 6格式，选项字符串可以设置以下参数：sector_size、compression、cipher、key、iv等等。</p>
+</blockquote>
+<pre tabindex="0"><code>int libewf_handle_set_format(ewf_handle_t handle, const char *format, const char *option)
+</code></pre><blockquote>
+<p>该函数的参数说明如下：</p>
+<ul>
+<li><code>handle</code>：需要设置格式的ewf_handle_t类型的结构体指针；</li>
+<li><code>format</code>：代表EnCase数据文件的格式的字符串；</li>
+<li><code>option</code>：选项字符串。</li>
+</ul>
+</blockquote>
+<pre tabindex="0"><code>C.libewf_handle_set_bytes_per_sector(this.pFile, 512, &amp;this.poLibewfErr) != 1 
+</code></pre><blockquote>
+<p>作用是设置EnCase数据文件中每个扇区的字节数。该函数需要一个代表EnCase数据文件的句柄、一个代表每个扇区的字节数的整数，以及一个选项字符串作为参数。默认情况下，每个扇区的字节数为 512 字节。可以使用该函数更改此值。请注意，更改此值可能会导致读取数据时出现问题，因此请谨慎使用此函数。</p>
+<p>选项字符串的格式因格式而异，可以为空字符串或包含各种参数。例如，对于Encase 6格式，选项字符串可以设置以下参数：sector_size、compression、cipher、key、iv等等。</p>
+</blockquote>
+<pre tabindex="0"><code>int libewf_handle_set_bytes_per_sector(ewf_handle_t ewf_handle, uint32_t bytes_per_sector, const char *options)
+</code></pre><blockquote>
+<p>该函数的参数说明如下：</p>
+<ul>
+<li><code>ewf_handle</code>：代表EnCase数据文件的句柄；</li>
+<li><code>bytes_per_sector</code>：每个扇区的字节数；</li>
+<li><code>options</code>：选项字符串。</li>
+</ul>
+</blockquote>
+<pre tabindex="0"><code>C.libewf_handle_set_sectors_per_chunk(this.pFile, (C.uint)(chunkSize/512), &amp;this.poLibewfErr) != 1
+</code></pre><blockquote>
+<p>作用是设置 EnCase 数据文件中每个块包含的扇区数。默认情况下，每个块包含 64 个扇区。可以使用该函数更改此值。请注意，更改此值可能会导致读取数据时出现问题，因此请谨慎使用此函数。</p>
+<p>选项字符串的格式因格式而异，可以为空字符串或包含各种参数。例如，对于 Encase 6 格式，选项字符串可以设置以下参数：sector_size、compression、cipher、key、iv 等等。</p>
+</blockquote>
+<pre tabindex="0"><code>int libewf_handle_set_sectors_per_chunk(ewf_handle_t ewf_handle, uint32_t sectors_per_chunk, const char *options);
+</code></pre><blockquote>
+<p>该函数的参数说明如下：</p>
+<ul>
+<li><code>ewf_handle</code>：代表 EnCase 数据文件的句柄；</li>
+<li><code>sectors_per_chunk</code>：每个块包含的扇区数；</li>
+<li><code>options</code>：选项字符串。</li>
+</ul>
+</blockquote>
+<pre tabindex="0"><code>C.libewf_handle_set_maximum_segment_size(this.pFile, (C.size64_t)(this.segSize), &amp;this.poLibewfErr) != 1
+</code></pre><blockquote>
+<p>作用是设置 EnCase 数据文件中每个分段的最大大小。默认情况下，每个分段的最大大小为 0，表示没有最大大小限制。可以使用该函数更改此值。请注意，更改此值可能会导致读取数据时出现问题，因此请谨慎使用此函数。</p>
+</blockquote>
+<pre tabindex="0"><code>int libewf_handle_set_maximum_segment_size(ewf_handle_t ewf_handle, uint32_t maximum_segment_size, const char *options);
+</code></pre><blockquote>
+<p>该函数的参数说明如下：</p>
+<ul>
+<li><code>ewf_handle</code>：代表 EnCase 数据文件的句柄；</li>
+<li><code>maximum_segment_size</code>：每个分段的最大大小，单位是字节；</li>
+<li><code>options</code>：选项字符串。</li>
+</ul>
+</blockquote>
+<pre tabindex="0"><code>C.libewf_handle_set_compression_values(this.pFile, LIBEWF_COMPRESSION_FAST, 0, &amp;this.poLibewfErr) != 1
+</code></pre><blockquote>
+<p>作用是设置 EnCase 数据文件中的压缩选项。可以使用该函数指定压缩类型和压缩级别。默认情况下，不进行压缩。请注意，更改此选项可能会导致读取数据时出现问题，因此请谨慎使用此函数。</p>
+</blockquote>
+<pre tabindex="0"><code>int libewf_handle_set_compression_values(ewf_handle_t ewf_handle, const char *compression_type, uint8_t compression_level, const char *options);
+</code></pre><blockquote>
+<p>该函数的参数说明如下：</p>
+<ul>
+<li><code>ewf_handle</code>：代表 EnCase 数据文件的句柄；</li>
+<li><code>compression_type</code>：压缩类型，如 <code>none</code>、<code>deflate</code>、<code>bzip2</code> 等；</li>
+<li><code>compression_level</code>：压缩级别，取值范围为 0 到 9，0 表示不压缩；</li>
+<li><code>options</code>：选项字符串。</li>
+</ul>
+</blockquote>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#cgo">CGO</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

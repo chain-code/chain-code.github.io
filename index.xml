@@ -160,6 +160,166 @@ github.com/Shopify/sarama v1.27.2 // indirect github.com/astaxie/beego v1.12.1 g
     </item>
     
     <item>
+      <title>CGo</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/cgo/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/cgo/</guid>
+      <description>CGO # Golang 自带的 CGO 可以支持与 C 语言接口的互通。
+libewf_handle_t *handle, 2.1 快速入门 · Go语言高级编程 (studygolang.com)
+Go 与 C 的桥梁：cgo 入门，剖析与实践 - 知乎 (zhihu.com)
+赵志强的博客_云社区-华为云 (huaweicloud.com)
+(1105条消息) 使用cgo，由于内存释放导致内存无效，引起的http crash_go 内存申请失败_冬生0的博客-CSDN博客
+cgo阻塞调用引起golang线程暴增 – 峰云就她了 (xiaorui.cc)
+【Free Style】CGO: Go与C互操作技术（三）：Go调C性能分析及优化-云社区-华为云 (huaweicloud.com)
+C.libewf_handle_initialize(&amp;amp;this.pFile, &amp;amp;this.poLibewfErr) != 1 该函数的作用是初始化一个ewf_handle_t类型的结构体，该结构体代表了一个EnCase数据文件(.E01)的处理器。 EnCase是一种数字取证软件，可以用来收集和分析电脑上的证据数据。EnCase数据文件是通过将证据数据打包成一个或多个E01文件来创建的，这些文件可以使用libewf库进行处理。
+int libewf_handle_initialize(ewf_handle_t handle, int verify) 该函数的参数说明如下：
+handle：需要进行初始化的ewf_handle_t类型的结构体指针； verify：在初始化过程中是否进行验证，0表示不验证，1表示验证，整数类型。 C.libewf_handle_open(this.pFile, &amp;amp;cpath, 1, LIBEWF_ACCESS_FLAG_WRITE, &amp;amp;this.poLibewfErr) != 1 该函数的作用是打开一个EnCase数据文件(.E01)并返回一个ewf_handle_t类型的结构体指针，该结构体代表了打开的EnCase数据文件。
+ewf_handle_t libewf_handle_open(const char *filename, const char *password, int32_t offset, int32_t read_only, int32_t verify) 该函数的参数说明如下：</description>
+    </item>
+    
+    <item>
+      <title>Channel</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/channel/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/channel/</guid>
+      <description>channel # 如何判断通道为空
+if len(channel) == 0 { // 通道为空 } select { case &amp;lt;-channel: // 通道不为空，可以接收元素 default: // 通道为空 } 如何判断通道已关闭
+v, ok := &amp;lt;-ch 通道各种花里胡哨用法
+https://learnku.com/articles/71310
+https://cloud.tencent.com/developer/article/1911948
+https://segmentfault.com/a/1190000017958702
+https://www.jianshu.com/p/554e210bdca4
+https://www.cnblogs.com/jiujuan/p/16014608.html
+https://colobu.com/2016/04/14/Golang-Channels/
+1、一个经典的算法题 有 4 个 goroutine，编号为 1、2、3、4。每秒钟会有一个 goroutine 打印出自己的编号，要求写一个程序，让输出的编号总是按照 1、2、3、4、1、2、3、4… 的顺序打印出来
+func main() { // 4个channel chs := make([]chan int, 4) for i, _ := range chs { chs[i] = make(chan int) // 开4个协程 go func(i int) { for { // 获取当前channel值并打印 v := &amp;lt;-chs[i] fmt.</description>
+    </item>
+    
+    <item>
+      <title>Flag</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/flag/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/flag/</guid>
+      <description># flag # 概述 # flag包提供了一系列解析命令行参数的功能接口，官方教程的地址为：https://golang.org/pkg/flag/#pkg-overview
+命令行语法 # 命令行语法主要有以下几种形式
+-flag //只支持bool类型 -flag=x -flag x //只支持非bool类型 以上语法对于一个或两个‘－’号，效果是一样的，但是要注意对于第三种情况，只支持非bool类型，原因是碰到如下情况时
+cmd -x * *为0，false有可能表示一个文件名或文件，也有可能表示x标签的值为0或false，会产生二义性，因此规定第三种只支持非bool类型。对于整形flag，合法的值可以为1234, 0664,0x1234或负数等。对于布尔型flag，可以为1, 0, t, f, T, F, true, false, TRUE, FALSE, True, False等
+命令行参数解析 # flag.Parse() 解析函数将会在碰到第一个非flag命令行参数时停止，非flag命令行参数是指不满足命令行语法的参数，如命令行参数为cmd --flag=true abc则第一个非flag命令行参数为“abc”
+调用Parse解析后，就可以直接使用flag本身(指针类型)或者绑定的变量了(值类型) fmt.Println(&amp;#34;ip has value &amp;#34;, *ip) fmt.Println(&amp;#34;flagvar has value &amp;#34;, flagvar) 12 还可通过flag.Args(), flag.Arg(i)来获取非flag命令行参数
+如果需要每个函数的详细demo，可参见Gopkg:flag
+命令行参数解析方法 # 使用flag主要包括以下几步
+定义flag参数，有三种方式
+通过flag.String(), Bool(), Int() 等flag.Xxx()方法，该种方式返回一个相应的指针 import &amp;#34;flag&amp;#34; var ip = flag.Int(&amp;#34;flagname&amp;#34;, 1234, &amp;#34;help message for flagname&amp;#34;) 通过flag.</description>
+    </item>
+    
+    <item>
+      <title>Grpc</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/grpc/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/grpc/</guid>
+      <description>gRPC # gRPC 是一个高性能、开源和通用的 RPC 框架，面向移动和 HTTP/2 设计。
+gRPC基于 HTTP/2标准设计，带来诸如双向流、流控、头部压缩、单 TCP连接上的多复用请求等特。这些特性使得 其在移动设备上表现更好，更省电和节省空间占用。
+RPC # RPC（Remote Procedure Call Protocol）——远程过程调用协议，它是一种通过网络从远程计算机程序上请求 服务，而不需要了解底层网络技术的协议。
+简单来说，就是跟远程访问或者web请求差不多，都是一个client向远端服务器请求服务返回结果，但是web请求 使用的网络协议是http高层协议，而rpc所使用的协议多为TCP，是网络层协议，减少了信息的包装，加快了处理速 度。
+golang本身有rpc包，可以方便的使用，来构建自己的rpc服务，下边是一个简单是实例，可以加深我们的理解
+1.调用客户端句柄；执行传送参数
+2.调用本地系统内核发送网络消息
+3.消息传送到远程主机
+4.服务器句柄得到消息并取得参数
+5.执行远程过程
+6.执行的过程将结果返回服务器句柄
+7.服务器句柄返回结果，调用远程系统内核
+8.消息传回本地主机
+9.客户句柄由内核接收消息
+10.客户接收句柄返回的数据
+服务端 # package main import ( &amp;#34;net/http&amp;#34; &amp;#34;net/rpc&amp;#34; &amp;#34;net&amp;#34; &amp;#34;github.com/astaxie/beego&amp;#34; &amp;#34;io&amp;#34; ) //- 方法是导出的 //- 方法有两个参数，都是导出类型或内建类型 //- 方法的第二个参数是指针 //- 方法只有一个error接口类型的返回值 //func (t *T) MethodName(argType T1, replyType *T2) error type Panda int; func (this *Panda)Getinfo(argType int, replyType *int) error { beego.</description>
+    </item>
+    
+    <item>
+      <title>ProtoBuf</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/</guid>
+      <description>ProtoBuf # protobuf是google旗下的一款平台无关，语言无关，可扩展的序列化结构数据格式。所以很适合用做数据存储和作 为不同应用，不同语言之间相互通信的数据交换格式，只要实现相同的协议格式即同一 proto文件被编译成不同的 语言版本，加入到各自的工程中去。这样不同语言就可以解析其他语言通过 protobuf序列化的数据。
+Google Protocol Buffer(简称 Protobuf)是一种轻便高效的结构化数据存储格式，平台无关、语言无关、可扩展， 可用于通讯协议和数据存储等领域。
+数据交互的格式比较 # 数据交互xml、json、protobuf格式比较
+1、json: 一般的web项目中，最流行的主要还是json。因为浏览器对于json数据支持非常好，有很多内建的函数支 持。
+2、xml: 在webservice中应用最为广泛，但是相比于json，它的数据更加冗余，因为需要成对的闭合标签。json使 用了键值对的方式，不仅压缩了一定的数据空间，同时也具有可读性。
+3、protobuf:是后起之秀，是谷歌开源的一种数据格式，适合高性能，对响应速度有要求的数据传输场景。因为 profobuf是二进制数据格式，需要编码和解码。数据本身不具有可读性。因此只能反序列化之后得到真正可读的数 据。
+相对于其它protobuf更具有优势
+1：序列化后体积相比Json和XML很小，适合网络传输
+2：支持跨平台多语言
+3：消息格式升级和兼容性还不错
+4：序列化反序列化速度很快，快于Json的处理速速
+protoBuf的优点 # Protobuf 有如 XML，不过它更小、更快、也更简单。你可以定义自己的数据结构，然后使用代码生成器生成的代 码来读写这个数据结构。你甚至可以在无需重新部署程序的情况下更新数据结构。只需使用 Protobuf 对数据结构 进行一次描述，即可利用各种不同语言或从各种不同数据流中对你的结构化数据轻松读写。
+它有一个非常棒的特性，即“向后”兼容性好，人们不必破坏已部署的、依靠“老”数据格式的程序就可以对数据结构 进行升级。
+Protobuf 语义更清晰，无需类似 XML 解析器的东西（因为 Protobuf 编译器会将 .proto 文件编译生成对应的数据 访问类以对 Protobuf 数据进行序列化、反序列化操作）。使用 Protobuf 无需学习复杂的文档对象模型， Protobuf 的编程模式比较友好，简单易学，同时它拥有良好的文档和示例，对于喜欢简单事物的人们而言， Protobuf 比其他的技术更加有吸引力。
+ProtoBuf 的不足 # Protobuf 与 XML 相比也有不足之处。它功能简单，无法用来表示复杂的概念。
+XML 已经成为多种行业标准的编写工具，Protobuf 只是 Google 公司内部使用的工具，在通用性上还差很多。 由 于文本并不适合用来描述数据结构，所以 Protobuf 也不适合用来对基于文本的标记文档（如 HTML）建模。另 外，由于 XML 具有某种程度上的自解释性，它可以被人直接读取编辑，在这一点上 Protobuf 不行，它以二进制的 方式存储，除非你有 .</description>
+    </item>
+    
+    <item>
+      <title>URL</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/url/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/url/</guid>
+      <description>Url # // 将bool类型转换为字符串
+bool到string
+string := strconv.FormatBool(bool) string到bool
+bool, err := strconv.ParseBool(string) string到float64
+strconv.ParseFloat(s string, bitSize int) (float64, error) float64到string
+strconv.FormatFloat(f float64, fmt byte, prec int, bitSize int) string func main() { f := 3.14159 // 将浮点数转换为字符串，保留两位小数 str := strconv.FormatFloat(f, &amp;#39;f&amp;#39;, 2, 64) fmt.Println(str) } 在上述示例中，我们使用strconv.FormatFloat()函数将浮点数f转换为字符串，并指定了以下参数：
+f：要转换的浮点数。 &#39;f&#39;：表示格式化为十进制表示法（浮点数），其他可选的格式有 &#39;b&#39;（科学计数法）和 &#39;e&#39;（指数表示法）。 2：保留小数点后的位数。 64：表示f的位大小，通常为32或64。 实战 # interface{}是结构体
+var v interface{} v = Person{ Name: &amp;#34;Alice&amp;#34;, Age: 30, Email: &amp;#34;alice@example.com&amp;#34;, } value := reflect.</description>
+    </item>
+    
+    <item>
+      <title>微服务</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</guid>
+      <description>微服务 # 微服务框架是将复杂的系统使用组件化的方式进行拆分，并使用轻量级通讯方式进行整合的一种设计方法。
+微服务是通过这种架构设计方法拆分出来的一个独立的组件化的小应用。
+微服务架构和整体式架构的区别？ # 开发单体式（整体式）应用的不足之处 # 三层架构（MVC）的具体内容如下：
+表示层（view）： 用户使用应用程序时，看到的、听见的、输入的或者交互的部分。
+业务逻辑层（controller）： 根据用户输入的信息，进行逻辑计算或者业务处理的部分。
+数据访问层（model）： 关注有效地操作原始数据的部分，如将数据存储到存储介质（如数据库、文件系统）及从存储介质中读取数据等。
+虽然现在程序被分成了三层，但只是逻辑上的分层，并不是物理上的分层。也就是说，对不同层的代码而言，经过编译、打包和部署后，所有的代码最终还是运行在同一个进程中。而这，就是所谓的单块架构。
+单体架构在规模比较小的情况下工作情况良好，但是随着系统规模的扩大，它暴露出来的问题也越来越多，主要有 以下几点：
+复杂性逐渐变高
+比如有的项目有几十万行代码，各个模块之间区别比较模糊，逻辑比较混乱，代码越多复杂性越高，越难解决遇到的问题。
+技术债务逐渐上升
+公司的人员流动是再正常不过的事情，有的员工在离职之前，疏于代码质量的自我管束，导致留下来很多坑，由于单体项目代码量庞大的惊人，留下的坑很难被发觉，这就给新来的员工带来很大的烦恼，人员流动越大所留下的坑 越多，也就是所谓的技术债务越来越多。
+维护成本大
+当应用程序的功能越来越多、团队越来越大时，沟通成本、管理成本显著增加。当出现 bug 时，可能引起 bug 的原因组合越来越多，导致分析、定位和修复的成本增加；并且在对全局功能缺乏深度理解的情况下，容易在修复 bug 时引入新的 bug。
+持续交付周期长
+构建和部署时间会随着功能的增多而增加，任何细微的修改都会触发部署流水线。新人培养周期长：新成员了解背景、熟悉业务和配置环境的时间越来越长。 技术选型成本高 单块架构倾向于采用统一的技术平台或方案来解决所有问题，如果后续想引入新的技术或框架，成本和风险都很 大。
+可扩展性差
+随着功能的增加，垂直扩展的成本将会越来越大；而对于水平扩展而言，因为所有代码都运行在同一个进程，没办法做到针对应用程序的部分功能做独立的扩展。
+微服务架构的特性 # 单一职责
+微服务架构中的每个服务，都是具有业务逻辑的，符合高内聚、低耦合原则以及单一职责原则的单元，不同的服务通过“管道”的方式灵活组合，从而构建出庞大的系统。
+轻量级通信
+服务之间通过轻量级的通信机制实现互通互联，而所谓的轻量级，通常指语言无关、平台无关的交互方式。
+对于轻量级通信的格式而言，我们熟悉的 XML 和 JSON，它们是语言无关、平台无关的；对于通信的协议而言，通 常基于 HTTP，能让服务间的通信变得标准化、无状态化。目前大家熟悉的 REST（Representational State Transfer）是实现服务间互相协作的轻量级通信机制之一。使用轻量级通信机制，可以让团队选择更适合的语言、 工具或者平台来开发服务本身。
+问：REST是什么和restful一样吗？
+答：REST 指的是一组架构约束条件和原则。满足这些约束条件和原则的应用程序或设计就是 RESTful。
+独立性
+每个服务在应用交付过程中，独立地开发、测试和部署。
+在单块架构中所有功能都在同一个代码库，功能的开发不具有独立性；当不同小组完成多个功能后，需要经过集成 和回归测试，测试过程也不具有独立性；当测试完成后，应用被构建成一个包，如果某个功能存在 bug，将导致整 个部署失败或者回滚。
+在微服务架构中，每个服务都是独立的业务单元，与其他服务高度解耦，只需要改变当前服务本身，就可以完成独立的开发、测试和部署。
+进程隔离
+单块架构中，整个系统运行在同一个进程中，当应用进行部署时，必须停掉当前正在运行的应用，部署完成后再重启进程，无法做到独立部署。
+有时候我们会将重复的代码抽取出来封装成组件，在单块架构中，组件通常的形态叫做共享库（如 jar 包或者 DLL），但是当程序运行时，所有组件最终也会被加载到同一进程中运行.</description>
+    </item>
+    
+    <item>
       <title>Go高阶 语言类库</title>
       <link>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/</link>
       <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
@@ -488,6 +648,16 @@ beego是中国人开发的，开发文档比较详细
 beego网址 MVC架构 # Beego是MVC架构。MVC 是一种应用非常广泛的体系架构，几乎所有的编程语言都会使用到，而且所有的程序员在工作中都会遇到！用 MVC 的方式开发程序，可以让程序的结构更加合理和清晰。 我们画图说明
 环境搭建 # 这里默认大家已经搭建好了go语言的开发环境。
 需要安装Beego go get -u github.com/beego/bee/v2@master go install github.com/beego/bee/v2@master //上面没用就试试这个 而后运行 bee version | ___ \| |_/ / ___ ___| ___ \ / _ \ / _ \| |_/ /| __/| __/\____/ \___| \___| v2.0.2├── Beego : Beego is not installed. Please do consider installing it first: https://github.com/beego/beego/v2. If you are using go mod, and you don&amp;#39;t install the beego under $GOPATH/src/github.</description>
+    </item>
+    
+    <item>
+      <title>Atomic</title>
+      <link>https://chain-code.github.io/docs/golang/package/atomic/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/atomic/</guid>
+      <description>Go语言中的 sync/atomic 包提供了一组原子操作函数，用于在多线程或并发环境下执行对共享变量的原子操作。这些操作是原子的，不会受到其他并发操作的干扰，从而避免了竞态条件和数据竞争问题。sync/atomic 包通常用于同步和管理共享资源，以确保线程安全。
+原子加载（Load）： Load 函数用于原子地加载变量的值。例如，atomic.LoadInt32(&amp;amp;myVariable) 会原子地获取 myVariable 的值。 原子存储（Store）： Store 函数用于原子地存储一个值到变量中。例如，atomic.StoreInt32(&amp;amp;myVariable, newValue) 会原子地将 newValue 存储到 myVariable 中。 原子交换（Swap）： Swap 函数用于原子地交换变量的值，并返回之前的值。例如，atomic.SwapInt32(&amp;amp;myVariable, newValue) 会原子地将 newValue 存储到 myVariable 中，并返回之前的值。 原子增减（Add/Sub）： Add 和 Sub 函数用于原子地增加或减少变量的值。例如，atomic.AddInt32(&amp;amp;myVariable, delta) 会原子地将 myVariable 的值增加 delta。 原子比较并交换（CompareAndSwap）： CompareAndSwap 函数用于原子地比较变量的当前值与期望值，如果相等则交换成新值。这通常用于实现乐观锁定机制。例如，atomic.CompareAndSwapInt32(&amp;amp;myVariable, expectedValue, newValue) 会比较 myVariable 的当前值是否等于 expectedValue，如果是，则将其替换为 newValue。 原子增减并返回新值（AddInt32, AddInt64, SubInt32, SubInt64）： 这些函数用于原子地增加或减少变量的值，并返回新的值。例如，atomic.AddInt32(&amp;amp;myVariable, delta) 会原子地将 myVariable 的值增加 delta，并返回新的值。 </description>
     </item>
     
     <item>
@@ -850,9 +1020,11 @@ P和M的个数问题 # 1、P的数量：
       <pubDate>Tue, 24 May 2022 15:47:27 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/</guid>
-      <description> 字段标签 # 标签是声明模型时可选的标记，标记不区分大小写，GORM 支持以下标记：
+      <description>字段标签 # 标签是声明模型时可选的标记，标记不区分大小写，GORM 支持以下标记：
 声明model时，tag是可选的，GORM支持以下tag：tag名大小写不敏感，但建议使用camelcase风格
-标签名 说明 column 指定列名 type 列数据类型，推荐使用兼容性好的通用类型，例如：所有数据库都支持bool、int、uint、float、string、time、bytes并且可以和其他标签一起使用，例如：not null、size、autoIncrement&amp;hellip;像varbinary（8）这样指定数据库数据类型也是支持的。在使用指定数据库数据类型时，它需要是完整的数据库数据类型，如：MEDIUMINT、UNSIGNED、not、NULL、AUTO、INSTREMENT size 指定列大小，例如：size: 256 primaryKey 指定列为主键 unique 指定列为唯一 default 指定列的默认值 precision 指定列的精度 scale 指定列大小 not null 不能为空 autolncrement 指定列为自动增长 embedded 嵌套字段 embeddedPrefix 嵌入字段的列名前缀 autoCreateTime 创建时追踪当前时间，对于int字段，它会追踪时间戳秒数，您可以使用nano/milli来追踪纳秒、毫秒时间戳，例如autoCreateTime:nano autoUpdateTime 创建/更新时追踪当前时间，对于int字段，它会追踪时间戳秒数，您可以使用nano/milli来追踪纳秒、毫秒时间戳，例如：autoupdateTime:milli index 根据参数创建索引1，多个字段使用相同的名称则创建复合索引，查看索引获取详情 uniqueindex 与index相同，但创建的是唯一索引 check 创建检查约束，例如check:age＞13查看约束获取详情 &amp;lt;- 设置字段写入的权限，&amp;lt;-:create只创建、&amp;lt;-:update只更新、&amp;lt;-:false无写入权限、「&amp;lt;-创建和更新权限 -&amp;gt; 设置字段读的权限，-&amp;gt;:false无读权限 - 忽略该字段，-无读写权限 </description>
+标签名 说明 column 指定列名 type 列数据类型，推荐使用兼容性好的通用类型，例如：所有数据库都支持bool、int、uint、float、string、time、bytes并且可以和其他标签一起使用，例如：not null、size、autoIncrement&amp;hellip;像varbinary（8）这样指定数据库数据类型也是支持的。在使用指定数据库数据类型时，它需要是完整的数据库数据类型，如：MEDIUMINT、UNSIGNED、not、NULL、AUTO、INSTREMENT size 指定列大小，例如：size: 256 primaryKey 指定列为主键 unique 指定列为唯一 default 指定列的默认值 precision 指定列的精度 scale 指定列大小 not null 不能为空 autolncrement 指定列为自动增长 embedded 嵌套字段 embeddedPrefix 嵌入字段的列名前缀 autoCreateTime 创建时追踪当前时间，对于int字段，它会追踪时间戳秒数，您可以使用nano/milli来追踪纳秒、毫秒时间戳，例如autoCreateTime:nano autoUpdateTime 创建/更新时追踪当前时间，对于int字段，它会追踪时间戳秒数，您可以使用nano/milli来追踪纳秒、毫秒时间戳，例如：autoupdateTime:milli index 根据参数创建索引1，多个字段使用相同的名称则创建复合索引，查看索引获取详情 uniqueindex 与index相同，但创建的是唯一索引 check 创建检查约束，例如check:age＞13查看约束获取详情 &amp;lt;- 设置字段写入的权限，&amp;lt;-:create只创建、&amp;lt;-:update只更新、&amp;lt;-:false无写入权限、「&amp;lt;-创建和更新权限 -&amp;gt; 设置字段读的权限，-&amp;gt;:false无读权限 - 忽略该字段，-无读写权限 gorm使用中遇到的坑点 # 3、Count方法不适合放在raw方法后面，否则将会出错
+count:=0 db.Raw(sql).Count(&amp;amp;count) 正确用法
+db.Model(&amp;amp;User{}).Where(&amp;#34;name = ?&amp;#34;, &amp;#34;jinzhu&amp;#34;).Count(&amp;amp;count) //正确用法 result := engine.Raw(querySQL, args...).Find(resultData) if result.Error != nil { err = fmt.</description>
     </item>
     
     <item>
@@ -1405,6 +1577,17 @@ npm i hexo-theme-butterfly 三 在hexo工作文件夹的根配置文件_config.<
 以上，问题就解决啦！！！
 现在你再输入：mysql -u root -p
 回车后就会显示：Enter password:</description>
+    </item>
+    
+    <item>
+      <title>ID Ea注释</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/idea%E6%B3%A8%E9%87%8A/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/idea%E6%B3%A8%E9%87%8A/</guid>
+      <description> IDEA注释 # // 这是一个单行注释 /* 这是一个多行注释 可以用于注释多行代码 */ 函数注释 # // add 函数将两个整数相加并返回结果 // 参数: a - 第一个整数, b - 第二个整数 // 返回值: 两个整数的和 func add(a, b int) int { return a + b } TODO：英语翻译为待办事项，备忘录。如果代码中有该标识，说明在标识处有功能代码待编写，待实现的功能在说明中会简略说明。
+FIXME：可以拆成短语，fix me ，意为修理我。如果代码中有该标识，说明标识处代码需要修正，甚至代码是错误的，不能工作，需要修复，如何修正会在说明中简略说明。
+// FIXME: 这里有一个需要修复的问题 可小写 // TODO: 添加错误处理代码 添加新的注释格式 # 标签 说明 TODO: 以后要添加的功能 FIXME: 已知的BUG,以后需要修正 HACK: 代码不太好，需要优化 XXX: 包含所有tag的tag,不好明确到底用哪个tag REVIEW: 虽然好用，最好还是评审一下 OPTIMIZE: 性能不好，需要优化 NOTE: 一些说明 WARNING: 请注意 </description>
     </item>
     
   </channel>

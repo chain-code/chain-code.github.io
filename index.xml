@@ -297,20 +297,34 @@ var v interface{} v = Person{ Name: &amp;#34;Alice&amp;#34;, Age: 30, Email: &am
     
     <item>
       <title>代码注释</title>
-      <link>https://chain-code.github.io/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://chain-code.github.io/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/</guid>
-      <description>/***　*　瓦瓦　十　*　十齱龠己　亅瓦車己　*　乙龍龠毋日丶　丶乙己毋毋丶　*　十龠馬鬼車瓦　己十瓦毋毋　*　鬼馬龠馬龠十　己己毋車毋瓦　*　毋龠龠龍龠鬼乙丶丶乙車乙毋鬼車己　*　乙龠龍龍鬼龍瓦　十瓦毋乙瓦龠瓦亅　*　馬齱龍馬鬼十丶日己己己毋車乙丶　*　己齱馬鬼車十十毋日乙己己乙乙　*　車馬齱齱日乙毋瓦己乙瓦日亅　*　亅車齺龖瓦乙車龖龍乙乙十　*　日龠龠十亅車龍毋十十　*　日毋己亅　己己十亅亅　*　丶己十十乙　丶丶丶丶丶　*　亅己十龍龖瓦　丶　丶　乙十　*　亅己十龠龖毋　丶丶　丶己鬼鬼瓦亅　*　十日十十日亅丶亅丶　丶十日毋鬼馬馬車乙　*　十日乙十亅亅亅丶　十乙己毋鬼鬼鬼龍齺馬乙　*　丶瓦己乙十十亅丶亅乙乙乙己毋鬼鬼鬼龍齱齺齺鬼十　*　乙乙十十十亅乙瓦瓦己日瓦毋鬼鬼龠齱齱龍龍齱齱毋丶　*　亅十十十十乙瓦車毋瓦瓦日車馬龠龍龍龍龍龍龠龠龠馬亅 *　十十十十己毋車瓦瓦瓦瓦鬼馬龠龍龠龠龍龠龠龠馬龠車 *　亅十十日毋瓦日日瓦鬼鬼鬼龠龠馬馬龠龍龍龠馬馬車 *　亅亅亅乙瓦瓦毋車車車馬龍龠鬼鬼馬龠龍龍龠馬馬鬼 *　丶丶乙亅亅乙車鬼鬼鬼毋車龍龍龠鬼馬馬龠龍齱齱龍馬鬼 *　亅己十十己十日鬼鬼車瓦毋龠龍龠馬馬龠龠龠齱齺齺齱龠鬼 *　亅乙乙乙十車馬車毋馬齱齱龍龠龠龠馬龠龍齱龍龠龠鬼瓦 *　丶毋龠鬼車瓦車馬龠龍龠龠龍齱齱龠馬馬鬼毋日 *　十乙己日十　丶己鬼龍齱齺齱龍馬馬馬車毋己 *　丶十己乙亅丶　亅瓦馬龠龍龠龠馬毋瓦乙 *　丶十十乙亅十　亅己瓦車馬龠鬼車瓦乙 *　丶十乙十十丶　丶丶亅十瓦鬼車瓦己 *　丶亅亅丶　亅日瓦日 *　丶 */ /*** * .</description>
-    </item>
-    
-    <item>
-      <title>代码注释</title>
       <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/</guid>
       <description>/***　*　瓦瓦　十　*　十齱龠己　亅瓦車己　*　乙龍龠毋日丶　丶乙己毋毋丶　*　十龠馬鬼車瓦　己十瓦毋毋　*　鬼馬龠馬龠十　己己毋車毋瓦　*　毋龠龠龍龠鬼乙丶丶乙車乙毋鬼車己　*　乙龠龍龍鬼龍瓦　十瓦毋乙瓦龠瓦亅　*　馬齱龍馬鬼十丶日己己己毋車乙丶　*　己齱馬鬼車十十毋日乙己己乙乙　*　車馬齱齱日乙毋瓦己乙瓦日亅　*　亅車齺龖瓦乙車龖龍乙乙十　*　日龠龠十亅車龍毋十十　*　日毋己亅　己己十亅亅　*　丶己十十乙　丶丶丶丶丶　*　亅己十龍龖瓦　丶　丶　乙十　*　亅己十龠龖毋　丶丶　丶己鬼鬼瓦亅　*　十日十十日亅丶亅丶　丶十日毋鬼馬馬車乙　*　十日乙十亅亅亅丶　十乙己毋鬼鬼鬼龍齺馬乙　*　丶瓦己乙十十亅丶亅乙乙乙己毋鬼鬼鬼龍齱齺齺鬼十　*　乙乙十十十亅乙瓦瓦己日瓦毋鬼鬼龠齱齱龍龍齱齱毋丶　*　亅十十十十乙瓦車毋瓦瓦日車馬龠龍龍龍龍龍龠龠龠馬亅 *　十十十十己毋車瓦瓦瓦瓦鬼馬龠龍龠龠龍龠龠龠馬龠車 *　亅十十日毋瓦日日瓦鬼鬼鬼龠龠馬馬龠龍龍龠馬馬車 *　亅亅亅乙瓦瓦毋車車車馬龍龠鬼鬼馬龠龍龍龠馬馬鬼 *　丶丶乙亅亅乙車鬼鬼鬼毋車龍龍龠鬼馬馬龠龍齱齱龍馬鬼 *　亅己十十己十日鬼鬼車瓦毋龠龍龠馬馬龠龠龠齱齺齺齱龠鬼 *　亅乙乙乙十車馬車毋馬齱齱龍龠龠龠馬龠龍齱龍龠龠鬼瓦 *　丶毋龠鬼車瓦車馬龠龍龠龠龍齱齱龠馬馬鬼毋日 *　十乙己日十　丶己鬼龍齱齺齱龍馬馬馬車毋己 *　丶十己乙亅丶　亅瓦馬龠龍龠龠馬毋瓦乙 *　丶十十乙亅十　亅己瓦車馬龠鬼車瓦乙 *　丶十乙十十丶　丶丶亅十瓦鬼車瓦己 *　丶亅亅丶　亅日瓦日 *　丶 */ /*** * .</description>
+    </item>
+    
+    <item>
+      <title>同时使用github和gitlab</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8github%E5%92%8Cgitlab/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8github%E5%92%8Cgitlab/</guid>
+      <description>同一台电脑同时使用gitHub和gitLab # 工作中我们有时可能会在同一台电脑上使用多个git账号，例如：公司的gitLab账号，个人的gitHub账号。怎样才能在使用gitlab与github时，切换成对应的账号，并且免密？
+gitlab配置ssh Key # GitLab使用SSH协议与Git进行安全通信。当您使用SSH密钥对GitLab远程服务器进行身份验证时，您不需要每次都提供您的用户名和密码。SSH使用两个密钥，公钥和私钥。公钥可以分发。私钥应该受到保护。上传您的公钥是不可能泄露机密数据的。
+配置GitLab的SSH Key，打开GitBash或者是cmd或者是shell
+1、配置name
+git config --global user.name &amp;#34;Kem.Gong&amp;#34; 2、配置email
+git config --global user.email kemgong@163.com 3、生成SSH key，输入命令
+ssh-keygen -t rsa 一直按回车既可，不要输入东西
+4、输入
+cat ~/.ssh/id_rsa.pub 5、将输出的内容复制，然后打开GitLab，单击settings-&amp;gt;SSH Keys,把复制的内容粘贴到到Key中，点击Add key按钮完成添加
+配置github # 1、生成ssh密钥并配置
+ssh-keygen -t rsa -C &amp;#34;github邮箱地址&amp;#34; -f ~/.ssh/github_rsa 2、将github公钥即github_rsa.pub中的内容配置到自己的github上
+3、打开github_rsa.pub，复制有所内容，填入后点击“Add SSH key”按钮。接着可能会跳转页面需要输入你的GitHub密码，输入确定即可。
+配置git，访问不同host时使用不同的密钥 # 进入密钥生成的位置（C:/Users/用户名/.ssh/），手动创建一个config文件（注意这个config文件要无后缀）。
+在新建的config文件里面配置如下内容：
+# 自己的github账号配置 Host github.com port 22 User git HostName github.com PreferredAuthentications publickey IdentityFile C:\Users\xiaoqq\.ssh\github_rsa # 公司的gitlab账号配置(HostName为公司的gitlab地址) Host gitlab.com port 22 User git HostName gitlab.</description>
     </item>
     
     <item>
@@ -717,10 +731,10 @@ beego网址 MVC架构 # Beego是MVC架构。MVC 是一种应用非常广泛的�
     
     <item>
       <title>业务代码</title>
-      <link>https://chain-code.github.io/docs/cc&#43;&#43;/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/</link>
+      <link>https://chain-code.github.io/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/</link>
       <pubDate>Wed, 27 Mar 2024 12:11:30 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/cc&#43;&#43;/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/</guid>
+      <guid>https://chain-code.github.io/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/</guid>
       <description> 监听windows是否处于休眠唤醒状态 # #include &amp;lt;windows.h&amp;gt; #include &amp;lt;iostream&amp;gt; #include &amp;lt;powrprof.h&amp;gt; #pragma comment(lib, &amp;#34;Powrprof.lib&amp;#34;) using namespace std; ULONG CALLBACK DeviceCallback(PVOID Context, ULONG Type, PVOID Setting) { if (Type == PBT_APMSUSPEND) { cout &amp;lt;&amp;lt; &amp;#34;close&amp;#34; &amp;lt;&amp;lt; endl; } if (Type == PBT_APMRESUMESUSPEND) { cout &amp;lt;&amp;lt; &amp;#34;open&amp;#34; &amp;lt;&amp;lt; endl; } return ERROR_SUCCESS; } int main() { HPOWERNOTIFY g_power_notify_handle = NULL; DEVICE_NOTIFY_SUBSCRIBE_PARAMETERS params; params.Callback = DeviceCallback; params.Context = 0; PowerRegisterSuspendResumeNotification(DEVICE_NOTIFY_CALLBACK, &amp;amp;params, &amp;amp;g_power_notify_handle); MSG msg; while (GetMessage(&amp;amp;msg, NULL, 0, 0)) { TranslateMessage(&amp;amp;msg); DispatchMessage(&amp;amp;msg); } PowerUnregisterSuspendResumeNotification(g_power_notify_handle); return 0; } </description>
     </item>
     

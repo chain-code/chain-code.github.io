@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>C on Soulmate</title>
+    <link>https://chain-code.github.io/docs/c/</link>
+    <description>Recent content in C on Soulmate</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 27 Mar 2024 12:11:30 +0000</lastBuildDate><atom:link href="https://chain-code.github.io/docs/c/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>业务代码</title>
+      <link>https://chain-code.github.io/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/</link>
+      <pubDate>Wed, 27 Mar 2024 12:11:30 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/</guid>
+      <description> 监听windows是否处于休眠唤醒状态 # #include &amp;lt;windows.h&amp;gt; #include &amp;lt;iostream&amp;gt; #include &amp;lt;powrprof.h&amp;gt; #pragma comment(lib, &amp;#34;Powrprof.lib&amp;#34;) using namespace std; ULONG CALLBACK DeviceCallback(PVOID Context, ULONG Type, PVOID Setting) { if (Type == PBT_APMSUSPEND) { cout &amp;lt;&amp;lt; &amp;#34;close&amp;#34; &amp;lt;&amp;lt; endl; } if (Type == PBT_APMRESUMESUSPEND) { cout &amp;lt;&amp;lt; &amp;#34;open&amp;#34; &amp;lt;&amp;lt; endl; } return ERROR_SUCCESS; } int main() { HPOWERNOTIFY g_power_notify_handle = NULL; DEVICE_NOTIFY_SUBSCRIBE_PARAMETERS params; params.Callback = DeviceCallback; params.Context = 0; PowerRegisterSuspendResumeNotification(DEVICE_NOTIFY_CALLBACK, &amp;amp;params, &amp;amp;g_power_notify_handle); MSG msg; while (GetMessage(&amp;amp;msg, NULL, 0, 0)) { TranslateMessage(&amp;amp;msg); DispatchMessage(&amp;amp;msg); } PowerUnregisterSuspendResumeNotification(g_power_notify_handle); return 0; } </description>
+    </item>
+    
+  </channel>
+</rss>

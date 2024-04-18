@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>配置文件 on Soulmate</title>
+    <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/</link>
+    <description>Recent content in 配置文件 on Soulmate</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 01 May 2021 14:40:46 +0000</lastBuildDate><atom:link href="https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>cryptogen生成的证书详解</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Sat, 01 May 2021 14:40:46 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/</guid>
+      <description>crypto-config # 用cryptogen生成证书后
+peerOrganizations # 本文以peerOrganizations组织树为例，打开该目录，可以看到如下两个组织的证书目录：
+org1.example.com # 每个组织中又有如下目录：
+每个组织都会生成单独的根证书。
+ca # ca ：存放了组织的根证书和对应的私钥文件，采用的是EC算法，证书为自签名（自已签发自己的公钥）。组织内的实体将基于该证书作为证书根。
+map # msp：存放代表该组织的身份信息。
+（1）admincerts：被根证书签名的组织管理员的身份验证证书。
+（2）cacerts：组织的根证书，和ca目录下的文件相同。
+（3）tlscacerts：用于TLS的ca证书，证书为自签名。
+peer # peers：存放该组织下所有peer节点的证书：
+peer0.org1.example.com # 每个peer节点的证书结构都是相同的，我们以peer0为例：
+msp： # ​ admincerts：组织管理员的身份验证证书，用于验证交易签名者是否为管理员身份。
+​ cacerts：存放组织的根证书。
+​ keystore：本节点的身份私钥，用来签名。
+​ signcerts： 验证本节点签名的证书，被组织根证书签名。
+​ tlscacerts：TLS连接用的身份证书，即组织TLS证书。
+tls: # 存放tls相关的证书和私钥。
+​ ca.crt：组织的根证书。
+​ server.crt：验证本节点签名的证书，被组织根证书签名。
+​ server.key：本节点的身份私钥，用来签名。
+users # users：存放属于该组织的用户实体。
+Admin@org1.example.com # Admin：管理员用户的信息，包括其msp证书和tls证书。
+msp： # ​
+​ admincerts：管理员身份证书。
+​ cacerts：存放组织的根证书。
+​ keystore：本用户的身份私钥，用来签名。
+​ signcerts： 管理员用户的身份验证证书，由组织根证书签名，要放到Peer的msp/admincerts下才会被这个Peer认可。
+​ tlscacerts：TLS连接用的身份证书，即组织TLS证书。
+tls： # 存放TLS相关的证书和私钥。</description>
+    </item>
+    
+    <item>
+      <title>config.yaml文件详解</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Tue, 30 Mar 2021 15:47:11 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</guid>
+      <description>基于fabric 2.3 # 客户端使用sdk与fabric网络交互，需要告诉sdk两类信息：
+我是谁：即当前客户端的信息，包含所属组织、密钥和证书文件的路径等， 这是每个客户端专用的信息。 对方是谁：即fabric网络结构的信息，channel、org、orderer和peer等 的怎么组合起当前fabric网络的，这些结构信息应当与configytx.yaml中是一致的。这是通用配置，每个客户端都可以拿来使用。另外，这部分信息并不需要是完整fabric网络信息，如果当前客户端只和部分节点交互，那配置文件中只需要包含所使用到的网络信息。 原文件 # 我们复制官方的config_e2e_multiorg_bootstrap.yaml文件
+文件位置：https://github.com/hyperledger/fabric-sdk-go/blob/main/test/fixtures/config/config_e2e_multiorg_bootstrap.yaml
+######################## 声明部分 ############################### # Copyright SecureKey Technologies Inc. All Rights Reserved. # 版权所有 SecureKey Technologies Inc. 保留所有权利。 # SPDX-License-Identifier: Apache-2.0 # # The network connection profile provides client applications the information about the target blockchain network that are necessary #for the applications to interact with it. These are all knowledge #that must be acquired from out-of-band sources. This file provides #such a source.</description>
+    </item>
+    
+    <item>
+      <title>docker-compose.yaml文件详解</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Tue, 30 Mar 2021 15:46:41 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</guid>
+      <description>基于fabric2.3
+原文件 # # Copyright IBM Corp. All Rights Reserved. # # SPDX-License-Identifier: Apache-2.0 # version: &amp;#39;2&amp;#39; volumes: # 数据卷映射, 本地 -&amp;gt; docker镜像 orderer.example.com: peer0.org1.example.com: peer1.org1.example.com: networks: # 指定容器运行的网络, 同一网络中的容器才能相互通信 test: services: orderer.example.com: # 定义的第1个服务名 container_name: orderer.example.com # 容器名称, 可以自定义 image: hyperledger/fabric-orderer:latest environment: # 环境变量设置 - FABRIC_LOGGING_SPEC=DEBUG #日志级别 - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0 #orderer节点监听的地址 - ORDERER_GENERAL_LISTENPORT=7050 #orderer默认监听7050，端口可修改 - ORDERER_GENERAL_GENESISMETHOD=file #创世块的来源，file表示来源于文件 #指定创世块文件路径 - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block - ORDERER_GENERAL_LOCALMSPID=OrdererMSP #这个ID不一样会出问题 - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp #msp账号路径 # enabled TLS - ORDERER_GENERAL_TLS_ENABLED=true #通信时是否使用TLS加密 #私钥文件 - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.</description>
+    </item>
+    
+    <item>
+      <title>configtx.yaml文件详解</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Mon, 29 Mar 2021 19:38:28 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</guid>
+      <description>基于fabric2.3
+原文件 # --- Organizations: #部分指定OrdereOrg与PeerOrg的组织信息 - &amp;amp;OrdererOrg #相当于定义了一个变量，其他地方可以引用 Name: OrdererOrg #组织名称 #将MSP定义加载为ID ID: OrdererMSP #MSP的ID MSPDir: crypto-config/ordererOrganizations/example.com/msp #MSP配置文件的路径 Policies: #组织策略， 其中`Rule`定义了规则，`OR`为或，`AND`为并 Readers: Type: Signature Rule: &amp;#34;OR(&amp;#39;OrdererMSP.member&amp;#39;)&amp;#34; Writers: Type: Signature Rule: &amp;#34;OR(&amp;#39;OrdererMSP.member&amp;#39;)&amp;#34; Admins: Type: Signature Rule: &amp;#34;OR(&amp;#39;OrdererMSP.admin&amp;#39;)&amp;#34; #Admins策略只能由管理员角色的身份提交的事务来满足 #OrdererEndpoints是所有orderers这个组织运行，其客户名单和同级可以分别连接以推送事务和接收块。 OrdererEndpoints: - orderer.example.com:7050 - &amp;amp;Org1 Name: Org1MSP ID: Org1MSP MSPDir: crypto-config/peerOrganizations/org1.example.com/msp Policies: Readers: Type: Signature Rule: &amp;#34;OR(&amp;#39;Org1MSP.admin&amp;#39;, &amp;#39;Org1MSP.peer&amp;#39;, &amp;#39;Org1MSP.client&amp;#39;)&amp;#34; Writers: Type: Signature Rule: &amp;#34;OR(&amp;#39;Org1MSP.admin&amp;#39;, &amp;#39;Org1MSP.client&amp;#39;)&amp;#34; Admins: Type: Signature Rule: &amp;#34;OR(&amp;#39;Org1MSP.admin&amp;#39;)&amp;#34; Endorsement: #有具有对等角色的身份才能满足该Endorsement策略 Type: Signature Rule: &amp;#34;OR(&amp;#39;Org1MSP.</description>
+    </item>
+    
+    <item>
+      <title>crypto-config.yaml文件详解</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Mon, 29 Mar 2021 18:48:08 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</guid>
+      <description>基于fabric2.3
+源码 # OrdererOrgs: #排序节点组织信息 - Name: Orderer #排序节点组织名 Domain: example.com #排序节点组织根域名 EnableNodeOUs: false #指定是否生成config.yaml文件 Specs: - Hostname: orderer #hostname+domain组成orderer节点的完整域名 PeerOrgs: #对等节点组织信息 - Name: Org1 #第一个组织名，自己起 Domain: org1.example.com #第一个组织根域名 EnableNodeOUs: false #在msp下生成config.yaml文件 Template: #组织中peer节点的数目 Count: 1 Users: #组织中普通用户的数目 Count: 1 - Name: Org2 Domain: org2.example.com EnableNodeOUs: false Template: Count: 1 Users: Count: 1 使用以下命令生成证书文件。
+cryptogen工具 # 子命令 # generate：生成的组织结构及身份证书信息。
+showtemplate：显示默认配置模版
+version：显示版本信息
+参数 # &amp;ndash;config ：指定要使用的配置模版文件
+&amp;ndash;output；指定生成内容的输出目录
+cryptogen generate --config=crypto-config.yaml Fabric证书文件结构</description>
+    </item>
+    
+  </channel>
+</rss>

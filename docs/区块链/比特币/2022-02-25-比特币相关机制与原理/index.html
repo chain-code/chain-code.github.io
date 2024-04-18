@@ -1,0 +1,2167 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="什么是区块链？ # 一个分布式账本
+区块链网络的核心是一个分布式账本，记录网络上发生的所有交易。
+区块链账本通常被描述为 去中心化的 ，因为它会被复制到许多网络参与者中，每个参与者都在 协作 维护账本。
+除了分散和协作之外，信息仅能以附加的方式记录到区块链上，并使用加密技术保证一旦将交易添加到账本就无法修改。这种“不可修改”的属性简化了信息的溯源，因为参与者可以确定信息在记录后没有改变过。这就是为什么区块链有时被描述为 证明系统 。
+什么是去中心化？ # 去中心化就是在一个分布有众多节点的系统中，每个节点都具有高度自治的特征。节点之间可以自由连接，形成新的连接单元。任何一个节点都有可能成为阶段性的中心。
+优势
+容错性能力强 不易被攻击 数据无法篡改 对等网络 # 也称P2P网络，位于网络中的每一个节点都彼此对等，各个节点共同提供网络服务。区块链网络基于国际互联网的P2P网络架构，由对等节点Peer构成，每个节点以扁平的拓扑结构互相连通，不存在任何服务端、中心化服务，以及层级结构，而且必须遵守相同的约定（P2P协议）。
+交易池 # 张三验证交易有效后，将交易写入自己的草稿本。这个草稿本也称交易池，存放每个节点收到的有效交易。每个节点的交易池中都有很多交易，可能每个人的交易池不一样，比如并非每一条交易都传递到每个人手中。
+挖矿 # 解答数学题的过程叫挖矿，谁解出答案，告知大家，其他人就停止答题，本轮记账权的获胜者已产生。每个人草稿上上的内容是不一样的。谁有记账权，谁将自己草稿本上的内容写入账本。
+创币交易 # 为了鼓励大家答题，获胜者获得5元钱，以交易的形式写入账本。实现货币总量的增长，比特币中“获胜矿工”获得的奖励除了创币金额外，还包括交易费。同时，比特币的创币金额是衰减的。
+工作量证明 # 如果把挖矿当作一份工作，解题答案也被称为工作量证明。
+矿工获得记账权后，翻开自己的账本，到最新页，将奖励作为第一条交易，草稿上的逐个抄入，每次最多只能写满一页，多余的舍弃，少的留白。多余的交易，不算成功，由发起者再度创建，写入纸条继续在大厅传递。交易写入账本后，在大厅黑白上写明。其他人开始验证，验证结束后写人自己的账本。
+共识与共识算法 # 所有节点验证成功后记入自己的账本，保证账本数据的一致性，即节点达成了共识。共识通过村民验证解题答案，即工作量证明而达成的。采用工作量证明（POW）来达成共识也被称为工作量证明共识算法或共识机制。
+确认 # 交易写入区块链就能得到确认，但由于共识算法自身的原因会导致偶然事件的发生，可能会出现区块链数据在接下来几个区块内数据回滚的情况，比如比特币的偶然分叉。比特币交易的永久生效需要在当前区块上继续添加6个区块。
+诚实节点和恶意节点 # 遵守规则的节点和不遵守规则的节点
+区块链分叉 # 恶意节点创建无效交易，使得网络中出现节点数据不一致的情形，称为区块链分叉。这种分叉是短暂的，新区块会替换掉旧区块，而且，无效区块会导致记账节点失去奖励，得不偿失。
+软分叉
+当系统中出现了新版本的软件（或协议），而旧软件能接受新软件的区块，新老双方始终都工作在同一条链上，这称为软分叉。
+硬分叉
+当系统中出现了新版本的软件（或协议），并且和前版本软件不能兼容，老软件节点无法接受新软件节点挖出的全部或部分区块（认为不合法），导致同时出现两条链。尽管新节点算力较大，比如99%的算力为新节点，1%的老节点依然会维护着不同的一条链，因为新节点产生的区块老节点实在无法接受（尽管它知道网络上99%的节点都接受了），这称为硬分叉。
+智能合约 # 为了支持以同样的方式更新信息，并实现一整套账本功能（交易，查询等），区块链使用 智能合约 来提供对账本的受控访问。
+智能合约不仅是在网络中封装和简化信息的关键机制，它还可以被编写成自动执行参与者的特定交易的合约。
+共识 # 保持账本在整个网络中同步的过程称为 共识 。该过程确保账本仅在交易被相应参与者批准时更新，并且当账本更新时，它们以相同的顺序更新相同的交易。
+比特币 # 简介 # 比特币（Bitcoin）的概念最初由中本聪在2008年11月1日提出，并于2009年1月3日正式诞生。
+根据中本聪的思路设计发布的开源软件以及建构其上的P2P网络。比特币是一种P2P形式的虚拟的加密数字货币。点对点的传输意味着一个去中心化的支付系统。
+与所有的货币不同，比特币不依靠特定货币机构发行，它依据特定算法，通过大量的计算产生，比特币经济使用整个P2P网络中众多节点构成的分布式数据库来确认并记录所有的交易行为，并使用密码学的设计来确保货币流通各个环节安全性。P2P的去中心化特性与算法本身可以确保无法通过大量制造比特币来人为操控币值。基于密码学的设计可以使比特币只能被真实的拥有者转移或支付。这同样确保了货币所有权与流通交易的匿名性。比特币与其他虚拟货币最大的不同，是其总数量非常有限，具有的稀缺性。">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="比特币相关机制与原理" />
+<meta property="og:description" content="什么是区块链？ # 一个分布式账本
+区块链网络的核心是一个分布式账本，记录网络上发生的所有交易。
+区块链账本通常被描述为 去中心化的 ，因为它会被复制到许多网络参与者中，每个参与者都在 协作 维护账本。
+除了分散和协作之外，信息仅能以附加的方式记录到区块链上，并使用加密技术保证一旦将交易添加到账本就无法修改。这种“不可修改”的属性简化了信息的溯源，因为参与者可以确定信息在记录后没有改变过。这就是为什么区块链有时被描述为 证明系统 。
+什么是去中心化？ # 去中心化就是在一个分布有众多节点的系统中，每个节点都具有高度自治的特征。节点之间可以自由连接，形成新的连接单元。任何一个节点都有可能成为阶段性的中心。
+优势
+容错性能力强 不易被攻击 数据无法篡改 对等网络 # 也称P2P网络，位于网络中的每一个节点都彼此对等，各个节点共同提供网络服务。区块链网络基于国际互联网的P2P网络架构，由对等节点Peer构成，每个节点以扁平的拓扑结构互相连通，不存在任何服务端、中心化服务，以及层级结构，而且必须遵守相同的约定（P2P协议）。
+交易池 # 张三验证交易有效后，将交易写入自己的草稿本。这个草稿本也称交易池，存放每个节点收到的有效交易。每个节点的交易池中都有很多交易，可能每个人的交易池不一样，比如并非每一条交易都传递到每个人手中。
+挖矿 # 解答数学题的过程叫挖矿，谁解出答案，告知大家，其他人就停止答题，本轮记账权的获胜者已产生。每个人草稿上上的内容是不一样的。谁有记账权，谁将自己草稿本上的内容写入账本。
+创币交易 # 为了鼓励大家答题，获胜者获得5元钱，以交易的形式写入账本。实现货币总量的增长，比特币中“获胜矿工”获得的奖励除了创币金额外，还包括交易费。同时，比特币的创币金额是衰减的。
+工作量证明 # 如果把挖矿当作一份工作，解题答案也被称为工作量证明。
+矿工获得记账权后，翻开自己的账本，到最新页，将奖励作为第一条交易，草稿上的逐个抄入，每次最多只能写满一页，多余的舍弃，少的留白。多余的交易，不算成功，由发起者再度创建，写入纸条继续在大厅传递。交易写入账本后，在大厅黑白上写明。其他人开始验证，验证结束后写人自己的账本。
+共识与共识算法 # 所有节点验证成功后记入自己的账本，保证账本数据的一致性，即节点达成了共识。共识通过村民验证解题答案，即工作量证明而达成的。采用工作量证明（POW）来达成共识也被称为工作量证明共识算法或共识机制。
+确认 # 交易写入区块链就能得到确认，但由于共识算法自身的原因会导致偶然事件的发生，可能会出现区块链数据在接下来几个区块内数据回滚的情况，比如比特币的偶然分叉。比特币交易的永久生效需要在当前区块上继续添加6个区块。
+诚实节点和恶意节点 # 遵守规则的节点和不遵守规则的节点
+区块链分叉 # 恶意节点创建无效交易，使得网络中出现节点数据不一致的情形，称为区块链分叉。这种分叉是短暂的，新区块会替换掉旧区块，而且，无效区块会导致记账节点失去奖励，得不偿失。
+软分叉
+当系统中出现了新版本的软件（或协议），而旧软件能接受新软件的区块，新老双方始终都工作在同一条链上，这称为软分叉。
+硬分叉
+当系统中出现了新版本的软件（或协议），并且和前版本软件不能兼容，老软件节点无法接受新软件节点挖出的全部或部分区块（认为不合法），导致同时出现两条链。尽管新节点算力较大，比如99%的算力为新节点，1%的老节点依然会维护着不同的一条链，因为新节点产生的区块老节点实在无法接受（尽管它知道网络上99%的节点都接受了），这称为硬分叉。
+智能合约 # 为了支持以同样的方式更新信息，并实现一整套账本功能（交易，查询等），区块链使用 智能合约 来提供对账本的受控访问。
+智能合约不仅是在网络中封装和简化信息的关键机制，它还可以被编写成自动执行参与者的特定交易的合约。
+共识 # 保持账本在整个网络中同步的过程称为 共识 。该过程确保账本仅在交易被相应参与者批准时更新，并且当账本更新时，它们以相同的顺序更新相同的交易。
+比特币 # 简介 # 比特币（Bitcoin）的概念最初由中本聪在2008年11月1日提出，并于2009年1月3日正式诞生。
+根据中本聪的思路设计发布的开源软件以及建构其上的P2P网络。比特币是一种P2P形式的虚拟的加密数字货币。点对点的传输意味着一个去中心化的支付系统。
+与所有的货币不同，比特币不依靠特定货币机构发行，它依据特定算法，通过大量的计算产生，比特币经济使用整个P2P网络中众多节点构成的分布式数据库来确认并记录所有的交易行为，并使用密码学的设计来确保货币流通各个环节安全性。P2P的去中心化特性与算法本身可以确保无法通过大量制造比特币来人为操控币值。基于密码学的设计可以使比特币只能被真实的拥有者转移或支付。这同样确保了货币所有权与流通交易的匿名性。比特币与其他虚拟货币最大的不同，是其总数量非常有限，具有的稀缺性。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" /><meta property="article:section" content="docs" />
+<meta property="article:published_time" content="2022-02-25T11:13:16+00:00" />
+<meta property="article:modified_time" content="2022-02-25T11:13:16+00:00" />
+<title>比特币相关机制与原理 | Soulmate</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" >
+<link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.5623389946cf2cb816d7e28b27d101617d469cca326a6a0a0bf362549d6ba433.js" integrity="sha256-ViM4mUbPLLgW1&#43;KLJ9EBYX1GnMoyamoKC/NiVJ1rpDM=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo.png" alt="Logo" /><span>Soulmate</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-074eed0fb8c6f9d99dfeff898388792f" class="toggle"  />
+    <label for="section-074eed0fb8c6f9d99dfeff898388792f" class="flex justify-between">
+      <a role="button" class="">计算机基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="">Vim编程常用快捷键</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E9%85%8D%E7%BD%AEkylinv10/" class="">配置 Kylin V10</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="">计算机网络基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/linux%E5%9F%BA%E7%A1%80/" class="">Linux基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/git%E5%9F%BA%E7%A1%80/" class="">Git基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Golang</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-670eda717a06f31447c52422ec93a159" class="toggle"  />
+    <label for="section-670eda717a06f31447c52422ec93a159" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/" class="">go语言基础（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/cgo/" class="">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/flag/" class="">Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/grpc/" class="">Grpc</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/" class="">ProtoBuf</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">常用业务代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/" class="">go语言基础（三）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/" class="">go语言底层基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/" class="">benchmark测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/" class="">Goland常用技巧</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle"  />
+    <label for="section-c453881a62c640f6a4cceec99c02477e" class="flex justify-between">
+      <a role="button" class="">高阶</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" class="">Go高阶-语言基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f235e88e751d2cb18d527c1784763605" class="toggle"  />
+    <label for="section-f235e88e751d2cb18d527c1784763605" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/atomic/" class="">Atomic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/os/" class="">Os</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strconv/" class="">Strconv</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sort/" class="">Sort</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strings/" class="">Strings</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/reflect/" class="">Reflect</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/time/" class="">Time</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sync/" class="">Sync</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ee53da12118bfd3e9b35f3e9494ab55b" class="toggle"  />
+    <label for="section-ee53da12118bfd3e9b35f3e9494ab55b" class="flex justify-between">
+      <a role="button" class="">LeetCode</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/" class="">golang力扣刷题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/" class="">golang力扣刷题（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/%E5%BF%85%E5%88%B7top101/" class="">必刷top101</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" class="">LeetCode算法总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>数据库</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle"  />
+    <label for="section-94f26238d1ca3b5bcd40eadc7a88d726" class="flex justify-between">
+      <a role="button" class="">MySql</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" class="">MySql基础总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="">Mac连接数据库所遇到的问题</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="toggle"  />
+    <label for="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="flex justify-between">
+      <a role="button" class="">Redis</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="">Redis集群搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/" class="">Redis基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="">redis面试总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8be9c2251abd1fe110e3c1520cac6177" class="toggle"  />
+    <label for="section-8be9c2251abd1fe110e3c1520cac6177" class="flex justify-between">
+      <a role="button" class="">SQLite</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/" class="">Sqlite</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/" class="">Xorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ad390db13e5fa9e14f921f4e4f77900e" class="toggle"  />
+    <label for="section-ad390db13e5fa9e14f921f4e4f77900e" class="flex justify-between">
+      <a role="button" class="">C/C&#43;&#43;</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/cc&#43;&#43;/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>区块链</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle"  />
+    <label for="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="flex justify-between">
+      <a role="button" class="">Fabric</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">fabric相关机制与原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/" class="">智能合约</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/" class="">fabric-sdk-go详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/" class="">fabric-ca详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle"  />
+    <label for="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="flex justify-between">
+      <a role="button" class="">环境测试</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/" class="">fabric网络中的报错（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/" class="">fabric网络中的报错（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">fabric环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/" class="">solo节点测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/" class="">fabric多机搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/" class="">部署tape测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/" class="">手动生成ca证书搭建fabric网络</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/" class="">centos安装fabric1.2</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-25aef1d59a561fcefcaecb043ef8afd2" class="toggle"  />
+    <label for="section-25aef1d59a561fcefcaecb043ef8afd2" class="flex justify-between">
+      <a role="button" class="">配置文件</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/" class="">cryptogen生成的证书详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">docker-compose.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">configtx.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">crypto-config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/" class="">升级链码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/" class="">区块链网络添加组织</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/" class="">fabric浏览器搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/" class="">如何在已有组织中增加节点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/" class="">Fabric1.4多通道实验</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b07621083aa30b12de4c0333941e479f" class="toggle" checked />
+    <label for="section-b07621083aa30b12de4c0333941e479f" class="flex justify-between">
+      <a role="button" class="">比特币</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="active">比特币相关机制与原理</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle"  />
+    <label for="section-ff5477999ef29208270c84e8b56b2758" class="flex justify-between">
+      <a role="button" class="">IPFS</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/" class="">go-ipfs-api</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" class="">ipfs-webui可视化工具搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/" class="">IPFS基本原理（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/" class="">IPFS私有网络搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-77a0a17b06e8d04cfb0fba9952941706" class="toggle"  />
+    <label for="section-77a0a17b06e8d04cfb0fba9952941706" class="flex justify-between">
+      <a role="button" class="">密码学</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" class="">区块链安全基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/" class="">椭圆曲线加密</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/" class="">密码学基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2e4d10b323fd668021dbd532575d8790" class="toggle"  />
+    <label for="section-2e4d10b323fd668021dbd532575d8790" class="flex justify-between">
+      <a role="button" class="">Docker</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/" class="">Docker基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/" class="">Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" class="">docker常用知识总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-70383d7f28a7ae4bf840a844eb61aa16" class="toggle"  />
+    <label for="section-70383d7f28a7ae4bf840a844eb61aa16" class="flex justify-between">
+      <a role="button" class="">共识算法</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">共识算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" class="">Raft共识算法</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>前端</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
+    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
+      <a role="button" class="">博客</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%9B%BE%E4%B9%A6/" class="">图书</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/" class="">工具库</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="https://gitee.com/chaincode"  target="_blank" rel="noopener">
+        Gitee
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>比特币相关机制与原理</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#什么是区块链">什么是区块链？</a>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+        <li><a href="#智能合约"><strong>智能合约</strong></a></li>
+        <li><a href="#共识"><strong>共识</strong></a></li>
+        <li><a href="#比特币">比特币</a>
+          <ul>
+            <li><a href="#简介">简介</a></li>
+            <li><a href="#区块结构">区块结构</a></li>
+            <li><a href="#区块数据交易">区块数据（交易）</a></li>
+            <li><a href="#比特币相关问答">比特币相关问答</a></li>
+          </ul>
+        </li>
+        <li><a href="#heading"></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h2 id="什么是区块链">
+  什么是区块链？
+  <a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%af%e5%8c%ba%e5%9d%97%e9%93%be">#</a>
+</h2>
+<p><strong>一个分布式账本</strong></p>
+<p>区块链网络的核心是一个分布式账本，记录网络上发生的所有交易。</p>
+<p>区块链账本通常被描述为 <strong>去中心化的</strong> ，因为它会被复制到许多网络参与者中，每个参与者都在 <strong>协作</strong> 维护账本。</p>
+<p>除了分散和协作之外，信息仅能以附加的方式记录到区块链上，并使用加密技术保证一旦将交易添加到账本就无法修改。这种“不可修改”的属性简化了信息的溯源，因为参与者可以确定信息在记录后没有改变过。这就是为什么区块链有时被描述为 <strong>证明系统</strong> 。</p>
+<h5 id="什么是去中心化">
+  什么是去中心化？
+  <a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%af%e5%8e%bb%e4%b8%ad%e5%bf%83%e5%8c%96">#</a>
+</h5>
+<p>去中心化就是在一个分布有众多节点的系统中，每个节点都具有高度自治的特征。节点之间可以自由连接，形成新的连接单元。任何一个节点都有可能成为阶段性的中心。</p>
+<p><strong>优势</strong></p>
+<ul>
+<li>容错性能力强</li>
+<li>不易被攻击</li>
+<li>数据无法篡改</li>
+</ul>
+<h5 id="对等网络">
+  对等网络
+  <a class="anchor" href="#%e5%af%b9%e7%ad%89%e7%bd%91%e7%bb%9c">#</a>
+</h5>
+<p>也称P2P网络，位于网络中的每一个节点都彼此对等，各个节点共同提供网络服务。区块链网络基于国际互联网的P2P网络架构，由对等节点Peer构成，每个节点以扁平的拓扑结构互相连通，不存在任何服务端、中心化服务，以及层级结构，而且必须遵守相同的约定（P2P协议）。</p>
+<h5 id="交易池">
+  交易池
+  <a class="anchor" href="#%e4%ba%a4%e6%98%93%e6%b1%a0">#</a>
+</h5>
+<p>张三验证交易有效后，将交易写入自己的草稿本。这个草稿本也称交易池，存放每个节点收到的有效交易。每个节点的交易池中都有很多交易，可能每个人的交易池不一样，比如并非每一条交易都传递到每个人手中。</p>
+<h5 id="挖矿">
+  挖矿
+  <a class="anchor" href="#%e6%8c%96%e7%9f%bf">#</a>
+</h5>
+<p>解答数学题的过程叫挖矿，谁解出答案，告知大家，其他人就停止答题，本轮记账权的获胜者已产生。每个人草稿上上的内容是不一样的。谁有记账权，谁将自己草稿本上的内容写入账本。</p>
+<h5 id="创币交易">
+  创币交易
+  <a class="anchor" href="#%e5%88%9b%e5%b8%81%e4%ba%a4%e6%98%93">#</a>
+</h5>
+<p>为了鼓励大家答题，获胜者获得5元钱，以交易的形式写入账本。实现货币总量的增长，比特币中“获胜矿工”获得的奖励除了创币金额外，还包括交易费。同时，比特币的创币金额是衰减的。</p>
+<h5 id="工作量证明">
+  工作量证明
+  <a class="anchor" href="#%e5%b7%a5%e4%bd%9c%e9%87%8f%e8%af%81%e6%98%8e">#</a>
+</h5>
+<p>如果把挖矿当作一份工作，解题答案也被称为工作量证明。</p>
+<p>矿工获得记账权后，翻开自己的账本，到最新页，将奖励作为第一条交易，草稿上的逐个抄入，每次最多只能写满一页，多余的舍弃，少的留白。多余的交易，不算成功，由发起者再度创建，写入纸条继续在大厅传递。交易写入账本后，在大厅黑白上写明。其他人开始验证，验证结束后写人自己的账本。</p>
+<h5 id="共识与共识算法">
+  共识与共识算法
+  <a class="anchor" href="#%e5%85%b1%e8%af%86%e4%b8%8e%e5%85%b1%e8%af%86%e7%ae%97%e6%b3%95">#</a>
+</h5>
+<p>所有节点验证成功后记入自己的账本，保证账本数据的一致性，即节点达成了共识。共识通过村民验证解题答案，即工作量证明而达成的。采用工作量证明（POW）来达成共识也被称为工作量证明共识算法或共识机制。</p>
+<h5 id="确认">
+  确认
+  <a class="anchor" href="#%e7%a1%ae%e8%ae%a4">#</a>
+</h5>
+<p>交易写入区块链就能得到确认，但由于共识算法自身的原因会导致偶然事件的发生，可能会出现区块链数据在接下来几个区块内数据回滚的情况，比如比特币的偶然分叉。<strong>比特币交易的永久生效需要在当前区块上继续添加6个区块。</strong></p>
+<h5 id="诚实节点和恶意节点">
+  诚实节点和恶意节点
+  <a class="anchor" href="#%e8%af%9a%e5%ae%9e%e8%8a%82%e7%82%b9%e5%92%8c%e6%81%b6%e6%84%8f%e8%8a%82%e7%82%b9">#</a>
+</h5>
+<p>遵守规则的节点和不遵守规则的节点</p>
+<h5 id="区块链分叉">
+  区块链分叉
+  <a class="anchor" href="#%e5%8c%ba%e5%9d%97%e9%93%be%e5%88%86%e5%8f%89">#</a>
+</h5>
+<p>恶意节点创建无效交易，使得网络中出现节点数据不一致的情形，称为区块链分叉。这种分叉是短暂的，新区块会替换掉旧区块，而且，无效区块会导致记账节点失去奖励，得不偿失。</p>
+<ul>
+<li>
+<p>软分叉</p>
+<p>当系统中出现了新版本的软件（或协议），而旧软件能接受新软件的区块，新老双方始终都工作在同一条链上，这称为软分叉。</p>
+</li>
+<li>
+<p>硬分叉</p>
+<p>当系统中出现了新版本的软件（或协议），并且和前版本软件不能兼容，老软件节点无法接受新软件节点挖出的全部或部分区块（认为不合法），导致同时出现两条链。尽管新节点算力较大，比如99%的算力为新节点，1%的老节点依然会维护着不同的一条链，因为新节点产生的区块老节点实在无法接受（尽管它知道网络上99%的节点都接受了），这称为硬分叉。</p>
+</li>
+</ul>
+<h2 id="智能合约">
+  <strong>智能合约</strong>
+  <a class="anchor" href="#%e6%99%ba%e8%83%bd%e5%90%88%e7%ba%a6">#</a>
+</h2>
+<p>为了支持以同样的方式更新信息，并实现一整套账本功能（交易，查询等），区块链使用 <strong>智能合约</strong> 来提供对账本的受控访问。</p>
+<p>智能合约不仅是在网络中封装和简化信息的关键机制，它还可以被编写成自动执行参与者的特定交易的合约。</p>
+<h2 id="共识">
+  <strong>共识</strong>
+  <a class="anchor" href="#%e5%85%b1%e8%af%86">#</a>
+</h2>
+<p>保持账本在整个网络中同步的过程称为 <strong>共识</strong> 。该过程确保账本仅在交易被相应参与者批准时更新，并且当账本更新时，它们以相同的顺序更新相同的交易。</p>
+<h2 id="比特币">
+  比特币
+  <a class="anchor" href="#%e6%af%94%e7%89%b9%e5%b8%81">#</a>
+</h2>
+<h3 id="简介">
+  简介
+  <a class="anchor" href="#%e7%ae%80%e4%bb%8b">#</a>
+</h3>
+<p>比特币（Bitcoin）的概念最初由中本聪在2008年11月1日提出，并于2009年1月3日正式诞生。</p>
+<p>根据中本聪的思路设计发布的开源软件以及建构其上的P2P网络。比特币是一种P2P形式的虚拟的加密数字货币。点对点的传输意味着一个去中心化的支付系统。</p>
+<p>与所有的货币不同，比特币不依靠特定货币机构发行，它依据特定算法，通过大量的计算产生，比特币经济使用整个P2P网络中众多节点构成的分布式数据库来确认并记录所有的交易行为，并使用密码学的设计来确保货币流通各个环节安全性。P2P的去中心化特性与算法本身可以确保无法通过大量制造比特币来人为操控币值。基于密码学的设计可以使比特币只能被真实的拥有者转移或支付。这同样确保了货币所有权与流通交易的匿名性。比特币与其他虚拟货币最大的不同，是其总数量非常有限，具有的稀缺性。</p>
+<h3 id="区块结构">
+  区块结构
+  <a class="anchor" href="#%e5%8c%ba%e5%9d%97%e7%bb%93%e6%9e%84">#</a>
+</h3>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208032237189.webp" alt="" /></p>
+<p><strong>父区块头哈希值</strong>：前一区块的哈希值，使用SHA256(SHA256(父区块头))计算。占32字节
+<strong>版本</strong>：区块版本号，表示本区块遵守的验证规则。占4字节
+<strong>时间戳</strong>：该区块产生的近似时间，精确到秒的UNIX时间戳，必须严格大于前11个区块时间的中值，同时全节点也会拒绝那些超出自己2个小时时间戳的区块。占4字节
+<strong>难度</strong>：该区块工作量证明算法的难度目标，已经使用特定算法编码。占4字节
+<strong>随机数(Nonce)</strong>：为了找到满足难度目标所设定的随机数，为了解决32位随机数在算力飞升的情况下不够用的问题，规定时间戳和coinbase交易信息均可更改，以此扩展nonce的位数。占4字节
+<strong>Merkle根</strong>：该区块中交易的Merkle树根的哈希值，同样采用SHA256(SHA256())计算。占32字节</p>
+<p>如此，细心的同学会发现，区块头总共占了80字节。</p>
+<p>区块体除了筹币交易记录（由一棵Merkle二叉树组成)外，还有一个交易计数。</p>
+<h4 id="默克尔根">
+  <strong>默克尔根</strong>
+  <a class="anchor" href="#%e9%bb%98%e5%85%8b%e5%b0%94%e6%a0%b9">#</a>
+</h4>
+<p>默克尔树是一种哈希二叉树，<strong>它是一种用作快速归纳和校验大规模数据完整性的数据结构</strong>。这种二叉树包含加密哈希值，术语“树”在计算机学科中常被用来描述一种具有分支的数据结构。</p>
+<p>在比特币网络中，默克尔树被用来归纳一个区块中的所有交易，同时生成整个交易集合的数字指纹，<strong>且提供了一种校验区块是否存在某交易的高效途径。</strong></p>
+<p>生成一棵完整的默克尔树需要递归地对哈希节点对进行哈希，并将新生成的哈希节点插入到默克尔树中，直到只剩一个哈希节点，该节点就是默克尔树的根。</p>
+<p>说人话，默克尔树可以理解为一颗倒立的树，这棵树<strong>每个树杈只能分两个树枝出来</strong>，最终每个最小树枝上都会挂两片叶子。</p>
+<p>这里的每片叶子就是一笔交易记录，每个树杈的<strong>分叉点就是一个哈希值</strong>，每个哈希值都是根据树杈分出的两个树枝的分叉点或者叶子的哈希值计算出来的。</p>
+<p>这些这些分叉节点的哈希值向上一级分叉点汇聚，再进行哈希计算生成一个哈希值。以此类推，最终汇聚到树根上，这个树根计算出来的哈希值就是根哈希值。通过这种结构能够快速对其中的某笔交易进行定位。</p>
+<p><strong>默克尔树的特点是：底层数据的任何变动，都会传递到其父亲节点，一直到树根</strong>。</p>
+<h3 id="区块数据交易">
+  区块数据（交易）
+  <a class="anchor" href="#%e5%8c%ba%e5%9d%97%e6%95%b0%e6%8d%ae%e4%ba%a4%e6%98%93">#</a>
+</h3>
+<h4 id="交易池-1">
+  交易池
+  <a class="anchor" href="#%e4%ba%a4%e6%98%93%e6%b1%a0-1">#</a>
+</h4>
+<p>又叫内存池，是用来存储待确认交易的地方。每个比特币挖矿节点均有自己独立的交易池，因交易池体积，最低交易费比例限制等不同，各节点的交易池也不相同。矿工（矿池）在构造预备区块时，需要从交易池中选择要打包的交易。由于交易池经常被调用，它的数据被存放在节点服务器的RAM中，这就意味着交易池的体积不会太大。</p>
+<h4 id="挖矿节点">
+  挖矿节点
+  <a class="anchor" href="#%e6%8c%96%e7%9f%bf%e8%8a%82%e7%82%b9">#</a>
+</h4>
+<p>在比特币网络中，参与记录和验证比特币交易和区块的是一个个保存比特币数据的节点。其中有一部分节点，不仅参与记录和验证的工作，还参与比特币新区块的创建工作，他们构造新区块，并通过PoW工作量证明竞争记账权，进而获得创建新区块的权限。</p>
+<h4 id="奖励">
+  奖励
+  <a class="anchor" href="#%e5%a5%96%e5%8a%b1">#</a>
+</h4>
+<p>又叫创币交易。比特币协议规定，每产生一个新的比特币区块，比特币网络就会产生N个比特币，作为维护比特币网络的奖励支付给创建这个区块的矿工。</p>
+<h4 id="交易过程">
+  交易过程
+  <a class="anchor" href="#%e4%ba%a4%e6%98%93%e8%bf%87%e7%a8%8b">#</a>
+</h4>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208032237631.png" alt="" /></p>
+<blockquote>
+<p>1.产生交易（待确认的交易会先进入交易池中）</p>
+<p>此时的交易信息是<strong>待确认的交易</strong>，它包含交易输入信息（未使用的UTXO和正确私钥签名）和交易输出信息（锁定新的钱包地址的待确认UTXO）。</p>
+<p>2.交易传播</p>
+<p>待确认交易在经过验证后，由交易发起方向比特币网络广播，比特币网络中的节点，均可验证和收录广播的信息。其中，挖矿节点会在收到广播后，验证待确认交易信息，验证通过后，挖矿节点会将待确认交易加入到自己的交易池中。</p>
+</blockquote>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208032237149.webp" alt="" /></p>
+<blockquote>
+<p>3.创建区块</p>
+<p><strong>挖矿节点从交易池中选择交易，构造预备区块</strong>。当挖矿节点要构造预备区块，准备生成新区块时，会按照优先级排序，从交易池中取待确认交易。预备区块通常会预留一定空间给高优先级的交易，剩下的空间会按照交易费比例（Sat/B）由高到低顺序一直把区块加满或者把交易池的交易用光。但比特币区块中不仅仅包含从交易池中取的待确认交易。</p>
+<p>4.矿工挖矿</p>
+<p>挖矿节点构建好预备区块后，就会将区块头信息下发给矿工，矿工通过不断调整区块头中随机数来变更预备区块的哈希值，当预备区块的哈希值低于比特币网络当前目标哈希值时，这个区块就是一个合法新区块。</p>
+<p>5.区块验证</p>
+<p>挖矿节点会及时地向比特币网络广播新区块，比特币网络中其他比特币节点在接到广播信息后，对新区块进行验证。</p>
+<p>6.区块入链</p>
+<p>验证通过后，将新区块加入本地。</p>
+</blockquote>
+<h3 id="比特币相关问答">
+  比特币相关问答
+  <a class="anchor" href="#%e6%af%94%e7%89%b9%e5%b8%81%e7%9b%b8%e5%85%b3%e9%97%ae%e7%ad%94">#</a>
+</h3>
+<h4 id="比特币里的交易是怎么存的介绍merkle-tree的性质优点为什么用merkle-tree存实现spvmerkle-proof">
+  比特币里的交易是怎么存的？介绍Merkle Tree的性质、优点，为什么用Merkle Tree存？（实现SPV、Merkle Proof）
+  <a class="anchor" href="#%e6%af%94%e7%89%b9%e5%b8%81%e9%87%8c%e7%9a%84%e4%ba%a4%e6%98%93%e6%98%af%e6%80%8e%e4%b9%88%e5%ad%98%e7%9a%84%e4%bb%8b%e7%bb%8dmerkle-tree%e7%9a%84%e6%80%a7%e8%b4%a8%e4%bc%98%e7%82%b9%e4%b8%ba%e4%bb%80%e4%b9%88%e7%94%a8merkle-tree%e5%ad%98%e5%ae%9e%e7%8e%b0spvmerkle-proof">#</a>
+</h4>
+<p>默克尔树是一种哈希二叉树，<strong>它是一种用作快速归纳和校验大规模数据完整性的数据结构</strong>。这种二叉树包含加密哈希值，术语“树”在计算机学科中常被用来描述一种具有分支的数据结构。</p>
+<p>在比特币网络中，默克尔树被用来归纳一个区块中的所有交易，同时生成整个交易集合的数字指纹，<strong>且提供了一种校验区块是否存在某交易的高效途径。</strong></p>
+<p>生成一棵完整的默克尔树需要递归地对哈希节点对进行哈希，并将新生成的哈希节点插入到默克尔树中，直到只剩一个哈希节点，该节点就是默克尔树的根。</p>
+<p>这里的每片叶子就是一笔交易记录，每个树杈的<strong>分叉点就是一个哈希值</strong>，每个哈希值都是根据树杈分出的两个树枝的分叉点或者叶子的哈希值计算出来的。</p>
+<p>这些这些分叉节点的哈希值向上一级分叉点汇聚，再进行哈希计算生成一个哈希值。以此类推，最终汇聚到树根上，这个树根计算出来的哈希值就是根哈希值。通过这种结构能够快速对其中的某笔交易进行定位。</p>
+<p><strong>默克尔树的特点是：底层数据的任何变动，都会传递到其父亲节点，一直到树根</strong>。</p>
+<p><strong>一旦获得了树根，就可以从其他从不可信的源获取Merkle tree</strong>。通过可信的树根来检查接受到的Merkle Tree。<strong>如果Merkle Tree是损坏的或者虚假的，就从其他源获得另一个Merkle Tree，直到获得一个与可信树根匹配的Merkle Tree。</strong></p>
+<h4 id="介绍比特币的utxo">
+  介绍比特币的UTXO
+  <a class="anchor" href="#%e4%bb%8b%e7%bb%8d%e6%af%94%e7%89%b9%e5%b8%81%e7%9a%84utxo">#</a>
+</h4>
+<p>账本中的钱有两种形式，一种是已经消费过的，被盖了红章，一种是未消费过的。如果将指向某人的所有未消费交易输出累加起来，总和就是这个人的账户余额。</p>
+<p><strong>未消费交易输出</strong>（UTXO），UTXO是不可分割的，它只有两种状态，未消费和已消费，这也是其能溯源的原因。基于这种数据结构的模型也成UTXO模型。</p>
+<h4 id="比特币查询余额只能从头开始遍历整条链吗有没有高效方法">
+  比特币查询余额只能从头开始遍历整条链吗，有没有高效方法？
+  <a class="anchor" href="#%e6%af%94%e7%89%b9%e5%b8%81%e6%9f%a5%e8%af%a2%e4%bd%99%e9%a2%9d%e5%8f%aa%e8%83%bd%e4%bb%8e%e5%a4%b4%e5%bc%80%e5%a7%8b%e9%81%8d%e5%8e%86%e6%95%b4%e6%9d%a1%e9%93%be%e5%90%97%e6%9c%89%e6%b2%a1%e6%9c%89%e9%ab%98%e6%95%88%e6%96%b9%e6%b3%95">#</a>
+</h4>
+<p><font color='blue'>比特币系统目前建立了UTXOSet缓存来持续更新、维护所有的UTXO，从而避免每次都需要从头开始遍历交易历史。</font></p>
+<h4 id="比特币地址是怎么生成的">
+  比特币地址是怎么生成的？
+  <a class="anchor" href="#%e6%af%94%e7%89%b9%e5%b8%81%e5%9c%b0%e5%9d%80%e6%98%af%e6%80%8e%e4%b9%88%e7%94%9f%e6%88%90%e7%9a%84">#</a>
+</h4>
+<p>（助记词 &lt;-&gt; seed -&gt; 私钥 -&gt; 公钥 -&gt; PubKeyHash &lt;-&gt; address, 其中&lt;-&gt;表可双向转换，-&gt;表单向转换，最后的PubKeyHash转换为address的时候用的是base58编码，base58编码的原理即辗转相除法）</p>
+<p>第一步，随机选取一个32字节的数，大小介于1~0xFFFF FFFF FFFF FFFF FFFF FFFF FFFF FFFE BAAE DCE6 AF48 A03B BFD2 5E8C D036 4141之间，作为私钥</p>
+<p>18e14a7b6a307f426a94f8114701e7c8e774e7f9a47e2c2035db29a206321725</p>
+<p>第二步，使用椭圆曲线加密算法（ECDSA-SECP256k1）计算私钥所对应的非压缩公钥（共65字节，1字节0x04，32字节为x坐标，32字节为y坐标）。</p>
+<p>0450863AD64A87AE8A2FE83C1AF1A8403CB53F53E486D8511DAD8A04887E5B23522CD470243453A299FA9E77237716103ABC11A1DF38855ED6F2EE187E9C582BA6</p>
+<p>第三步，计算公钥的SHA-256哈希值</p>
+<p>600FFE422B4E00731A59557A5CCA46CC183944191006324A447BDB2D98D4B408</p>
+<p>第四步，计算上一步哈希值的RIPEMD-160哈希值</p>
+<p>010966776006953D5567439E5E39F86A0D273BEE</p>
+<p>第五步，在上一步结果之间加入地址版本号（如比特币主网版本号&quot;0x00&quot;）</p>
+<p>00010966776006953D5567439E5E39F86A0D273BEE</p>
+<p>第六步，计算上一步结果的SHA-256哈希值</p>
+<p>445C7A8007A93D8733188288BB320A8FE2DEBD2AE1B47F0F50BC10BAE845C094</p>
+<p>第七步，再次计算上一步结果的SHA-256哈希值</p>
+<p>D61967F63C7DD183914A4AE452C9F6AD5D462CE3D277798075B107615C1A8A30</p>
+<p>第八步，取上一步结果的前4个字节（8位十六进制数）D61967F6，把这4个字节加在第五步结果的后面，作为校验（这就是比特币地址的16进制形态）</p>
+<p>00010966776006953D5567439E5E39F86A0D273BEED61967F6</p>
+<p>第九步，用base58表示法变换一下地址（这就是最常见的比特币地址形态）</p>
+<p>16UwLL9Risc3QfPqBUvKofHmBQ7wMtjvM</p>
+<h2 id="heading">
+  
+  <a class="anchor" href="#heading">#</a>
+</h2>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#什么是区块链">什么是区块链？</a>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+        <li><a href="#智能合约"><strong>智能合约</strong></a></li>
+        <li><a href="#共识"><strong>共识</strong></a></li>
+        <li><a href="#比特币">比特币</a>
+          <ul>
+            <li><a href="#简介">简介</a></li>
+            <li><a href="#区块结构">区块结构</a></li>
+            <li><a href="#区块数据交易">区块数据（交易）</a></li>
+            <li><a href="#比特币相关问答">比特币相关问答</a></li>
+          </ul>
+        </li>
+        <li><a href="#heading"></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

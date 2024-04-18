@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>基础 on Soulmate</title>
+    <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/</link>
+    <description>Recent content in 基础 on Soulmate</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 14 Sep 2022 09:58:30 +0800</lastBuildDate><atom:link href="https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>go语言基础（一）</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/</link>
+      <pubDate>Wed, 07 Apr 2021 16:58:12 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/</guid>
+      <description>第一章 概述 # go语言特征 # 简单
+并发模型
+go语言从根部将一切都并发化，运行时用Goroutine运行所有的一切，包括main.main入口函数。Goroutine是go的显著特征。它用类协程的方式处理并发单元，又在运行时层面做了更深度的优化处理。搭配channel,实现CSP模型。
+csp模型
+Actor 模型中 Actor 之间就是不能共享内存的，彼此之间通信只能依靠消息传递的方式。Golang 实现的 CSP 模型和 Actor 模型看上去非常相似，虽然 Golang 中协程之间，也能够以共享内存的方式通信，但是并不推荐；而推荐的以通信的方式共享内存，实际上指的就是协程之间以消息传递方式来通信。
+Channel模型中，worker之间不直接彼此联系，而是通过不同channel进行消息发布和侦听。消息的发送者和接收者之间通过Channel松耦合，发送者不知道自己消息被哪个接收者消费了，接收者也不知道是哪个发送者发送的消息。
+Go语言的CSP模型是由协程Goroutine与通道Channel实现：
+Go协程goroutine: 是一种轻量线程，它不是操作系统的线程，而是将一个操作系统线程分段使用，通过调度器实现协作式调度。是一种绿色线程，微线程，它与Coroutine协程也有区别，能够在发现堵塞后启动新的微线程。 通道channel: 类似Unix的Pipe，用于协程之间通讯和同步。协程之间虽然解耦，但是它们和Channel有着耦合。 内存分配
+刨去因配合垃圾回收器而修改的内容，内存分配器完整的保留了tcmalloc的原始架构。除偶尔因性能问题而被迫采用对象池和自主内存管理外，我们基本无须参与内存管理操作。
+垃圾回收
+​ go垃圾回收不咋地
+静态链接 只须编译一个可执行文件，无须附加任何东西就能部署。将运行时、依赖库直接打包到可执行文件内部，简化了部署和发布操作，无须事先安装运行环境和下载诸多第三方库。
+标准库 工具链 第二章 类型 # 变量 # 定义 # var a int //会自动初始化为0 var y=false //自动推断为bool类型 var x,y int x=1 y=2 //定义完变量后再赋值 var a int =2 var a,s=100,&amp;#34;abc&amp;#34; //初始化 var ( x,y int a,s=100,&amp;#34;abc&amp;#34; //字符串加“” ) a:=100 //自动推导类型 a,s:=100,&amp;#34;abc&amp;#34; 注意： * 定义变量，同时显示初始化 * 不能提供数据类型 * 只能用在函数内部 退化赋值 # 退化赋值的前提条件是：最少有一个新变量被定义，且必须是同一作用域。</description>
+    </item>
+    
+    <item>
+      <title>CGo</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/cgo/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/cgo/</guid>
+      <description>CGO入门 # Golang 自带的 CGO 可以支持与 C 语言接口的互通。
+启用CGO特性 # 在 golang 代码中加入 import “C” 语句就可以启动 CGO 特性。这样在进行 go build 命令时，就会在编译和连接阶段启动 gcc 编译器。
+package main import &amp;#34;C&amp;#34; // import &amp;#34;C&amp;#34;更像是一个关键字，CGO工具在预处理时会删掉这一行 func main() { } 使用 -x 选项可以查看 go 程序编译过程中执行的所有指令。可以看到 golang 编译器已经为 test1.go 创建了 CGO 编译选项
+[root@VM-centos ~/cgo_test/golink2]# go build -x test1.go WORK=/tmp/go-build330287398 mkdir -p $WORK/b001/ cd /root/cgo_test/golink2 CGO_LDFLAGS=&amp;#39;&amp;#34;-g&amp;#34; &amp;#34;-O2&amp;#34;&amp;#39; /usr/lib/golang/pkg/tool/linux_amd64/cgo -objdir $WORK/b001/ -importpath command-line-arguments -- -I $WORK/b001/ -g -O2 .</description>
+    </item>
+    
+    <item>
+      <title>Channel</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/channel/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/channel/</guid>
+      <description>channel # 如何判断通道为空
+if len(channel) == 0 { // 通道为空 } select { case &amp;lt;-channel: // 通道不为空，可以接收元素 default: // 通道为空 } 如何判断通道已关闭
+v, ok := &amp;lt;-ch 通道各种花里胡哨用法
+https://learnku.com/articles/71310
+https://cloud.tencent.com/developer/article/1911948
+https://segmentfault.com/a/1190000017958702
+https://www.jianshu.com/p/554e210bdca4
+https://www.cnblogs.com/jiujuan/p/16014608.html
+https://colobu.com/2016/04/14/Golang-Channels/
+1、一个经典的算法题 有 4 个 goroutine，编号为 1、2、3、4。每秒钟会有一个 goroutine 打印出自己的编号，要求写一个程序，让输出的编号总是按照 1、2、3、4、1、2、3、4… 的顺序打印出来
+func main() { // 4个channel chs := make([]chan int, 4) for i, _ := range chs { chs[i] = make(chan int) // 开4个协程 go func(i int) { for { // 获取当前channel值并打印 v := &amp;lt;-chs[i] fmt.</description>
+    </item>
+    
+    <item>
+      <title>Flag</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/flag/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/flag/</guid>
+      <description># flag # 概述 # flag包提供了一系列解析命令行参数的功能接口，官方教程的地址为：https://golang.org/pkg/flag/#pkg-overview
+命令行语法 # 命令行语法主要有以下几种形式
+-flag //只支持bool类型 -flag=x -flag x //只支持非bool类型 以上语法对于一个或两个‘－’号，效果是一样的，但是要注意对于第三种情况，只支持非bool类型，原因是碰到如下情况时
+cmd -x * *为0，false有可能表示一个文件名或文件，也有可能表示x标签的值为0或false，会产生二义性，因此规定第三种只支持非bool类型。对于整形flag，合法的值可以为1234, 0664,0x1234或负数等。对于布尔型flag，可以为1, 0, t, f, T, F, true, false, TRUE, FALSE, True, False等
+命令行参数解析 # flag.Parse() 解析函数将会在碰到第一个非flag命令行参数时停止，非flag命令行参数是指不满足命令行语法的参数，如命令行参数为cmd --flag=true abc则第一个非flag命令行参数为“abc”
+调用Parse解析后，就可以直接使用flag本身(指针类型)或者绑定的变量了(值类型) fmt.Println(&amp;#34;ip has value &amp;#34;, *ip) fmt.Println(&amp;#34;flagvar has value &amp;#34;, flagvar) 12 还可通过flag.Args(), flag.Arg(i)来获取非flag命令行参数
+如果需要每个函数的详细demo，可参见Gopkg:flag
+命令行参数解析方法 # 使用flag主要包括以下几步
+定义flag参数，有三种方式
+通过flag.String(), Bool(), Int() 等flag.Xxx()方法，该种方式返回一个相应的指针 import &amp;#34;flag&amp;#34; var ip = flag.Int(&amp;#34;flagname&amp;#34;, 1234, &amp;#34;help message for flagname&amp;#34;) 通过flag.</description>
+    </item>
+    
+    <item>
+      <title>Grpc</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/grpc/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/grpc/</guid>
+      <description>gRPC # gRPC 是一个高性能、开源和通用的 RPC 框架，面向移动和 HTTP/2 设计。
+gRPC基于 HTTP/2标准设计，带来诸如双向流、流控、头部压缩、单 TCP连接上的多复用请求等特。这些特性使得 其在移动设备上表现更好，更省电和节省空间占用。
+RPC # RPC（Remote Procedure Call Protocol）——远程过程调用协议，它是一种通过网络从远程计算机程序上请求 服务，而不需要了解底层网络技术的协议。
+简单来说，就是跟远程访问或者web请求差不多，都是一个client向远端服务器请求服务返回结果，但是web请求 使用的网络协议是http高层协议，而rpc所使用的协议多为TCP，是网络层协议，减少了信息的包装，加快了处理速 度。
+golang本身有rpc包，可以方便的使用，来构建自己的rpc服务，下边是一个简单是实例，可以加深我们的理解
+1.调用客户端句柄；执行传送参数
+2.调用本地系统内核发送网络消息
+3.消息传送到远程主机
+4.服务器句柄得到消息并取得参数
+5.执行远程过程
+6.执行的过程将结果返回服务器句柄
+7.服务器句柄返回结果，调用远程系统内核
+8.消息传回本地主机
+9.客户句柄由内核接收消息
+10.客户接收句柄返回的数据
+服务端 # package main import ( &amp;#34;net/http&amp;#34; &amp;#34;net/rpc&amp;#34; &amp;#34;net&amp;#34; &amp;#34;github.com/astaxie/beego&amp;#34; &amp;#34;io&amp;#34; ) //- 方法是导出的 //- 方法有两个参数，都是导出类型或内建类型 //- 方法的第二个参数是指针 //- 方法只有一个error接口类型的返回值 //func (t *T) MethodName(argType T1, replyType *T2) error type Panda int; func (this *Panda)Getinfo(argType int, replyType *int) error { beego.</description>
+    </item>
+    
+    <item>
+      <title>Json序列化</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/</guid>
+      <description>一、忽略字段 # 我们知道，通过tag,可以有条件地实现定制Go JSON序列化的方式，比如json:&amp;quot;abc,omitempty&amp;quot;, 当字段的值为空的时候，我们可以在序列化后的数据中不包含这个值，而json:&amp;quot;-&amp;quot;可以直接不被JSON序列化,如果想被序列化key-，可以设置tag为json:&amp;quot;-,&amp;quot;,加个逗号
+二、改变一个字段显示 # 有下面这个结构体
+type MyUser struct { ID int64 `json:&amp;#34;id&amp;#34;` Name string `json:&amp;#34;name&amp;#34;` LastSeen time.Time `json:&amp;#34;lastSeen&amp;#34;` } 如果临时想改变LastSeen字段显示为时间戳（或者密码我们不想打印到日志中，用***代替）
+方案一 # 最简单的方式是引入另外一个辅助struct,在MarshalJSON中使用它进行正确的格式化：
+func (u *MyUser) MarshalJSON() ([]byte, error) { return json.Marshal(&amp;amp;struct { ID int64 `json:&amp;#34;id&amp;#34;` Name string `json:&amp;#34;name&amp;#34;` LastSeen int64 `json:&amp;#34;lastSeen&amp;#34;` }{ ID: u.ID, Name: u.Name, LastSeen: u.LastSeen.Unix(), }) } 方案二 # 方案一在遇到多字段的时候会很麻烦，如果我们能把原始struct嵌入到新的struct中，并让它继承所有不需要改变的字段就太好了:
+func (u *MyUser) MarshalJSON() ([]byte, error) { return json.Marshal(&amp;amp;struct { LastSeen int64 `json:&amp;#34;lastSeen&amp;#34;` *MyUser }{ LastSeen: u.</description>
+    </item>
+    
+    <item>
+      <title>ProtoBuf</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/</guid>
+      <description>ProtoBuf # protobuf是google旗下的一款平台无关，语言无关，可扩展的序列化结构数据格式。所以很适合用做数据存储和作 为不同应用，不同语言之间相互通信的数据交换格式，只要实现相同的协议格式即同一 proto文件被编译成不同的 语言版本，加入到各自的工程中去。这样不同语言就可以解析其他语言通过 protobuf序列化的数据。
+Google Protocol Buffer(简称 Protobuf)是一种轻便高效的结构化数据存储格式，平台无关、语言无关、可扩展， 可用于通讯协议和数据存储等领域。
+数据交互的格式比较 # 数据交互xml、json、protobuf格式比较
+1、json: 一般的web项目中，最流行的主要还是json。因为浏览器对于json数据支持非常好，有很多内建的函数支 持。
+2、xml: 在webservice中应用最为广泛，但是相比于json，它的数据更加冗余，因为需要成对的闭合标签。json使 用了键值对的方式，不仅压缩了一定的数据空间，同时也具有可读性。
+3、protobuf:是后起之秀，是谷歌开源的一种数据格式，适合高性能，对响应速度有要求的数据传输场景。因为 profobuf是二进制数据格式，需要编码和解码。数据本身不具有可读性。因此只能反序列化之后得到真正可读的数 据。
+相对于其它protobuf更具有优势
+1：序列化后体积相比Json和XML很小，适合网络传输
+2：支持跨平台多语言
+3：消息格式升级和兼容性还不错
+4：序列化反序列化速度很快，快于Json的处理速速
+protoBuf的优点 # Protobuf 有如 XML，不过它更小、更快、也更简单。你可以定义自己的数据结构，然后使用代码生成器生成的代 码来读写这个数据结构。你甚至可以在无需重新部署程序的情况下更新数据结构。只需使用 Protobuf 对数据结构 进行一次描述，即可利用各种不同语言或从各种不同数据流中对你的结构化数据轻松读写。
+它有一个非常棒的特性，即“向后”兼容性好，人们不必破坏已部署的、依靠“老”数据格式的程序就可以对数据结构 进行升级。
+Protobuf 语义更清晰，无需类似 XML 解析器的东西（因为 Protobuf 编译器会将 .proto 文件编译生成对应的数据 访问类以对 Protobuf 数据进行序列化、反序列化操作）。使用 Protobuf 无需学习复杂的文档对象模型， Protobuf 的编程模式比较友好，简单易学，同时它拥有良好的文档和示例，对于喜欢简单事物的人们而言， Protobuf 比其他的技术更加有吸引力。
+ProtoBuf 的不足 # Protobuf 与 XML 相比也有不足之处。它功能简单，无法用来表示复杂的概念。
+XML 已经成为多种行业标准的编写工具，Protobuf 只是 Google 公司内部使用的工具，在通用性上还差很多。 由 于文本并不适合用来描述数据结构，所以 Protobuf 也不适合用来对基于文本的标记文档（如 HTML）建模。另 外，由于 XML 具有某种程度上的自解释性，它可以被人直接读取编辑，在这一点上 Protobuf 不行，它以二进制的 方式存储，除非你有 .</description>
+    </item>
+    
+    <item>
+      <title>URL</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/url/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/url/</guid>
+      <description>Url # // 将bool类型转换为字符串
+bool到string
+string := strconv.FormatBool(bool) string到bool
+bool, err := strconv.ParseBool(string) string到float64
+strconv.ParseFloat(s string, bitSize int) (float64, error) float64到string
+strconv.FormatFloat(f float64, fmt byte, prec int, bitSize int) string func main() { f := 3.14159 // 将浮点数转换为字符串，保留两位小数 str := strconv.FormatFloat(f, &amp;#39;f&amp;#39;, 2, 64) fmt.Println(str) } 在上述示例中，我们使用strconv.FormatFloat()函数将浮点数f转换为字符串，并指定了以下参数：
+f：要转换的浮点数。 &#39;f&#39;：表示格式化为十进制表示法（浮点数），其他可选的格式有 &#39;b&#39;（科学计数法）和 &#39;e&#39;（指数表示法）。 2：保留小数点后的位数。 64：表示f的位大小，通常为32或64。 实战 # interface{}是结构体
+var v interface{} v = Person{ Name: &amp;#34;Alice&amp;#34;, Age: 30, Email: &amp;#34;alice@example.com&amp;#34;, } value := reflect.</description>
+    </item>
+    
+    <item>
+      <title>常用业务代码</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/</guid>
+      <description>go语言在.csv文件中加入超链接 # func main() { // 打开文件以写入 CSV 数据 file, err := os.Create(&amp;#34;output.csv&amp;#34;) if err != nil { panic(err) } defer file.Close() // 创建 CSV writer writer := csv.NewWriter(file) defer writer.Flush() // 写入 CSV 头部 header := []string{&amp;#34;File Name&amp;#34;, &amp;#34;Hyperlink&amp;#34;} writer.Write(header) // 模拟一些文件名和相对路径数据 fileData := []struct { FileName string RelativePath string }{ {&amp;#34;video.MP4&amp;#34;, &amp;#34;./d/video.MP4&amp;#34;}, // 添加更多文件名和相对路径 } // 写入文件名和相对路径数据到 CSV 文件 for _, data := range fileData { // 构建超链接字符串 hyperlinkFormula := `=HYPERLINK(&amp;#34;` + data.</description>
+    </item>
+    
+    <item>
+      <title>微服务</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</guid>
+      <description>微服务 # 微服务框架是将复杂的系统使用组件化的方式进行拆分，并使用轻量级通讯方式进行整合的一种设计方法。
+微服务是通过这种架构设计方法拆分出来的一个独立的组件化的小应用。
+微服务架构和整体式架构的区别？ # 开发单体式（整体式）应用的不足之处 # 三层架构（MVC）的具体内容如下：
+表示层（view）： 用户使用应用程序时，看到的、听见的、输入的或者交互的部分。
+业务逻辑层（controller）： 根据用户输入的信息，进行逻辑计算或者业务处理的部分。
+数据访问层（model）： 关注有效地操作原始数据的部分，如将数据存储到存储介质（如数据库、文件系统）及从存储介质中读取数据等。
+虽然现在程序被分成了三层，但只是逻辑上的分层，并不是物理上的分层。也就是说，对不同层的代码而言，经过编译、打包和部署后，所有的代码最终还是运行在同一个进程中。而这，就是所谓的单块架构。
+单体架构在规模比较小的情况下工作情况良好，但是随着系统规模的扩大，它暴露出来的问题也越来越多，主要有 以下几点：
+复杂性逐渐变高
+比如有的项目有几十万行代码，各个模块之间区别比较模糊，逻辑比较混乱，代码越多复杂性越高，越难解决遇到的问题。
+技术债务逐渐上升
+公司的人员流动是再正常不过的事情，有的员工在离职之前，疏于代码质量的自我管束，导致留下来很多坑，由于单体项目代码量庞大的惊人，留下的坑很难被发觉，这就给新来的员工带来很大的烦恼，人员流动越大所留下的坑 越多，也就是所谓的技术债务越来越多。
+维护成本大
+当应用程序的功能越来越多、团队越来越大时，沟通成本、管理成本显著增加。当出现 bug 时，可能引起 bug 的原因组合越来越多，导致分析、定位和修复的成本增加；并且在对全局功能缺乏深度理解的情况下，容易在修复 bug 时引入新的 bug。
+持续交付周期长
+构建和部署时间会随着功能的增多而增加，任何细微的修改都会触发部署流水线。新人培养周期长：新成员了解背景、熟悉业务和配置环境的时间越来越长。 技术选型成本高 单块架构倾向于采用统一的技术平台或方案来解决所有问题，如果后续想引入新的技术或框架，成本和风险都很 大。
+可扩展性差
+随着功能的增加，垂直扩展的成本将会越来越大；而对于水平扩展而言，因为所有代码都运行在同一个进程，没办法做到针对应用程序的部分功能做独立的扩展。
+微服务架构的特性 # 单一职责
+微服务架构中的每个服务，都是具有业务逻辑的，符合高内聚、低耦合原则以及单一职责原则的单元，不同的服务通过“管道”的方式灵活组合，从而构建出庞大的系统。
+轻量级通信
+服务之间通过轻量级的通信机制实现互通互联，而所谓的轻量级，通常指语言无关、平台无关的交互方式。
+对于轻量级通信的格式而言，我们熟悉的 XML 和 JSON，它们是语言无关、平台无关的；对于通信的协议而言，通 常基于 HTTP，能让服务间的通信变得标准化、无状态化。目前大家熟悉的 REST（Representational State Transfer）是实现服务间互相协作的轻量级通信机制之一。使用轻量级通信机制，可以让团队选择更适合的语言、 工具或者平台来开发服务本身。
+问：REST是什么和restful一样吗？
+答：REST 指的是一组架构约束条件和原则。满足这些约束条件和原则的应用程序或设计就是 RESTful。
+独立性
+每个服务在应用交付过程中，独立地开发、测试和部署。
+在单块架构中所有功能都在同一个代码库，功能的开发不具有独立性；当不同小组完成多个功能后，需要经过集成 和回归测试，测试过程也不具有独立性；当测试完成后，应用被构建成一个包，如果某个功能存在 bug，将导致整 个部署失败或者回滚。
+在微服务架构中，每个服务都是独立的业务单元，与其他服务高度解耦，只需要改变当前服务本身，就可以完成独立的开发、测试和部署。
+进程隔离
+单块架构中，整个系统运行在同一个进程中，当应用进行部署时，必须停掉当前正在运行的应用，部署完成后再重启进程，无法做到独立部署。
+有时候我们会将重复的代码抽取出来封装成组件，在单块架构中，组件通常的形态叫做共享库（如 jar 包或者 DLL），但是当程序运行时，所有组件最终也会被加载到同一进程中运行.</description>
+    </item>
+    
+    <item>
+      <title>go语言基础（二）</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/</link>
+      <pubDate>Tue, 26 Oct 2021 15:04:57 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/</guid>
+      <description>copy函数 # Go语言的内置函数 copy() 可以将一个数组切片复制到另一个数组切片中，如果加入的两个数组切片不一样大，就会按照其中较小的那个数组切片的元素个数进行复制。
+//1.不同类型的切片无法复制 //2.如果s1的长度大于s2的长度，将s2中对应位置上的值替换s1中对应位置的值 //3.如果s1的长度小于s2的长度，多余的将不做替换 func main() { s1 := []int{1, 2, 3} s2 := []int{4, 5} s3 := []int{6, 7, 8, 9} copy(s1, s2) fmt.Println(s1) //[4 5 3] copy(s2, s3) fmt.Println(s2) //[6 7] } l:=make([]string,len(s)) copy(h,s) var, :=, new() ， make()的区别 # 说明 # go语言中，提供了多种变量声明和初始化的方法。这里着重一一说明。并提供一个简单的指南。
+指南 # 使用make()，来初始化slice，map 和channel 。 大多数场合，类型明确的场合下，使用短变量声明方式:=。 当使用文字方式初始化一个变量，并且需要指明类型时，使用var变量声明方式。 避免使用new()，除非你需要一个指针变量。 变量声明方式 # go语言可以使用 var 来声明一个变量，并指明变量的数据类型。
+// 初始化整数变量，值为10。 var v int = 10 fmt.</description>
+    </item>
+    
+    <item>
+      <title>go语言基础（三）</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/</link>
+      <pubDate>Wed, 14 Sep 2022 09:58:30 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/</guid>
+      <description>Golang易错知识点 # GoMock # GoMock可以对interface打桩 GoMock可以对类成员函数打桩 GoMock可以对函数打桩 GoMock打桩后的依赖注入可以通过GoStub完成 GoStub # GoStub可以对全局变量打桩 GoStub可以对函数打桩 GoStub可以动态打桩，比如对一个函数打桩后，多次调用该函数会有不同的行为 作用域 # func main() { a := 12 { a := 13 _ = a // make compiler happy } fmt.Println(a) } 输出 12。 在作用域内的 a 在作用域外失效，所以输出 12。
+添加方法 # 可以给任意类型添加相应的方法。这一说法是否正确 false
+如果直接给int添加method会报错
+任意自定义类型(包括内置类型，但不包括指针类型)添加相应的方法。
+序列化 # type S struct { A int B *int C float64 d func() string e chan struct{} } func main() { s := S{ A: 1, B: nil, C: 12.</description>
+    </item>
+    
+    <item>
+      <title>数据结构-go</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/</link>
+      <pubDate>Sun, 27 Mar 2022 19:41:51 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/</guid>
+      <description>链表 # 链表定义 # type ListNode struct{//单链表 Val int Next *ListNode } type DoubleNode struct{//双链表 Val int Prev *DoubleNode Next *DoubleNode } 创建链表 # func CreatListNode(list []int) (tai *ListNode ){ head := &amp;amp;ListNode{Val: list[0]} //无头节点情况 head:=&amp;amp;ListNode{} tail := head for i := 1; i &amp;lt; len(list); i++ { //有头节点，这里i=0 head.Next = &amp;amp;ListNode{Val: list[i]} head = head.Next } return tail } func CreatDoubleNode(list []int) (head *DoubleNode) { //创建双链表 p := &amp;amp;DoubleNode{} q := p for i := 0; i &amp;lt; len(list); i++ { p.</description>
+    </item>
+    
+    <item>
+      <title>gin框架</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/</link>
+      <pubDate>Mon, 27 Dec 2021 21:22:31 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/</guid>
+      <description>简介 # 介绍 # Gin是一个golang的微框架，封装比较优雅，API友好，源码注释比较明确，具有快速灵活，容错方便等特点 对于golang而言，web框架的依赖要远比Python，Java之类的要小。自身的net/http足够简单，性能也非常不错 借助框架开发，不仅可以省去很多常用的封装带来的时间，也有助于团队的编码风格和形成规范 安装 # 要安装Gin软件包，您需要安装Go并首先设置Go工作区。
+1.首先需要安装Go（需要1.10+版本），然后可以使用下面的Go命令安装Gin。
+go get -u github.com/gin-gonic/gin
+2.将其导入您的代码中：
+import &amp;ldquo;github.com/gin-gonic/gin&amp;rdquo;
+3.（可选）导入net/http。例如，如果使用常量，则需要这样做http.StatusOK。
+import &amp;ldquo;net/http&amp;rdquo;
+hello word # package main import ( &amp;#34;net/http&amp;#34; &amp;#34;github.com/gin-gonic/gin&amp;#34; ) func main() { // 1.创建路由 r := gin.Default() // 2.绑定路由规则，执行的函数 // gin.Context，封装了request和response r.GET(&amp;#34;/&amp;#34;, func(c *gin.Context) { c.String(http.StatusOK, &amp;#34;hello World!&amp;#34;) }) // 3.监听端口，默认在8080 // Run(&amp;#34;里面不指定端口号默认为8080&amp;#34;) r.Run(&amp;#34;:8000&amp;#34;) } GORM # 特性 # 全功能 ORM 关联 (Has One，Has Many，Belongs To，Many To Many，多态，单表继承) Create，Save，Update，Delete，Find 中钩子方法 支持 Preload、Joins 的预加载 事务，嵌套事务，Save Point，Rollback To Saved Point Context、预编译模式、DryRun 模式 批量插入，FindInBatches，Find/Create with Map，使用 SQL 表达式、Context Valuer 进行 CRUD SQL 构建器，Upsert，数据库锁，Optimizer/Index/Comment Hint，命名参数，子查询 复合主键，索引，约束 Auto Migration 自定义 Logger 灵活的可扩展插件 API：Database Resolver（多数据库，读写分离）、Prometheus… 每个特性都经过了测试的重重考验 开发者友好 安装 # go get -u gorm.</description>
+    </item>
+    
+    <item>
+      <title>Beego框架</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/</link>
+      <pubDate>Sun, 07 Mar 2021 13:48:22 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/</guid>
+      <description>beego框架 # beego框架了解 # Beego框架是go语言开发的web框架。
+beego是中国人开发的，开发文档比较详细
+beego网址 MVC架构 # Beego是MVC架构。MVC 是一种应用非常广泛的体系架构，几乎所有的编程语言都会使用到，而且所有的程序员在工作中都会遇到！用 MVC 的方式开发程序，可以让程序的结构更加合理和清晰。 我们画图说明
+环境搭建 # 这里默认大家已经搭建好了go语言的开发环境。
+需要安装Beego go get -u github.com/beego/bee/v2@master go install github.com/beego/bee/v2@master //上面没用就试试这个 而后运行 bee version | ___ \| |_/ / ___ ___| ___ \ / _ \ / _ \| |_/ /| __/| __/\____/ \___| \___| v2.0.2├── Beego : Beego is not installed. Please do consider installing it first: https://github.com/beego/beego/v2. If you are using go mod, and you don&amp;#39;t install the beego under $GOPATH/src/github.</description>
+    </item>
+    
+    <item>
+      <title>go语言底层基础</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Wed, 03 Aug 2022 10:46:26 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/</guid>
+      <description>Go语言相关 # GMP模型 # G goroutine协程
+P processor处理器
+M thread线程
+Processor 它包含了运行goroutine的资源，如果线程想运行goroutine,必须先获取P，P中还包含了可运行的G队列。
+在Go中，线程是运行goroutine的实体，调度器的功能是把可运行的goroutine分配到工作线程上。
+全局队列：存放等待运行的G P的本地队列：同全局队列类似，存放的也是等待运行的G，存的数量有限，不超过256个。新建 G’时，G’优先加入到 P 的本地队列，如果队列满了，则会把本地队列中一半的 G 移动到全局队列。 P列表：所有的P都在程序启动时创建，并保存在数组中，最多有 GOMAXPROCS(可配置) 个。 M：线程想运行任务就得获取P，从P的本地队列获取G，P队列为空时，M 也会尝试从全局队列拿一批 G 放到 P 的本地队列，或从其他 P 的本地队列偷一半放到自己 P 的本地队列。M 运行 G，G 执行之后，M 会从 P 获取下一个 G，不断重复下去。 Goroutine 调度器和 OS 调度器是通过 M 结合起来的，每个 M 都代表了 1 个内核线程，OS 调度器负责把内核线程分配到 CPU 的核上执行。
+P 处理器的作用 # 负责调度G
+P和M的个数问题 # 1、P的数量：
+由启动时环境变量 $GOMAXPROCS 或者是由 runtime 的方法 GOMAXPROCS() 决定。这意味着在程序执行的任意时刻都只有 $GOMAXPROCS 个 goroutine 在同时运行。 2、M的数量：</description>
+    </item>
+    
+    <item>
+      <title>benchmark测试</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/</link>
+      <pubDate>Mon, 20 Dec 2021 17:44:59 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/</guid>
+      <description>Go 中的基准测试在许多方面类似于单元测试，但有关键的不同之处，并且服务于不同的目的。由于它们不像 Go 中的单元测试那样广为人知，本文旨在介绍 Go 的基准测试：如何创建、如何运行它们、如何读取结果以及一些指向创建基准测试的一些高级主题的指针在去。
+基准测试是测试 Go 代码性能的函数，它们包含testing在标准 Go 库的包中，因此无需任何外部库的依赖即可使用。
+执行基准测试时，会向您提供有关执行时间的一些信息，如果需要，还会提供基准测试下代码的内存占用量。
+创建基准 # 创建cc_test.go文件
+要创建基准测试，您需要在 go 文件中导入testing包并以创建测试函数的类似方式创建基准测试函数。
+例如，在定义单元测试时，我们func TestAny(t *testing)以开头的形式编写函数，而在定义基准测试时，我们将创建一个**func BenchmarkAny(b \*testing.B)**.
+Go 的基准测试在单元测试方面的一个显着差异是从 0 到b.N. 事实上，基准测试会运行多次，以确保收集到足够的数据以提高基准测试下代码性能测量的准确性。
+该字段b.N不是固定值，而是动态调整以确保基准测试功能至少运行 1 秒。
+这里展示的是基准和测试函数之间的比较：
+func Benchmark1Sort(b *testing.B) { for i := 0; i &amp;lt; b.N; i++ { sort.Ints(generateSlice(1000)) } } func Test1Sort(t *testing.T) { slice := generateSlice(1000) if len(slice) != 1000 { t.Errorf(&amp;#34;unexpected slice size: %d&amp;#34;, len(slice)) } } 运行基准 # 运行 Go 的基准测试的起点是go test命令，在这里我们将看到我们需要确保我们不只是运行单元测试。</description>
+    </item>
+    
+    <item>
+      <title>Goland常用技巧</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/</guid>
+      <description>注释 # IDEA注释 # // 这是一个单行注释 /* 这是一个多行注释 可以用于注释多行代码 */ 函数注释 # // add 函数将两个整数相加并返回结果 // 参数: a - 第一个整数, b - 第二个整数 // 返回值: 两个整数的和 func add(a, b int) int { return a + b } TODO：英语翻译为待办事项，备忘录。如果代码中有该标识，说明在标识处有功能代码待编写，待实现的功能在说明中会简略说明。
+FIXME：可以拆成短语，fix me ，意为修理我。如果代码中有该标识，说明标识处代码需要修正，甚至代码是错误的，不能工作，需要修复，如何修正会在说明中简略说明。
+// FIXME: 这里有一个需要修复的问题 可小写 // TODO: 添加错误处理代码 添加新的注释格式 # 标签 说明 TODO: 以后要添加的功能 FIXME: 已知的BUG,以后需要修正 HACK: 代码不太好，需要优化 XXX: 包含所有tag的tag,不好明确到底用哪个tag REVIEW: 虽然好用，最好还是评审一下 OPTIMIZE: 性能不好，需要优化 NOTE: 一些说明 WARNING: 请注意 代码报红处理方法 # 设置import规范 # 1、标准库</description>
+    </item>
+    
+  </channel>
+</rss>

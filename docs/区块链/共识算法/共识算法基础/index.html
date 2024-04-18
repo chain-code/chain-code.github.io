@@ -1,0 +1,2437 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="PoW # 概念 # PoW（工作量证明，Proof of Work），比特币，俗称挖矿。Pow是指系统为达到某一目标而设置的度量方法。简单理解就是一份证明，用来确认你做过一定量的工作。监测工作的整个过程通常是极为低效的，而通过对工作的结果进行认证来证明完成了相应的工作量，则是一种非常高效的方式。
+工作量证明（Pow）通过计算一个数值（nonce），使得拼凑上交易数据后内容的Hash值满足规定的上限。在结点成功找到满足的Hash值之后，会马上对全网进行广播打包区块，网络的结点收到广播打包区块，会立刻对其进行验证。
+如何才能创建一个新区块呢？通过解决一个问题：即找到一个nonce值，使得新区块头的哈希值小于某个指定的值，即区块头结构中的“难度目标”。
+如果验证通过，则表明已经有结点成功解谜，自己就不再竞争当前区块打包，而是选择接受这个区块，记录到自己的账本中，然后进行下一个区块的竞争。
+假如结点有任何的作弊行为，都会导致网络的结点验证不通过，直接丢弃其打包的区块，这个区块就无法记录到总帐本中，作弊的节点耗费的成本就白费了，因此在巨大的挖矿成本下，也使得矿工自觉自愿的遵守比特币系统的共识协议，也就确保了整个系统的安全。
+父区块头哈希值：前一区块的哈希值，使用SHA256(SHA256(父区块头))计算。占32字节 版本：区块版本号，表示本区块遵守的验证规则。占4字节 时间戳：该区块产生的近似时间，精确到秒的UNIX时间戳，必须严格大于前11个区块时间的中值，同时全节点也会拒绝那些超出自己2个小时时间戳的区块。占4字节 难度：该区块工作量证明算法的难度目标，已经使用特定算法编码。占4字节 随机数(Nonce)：为了找到满足难度目标所设定的随机数，为了解决32位随机数在算力飞升的情况下不够用的问题，规定时间戳和coinbase交易信息均可更改，以此扩展nonce的位数。占4字节 Merkle根：该区块中交易的Merkle树根的哈希值，同样采用SHA256(SHA256())计算。占32字节
+如此，细心的同学会发现，区块头总共占了80字节。
+区块体除了筹币交易记录（由一棵Merkle二叉树组成)外，还有一个交易计数。
+Pow工作量证明的三要素 # 工作机制
+为了使区块链交易数据记录在区块链上并在一定时间内达到一致（共识），Pow提供了一种思路，即所有区块链的网络节点参与者进行竞争记账，所谓竞争记账是指，如果想生成一个新的区块并写入区块链，必须解出比特币网络出的工作量证明谜题，谁先解出答案，谁就活的记账权利，然后开始记账并将解出的答案和交易记录广播给其他节点进行验证，自己则开始下一轮挖矿。如果区块的交易被其他节点参与者验证有效并且谜题的答案正确，就意味着这个答案是可信的，新的节点将被写入验证者的节点区块链，同时验证者进入下一轮竞争挖矿。
+这道题关键的三个要素是工作量证明函数、区块及难度值。工作量证明函数是这道题的计算方法，区块决定了这道题的输入数据，难度决定了这道题所需要的计算量。
+工作量证明函数
+比特币中使用SHA256算法函数，是密码哈希函数家族中输出值为256位的哈希算法。
+区块
+Merkle树算法：
+难度值
+关于难度值，我们直接看公式：
+新难度值=旧难度值*（过去2016个区块花费时长/20160分钟）
+tips：难度值是随网络变动的，目的是为了在不同的网络环境下，确保每十分钟能生成一个块。
+新难度值解析：撇开旧难度值，按比特币理想情况每十分钟出块的速度，过去2016个块的总花费接近2016分钟，这样，这个值永远趋近于1。
+目标值=最大值/难度值,
+目标值解析：最大目标值为一个固定数，若过去2016个区块花费时长少于20160分，那么这个系数会小，目标值将会被调大些，反之，目标值会被调小，因此，比特币的难度和出块速度将成反比例适当调整出块速度。
+那如何计算呢？SHA256(SHA256(Block_Header))，即只需要对区块头进行两次SHA256运算即可，得到的值和目标值进行比较，小于目标值即可。
+区块头中有一个重要的东西叫MerkleRoot的hash值。这个东西的意义在于：为了使区块头能体现区块所包含的所有交易，在区块的构造过程中，需要将该区块要包含的交易列表，通过Merkle Tree算法生成Merkle Root Hash，并以此作为交易列表的摘要存到区块头中。
+至此，我们发现区块头中除过nonce(随机数)以外，其余的数据都是明确的，解题的核心就在于不停的调整nonce的值，对区块头进行双重SHA256运算。
+Pow工作量证明流程 # 从流程图中看出，pow工作量证明的流程主要经历三步：
+1.生成Merkle根哈希 生成Merkle根哈希，即节点自己生成一笔筹币交易，并且与其他所有即将打包的交易通过Merkle树算法生成Merkle根哈希，所以为什么说区块是工作量证明的三要素之一。
+2.组装区块头 区块头将被作为计算出工作量证明输出的一个输入参数，因此第一步计算出来的Merkle根哈希和区块头的其他组成部分组装成区块头。
+3.计算出工作量证明的输出 下面我们直接通过公式和一些伪代码去理解工作量证明的输出：
+i. 工作量证明的输出=SHA256(SHA256(区块头))
+ii. if（工作量证明的输出&lt;目标值），证明工作量完成
+iii.if（工作量证明的输出&gt;=目标值）,变更随机数，递归i的逻辑，继续与目标值比对。
+Pow共识记账 # 在比特币平台中，中本聪就是运用的pow工作量证明来使全网节点达到51%及以上的共识记账，以下将介绍pow工作量证明共识是如何记账的？
+首先，客户端产生新的交易，向全网广播
+第二，每个节点收到请求，将交易纳入区块中
+第三，每个节点通过上述中描述的进行pow工作量证明
+第四，当某个节点找到了证明，向全网广播
+第五，当且仅当该区块的交易是有效的且在之前中未存在的，其他节点才认同该区块的有效性
+第六，接受该区块且在该区块的末尾制造新的区块
+大概时序图如下：
+Pow的优缺点 # 优点：
+完全去中心化（任何人都可以加入） 结点自由进出，容易实现 破坏系统花费成本巨大 关于破坏系统成本巨大可以分两层意思理解：">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="共识算法基础" />
+<meta property="og:description" content="PoW # 概念 # PoW（工作量证明，Proof of Work），比特币，俗称挖矿。Pow是指系统为达到某一目标而设置的度量方法。简单理解就是一份证明，用来确认你做过一定量的工作。监测工作的整个过程通常是极为低效的，而通过对工作的结果进行认证来证明完成了相应的工作量，则是一种非常高效的方式。
+工作量证明（Pow）通过计算一个数值（nonce），使得拼凑上交易数据后内容的Hash值满足规定的上限。在结点成功找到满足的Hash值之后，会马上对全网进行广播打包区块，网络的结点收到广播打包区块，会立刻对其进行验证。
+如何才能创建一个新区块呢？通过解决一个问题：即找到一个nonce值，使得新区块头的哈希值小于某个指定的值，即区块头结构中的“难度目标”。
+如果验证通过，则表明已经有结点成功解谜，自己就不再竞争当前区块打包，而是选择接受这个区块，记录到自己的账本中，然后进行下一个区块的竞争。
+假如结点有任何的作弊行为，都会导致网络的结点验证不通过，直接丢弃其打包的区块，这个区块就无法记录到总帐本中，作弊的节点耗费的成本就白费了，因此在巨大的挖矿成本下，也使得矿工自觉自愿的遵守比特币系统的共识协议，也就确保了整个系统的安全。
+父区块头哈希值：前一区块的哈希值，使用SHA256(SHA256(父区块头))计算。占32字节 版本：区块版本号，表示本区块遵守的验证规则。占4字节 时间戳：该区块产生的近似时间，精确到秒的UNIX时间戳，必须严格大于前11个区块时间的中值，同时全节点也会拒绝那些超出自己2个小时时间戳的区块。占4字节 难度：该区块工作量证明算法的难度目标，已经使用特定算法编码。占4字节 随机数(Nonce)：为了找到满足难度目标所设定的随机数，为了解决32位随机数在算力飞升的情况下不够用的问题，规定时间戳和coinbase交易信息均可更改，以此扩展nonce的位数。占4字节 Merkle根：该区块中交易的Merkle树根的哈希值，同样采用SHA256(SHA256())计算。占32字节
+如此，细心的同学会发现，区块头总共占了80字节。
+区块体除了筹币交易记录（由一棵Merkle二叉树组成)外，还有一个交易计数。
+Pow工作量证明的三要素 # 工作机制
+为了使区块链交易数据记录在区块链上并在一定时间内达到一致（共识），Pow提供了一种思路，即所有区块链的网络节点参与者进行竞争记账，所谓竞争记账是指，如果想生成一个新的区块并写入区块链，必须解出比特币网络出的工作量证明谜题，谁先解出答案，谁就活的记账权利，然后开始记账并将解出的答案和交易记录广播给其他节点进行验证，自己则开始下一轮挖矿。如果区块的交易被其他节点参与者验证有效并且谜题的答案正确，就意味着这个答案是可信的，新的节点将被写入验证者的节点区块链，同时验证者进入下一轮竞争挖矿。
+这道题关键的三个要素是工作量证明函数、区块及难度值。工作量证明函数是这道题的计算方法，区块决定了这道题的输入数据，难度决定了这道题所需要的计算量。
+工作量证明函数
+比特币中使用SHA256算法函数，是密码哈希函数家族中输出值为256位的哈希算法。
+区块
+Merkle树算法：
+难度值
+关于难度值，我们直接看公式：
+新难度值=旧难度值*（过去2016个区块花费时长/20160分钟）
+tips：难度值是随网络变动的，目的是为了在不同的网络环境下，确保每十分钟能生成一个块。
+新难度值解析：撇开旧难度值，按比特币理想情况每十分钟出块的速度，过去2016个块的总花费接近2016分钟，这样，这个值永远趋近于1。
+目标值=最大值/难度值,
+目标值解析：最大目标值为一个固定数，若过去2016个区块花费时长少于20160分，那么这个系数会小，目标值将会被调大些，反之，目标值会被调小，因此，比特币的难度和出块速度将成反比例适当调整出块速度。
+那如何计算呢？SHA256(SHA256(Block_Header))，即只需要对区块头进行两次SHA256运算即可，得到的值和目标值进行比较，小于目标值即可。
+区块头中有一个重要的东西叫MerkleRoot的hash值。这个东西的意义在于：为了使区块头能体现区块所包含的所有交易，在区块的构造过程中，需要将该区块要包含的交易列表，通过Merkle Tree算法生成Merkle Root Hash，并以此作为交易列表的摘要存到区块头中。
+至此，我们发现区块头中除过nonce(随机数)以外，其余的数据都是明确的，解题的核心就在于不停的调整nonce的值，对区块头进行双重SHA256运算。
+Pow工作量证明流程 # 从流程图中看出，pow工作量证明的流程主要经历三步：
+1.生成Merkle根哈希 生成Merkle根哈希，即节点自己生成一笔筹币交易，并且与其他所有即将打包的交易通过Merkle树算法生成Merkle根哈希，所以为什么说区块是工作量证明的三要素之一。
+2.组装区块头 区块头将被作为计算出工作量证明输出的一个输入参数，因此第一步计算出来的Merkle根哈希和区块头的其他组成部分组装成区块头。
+3.计算出工作量证明的输出 下面我们直接通过公式和一些伪代码去理解工作量证明的输出：
+i. 工作量证明的输出=SHA256(SHA256(区块头))
+ii. if（工作量证明的输出&lt;目标值），证明工作量完成
+iii.if（工作量证明的输出&gt;=目标值）,变更随机数，递归i的逻辑，继续与目标值比对。
+Pow共识记账 # 在比特币平台中，中本聪就是运用的pow工作量证明来使全网节点达到51%及以上的共识记账，以下将介绍pow工作量证明共识是如何记账的？
+首先，客户端产生新的交易，向全网广播
+第二，每个节点收到请求，将交易纳入区块中
+第三，每个节点通过上述中描述的进行pow工作量证明
+第四，当某个节点找到了证明，向全网广播
+第五，当且仅当该区块的交易是有效的且在之前中未存在的，其他节点才认同该区块的有效性
+第六，接受该区块且在该区块的末尾制造新的区块
+大概时序图如下：
+Pow的优缺点 # 优点：
+完全去中心化（任何人都可以加入） 结点自由进出，容易实现 破坏系统花费成本巨大 关于破坏系统成本巨大可以分两层意思理解：" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" /><meta property="article:section" content="docs" />
+<meta property="article:published_time" content="2022-08-14T11:07:25+00:00" />
+<meta property="article:modified_time" content="2022-08-14T11:07:25+00:00" />
+<title>共识算法基础 | Soulmate</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" >
+<link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.5623389946cf2cb816d7e28b27d101617d469cca326a6a0a0bf362549d6ba433.js" integrity="sha256-ViM4mUbPLLgW1&#43;KLJ9EBYX1GnMoyamoKC/NiVJ1rpDM=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo.png" alt="Logo" /><span>Soulmate</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-074eed0fb8c6f9d99dfeff898388792f" class="toggle"  />
+    <label for="section-074eed0fb8c6f9d99dfeff898388792f" class="flex justify-between">
+      <a role="button" class="">计算机基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="">Vim编程常用快捷键</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E9%85%8D%E7%BD%AEkylinv10/" class="">配置 Kylin V10</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="">计算机网络基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/linux%E5%9F%BA%E7%A1%80/" class="">Linux基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/git%E5%9F%BA%E7%A1%80/" class="">Git基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Golang</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-670eda717a06f31447c52422ec93a159" class="toggle"  />
+    <label for="section-670eda717a06f31447c52422ec93a159" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/" class="">go语言基础（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/cgo/" class="">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/flag/" class="">Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/grpc/" class="">Grpc</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/" class="">ProtoBuf</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">常用业务代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/" class="">go语言基础（三）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/" class="">go语言底层基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/" class="">benchmark测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/" class="">Goland常用技巧</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle"  />
+    <label for="section-c453881a62c640f6a4cceec99c02477e" class="flex justify-between">
+      <a role="button" class="">高阶</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" class="">Go高阶-语言基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f235e88e751d2cb18d527c1784763605" class="toggle"  />
+    <label for="section-f235e88e751d2cb18d527c1784763605" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/atomic/" class="">Atomic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/os/" class="">Os</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strconv/" class="">Strconv</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sort/" class="">Sort</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strings/" class="">Strings</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/reflect/" class="">Reflect</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/time/" class="">Time</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sync/" class="">Sync</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ee53da12118bfd3e9b35f3e9494ab55b" class="toggle"  />
+    <label for="section-ee53da12118bfd3e9b35f3e9494ab55b" class="flex justify-between">
+      <a role="button" class="">LeetCode</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/" class="">golang力扣刷题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/" class="">golang力扣刷题（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/%E5%BF%85%E5%88%B7top101/" class="">必刷top101</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" class="">LeetCode算法总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>数据库</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle"  />
+    <label for="section-94f26238d1ca3b5bcd40eadc7a88d726" class="flex justify-between">
+      <a role="button" class="">MySql</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" class="">MySql基础总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="">Mac连接数据库所遇到的问题</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="toggle"  />
+    <label for="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="flex justify-between">
+      <a role="button" class="">Redis</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="">Redis集群搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/" class="">Redis基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="">redis面试总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8be9c2251abd1fe110e3c1520cac6177" class="toggle"  />
+    <label for="section-8be9c2251abd1fe110e3c1520cac6177" class="flex justify-between">
+      <a role="button" class="">SQLite</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/" class="">Sqlite</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/" class="">Xorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ad390db13e5fa9e14f921f4e4f77900e" class="toggle"  />
+    <label for="section-ad390db13e5fa9e14f921f4e4f77900e" class="flex justify-between">
+      <a role="button" class="">C/C&#43;&#43;</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/cc&#43;&#43;/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>区块链</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle"  />
+    <label for="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="flex justify-between">
+      <a role="button" class="">Fabric</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">fabric相关机制与原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/" class="">智能合约</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/" class="">fabric-sdk-go详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/" class="">fabric-ca详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle"  />
+    <label for="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="flex justify-between">
+      <a role="button" class="">环境测试</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/" class="">fabric网络中的报错（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/" class="">fabric网络中的报错（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">fabric环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/" class="">solo节点测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/" class="">fabric多机搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/" class="">部署tape测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/" class="">手动生成ca证书搭建fabric网络</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/" class="">centos安装fabric1.2</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-25aef1d59a561fcefcaecb043ef8afd2" class="toggle"  />
+    <label for="section-25aef1d59a561fcefcaecb043ef8afd2" class="flex justify-between">
+      <a role="button" class="">配置文件</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/" class="">cryptogen生成的证书详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">docker-compose.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">configtx.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">crypto-config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/" class="">升级链码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/" class="">区块链网络添加组织</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/" class="">fabric浏览器搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/" class="">如何在已有组织中增加节点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/" class="">Fabric1.4多通道实验</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b07621083aa30b12de4c0333941e479f" class="toggle"  />
+    <label for="section-b07621083aa30b12de4c0333941e479f" class="flex justify-between">
+      <a role="button" class="">比特币</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">比特币相关机制与原理</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle"  />
+    <label for="section-ff5477999ef29208270c84e8b56b2758" class="flex justify-between">
+      <a role="button" class="">IPFS</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/" class="">go-ipfs-api</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" class="">ipfs-webui可视化工具搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/" class="">IPFS基本原理（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/" class="">IPFS私有网络搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-77a0a17b06e8d04cfb0fba9952941706" class="toggle"  />
+    <label for="section-77a0a17b06e8d04cfb0fba9952941706" class="flex justify-between">
+      <a role="button" class="">密码学</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" class="">区块链安全基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/" class="">椭圆曲线加密</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/" class="">密码学基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2e4d10b323fd668021dbd532575d8790" class="toggle"  />
+    <label for="section-2e4d10b323fd668021dbd532575d8790" class="flex justify-between">
+      <a role="button" class="">Docker</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/" class="">Docker基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/" class="">Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" class="">docker常用知识总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-70383d7f28a7ae4bf840a844eb61aa16" class="toggle" checked />
+    <label for="section-70383d7f28a7ae4bf840a844eb61aa16" class="flex justify-between">
+      <a role="button" class="">共识算法</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="active">共识算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" class="">Raft共识算法</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>前端</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
+    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
+      <a role="button" class="">博客</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%9B%BE%E4%B9%A6/" class="">图书</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/" class="">工具库</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="https://gitee.com/chaincode"  target="_blank" rel="noopener">
+        Gitee
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>共识算法基础</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#pow">PoW</a>
+          <ul>
+            <li><a href="#概念">概念</a></li>
+            <li><a href="#pow工作量证明的三要素">Pow工作量证明的三要素</a></li>
+            <li><a href="#pow工作量证明流程">Pow工作量证明流程</a></li>
+            <li><a href="#pow共识记账">Pow共识记账</a></li>
+            <li><a href="#pow的优缺点">Pow的优缺点</a></li>
+            <li><a href="#网络攻击和链分叉">网络攻击和链分叉</a></li>
+          </ul>
+        </li>
+        <li><a href="#pos">Pos</a>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+        <li><a href="#dpos">DPos</a>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+        <li><a href="#pbft">PBFT</a>
+          <ul>
+            <li><a href="#拜占庭协定">拜占庭协定</a></li>
+            <li><a href="#与公有共识算法的区别">与公有共识算法的区别</a></li>
+            <li><a href="#pbft的适用场景">PBFT的适用场景</a></li>
+            <li><a href="#pbft算法基础">PBFT算法基础</a></li>
+            <li><a href="#view-change">View Change</a></li>
+          </ul>
+        </li>
+        <li><a href="#raft">Raft</a>
+          <ul>
+            <li><a href="#raft-和-pbft-算法有两点根本区别">raft 和 pbft 算法有两点根本区别：</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h2 id="pow">
+  PoW
+  <a class="anchor" href="#pow">#</a>
+</h2>
+<h3 id="概念">
+  概念
+  <a class="anchor" href="#%e6%a6%82%e5%bf%b5">#</a>
+</h3>
+<p>PoW（工作量证明，Proof of Work），比特币，俗称挖矿。Pow是指系统为达到某一目标而设置的度量方法。简单理解就是一份证明，用来确认你做过一定量的工作。监测工作的整个过程通常是极为低效的，而通过对工作的结果进行认证来证明完成了相应的工作量，则是一种非常高效的方式。</p>
+<p>工作量证明（Pow）通过<font color='red'>计算一个数值（nonce）</font>，使得拼凑上交易数据后内容的Hash值满足规定的上限。<font color='red'>在结点成功找到满足的Hash值之后，会马上对全网进行广播打包区块，网络的结点收到广播打包区块，会立刻对其进行验证。</font></p>
+<p>如何才能创建一个新区块呢？通过解决一个问题：<font color='red'>即找到一个nonce值，使得新区块头的哈希值小于某个指定的值，即区块头结构中的“难度目标”。</font></p>
+<p>如果验证通过，则表明已经有结点成功解谜，自己就不再竞争当前区块打包，而是选择接受这个区块，记录到自己的账本中，然后进行下一个区块的竞争。</p>
+<p>假如结点有任何的作弊行为，都会导致网络的结点验证不通过，直接丢弃其打包的区块，这个区块就无法记录到总帐本中，作弊的节点耗费的成本就白费了，因此在巨大的挖矿成本下，也使得矿工自觉自愿的遵守比特币系统的共识协议，也就确保了整个系统的安全。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208032237189.webp" alt="" /></p>
+<p><strong>父区块头哈希值</strong>：前一区块的哈希值，使用SHA256(SHA256(父区块头))计算。占32字节
+<strong>版本</strong>：区块版本号，表示本区块遵守的验证规则。占4字节
+<strong>时间戳</strong>：该区块产生的近似时间，精确到秒的UNIX时间戳，必须严格大于前11个区块时间的中值，同时全节点也会拒绝那些超出自己2个小时时间戳的区块。占4字节
+<strong>难度</strong>：该区块工作量证明算法的难度目标，已经使用特定算法编码。占4字节
+<strong>随机数(Nonce)</strong>：为了找到满足难度目标所设定的随机数，为了解决32位随机数在算力飞升的情况下不够用的问题，规定时间戳和coinbase交易信息均可更改，以此扩展nonce的位数。占4字节
+<strong>Merkle根</strong>：该区块中交易的Merkle树根的哈希值，同样采用SHA256(SHA256())计算。占32字节</p>
+<p>如此，细心的同学会发现，区块头总共占了80字节。</p>
+<p>区块体除了筹币交易记录（由一棵Merkle二叉树组成)外，还有一个交易计数。</p>
+<h3 id="pow工作量证明的三要素">
+  Pow工作量证明的三要素
+  <a class="anchor" href="#pow%e5%b7%a5%e4%bd%9c%e9%87%8f%e8%af%81%e6%98%8e%e7%9a%84%e4%b8%89%e8%a6%81%e7%b4%a0">#</a>
+</h3>
+<p><strong>工作机制</strong></p>
+<p>为了使区块链交易数据记录在区块链上并在一定时间内达到一致（共识），Pow提供了一种思路，即所有区块链的网络节点参与者进行竞争记账，所谓竞争记账是指，如果想生成一个新的区块并写入区块链，必须解出比特币网络出的工作量证明谜题，谁先解出答案，谁就活的记账权利，然后开始记账并将解出的答案和交易记录广播给其他节点进行验证，自己则开始下一轮挖矿。如果区块的交易被其他节点参与者验证有效并且谜题的答案正确，就意味着这个答案是可信的，新的节点将被写入验证者的节点区块链，同时验证者进入下一轮竞争挖矿。</p>
+<p>这道题关键的三个要素是工作量证明函数、区块及难度值。工作量证明函数是这道题的计算方法，区块决定了这道题的输入数据，难度决定了这道题所需要的计算量。</p>
+<ul>
+<li>
+<p>工作量证明函数</p>
+<p>比特币中使用SHA256算法函数，是密码哈希函数家族中输出值为256位的哈希算法。</p>
+</li>
+<li>
+<p>区块</p>
+<p>Merkle树算法：</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208141556150.png" alt="" /></p>
+</li>
+<li>
+<p>难度值</p>
+<p>关于难度值，我们直接看公式：</p>
+<p><font color='red'><u>新难度值=旧难度值*（过去2016个区块花费时长/20160分钟）</u></font></p>
+<p>tips：<font color='red'>难度值是随网络变动的，</font>目的是为了在不同的网络环境下，确保每十分钟能生成一个块。</p>
+<p>新难度值解析：撇开旧难度值，按比特币理想情况每十分钟出块的速度，过去2016个块的总花费接近2016分钟，这样，这个值永远趋近于1。</p>
+<p><font color='red'><u>目标值=最大值/难度值</u>,</font></p>
+<p>目标值解析：最大目标值为一个固定数，若过去2016个区块花费时长少于20160分，那么这个系数会小，目标值将会被调大些，反之，目标值会被调小，因此，比特币的难度和出块速度将成反比例适当调整出块速度。</p>
+<p>那如何计算呢？<font color='red'>SHA256(SHA256(Block_Header))，即只需要对区块头进行两次SHA256运算即可，得到的值和目标值进行比较，小于目标值即可。</font></p>
+<p>区块头中有一个重要的东西叫MerkleRoot的hash值。这个东西的意义在于：为了使区块头能体现区块所包含的所有交易，在区块的构造过程中，需要将该区块要包含的交易列表，通过Merkle Tree算法生成Merkle Root Hash，并以此作为交易列表的摘要存到区块头中。</p>
+<p>至此，我们发现区块头中除过nonce(随机数)以外，其余的数据都是明确的，解题的核心就在于不停的调整nonce的值，对区块头进行双重SHA256运算。</p>
+</li>
+</ul>
+<h3 id="pow工作量证明流程">
+  Pow工作量证明流程
+  <a class="anchor" href="#pow%e5%b7%a5%e4%bd%9c%e9%87%8f%e8%af%81%e6%98%8e%e6%b5%81%e7%a8%8b">#</a>
+</h3>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208141610417.png" alt="" /></p>
+<p>从流程图中看出，pow工作量证明的流程主要经历三步：</p>
+<p>1.生成Merkle根哈希
+  生成Merkle根哈希，即节点自己生成一笔筹币交易，并且与其他所有即将打包的交易通过Merkle树算法生成Merkle根哈希，所以为什么说区块是工作量证明的三要素之一。</p>
+<p>2.组装区块头
+  区块头将被作为计算出工作量证明输出的一个输入参数，因此第一步计算出来的Merkle根哈希和区块头的其他组成部分组装成区块头。</p>
+<p>3.计算出工作量证明的输出
+  下面我们直接通过公式和一些伪代码去理解工作量证明的输出：</p>
+<p>   i. 工作量证明的输出=SHA256(SHA256(区块头))</p>
+<p>   ii. if（工作量证明的输出&lt;目标值），证明工作量完成</p>
+<p>  iii.if（工作量证明的输出&gt;=目标值）,变更随机数，递归i的逻辑，继续与目标值比对。</p>
+<h3 id="pow共识记账">
+  Pow共识记账
+  <a class="anchor" href="#pow%e5%85%b1%e8%af%86%e8%ae%b0%e8%b4%a6">#</a>
+</h3>
+<p>在比特币平台中，中本聪就是运用的pow工作量证明来使全网节点达到51%及以上的共识记账，以下将介绍pow工作量证明共识是如何记账的？</p>
+<p>首先，客户端产生新的交易，向全网广播</p>
+<p>第二，每个节点收到请求，将交易纳入区块中</p>
+<p>第三，每个节点通过上述中描述的进行pow工作量证明</p>
+<p>第四，当某个节点找到了证明，向全网广播</p>
+<p>第五，当且仅当该区块的交易是有效的且在之前中未存在的，其他节点才认同该区块的有效性</p>
+<p>第六，接受该区块且在该区块的末尾制造新的区块</p>
+<p>大概时序图如下：</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208141627658.png" alt="" /></p>
+<h3 id="pow的优缺点">
+  Pow的优缺点
+  <a class="anchor" href="#pow%e7%9a%84%e4%bc%98%e7%bc%ba%e7%82%b9">#</a>
+</h3>
+<p>优点：</p>
+<ul>
+<li><font color='red'>完全去中心化（任何人都可以加入）</font></li>
+<li><font color='red'>结点自由进出，容易实现</font></li>
+<li><font color='red'>破坏系统花费成本巨大</font></li>
+</ul>
+<p>关于破坏系统成本巨大可以分两层意思理解：</p>
+<ol>
+<li>在指定时间内，给定一个难度，找到答案的概率唯一地由所有参与者能够迭代哈希的速度决定。与之前的历史无关，与数据无关，只跟算力有关。</li>
+<li>掌握51%的算力对系统进行攻击所付出的代价远远大于作为一个系统的维护者和诚实参与者所得到的。</li>
+</ol>
+<p>缺点：</p>
+<ul>
+<li><font color='red'>对节点的性能网络环境要求高：</font></li>
+<li><font color='red'>浪费资源,</font></li>
+<li><font color='red'>每秒钟最多只能做七笔交易，效率低下</font></li>
+<li><font color='red'>矿场的出现违背了去中心的初衷</font></li>
+<li><font color='red'>不能确保最终一致性</font></li>
+<li><font color='red'>比特币产量每四年减半，利益驱动性降低导致矿工数量减少从而导致比特币网络瘫痪。</font></li>
+</ul>
+<h3 id="网络攻击和链分叉">
+  网络攻击和链分叉
+  <a class="anchor" href="#%e7%bd%91%e7%bb%9c%e6%94%bb%e5%87%bb%e5%92%8c%e9%93%be%e5%88%86%e5%8f%89">#</a>
+</h3>
+<h4 id="网络攻击">
+  网络攻击
+  <a class="anchor" href="#%e7%bd%91%e7%bb%9c%e6%94%bb%e5%87%bb">#</a>
+</h4>
+<p>假定一个恶意节点试图<a href="https://chaincode.gitee.io/chaincode/2022/08/15/%e5%8c%ba%e5%9d%97%e9%93%be%e5%ae%89%e5%85%a8%e5%9f%ba%e7%a1%80/"><strong>双花</strong></a>之前的已花费的交易，攻击者需要重做包含这个交易的区块，以及这个区块之后的所有的区块，创建一个比目前诚实区块链更长的区块链。只有网络中的大多数节点都转向攻击者创建的区块链，攻击者的攻击才算成功了。由于每一个区块都包含了之前的所有区块的交易信息，所以随着块高的增加，之前的区块都会被再次确认一次，确认超过6次，可以理解为无法被修改。</p>
+<p>考虑交易T包含在区块b1中。每个后续区块b2，b3，b4，……bn会降低交易T被修改的可能性，因为修改这些后续的区块需要更多的算力。中本聪用概率理论证明，六个区块后攻击者追赶上最长链的可能性降低到0.0002428%。在过4个或更多区块后这个可能行会降到0.0000012%。每新增一个区块bn，攻击的可能性就会以指数形式下降，很快整个攻击的可能性就会低到可以忽略的程度。</p>
+<h4 id="链分叉">
+  链分叉
+  <a class="anchor" href="#%e9%93%be%e5%88%86%e5%8f%89">#</a>
+</h4>
+<p>所谓的链分叉，主要是由于在计算hash时，每个人拿到的区块内容是不同的，导致算出的区块结果也不同，但都是正确结果，于是，区块链在这个时刻，出现了两个都满足要求的不同区块，那旷工怎么办呢？由于距离远近、网络等原因，不同旷工看到这两个区块的先后顺序是不一样的，通常情况下，旷工会把自己先看到的区块链复制过来，然后接着在这个区块上开始新的挖矿工作，于是就出现了链分叉。</p>
+<p>PoW解决方案：
+从分叉的区块起，由于不同的矿工跟从了不同的区块，在分叉出来的两条不同链上，算力是有差别的。由于解题能力和矿工的算力成正比，因此两条链的增长速度也是不一样的，在一段时间之后，总有一条链的长度要超过另一条。<font color='red'>当矿工发现全网有一条更长的链时，他就会抛弃他当前的链，把新的更长的链全部复制回来，在这条链的基础上继续挖矿。</font>所有矿工都这样操作，这条链就成为了主链，分叉出来被抛弃掉的链就消失了。</p>
+<p>能够让区块链保证唯一性的前提是：所有矿工都遵从同样的机制。当旷工遵从不同的机制时，就会出现硬分叉，这种分叉会导致资产增加，且两条链同时存在，比如BBC。</p>
+<h2 id="pos">
+  Pos
+  <a class="anchor" href="#pos">#</a>
+</h2>
+<p>Pos（proof of stake)，即股权证明。简单来说，就是根据你持有货币的量和时间，给你发利息的一个制度。</p>
+<h4 id="运作模式">
+  运作模式
+  <a class="anchor" href="#%e8%bf%90%e4%bd%9c%e6%a8%a1%e5%bc%8f">#</a>
+</h4>
+<p>在股权证明Pos模式下，有一个名词叫币龄，每个币每天产生1币龄，比如你持有100个币，总共持有了30天，那么，此时你的币龄就为3000，这个时候，如果你发现了一个POS区块，你的币龄就会被清空为0。你每被清空365币龄，你将会从区块中获得0.05个币的利息(可理解为年利率5%)，那么在这个案例中，利息 = 3000 * 5% / 365 = 0.41个币。</p>
+<p>一旦你发现了一个POS的区块，那么你的币龄就被清空，并且会根据币龄发出一笔利息（清零的话，可以降低中心化的风险，可以避免大股东囤币，从而轻易&quot;持续的&quot;获得记账权，因为即使超过51%币的大股东，也可能在下一个块的争夺中失败，因为20%币的庄家，币龄更长，币龄是币值*持币时间)</p>
+<p><strong>简单来说就是谁的权益大，谁说了算</strong></p>
+<h4 id="利息">
+  利息
+  <a class="anchor" href="#%e5%88%a9%e6%81%af">#</a>
+</h4>
+<p>POS：也称股权证明，类似于财产储存在银行，这种模式会根据你持有数字货币的量和时间，分配给你相应的利息。
+简单来说，就是一个根据你持有货币的量和时间，给你发利息的一个制度，在股权证明POS模式下，有一个名词叫币龄，每个币每天产生1币龄，比如你持有100个币，总共持有了30天，那么，此时你的币龄就为3000，这个时候，如果你发现了一个POS区块，你的币龄就会被清空为0。你每被清空365币龄，你将会从区块中获得0.05个币的利息(假定利息可理解为年利率5%)，那么在这个案例中，利息 = 3000 * 5% / 365 = 0.41个币，这下就很有意思了，持币有利息。</p>
+<h4 id="pos设计的理念以及初衷">
+  POS设计的理念以及初衷：
+  <a class="anchor" href="#pos%e8%ae%be%e8%ae%a1%e7%9a%84%e7%90%86%e5%bf%b5%e4%bb%a5%e5%8f%8a%e5%88%9d%e8%a1%b7">#</a>
+</h4>
+<p>首先，比特币的区块产量每4年会减半，在不久的未来，随着比特币区块包含的产量越来越低，大家挖矿的动力将会不断下降，矿工人数越来越 少，整个比特币网络有可能会逐渐陷入瘫痪(因为大家都减少了运行比特币客户端的时间，因此越来越难找到一个P2P节点去连接和同步网络数据)。</p>
+<p>​    在POS体系中，<font color="red">只有打开钱包客户端程序，才能发现POS区块，才会获得利息，这促使很多不想挖矿的人，也会常常打开自己的钱包客户端，这帮助了P2P货币网络的健壮。</font></p>
+<p>​    其次，若干年后，随着矿工人数的下降，比特币很有可能被一些高算力的人或团队进行51%攻击，导致整个比特币网络崩溃。</p>
+<p>在POS体系中，即使你拥有了全球51%的算力，也未必能够进行51%攻击，因为，有一部分的货币并不是挖矿产生的，而是由利息产生(利息存放在POS区块中)，这要求攻击者还需要持有全球超过51%的货币量。这大大提高了51%攻击的难度。</p>
+<h4 id="原理">
+  原理
+  <a class="anchor" href="#%e5%8e%9f%e7%90%86">#</a>
+</h4>
+<p>PoS共识机制（Proof of Stake 权益证明）<font color="red">通过权益记账的方式，解决效率低下、资源浪费、节点一致性等问题。</font></p>
+<p>各个节点需要满足一定的条件（如抵押一定的代币）才能成为验证节点（权益提高），系统通过算法在其中选择一部分作为出块节点（矿工），每隔一段时间重新选择，算法会保证完全随机，不可被操控。只有出块节点才能进行数据处理，争夺记账权。</p>
+<p>权益主要由权益因子决定，可以是持币数量，也可以是币龄及两者的结合。</p>
+<h4 id="优点">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9">#</a>
+</h4>
+<p>解决Pow的资源浪费，效率低下问题。是一个闭环机制，所有的stake都是基于区块链内货币的，而不是基于外界资源，这样攻击者想要达到50%以上算力必须购买大量货币赢得stake，所以更为安全。</p>
+<h4 id="缺点">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9">#</a>
+</h4>
+<p>容易形成强者恒强的局面，代币越多越容易操控全局。去中心化程度弱。</p>
+<h4 id="核心">
+  核心
+  <a class="anchor" href="#%e6%a0%b8%e5%bf%83">#</a>
+</h4>
+<ul>
+<li>在Pow算法的基础上，Pos算法中争夺记账权的影响因子：算力、持币数量、持币时间。</li>
+<li>Pos挖矿难度值=Target*币龄</li>
+<li>Pos认为币龄更有决策权，所以币龄对挖矿难度值的影响权重特别高，就是让大股东来记账而不是大算力、大矿池负责记账。试图通过提升算力来竞争记账权很不划算。</li>
+<li>Pow的记账权竞争是算力竞争，而Pos的记账权竞争主要是币龄竞争。</li>
+<li>因为算力不是唯一决定获取记账权的因子，从而增强了系统的安全性，也即是说即使几个大矿池联合欺诈，也不会轻易得逞，而持币大股东是直接利益者，他们拥有更多的记账权，他们更愿意整个pos系统稳定安全。</li>
+<li>PoS的显著优点包括安全性、降低集中风险和能源效率（因为单纯通过投入算力很不划算)</li>
+</ul>
+<h4 id="pos-引发的问题">
+  Pos 引发的问题
+  <a class="anchor" href="#pos-%e5%bc%95%e5%8f%91%e7%9a%84%e9%97%ae%e9%a2%98">#</a>
+</h4>
+<p>1、挖矿因子持币时间：通过囤积很长一段时间的货币，然后就轻易的获得记账权，而且不利于电子货币的流通</p>
+<ul>
+<li>通过对持币时间做上限设置，比如上限15天，从而避免货币不流通，因为你一直囤着货币不流通，超过15天，你的币龄也不会继续增长</li>
+<li>通过每次挖矿成功后清零币龄，这样即使这次拿到了记账权，在下一个区块中仍然要重新计算，不会持续的获得记账权优势</li>
+</ul>
+<p>2、挖矿因子持币数量：通过囤积大量货币获得记账权优势，从而导致货币不流通
+你可以囤币，但是大股东必须保证货币的流通性，为了鼓励流通，币龄会随着持币时间增长而衰减，这样你要提高自己的币龄就不得不流通交易了</p>
+<p>3、离线攻击：篡改交易的时间</p>
+<ul>
+<li>比如交易的时候篡改自己的系统时间，从而自己作为收款方的币龄就提升了</li>
+<li>比如挖矿的时候，修改自己的系统时间（延后自己的系统时间），从而使币龄处于最高值
+这里就需要做感知监督了</li>
+</ul>
+<p>4、无法发行新币：目前解决方案是先Pow，一段时间后再过度到Pos
+BlackChain:前5000个区块，使用纯POW机制，5001到10000使用POS和POW混合机制、10001之后采用纯POS机制</p>
+<h2 id="dpos">
+  DPos
+  <a class="anchor" href="#dpos">#</a>
+</h2>
+<p>委托股权证明（Delegated Proof of Stake,DPoS)是目前所有共识协议中最快、最有效、最分散、最灵活的共识模式。</p>
+<p>DPos机制是通过资产占比（股权）来投票，更多的加入了社区人的力量，人们为了自身利益的最大化会投票选择相对可靠的节点，相比更加安全和去中心化。</p>
+<h4 id="基本原理">
+  基本原理
+  <a class="anchor" href="#%e5%9f%ba%e6%9c%ac%e5%8e%9f%e7%90%86">#</a>
+</h4>
+<p>对于Pos机制的加密货币，每个节点都可以创建区块，并按照个人的持股比例获得“利息”。DPoS是由被社区选举的可信账户（受托人，得票数排行前101位）来创建区块。DPoS机制类似于股份制公司，普通股民进不了董事会，要投票选举代表（受托人）代他们做决策。网络中的所有节点依据他们所拥有的代币的量，分配对应的投票权重；网络中的所有节点进行投票，选出一定数量的区块生产者进行新区块的生产与协商。区块生产者通过某种方式（随机获者顺序）进行出块，且每个区块生产者通过出块来对应之前的块进行确认。一个交易在2/3的见证人确认后达到不可逆状态，区块生产者之间可建立直接连接从而保证通信的可靠及快速，DPoS能在较快的时间里达成共识。</p>
+<p>DPoS机制中，不需要算力解决数学难题，而是由持币者选出谁是生产者，如果生产者不称职，就有随时又可能被投票出局，这也就解决了Pos的性能问题。</p>
+<p>在DPoS机制下，算法要求系统做三件事：</p>
+<ul>
+<li>随机指定生产者出场顺序</li>
+<li>不按顺序生产的区块无效</li>
+<li>没过一个周期洗牌一次，打乱原有顺序</li>
+</ul>
+<h4 id="潜在问题">
+  潜在问题
+  <a class="anchor" href="#%e6%bd%9c%e5%9c%a8%e9%97%ae%e9%a2%98">#</a>
+</h4>
+<p>除了Pos有的问题外，还要考虑以下两个问题：</p>
+<ul>
+<li>传输速度问题：受制于节点间的物理性能</li>
+<li>持币人的投票进度非常缓慢，造成无法上线</li>
+</ul>
+<p>1、相对于Pow和Pos，DPos的最大优点之一是达成共识的周期要短很多。</p>
+<p>基于Pow的比特币每秒处理7笔交易；基于PoW和Pos的以太坊每秒处理15笔交易；而基于DPos的比特股每秒能处理超10万的交易量。</p>
+<p>2、DPos也会将一部分奖励分给网络维护节点和投票者，作为社区维护的奖励。</p>
+<ul>
+<li>持币人投票选举出块节点</li>
+<li>最大化持币人的利益</li>
+<li>最小化维护网络安全的费用</li>
+<li>最大化网络的效能</li>
+<li>最小化运行网络的成本</li>
+</ul>
+<h4 id="对恶意节点的惩罚">
+  对恶意节点的惩罚
+  <a class="anchor" href="#%e5%af%b9%e6%81%b6%e6%84%8f%e8%8a%82%e7%82%b9%e7%9a%84%e6%83%a9%e7%bd%9a">#</a>
+</h4>
+<p>注册成为候选受托人需要支付一笔保证金，就像是参与民意代表选举前缴纳的保证金一样，一般来说担任受托人约两周后才可达到利益平衡，这促进了受托人的稳定性，确保至少会挖满两周的矿。</p>
+<p>惩罚机制：不按排程产生区块的节点将在下一轮被投票踢出，也会被没收之前缴纳的保证金。</p>
+<p>DPos是效率较Pos，Pow更高、产生区块的速度更快；</p>
+<p>虽然恶意的节点将在下一轮投票被踢出，但单个恶意区块在短期仍有可能是最有效的状态。</p>
+<p>短期虽然可能存在恶意区块，但长期下来，可以透过受托人的自主选择来回归链条的有效性。</p>
+<blockquote>
+<p>比特币,以太坊：矿池垄断了记账机会，
+名义上是人人平等，实际上只有少数人记账：3~5矿池
+DPOS（Delegated Proof Of Stake， 委托权益证明），它的原理是让每一个持有币的人进行投票，由此产生n个代表
+,
+我们可以将其理解为n个超级节点或者矿池，这n个超级节点彼此的权利是完全相等的。从某种角度来看，DPOS有点像是议会制度或人民代表大会制度。如果代表不能履行他们的职责（当轮到他们时，没能生成区块），他们会被除名，网络会选出新的超级节点来取代他们。DPOS的出现最主要还是因为矿机的产生，大量的算力在不了解也不关心比特币的人身上，类似演唱会的黄牛，大量囤票而丝毫不关心演唱会的内容。
+黄色节点：记账的节点（一把手）
+绿色节点：备用节点（二把手，随时准备上位）
+蓝色节点：散户，把票投给自己相信的节点（小弟）
+当选节点如果作恶，未能履行记账职责，就会被踢掉。
+当选的节点要记账，需要提供丰富的网络资源，计算资源。记账有奖励。
+奖励来自于系统每年的增发。</p>
+</blockquote>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208261949448.png" alt="" /></p>
+<p><strong>特点</strong></p>
+<blockquote>
+<p>不挖矿，每年按比例增发代币，奖励超级节点。</p>
+</blockquote>
+<p><strong>优点</strong></p>
+<blockquote>
+<p>高效、扩展性强</p>
+</blockquote>
+<p><strong>缺点</strong></p>
+<blockquote>
+<p>21个节点太少，非去中心化，而是多中心化</p>
+</blockquote>
+<p><strong>项目</strong></p>
+<blockquote>
+<p>EOS</p>
+</blockquote>
+<h2 id="pbft">
+  PBFT
+  <a class="anchor" href="#pbft">#</a>
+</h2>
+<p>PBFT(Practical Byzantine Fault Tolerance,实用拜占庭容错)</p>
+<p>拜占庭将军问题证明在将军总数大于3f，背叛者为f或者更少时，忠诚的将军可以达成命令上的一致，即3f+1&lt;=n。该算法容错数量也满足3f+1&lt;=n，也即最大的容错作恶节点数f=(n-1)/3。</p>
+<h3 id="拜占庭协定">
+  拜占庭协定
+  <a class="anchor" href="#%e6%8b%9c%e5%8d%a0%e5%ba%ad%e5%8d%8f%e5%ae%9a">#</a>
+</h3>
+<p><font color='red'>假设节点总数为n,故障节点数为f，当n&gt;3f时才能达成拜占庭协定。即算法在失效节点数量f&lt;n/3时，可以保证集群的安全性和活跃性。</font></p>
+<blockquote>
+<p>PBFT算法除了需要支持容错故障节点外，还需要支持容错作恶节点。假设集群节点数为N，有问题的节点为f。有问题的节点中，既可以是故障节点，也可以是作恶节点。那么会产生两种极端情况：</p>
+<ul>
+<li>这f个有问题节点即是故障节点，又是作恶节点，那么根据少数服从多数原则，集群正常节点只需比f个节点再多一个节点，即f+1个节点，正确节点的数量就会比故障节点数量多，那么集群就能达成共识，即总节点数为f+(f+1)=n,最大容错节点数量为（n-1）/2.</li>
+<li>故障节点和作恶节点都是不同多节点，那么就有f个作恶节点，和f个故障节点，当发现节点是恶意节点后，会被集群排除在外，剩下f个故障节点，那么根据少数服从多数的原则，集群里正常节点只需比f多一个节点，即f+1个节点，集群就能达成共识。所以，所有类型的节点加起来就是f+1 + f +f =3f+1=n.</li>
+</ul>
+<p>综合两种情况，BPFT算法支持的最大容错节点数量为（n-1)/3</p>
+</blockquote>
+<h3 id="与公有共识算法的区别">
+  与公有共识算法的区别
+  <a class="anchor" href="#%e4%b8%8e%e5%85%ac%e6%9c%89%e5%85%b1%e8%af%86%e7%ae%97%e6%b3%95%e7%9a%84%e5%8c%ba%e5%88%ab">#</a>
+</h3>
+<p>公有区块链不可能同时共识区块1和区块2，但在PBFT中，交易1和交易2的共识是并行的。</p>
+<ul>
+<li>在公有区块链中，每一个区块串行进行共识，共识的对象是区块，区块包含一段时间收集的交易</li>
+<li>在PBFT中，共识的对象是每一个交易（可以说在PBFT中没有区块这个概念），交易共识的过程是并行的（限定在高低水位）。</li>
+</ul>
+<h3 id="pbft的适用场景">
+  PBFT的适用场景
+  <a class="anchor" href="#pbft%e7%9a%84%e9%80%82%e7%94%a8%e5%9c%ba%e6%99%af">#</a>
+</h3>
+<p>不适合在公链，只适合在联盟链的场景：缺点：</p>
+<ul>
+<li>PBFT在网络不稳定的情况夏延迟较高</li>
+<li>基于投票的，所以投票集合是有限的，不然怎么少数服从多数</li>
+<li>通信复杂度过高O(N^2),可扩展性较低，一般的系统在达到100左右的节点个数时，性能下降非常快</li>
+</ul>
+<p>优点：</p>
+<ul>
+<li>通信复杂度O(n2)，解决了原始拜占庭容错(BFT)算法效率不高的问题，将算法复杂度由指数级降低到多项式级，使得拜占庭容错算法在实际系统应用中变得可行。</li>
+<li>首次提出在<strong>异步网络环境下使用状态机副本复制协议</strong>，该算法可以工作在异步环境中，并且通过优化在早期算法的基础上把响应性能提升了一个数量级以上。作者使用这个算法实现了拜占庭容错的网络文件系（NFS），性能测试证明了该系统仅比无副本复制的标准NFS慢了3%。</li>
+<li>使用了加密技术来防止欺骗攻击和重播攻击，以及检测被破坏的消息。消息包含了公钥签名（RSA算法）、消息验证编码（MAC）和无碰撞哈希函数生成的消息摘要（message digest）。</li>
+</ul>
+<h3 id="pbft算法基础">
+  PBFT算法基础
+  <a class="anchor" href="#pbft%e7%ae%97%e6%b3%95%e5%9f%ba%e7%a1%80">#</a>
+</h3>
+<h4 id="算法设计的角色">
+  算法设计的角色
+  <a class="anchor" href="#%e7%ae%97%e6%b3%95%e8%ae%be%e8%ae%a1%e7%9a%84%e8%a7%92%e8%89%b2">#</a>
+</h4>
+<ul>
+<li>客户端：向主节点发送请求</li>
+<li>主节点：收到请求后，将交易打包成区块和区块共识并广播，每轮共识过程有且仅有一个主节点</li>
+<li>副节点：接收广播消息，验证请求合法性，投票，触发view change协议来推举新主节点</li>
+<li>视图：一个视图中存在一个主节点和多个副节点，它描述了一个多副本系统的当前状态。另外，节点是在同一个视图上对数据达成共识，不能跨view。</li>
+</ul>
+<h4 id="算法流程">
+  算法流程
+  <a class="anchor" href="#%e7%ae%97%e6%b3%95%e6%b5%81%e7%a8%8b">#</a>
+</h4>
+<h5 id="简化逻辑">
+  简化逻辑
+  <a class="anchor" href="#%e7%ae%80%e5%8c%96%e9%80%bb%e8%be%91">#</a>
+</h5>
+<ul>
+<li>客户端向主节点发送请求</li>
+<li>主节点通过广播将请求发送给其他副本，<strong>节点执行三节点共识流程</strong></li>
+<li>所有副本都执行请求并将结果发回客户端</li>
+<li>客户端需要等待f+1个不同副本节点发回相同的结果，作为整个操作的最终结果</li>
+</ul>
+<h5 id="三阶段共识流程">
+  三阶段共识流程
+  <a class="anchor" href="#%e4%b8%89%e9%98%b6%e6%ae%b5%e5%85%b1%e8%af%86%e6%b5%81%e7%a8%8b">#</a>
+</h5>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209051010672.png" alt="" /></p>
+<p>三个阶段分别是 <code>pre-prepare</code> 阶段（预准备阶段），<code>prepare</code> 阶段（准备阶段）， <code>commit</code> 阶段（提交阶段）。图中的C代表客户端，0，1，2，3 代表节点的编号，其中0 是主节点primary，打×的3代表可能是故障节点或者是作恶节点，这里表现的行为就是对其它节点的请求无响应。整个过程大致是如下：</p>
+<p>首先，客户端向主节点0发起请求<code>&lt;&lt;REQUEST,o,t,c&gt;&gt; </code>其中t是时间戳，o表示操作，c是这个client，主节点收到客户端请求，会向其它节点发送 pre-prepare 消息，其它节点就收到了pre-prepare 消息，就开始了这个核心三阶段共识过程了。</p>
+<ul>
+<li>
+<p><strong>Pre-prepare 阶段</strong>：副本节点replica收到 pre-prepare 消息后，会有两种选择，一种是接受，一种是不接受。**什么时候才不接受主节点发来的 pre-prepare 消息呢？**一种典型的情况就是如果一个replica节点接受到了一条 pre-prepare 消息<code>&lt;&lt;PRE_PREPARE,v,n,d&gt;,m&gt;</code>，其中，<strong>v 代表视图编号（视图的编号是什么意思呢？比如当前主节点为 A，视图编号为 1，如果主节点换成 B，那么视图编号就为 2）</strong>，<strong>n代表序号（主节点收到客户端的每个请求都以一个编号来标记）</strong>，<strong>d代表消息摘要</strong>，<strong>m代表原始消息数据</strong>。消息里的 v 和 n 在之前收到里的消息是曾经出现过的，但是 d 和 m 却和之前的消息不一致，或者请求编号n不在高低水位之间，这时候就会拒绝请求。拒绝的逻辑就是主节点不会发送两条具有相同的 v 和 n ，但 d 和 m 却不同的消息。</p>
+<p>Replia节点接收到pre-prepare消息，进行以下消息验证：</p>
+<ol>
+<li>消息m的签名合法性，并且消息摘要d和消息m相匹配：d=hash(m)</li>
+<li>节点当前处于视图v中</li>
+<li>节点当前在同一个(view v ，sequence n)上没有其它pre-prepare消息，即不存在另外一个m&rsquo;和对应的d&rsquo; ，d&rsquo;=hash(m')</li>
+<li>h&lt;=n&lt;=H，H和h代表序号n的高低水位。</li>
+</ol>
+</li>
+<li>
+<p><strong>Prepare 阶段</strong>：当前节点同意请求后会向其它节点发送 prepare 消息<code>&lt;PREPARE,v,n,d,i&gt;</code>同时将消息记录到<strong>log</strong>中，其中i用于表示当前节点的身份。同一时刻不是只有一个节点在进行这个过程，可能有 n 个节点也在进行这个过程。因此节点是有可能收到其它节点发送的 prepare 消息的，当前节点i验证这些prepare消息和自己发出的prepare消息的v，n，d三个数据是否都是一致的。验证通过之后，当前节点i将prepared(m，v，n) 设置为true，<strong>prepared(m，v，n) 代表共识节点认为在(v，n)中针对消息m的Prepare阶段是否已经完成</strong>。在一定时间范围内，如果收到超过 <strong>2f</strong> 个其他节点的prepare 消息，就代表 prepare 阶段已经完成。最后共识节点i发送commit消息并进入Commit阶段。</p>
+</li>
+<li>
+<p><strong>Commit 阶段</strong>：当前节点i接收到2f个来自其他共识节点的commit消息<code>&lt;COMMIT,v,n,d,i&gt;</code>同时将该消息插入<strong>log</strong>中（算上自己的共有2f+1个），验证这些commit消息和自己发的commit消息的v，n，d三个数据都是一致后，共识节点将committed-local(m，v，n)设置为true，<strong>committed-local(m，v，n)代表共识节点确定消息m已经在整个系统中得到至少2f+1个节点的共识，而这保证了至少有f+1个non-faulty节点已经对消息m达成共识</strong>。于是节点就会执行请求，写入数据。</p>
+</li>
+</ul>
+<p>处理完毕后，节点会返回消息<code>&lt;&lt;REPLY,v,t,c,i,r&gt;&gt;</code>给客户端，当客户端收集到f+1个消息后，共识完成，这就是PBFT算法的全部流程。</p>
+<h3 id="view-change">
+  View Change
+  <a class="anchor" href="#view-change">#</a>
+</h3>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209051018156.jpg" alt="" /></p>
+<h4 id="触发条件">
+  触发条件
+  <a class="anchor" href="#%e8%a7%a6%e5%8f%91%e6%9d%a1%e4%bb%b6">#</a>
+</h4>
+<p>视图改变由以下两个条件之一触发：</p>
+<ul>
+<li>副本从一个客户得知，主节点存在不正当行为</li>
+<li>副本不能接收到主节点发出的消息</li>
+</ul>
+<p>View Change是由副节点发起，它们向其他副本发送IHatePrimary消息以启动一个视图改变。</p>
+<h4 id="view-change的条件">
+  View-Change的条件
+  <a class="anchor" href="#view-change%e7%9a%84%e6%9d%a1%e4%bb%b6">#</a>
+</h4>
+<p>副本持续接收IHatePrimary消息，直到遇到下面两个条件之一：</p>
+<p>当接收到超过f+1个IHatePrimary消息
+如果收到了其他节点的ViewChange消息。
+当遇到这两个条件之一时，将会将广播一条&lt;VIEW-CHANGE, v+1, n, C, P, i&gt;消息，n是最新的stable CheckPoint的编号，C是2f+1验证过的CheckPoint消息集合，P是当前副本节点未完成的请求的PRE-PREPARE和PREPARE消息集合。</p>
+<h4 id="new-view的条件">
+  New-View的条件
+  <a class="anchor" href="#new-view%e7%9a%84%e6%9d%a1%e4%bb%b6">#</a>
+</h4>
+<p>当节点收到2f个有效的New-View消息后，向其他节点广播&lt;NEW-VIEW, v+1, V, O&gt;消息。V是有效的View-Change消息集合。O是主节点重新发起的未经完成的PRE-PREPARE消息集合。PRE-PREPARE消息集合的选取规则：</p>
+<p>选取V中最小的stable CheckPoint编号min-s，选取V中prepare消息的最大编号max-s。
+在min-s和max-s之间，如果存在P消息集合，则创建&laquo;PRE-PREPARE, v+1, n, d&gt;, m&gt;消息。否则创建一个空的PRE-PREPARE消息，即：&laquo;PRE-PREPARE, v+1, n, d(null)&gt;, m(null)&gt;, m(null)空消息，d(null)空消息摘要。
+副本节点收到主节点的New-View消息，验证有效性，有效的话，进入v+1视图，并且开始O中的PRE-PREPARE消息处理流程。</p>
+<h2 id="raft">
+  Raft
+  <a class="anchor" href="#raft">#</a>
+</h2>
+<p><a href="https://chain-code.github.io/docs/%e5%8c%ba%e5%9d%97%e9%93%be/%e5%85%b1%e8%af%86%e7%ae%97%e6%b3%95/2022-03-26-raft%e5%85%b1%e8%af%86%e7%ae%97%e6%b3%95/">Raft共识算法</a></p>
+<h3 id="raft-和-pbft-算法有两点根本区别">
+  raft 和 pbft 算法有两点根本区别：
+  <a class="anchor" href="#raft-%e5%92%8c-pbft-%e7%ae%97%e6%b3%95%e6%9c%89%e4%b8%a4%e7%82%b9%e6%a0%b9%e6%9c%ac%e5%8c%ba%e5%88%ab">#</a>
+</h3>
+<ol>
+<li>raft 算法从节点不会拒绝主节点的请求，而 pbft 算法从节点在某些情况下会拒绝主节点的请求 ;</li>
+<li>raft 算法只能容错故障节点，并且最大容错节点数为 （n-1）/2 ，而 pbft 算法能容错故障节点和作恶节点，最大容错节点数为 （n-1）/3 。</li>
+</ol>
+<p>流程的对比上，对于 leader 选举这块， raft 算法本质是谁快谁当选，而 pbft 算法是按编号依次轮流做主节点。</p>
+<p>对于共识过程和重选 leader 机制这块，一个团队一定会有一个老大和普通成员。对于 raft 算法，共识过程就是：只要老大还没挂，老大说什么，我们（团队普通成员）就做什么，坚决执行。那什么时候重新老大呢？只有当老大挂了才重选老大，不然生是老大的人，死是老大的鬼。</p>
+<p>对于 pbft 算法，共识过程就是：老大向我发送命令时，当我认为老大的命令是有问题时，我会拒绝执行。就算我认为老大的命令是对的，我还会问下团队的其它成员老大的命令是否是对的，只有大多数人 （2f+1） 都认为老大的命令是对的时候，我才会去执行命令。那什么时候重选老大呢？老大挂了当然要重选，如果大多数人都认为老大不称职或者有问题时，我们也会重新选择老大。</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#pow">PoW</a>
+          <ul>
+            <li><a href="#概念">概念</a></li>
+            <li><a href="#pow工作量证明的三要素">Pow工作量证明的三要素</a></li>
+            <li><a href="#pow工作量证明流程">Pow工作量证明流程</a></li>
+            <li><a href="#pow共识记账">Pow共识记账</a></li>
+            <li><a href="#pow的优缺点">Pow的优缺点</a></li>
+            <li><a href="#网络攻击和链分叉">网络攻击和链分叉</a></li>
+          </ul>
+        </li>
+        <li><a href="#pos">Pos</a>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+        <li><a href="#dpos">DPos</a>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+        <li><a href="#pbft">PBFT</a>
+          <ul>
+            <li><a href="#拜占庭协定">拜占庭协定</a></li>
+            <li><a href="#与公有共识算法的区别">与公有共识算法的区别</a></li>
+            <li><a href="#pbft的适用场景">PBFT的适用场景</a></li>
+            <li><a href="#pbft算法基础">PBFT算法基础</a></li>
+            <li><a href="#view-change">View Change</a></li>
+          </ul>
+        </li>
+        <li><a href="#raft">Raft</a>
+          <ul>
+            <li><a href="#raft-和-pbft-算法有两点根本区别">raft 和 pbft 算法有两点根本区别：</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

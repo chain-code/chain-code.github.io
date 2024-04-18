@@ -1,0 +1,2465 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="IPFS私有网络集群搭建 # 前期准备 # 对于联盟链的业务中搭建一个私有网络的 IPFS 集群还是很有必要的，私有网络集群允许 IPFS 节点只连接到拥有共享密钥的其他对等节点，网络中的节点不响应来自网络外节点的通信。 IPFS-Cluster 是一个独立的应用程序和一个 CLI 客户端，它跨一组 IPFS 守护进程分配、复制和跟踪 pin。它使用基于 Raft 一致性算法来协调存储，将数据集分布到参与节点上。对于我们要将一个 peer 上的存储同步备份到所有集群上其他的 peers 时，或者对集群的节点管理，这时 IPFS-Cluster 就会起到一个很好的作用。
+本人使用三台虚拟机 主机列表
+节点 名称 IP 管理节点peer0 Ubuntu1.0 10.211.55.7 peer1 Ubuntu2.0 10.211.55.9 peer2 Ubuntu3.0 10.211.55.10 IPFS 和 IPFS-Cluster 默认的端口: IPFS：
+4001 – 与其他节点同学端口 5001 – API server 8080 – Gateway server IPFS-CLUSTER：
+9094 – HTTP API endpoint 9095 – IPFS proxy endpoint 9096 – Cluster swarm 集群几点通信端口 安装Golang # IPFS 官方提供的安装方式有安装包方式，ipfs-update 方式，源码编译安装方式，具体可以查看 https://docs.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="IPFS私有网络搭建" />
+<meta property="og:description" content="IPFS私有网络集群搭建 # 前期准备 # 对于联盟链的业务中搭建一个私有网络的 IPFS 集群还是很有必要的，私有网络集群允许 IPFS 节点只连接到拥有共享密钥的其他对等节点，网络中的节点不响应来自网络外节点的通信。 IPFS-Cluster 是一个独立的应用程序和一个 CLI 客户端，它跨一组 IPFS 守护进程分配、复制和跟踪 pin。它使用基于 Raft 一致性算法来协调存储，将数据集分布到参与节点上。对于我们要将一个 peer 上的存储同步备份到所有集群上其他的 peers 时，或者对集群的节点管理，这时 IPFS-Cluster 就会起到一个很好的作用。
+本人使用三台虚拟机 主机列表
+节点 名称 IP 管理节点peer0 Ubuntu1.0 10.211.55.7 peer1 Ubuntu2.0 10.211.55.9 peer2 Ubuntu3.0 10.211.55.10 IPFS 和 IPFS-Cluster 默认的端口: IPFS：
+4001 – 与其他节点同学端口 5001 – API server 8080 – Gateway server IPFS-CLUSTER：
+9094 – HTTP API endpoint 9095 – IPFS proxy endpoint 9096 – Cluster swarm 集群几点通信端口 安装Golang # IPFS 官方提供的安装方式有安装包方式，ipfs-update 方式，源码编译安装方式，具体可以查看 https://docs." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/" /><meta property="article:section" content="docs" />
+<meta property="article:published_time" content="2021-06-02T15:42:42+00:00" />
+<meta property="article:modified_time" content="2021-06-02T15:42:42+00:00" />
+<title>IPFS私有网络搭建 | Soulmate</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" >
+<link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.5623389946cf2cb816d7e28b27d101617d469cca326a6a0a0bf362549d6ba433.js" integrity="sha256-ViM4mUbPLLgW1&#43;KLJ9EBYX1GnMoyamoKC/NiVJ1rpDM=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo.png" alt="Logo" /><span>Soulmate</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-074eed0fb8c6f9d99dfeff898388792f" class="toggle"  />
+    <label for="section-074eed0fb8c6f9d99dfeff898388792f" class="flex justify-between">
+      <a role="button" class="">计算机基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="">Vim编程常用快捷键</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E9%85%8D%E7%BD%AEkylinv10/" class="">配置 Kylin V10</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="">计算机网络基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/linux%E5%9F%BA%E7%A1%80/" class="">Linux基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/git%E5%9F%BA%E7%A1%80/" class="">Git基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Golang</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-670eda717a06f31447c52422ec93a159" class="toggle"  />
+    <label for="section-670eda717a06f31447c52422ec93a159" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/" class="">go语言基础（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/cgo/" class="">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/flag/" class="">Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/grpc/" class="">Grpc</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/" class="">ProtoBuf</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">常用业务代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/" class="">go语言基础（三）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/" class="">go语言底层基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/" class="">benchmark测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/" class="">Goland常用技巧</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle"  />
+    <label for="section-c453881a62c640f6a4cceec99c02477e" class="flex justify-between">
+      <a role="button" class="">高阶</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" class="">Go高阶-语言基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f235e88e751d2cb18d527c1784763605" class="toggle"  />
+    <label for="section-f235e88e751d2cb18d527c1784763605" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/atomic/" class="">Atomic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/os/" class="">Os</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strconv/" class="">Strconv</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sort/" class="">Sort</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strings/" class="">Strings</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/reflect/" class="">Reflect</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/time/" class="">Time</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sync/" class="">Sync</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ee53da12118bfd3e9b35f3e9494ab55b" class="toggle"  />
+    <label for="section-ee53da12118bfd3e9b35f3e9494ab55b" class="flex justify-between">
+      <a role="button" class="">LeetCode</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/" class="">golang力扣刷题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/" class="">golang力扣刷题（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/%E5%BF%85%E5%88%B7top101/" class="">必刷top101</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" class="">LeetCode算法总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>数据库</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle"  />
+    <label for="section-94f26238d1ca3b5bcd40eadc7a88d726" class="flex justify-between">
+      <a role="button" class="">MySql</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" class="">MySql基础总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="">Mac连接数据库所遇到的问题</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="toggle"  />
+    <label for="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="flex justify-between">
+      <a role="button" class="">Redis</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="">Redis集群搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/" class="">Redis基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="">redis面试总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8be9c2251abd1fe110e3c1520cac6177" class="toggle"  />
+    <label for="section-8be9c2251abd1fe110e3c1520cac6177" class="flex justify-between">
+      <a role="button" class="">SQLite</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/" class="">Sqlite</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/" class="">Xorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ad390db13e5fa9e14f921f4e4f77900e" class="toggle"  />
+    <label for="section-ad390db13e5fa9e14f921f4e4f77900e" class="flex justify-between">
+      <a role="button" class="">C/C&#43;&#43;</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/cc&#43;&#43;/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>区块链</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle"  />
+    <label for="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="flex justify-between">
+      <a role="button" class="">Fabric</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">fabric相关机制与原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/" class="">智能合约</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/" class="">fabric-sdk-go详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/" class="">fabric-ca详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle"  />
+    <label for="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="flex justify-between">
+      <a role="button" class="">环境测试</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/" class="">fabric网络中的报错（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/" class="">fabric网络中的报错（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">fabric环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/" class="">solo节点测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/" class="">fabric多机搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/" class="">部署tape测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/" class="">手动生成ca证书搭建fabric网络</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/" class="">centos安装fabric1.2</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-25aef1d59a561fcefcaecb043ef8afd2" class="toggle"  />
+    <label for="section-25aef1d59a561fcefcaecb043ef8afd2" class="flex justify-between">
+      <a role="button" class="">配置文件</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/" class="">cryptogen生成的证书详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">docker-compose.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">configtx.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">crypto-config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/" class="">升级链码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/" class="">区块链网络添加组织</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/" class="">fabric浏览器搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/" class="">如何在已有组织中增加节点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/" class="">Fabric1.4多通道实验</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b07621083aa30b12de4c0333941e479f" class="toggle"  />
+    <label for="section-b07621083aa30b12de4c0333941e479f" class="flex justify-between">
+      <a role="button" class="">比特币</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">比特币相关机制与原理</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle" checked />
+    <label for="section-ff5477999ef29208270c84e8b56b2758" class="flex justify-between">
+      <a role="button" class="">IPFS</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/" class="">go-ipfs-api</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" class="">ipfs-webui可视化工具搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/" class="">IPFS基本原理（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/" class="active">IPFS私有网络搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-77a0a17b06e8d04cfb0fba9952941706" class="toggle"  />
+    <label for="section-77a0a17b06e8d04cfb0fba9952941706" class="flex justify-between">
+      <a role="button" class="">密码学</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" class="">区块链安全基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/" class="">椭圆曲线加密</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/" class="">密码学基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2e4d10b323fd668021dbd532575d8790" class="toggle"  />
+    <label for="section-2e4d10b323fd668021dbd532575d8790" class="flex justify-between">
+      <a role="button" class="">Docker</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/" class="">Docker基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/" class="">Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" class="">docker常用知识总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-70383d7f28a7ae4bf840a844eb61aa16" class="toggle"  />
+    <label for="section-70383d7f28a7ae4bf840a844eb61aa16" class="flex justify-between">
+      <a role="button" class="">共识算法</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">共识算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" class="">Raft共识算法</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>前端</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
+    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
+      <a role="button" class="">博客</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%9B%BE%E4%B9%A6/" class="">图书</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/" class="">工具库</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="https://gitee.com/chaincode"  target="_blank" rel="noopener">
+        Gitee
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>IPFS私有网络搭建</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#ipfs私有网络集群搭建">IPFS私有网络集群搭建</a>
+      <ul>
+        <li><a href="#前期准备">前期准备</a></li>
+        <li><a href="#安装golang">安装Golang</a></li>
+        <li><a href="#安装ipfs">安装IPFS</a></li>
+        <li><a href="#创建共享的-key">创建共享的 key</a></li>
+        <li><a href="#移除默认的-bootstrap-节点">移除默认的 bootstrap 节点</a></li>
+        <li><a href="#私有网络节点配置">私有网络节点配置</a></li>
+      </ul>
+    </li>
+    <li><a href="#这里将分开讲述">这里将分开讲述</a>
+      <ul>
+        <li><a href="#非集群搭建较简单">非集群搭建（较简单）</a>
+          <ul>
+            <li><a href="#私有网络节点配置-1">私有网络节点配置</a></li>
+            <li><a href="#启动服务">启动服务</a></li>
+            <li><a href="#服务测试">服务测试</a></li>
+          </ul>
+        </li>
+        <li><a href="#集群搭建">集群搭建</a>
+          <ul>
+            <li><a href="#将-ipfs-进程加入到系统进程中启动">将 IPFS 进程加入到系统进程中启动</a></li>
+            <li><a href="#ipfs-cluster-安装">IPFS-Cluster 安装</a></li>
+            <li><a href="#设置集群密钥">设置集群密钥</a></li>
+            <li><a href="#初始化集群">初始化集群</a></li>
+            <li><a href="#将-ipfs-cluster-节点加入到系统进程中启动">将 IPFS-Cluster 节点加入到系统进程中启动</a></li>
+            <li><a href="#测试一下集群数据复制">测试一下集群数据复制</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h1 id="ipfs私有网络集群搭建">
+  IPFS私有网络集群搭建
+  <a class="anchor" href="#ipfs%e7%a7%81%e6%9c%89%e7%bd%91%e7%bb%9c%e9%9b%86%e7%be%a4%e6%90%ad%e5%bb%ba">#</a>
+</h1>
+<h2 id="前期准备">
+  前期准备
+  <a class="anchor" href="#%e5%89%8d%e6%9c%9f%e5%87%86%e5%a4%87">#</a>
+</h2>
+<p>对于联盟链的业务中搭建一个私有网络的 IPFS 集群还是很有必要的，私有网络集群允许 IPFS 节点只连接到拥有共享密钥的其他对等节点，网络中的节点不响应来自网络外节点的通信。 IPFS-Cluster 是一个独立的应用程序和一个 CLI 客户端，它跨一组 IPFS 守护进程分配、复制和跟踪 pin。它使用基于 Raft 一致性算法来协调存储，将数据集分布到参与节点上。对于我们要将一个 peer 上的存储同步备份到所有集群上其他的 peers 时，或者对集群的节点管理，这时 IPFS-Cluster 就会起到一个很好的作用。</p>
+<p><strong>本人使用三台虚拟机 主机列表</strong></p>
+<table>
+<thead>
+<tr>
+<th>节点</th>
+<th>名称</th>
+<th>IP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>管理节点peer0</td>
+<td>Ubuntu1.0</td>
+<td>10.211.55.7</td>
+</tr>
+<tr>
+<td>peer1</td>
+<td>Ubuntu2.0</td>
+<td>10.211.55.9</td>
+</tr>
+<tr>
+<td>peer2</td>
+<td>Ubuntu3.0</td>
+<td>10.211.55.10</td>
+</tr>
+</tbody>
+</table>
+<p>IPFS 和 IPFS-Cluster 默认的端口: <strong>IPFS</strong>：</p>
+<ul>
+<li>4001 – 与其他节点同学端口</li>
+<li>5001 – API server</li>
+<li>8080 – Gateway server</li>
+</ul>
+<p><strong>IPFS-CLUSTER</strong>：</p>
+<ul>
+<li>9094 – HTTP API endpoint</li>
+<li>9095 – IPFS proxy endpoint</li>
+<li>9096 – Cluster swarm 集群几点通信端口</li>
+</ul>
+<h2 id="安装golang">
+  安装Golang
+  <a class="anchor" href="#%e5%ae%89%e8%a3%85golang">#</a>
+</h2>
+<p>IPFS 官方提供的安装方式有安装包方式，ipfs-update 方式，源码编译安装方式，具体可以查看 <a href="https://docs.ipfs.io/guides/guides/install/">https://docs.ipfs.io/guides/guides/install/</a> 这里为了 ipfs 版本选择和升级，所以使用<code>ipfs-update</code>方式安装，Go 是必须的。</p>
+<p>Golang是Google开发的一种静态强类型强类型、编译型、并发型，并具有垃圾回收功能的编程语言。如果已经安装请跳过。</p>
+<p>使用以下命令安装Golang。</p>
+<pre tabindex="0"><code>sudo add-apt-repository ppa:longsleep/golang-backports
+sudo apt-get update
+sudo apt-get install golang-go
+</code></pre><p>创建<code>GOPATH</code>以及<code>GOROOT</code>路径。</p>
+<pre tabindex="0"><code>cd ~
+mkdir go 
+</code></pre><p>配置Go环境变量，使用Vim打开环境变量配置文件。</p>
+<p>安装vim   如果有vim请跳过</p>
+<pre tabindex="0"><code>sudo apt install vim
+创建/usr/local/go文件夹
+cd /usr/local
+sudo mkdir go
+cd ~
+</code></pre><pre tabindex="0"><code>sudo vim /etc/profile
+</code></pre><p>在文件最后输入一下内容：</p>
+<pre tabindex="0"><code>export GOROOT=/usr/local/go
+export GOPATH=$HOME/go
+export GOBIN=$GOPATH/bin
+export PATH=$PATH:$GOROOT/bin:$GOBIN
+</code></pre><p>按 <code>Esc</code> 键退回一般模式，然后输入 <code>:wq</code> 命令并回车保存退出文件。再使用以下命令使变量立即生效。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>source /etc/profile
+</span></span></code></pre></div><p>由于Golang的官方代理源速度慢有时候会出现包不能下载的情况，我们使用以下命令把代理源设置为国内的代理源。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>go env -w GOPROXY<span style="color:#f92672">=</span>https://goproxy.cn,direct
+</span></span></code></pre></div><p>使用以下命令查看Golang版本信息。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>go version
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>go1.16.4 linux/amd64
+</span></span></code></pre></div><p>使用以下命令查看Golang环境变量配置。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>go env
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>GO111MODULE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;on&#34;</span>
+</span></span><span style="display:flex;"><span>GOARCH<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;amd64&#34;</span>
+</span></span><span style="display:flex;"><span>GOBIN<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>GOCACHE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/root/.cache/go-build&#34;</span>
+</span></span><span style="display:flex;"><span>GOENV<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/root/.config/go/env&#34;</span>
+</span></span><span style="display:flex;"><span>GOEXE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>GOFLAGS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>GOHOSTARCH<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;amd64&#34;</span>
+</span></span><span style="display:flex;"><span>GOHOSTOS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;linux&#34;</span>
+</span></span><span style="display:flex;"><span>GONOPROXY<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>GONOSUMDB<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>GOOS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;linux&#34;</span>
+</span></span><span style="display:flex;"><span>GOPATH<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/root/go&#34;</span>
+</span></span><span style="display:flex;"><span>GOPRIVATE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>GOPROXY<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://goproxy.cn,direct&#34;</span>
+</span></span><span style="display:flex;"><span>GOROOT<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/usr/lib/go-1.13&#34;</span>
+</span></span><span style="display:flex;"><span>GOSUMDB<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;sum.golang.org&#34;</span>
+</span></span><span style="display:flex;"><span>GOTMPDIR<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>GOTOOLDIR<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/usr/lib/go-1.13/pkg/tool/linux_amd64&#34;</span>
+</span></span><span style="display:flex;"><span>GCCGO<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;gccgo&#34;</span>
+</span></span><span style="display:flex;"><span>AR<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;ar&#34;</span>
+</span></span><span style="display:flex;"><span>CC<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;gcc&#34;</span>
+</span></span><span style="display:flex;"><span>CXX<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;g++&#34;</span>
+</span></span><span style="display:flex;"><span>CGO_ENABLED<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1&#34;</span>
+</span></span><span style="display:flex;"><span>GOMOD<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/dev/null&#34;</span>
+</span></span><span style="display:flex;"><span>CGO_CFLAGS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;-g -O2&#34;</span>
+</span></span><span style="display:flex;"><span>CGO_CPPFLAGS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>CGO_CXXFLAGS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;-g -O2&#34;</span>
+</span></span><span style="display:flex;"><span>CGO_FFLAGS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;-g -O2&#34;</span>
+</span></span><span style="display:flex;"><span>CGO_LDFLAGS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;-g -O2&#34;</span>
+</span></span><span style="display:flex;"><span>PKG_CONFIG<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pkg-config&#34;</span>
+</span></span><span style="display:flex;"><span>GOGCCFLAGS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;-fPIC -m64 -pthread -fmessage-length=0 -fdebug-prefix-map=/tmp/go-build410299436=/tmp/go-build -gno-record-gcc-switches&#34;</span>
+</span></span></code></pre></div><h2 id="安装ipfs">
+  安装IPFS
+  <a class="anchor" href="#%e5%ae%89%e8%a3%85ipfs">#</a>
+</h2>
+<p>在各个节点中安装<code>ipfs-update</code>:</p>
+<pre tabindex="0"><code>GO111MODULE=on go get -u github.com/ipfs/ipfs-update
+</code></pre><blockquote>
+<p>报错：</p>
+<p>compile: version &ldquo;go1.16.3&rdquo; does not match go tool version &ldquo;go1.16.4&rdquo;</p>
+<p>将goROOT/bin文件夹下的 go.exe和gofmt.exe文件复制到 usr目录下的bin文件夹下，替换掉原有的go.exe和gofmt.exe即可</p>
+<p>报错：</p>
+<p>crypto/md5: package crypto/md5 is not in GOROOT (/usr/local/go/src/crypto/md5)</p>
+<p>进入这个网址<a href="https://dist.ipfs.io/#ipfs-update">https</a> : <a href="https://dist.ipfs.io/#ipfs-update">//dist.ipfs.io/#ipfs-update</a>手动下载</p>
+<p>然后进入下载的文件夹 运行</p>
+<p>sudo ./install.sh</p>
+</blockquote>
+<p>也比较简单，由于 ipfs.io 官网被 dns 污染的原因，安装以后需要配置一下各个节点的<code>/etc/hosts</code></p>
+<pre tabindex="0"><code>sudo vi /etc/hosts 
+
+添加：
+209.94.78.78    ipfs.io
+209.94.90.1     ipfs.io
+</code></pre><p>通过 <code>ipfs-update versions</code>可以 列出所有可以使用和可以下载的<code>ipfs</code>版本.我们这里直接安装最新的版本:</p>
+<pre tabindex="0"><code>sudo ipfs-update install latest
+</code></pre><pre tabindex="0"><code>结果显示
+fetching go-ipfs version v0.8.0
+binary downloaded, verifying...
+success! tests all passed.
+checking if we should install in GOBIN: /home/tianzhiwei/go/bin
+installing new binary to /home/tianzhiwei/go/bin/ipfs
+checking if repo migration is needed...
+Installation complete!
+</code></pre><p>这样<code>ipfs</code>就安装成功了，接下来我们需要为每台节点的 IPFS 初始化一下：</p>
+<pre tabindex="0"><code>ipfs init
+</code></pre><h2 id="创建共享的-key">
+  创建共享的 key
+  <a class="anchor" href="#%e5%88%9b%e5%bb%ba%e5%85%b1%e4%ba%ab%e7%9a%84-key">#</a>
+</h2>
+<p><code>swarm.key</code> 密钥允许我们创建一个私有网络，并告诉网络节点只和拥有相同秘钥的节点通信，在一个节点上执行下面命令:</p>
+<pre tabindex="0"><code>go get -u github.com/Kubuxu/go-ipfs-swarm-key-gen/ipfs-swarm-key-gen
+
+
+ipfs-swarm-key-gen &gt; ~/.ipfs/swarm.key
+</code></pre><blockquote>
+<p>报错：</p>
+<p>github.com/Kubuxu/go-ipfs-swarm-key-gen/ipfs-swarm-key-gen imports
+crypto/rand: package crypto/rand is not in GOROOT (/usr/local/go/src/crypto/rand)
+github.com/Kubuxu/go-ipfs-swarm-key-gen/ipfs-swarm-key-gen imports
+encoding/hex: package encoding/hex is not in GOROOT (/usr/local/go/src/encoding/hex)
+github.com/Kubuxu/go-ipfs-swarm-key-gen/ipfs-swarm-key-gen imports
+fmt: package fmt is not in GOROOT (/usr/local/go/src/fmt)
+github.com/Kubuxu/go-ipfs-swarm-key-gen/ipfs-swarm-key-gen imports
+log: package log is not in GOROOT (/usr/local/go/src/log)</p>
+<p>这种问题  可能新系统没跑go程序，里面缺少包，找个旧系统生成swarm.key复制到新系统中</p>
+</blockquote>
+<p>通过<code>scp</code>或者上传的方式将生成的<code>swarm.key</code>拷贝到每一台节点的<code>~/.ipfs/swarm.key</code>。</p>
+<p>打开查看所有文件找 有可能会被隐藏</p>
+<h2 id="移除默认的-bootstrap-节点">
+  移除默认的 bootstrap 节点
+  <a class="anchor" href="#%e7%a7%bb%e9%99%a4%e9%bb%98%e8%ae%a4%e7%9a%84-bootstrap-%e8%8a%82%e7%82%b9">#</a>
+</h2>
+<p>为了不连接全球的 IPFS 网络，你需要将默认的 bootstrap 的节点信息删除。</p>
+<pre tabindex="0"><code>ipfs bootstrap rm --all
+</code></pre><h2 id="私有网络节点配置">
+  私有网络节点配置
+  <a class="anchor" href="#%e7%a7%81%e6%9c%89%e7%bd%91%e7%bb%9c%e8%8a%82%e7%82%b9%e9%85%8d%e7%bd%ae">#</a>
+</h2>
+<p>在每台节点中添加管理节点的 bootstrap：</p>
+<pre tabindex="0"><code>ipfs bootstrap add /ip4/10.211.55.7/tcp/4001/ipfs/12D3KooWDivb3qWFLE99jJqqYmWNvWKZbY9mQAWeGGJ6czgkFMFa
+</code></pre><p>为<code>ipfs init</code> 时生成的节点 ID，也可以通过<code>ipfs id</code> 查看当前节点的 ID。10.211.55.7为第一个节点的iP地址</p>
+<p>我们还需要设置环境变量<code>LIBP2P FORCE PNET</code>来强制我们的网络进入私有模式</p>
+<pre tabindex="0"><code>export LIBP2P_FORCE_PNET=1
+</code></pre><h1 id="这里将分开讲述">
+  这里将分开讲述
+  <a class="anchor" href="#%e8%bf%99%e9%87%8c%e5%b0%86%e5%88%86%e5%bc%80%e8%ae%b2%e8%bf%b0">#</a>
+</h1>
+<h2 id="非集群搭建较简单">
+  非集群搭建（较简单）
+  <a class="anchor" href="#%e9%9d%9e%e9%9b%86%e7%be%a4%e6%90%ad%e5%bb%ba%e8%be%83%e7%ae%80%e5%8d%95">#</a>
+</h2>
+<h3 id="私有网络节点配置-1">
+  私有网络节点配置
+  <a class="anchor" href="#%e7%a7%81%e6%9c%89%e7%bd%91%e7%bb%9c%e8%8a%82%e7%82%b9%e9%85%8d%e7%bd%ae-1">#</a>
+</h3>
+<p>在每台节点中添加另外节点的 bootstrap： （我只用两个节点试了一下   可行   三个节点没试）</p>
+<pre tabindex="0"><code>ipfs bootstrap add /ip4/10.211.55.7/tcp/4001/ipfs/12D3KooWDivb3qWFLE99jJqqYmWNvWKZbY9mQAWeGGJ6czgkFMFa
+</code></pre><p>添加方法是一样的  这里是相互添加</p>
+<pre tabindex="0"><code>export LIBP2P_FORCE_PNET=1
+</code></pre><blockquote>
+<p>后续补充的内容：<strong>注意，我在三个节点上试了，可行，在另外两台虚拟机上添加主节点bootstrap就行，无需相互添加</strong></p>
+</blockquote>
+<h3 id="启动服务">
+  启动服务
+  <a class="anchor" href="#%e5%90%af%e5%8a%a8%e6%9c%8d%e5%8a%a1">#</a>
+</h3>
+<p>先查看虚拟机中添加到节点情况</p>
+<pre tabindex="0"><code>ipfs swarm peers
+</code></pre><pre tabindex="0"><code>显示：
+/ip4/10.211.55.7/tcp/4001/p2p/12D3KooWEtfPUEWnpuCyMP6VZJeacobzsKZN9N25SnceTD2mFTdh
+</code></pre><p>启动服务</p>
+<pre tabindex="0"><code>ipfs daemon       所有节点都启动
+</code></pre><pre tabindex="0"><code>tianzhiwei@ubuntu:~$ ipfs daemon
+Initializing daemon...
+go-ipfs version: 0.8.0
+Repo version: 11
+System version: amd64/linux
+Golang version: go1.15.8
+Swarm is limited to private network of peers with the swarm key
+Swarm key fingerprint: 49abef989ff17aab09ed85dc7c1e78e2
+Swarm listening on /ip4/10.211.55.9/tcp/4001
+Swarm listening on /ip4/127.0.0.1/tcp/4001
+Swarm listening on /ip6/::1/tcp/4001
+Swarm listening on /ip6/fdb2:2c26:f4e4:0:10c8:932d:a22c:347d/tcp/4001
+Swarm listening on /ip6/fdb2:2c26:f4e4:0:dcb1:8b4e:6ee1:608d/tcp/4001
+Swarm listening on /p2p-circuit
+Swarm announcing /ip4/10.211.55.9/tcp/4001
+Swarm announcing /ip4/127.0.0.1/tcp/4001
+Swarm announcing /ip6/::1/tcp/4001
+API server listening on /ip4/127.0.0.1/tcp/5001
+WebUI: http://127.0.0.1:5001/webui
+Gateway (readonly) server listening on /ip4/127.0.0.1/tcp/8080
+Daemon is ready
+ipfs swarm peers
+
+另开一个命令行
+</code></pre><h3 id="服务测试">
+  服务测试
+  <a class="anchor" href="#%e6%9c%8d%e5%8a%a1%e6%b5%8b%e8%af%95">#</a>
+</h3>
+<p><strong>先选择好需要上传的文件，此处可以新建文件来用于测试。</strong></p>
+<pre tabindex="0"><code>echo helloworld &gt; hello .txt
+cat hello.txt
+</code></pre><p>在第一台虚拟机上添加文件</p>
+<pre tabindex="0"><code>ipfs add hello.txt
+</code></pre><pre tabindex="0"><code>tianzhiwei@ubuntu:~/go/src$ ipfs add hello.txt
+added QmUU2HcUBVSXkfWPUc3WUSeCMrWWeEJTuAgR9uyWBhh9Nf hello.txt
+ 11 B / 11 B [=========================================================] 100.00%
+</code></pre><p>在第二台虚拟机上读取文件</p>
+<pre tabindex="0"><code>ipfs cat 哈希值
+</code></pre><pre tabindex="0"><code>ipfs cat QmUU2HcUBVSXkfWPUc3WUSeCMrWWeEJTuAgR9uyWBhh9Nf
+helloworld
+</code></pre><p><strong>在第二台虚拟机上通过网址访问</strong></p>
+<pre tabindex="0"><code>wget http://127.0.0.1:8080/ipfs/QmUU2HcUBVSXkfWPUc3WUSeCMrWWeEJTuAgR9uyWBhh9Nf
+</code></pre><pre tabindex="0"><code>--2021-06-17 20:11:31--  http://127.0.0.1:8080/ipfs/QmTEzo7FYzUCd5aq7bGKoMLfsbbsebpfARRZd4Znejb25R
+正在连接 127.0.0.1:8080... 已连接。
+已发出 HTTP 请求，正在等待回应... 200 OK
+长度： 4 [application/json]
+正在保存至: “QmTEzo7FYzUCd5aq7bGKoMLfsbbsebpfARRZd4Znejb25R”
+
+QmTEzo7FYzUCd5aq7bG 100%[===================&gt;]       4  --.-KB/s    用时 0s    
+
+2021-06-17 20:11:31 (213 KB/s) - 已保存 “QmTEzo7FYzUCd5aq7bGKoMLfsbbsebpfARRZd4Znejb25R” [4/4])
+</code></pre><p><strong>通过游览器访问</strong></p>
+<pre tabindex="0"><code>打开浏览器 输入
+http://127.0.0.1:8080/ipfs/QmUU2HcUBVSXkfWPUc3WUSeCMrWWeEJTuAgR9uyWBhh9Nf
+</code></pre><p>**注意 http://127.0.0.1:   这个127.0.0.1是本地访问  本来要输入IP地址的</p>
+<p><strong>具体我没试  可以参照下面这段话</strong></p>
+<p>特别说明</p>
+<p>在外部游览器访问时，要记得修改config文件，不然是访问不了的。</p>
+<pre tabindex="0"><code>vim /home/.ipfs/config
+</code></pre><p>修改结果如下，主要是修改成你本机的ip即可。
+也可以通过指令修改，下面介绍。</p>
+<p><img src="https://img-blog.csdnimg.cn/20190318113112499.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM2NjUxMjQz,size_16,color_FFFFFF,t_70" alt="" /></p>
+<p>通过指令修改，相当于将配置文件中的ip地址直接修改成0.0.0.0</p>
+<pre tabindex="0"><code>ipfs config Addresses.API /ip4/0.0.0.0/tcp/5001
+ipfs config Addresses.Gateway /ip4/0.0.0.0/tcp/8080 
+</code></pre><h2 id="集群搭建">
+  集群搭建
+  <a class="anchor" href="#%e9%9b%86%e7%be%a4%e6%90%ad%e5%bb%ba">#</a>
+</h2>
+<h3 id="将-ipfs-进程加入到系统进程中启动">
+  将 IPFS 进程加入到系统进程中启动
+  <a class="anchor" href="#%e5%b0%86-ipfs-%e8%bf%9b%e7%a8%8b%e5%8a%a0%e5%85%a5%e5%88%b0%e7%b3%bb%e7%bb%9f%e8%bf%9b%e7%a8%8b%e4%b8%ad%e5%90%af%e5%8a%a8">#</a>
+</h3>
+<p>每台的 IPFS 启动都加入系统的守护进程启动， <code>在/etc/systemd/system/文件夹中添加ipfs.service</code>文件</p>
+<p>文件内容如下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ini" data-lang="ini"><span style="display:flex;"><span><span style="color:#66d9ef">[Unit]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Description</span><span style="color:#f92672">=</span><span style="color:#e6db74">IPFS Daemon</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">After</span><span style="color:#f92672">=</span><span style="color:#e6db74">syslog.target network.target remote-fs.target nss-lookup.target</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">[Service]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Type</span><span style="color:#f92672">=</span><span style="color:#e6db74">simple</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">ExecStart</span><span style="color:#f92672">=</span><span style="color:#e6db74">/usr/local/bin/ipfs daemon --enable-namesys-pubsub</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">User</span><span style="color:#f92672">=</span><span style="color:#e6db74">root</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">[Install]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">WantedBy</span><span style="color:#f92672">=</span><span style="color:#e6db74">multi-user.target</span>
+</span></span></code></pre></div><p>现在可以通过下面的命令来启动 IPFS 的后台守护进程了：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>systemctl daemon-reload
+</span></span><span style="display:flex;"><span>systemctl enable ipfs
+</span></span><span style="display:flex;"><span>systemctl start ipfs
+</span></span><span style="display:flex;"><span>systemctl status ipfs
+</span></span></code></pre></div><pre tabindex="0"><code>● ipfs.service - IPFS Daemon
+   Loaded: loaded (/etc/systemd/system/ipfs.service; enabled; vendor preset: ena
+   Active: active (running) since Fri 2021-06-18 10:38:24 CST; 18min ago
+ Main PID: 671 (ipfs)
+    Tasks: 9 (limit: 2317)
+   CGroup: /system.slice/ipfs.service
+           └─671 /usr/local/bin/ipfs daemon --enable-namesys-pubsub
+
+6月 18 10:38:26 ubuntu ipfs[671]: Swarm listening on /ip6/fdb2:2c26:f4e4:0:750b:
+6月 18 10:38:26 ubuntu ipfs[671]: Swarm listening on /ip6/fdb2:2c26:f4e4:0:98ac:
+6月 18 10:38:26 ubuntu ipfs[671]: Swarm listening on /p2p-circuit
+6月 18 10:38:26 ubuntu ipfs[671]: Swarm announcing /ip4/10.211.55.10/tcp/4001
+6月 18 10:38:26 ubuntu ipfs[671]: Swarm announcing /ip4/127.0.0.1/tcp/4001
+6月 18 10:38:26 ubuntu ipfs[671]: Swarm announcing /ip6/::1/tcp/4001
+6月 18 10:38:26 ubuntu ipfs[671]: API server listening on /ip4/127.0.0.1/tcp/500
+6月 18 10:38:26 ubuntu ipfs[671]: WebUI: http://127.0.0.1:5001/webui
+6月 18 10:38:26 ubuntu ipfs[671]: Gateway (readonly) server listening on /ip4/12
+6月 18 10:38:26 ubuntu ipfs[671]: Daemon is ready
+</code></pre><blockquote>
+<p>报错：</p>
+<p>Failed to enable unit: File /etc/systemd/system/syslog.service already exists and is a symlink to /lib/systemd/system/rsyslog.service.</p>
+<p>进入/etc/systemd/system/syslog.service    删除syslog.service</p>
+<p>报错</p>
+<p>Job for ipfs.service failed because the control process exited with error code.
+See &ldquo;systemctl status ipfs.service&rdquo; and &ldquo;journalctl -xe&rdquo; for details.</p>
+<p>解决办法：打开ipfs.service文件 确认内容是否改变  变了就改回来</p>
+<p>报错：</p>
+<p>● ipfs.service - IPFS Daemon
+Loaded: loaded (/etc/systemd/system/ipfs.service; enabled; vendor preset: enabled)
+Active: failed (Result: exit-code) since Thu 2021-06-17 09:50:56 CST; 5s ago
+Process: 32326 ExecStart=/usr/local/bin/ipfs daemon &ndash;enable-namesys-pubsub (code=exited,
+Main PID: 32326 (code=exited, status=1/FAILURE)</p>
+<p>6月 17 09:50:56 ubuntu systemd[1]: Started IPFS Daemon.
+6月 17 09:50:56 ubuntu ipfs[32326]: Initializing daemon&hellip;
+6月 17 09:50:56 ubuntu ipfs[32326]: go-ipfs version: 0.8.0
+6月 17 09:50:56 ubuntu ipfs[32326]: Repo version: 11
+6月 17 09:50:56 ubuntu ipfs[32326]: System version: amd64/linux
+6月 17 09:50:56 ubuntu ipfs[32326]: Golang version: go1.15.8
+6月 17 09:50:56 ubuntu ipfs[32326]: <strong>Error: no IPFS repo found in /root/.ipfs.</strong>
+6月 17 09:50:56 ubuntu ipfs[32326]: please run: &lsquo;ipfs init&rsquo;
+6月 17 09:50:56 ubuntu systemd[1]: ipfs.service: Main process exited, code=exited, status=1/
+6月 17 09:50:56 ubuntu systemd[1]: ipfs.service: Failed with result &rsquo;exit-code'.</p>
+<p>解决办法：</p>
+<p>将/home/tianzhiwei/.ipfs目录复制到root/目录下</p>
+<p>报错：</p>
+<p>ipfs.service - IPFS Daemon
+Loaded: loaded (/etc/systemd/system/ipfs.service; enabled; vendor preset: enabled)
+Active: failed (Result: exit-code) since Thu 2021-06-17 21:44:29 CST; 4s ago
+Process: 27908 ExecStart=/usr/local/bin/ipfs daemon &ndash;enable-namesys-pubsub (code=exited, status=203/EXEC)
+Main PID: 27908 (code=exited, status=203/EXEC)</p>
+<p>6月 17 21:44:29 ubuntu systemd[1]: Started IPFS Daemon.
+6月 17 21:44:29 ubuntu systemd[27908]: <strong>ipfs.service: Failed to execute command: No such file or</strong> directory
+6月 17 21:44:29 ubuntu systemd[27908]: <strong>ipfs.service: Failed at step EXEC spawning /usr/local/bin/ipfs:</strong> No such file or directory
+6月 17 21:44:29 ubuntu systemd[1]: ipfs.service: Main process exited, code=exited, status=203/EXEC
+6月 17 21:44:29 ubuntu systemd[1]: ipfs.service: Failed with result &rsquo;exit-code'.</p>
+<p>解决办法：</p>
+<p>搜索ipfs 和ipfs-update文件  放到/usr/local/bin目录下    我也不知道同样的虚拟机下载的文件乱跑</p>
+<p>报错：</p>
+<p>6月 17 22:03:39 ubuntu ipfs[31573]: 2021-06-17T22:03:39.410+0800        ERROR        cmd/ipfs        error from node construction: failed to listen on any addresses: [listen tcp4 0.0.0.0:4001: bind: address already in use listen tcp6 [::]:4001: bind: address already in use no transport for protocol no transport for protocol]
+6月 17 22:03:39 ubuntu ipfs[31573]: Error: failed to listen on any addresses: [listen tcp4 0.0.0.0:4001: bind: address already in use listen tcp6 [::]:4001: bind: address already in use no transport for protocol no transport for protocol]
+6月 17 22:03:39 ubuntu systemd[1]: ipfs.service: Main process exited, code=exited, status=1/FAILURE
+6月 17 22:03:39 ubuntu systemd[1]: ipfs.service: Failed with result &rsquo;exit-code'.</p>
+<p>解决办法：</p>
+<p>重启电脑</p>
+<p>ipfs bootstrap add /ip4/10.211.55.7/tcp/4001/ipfs/12D3KooWDivb3qWFLE99jJqqYmWNvWKZbY9mQAWeGGJ6czgkFMFa</p>
+<p>从这一步开始重新来一遍  里面添加的节点 不知道怎么变了</p>
+<p>报错：</p>
+<p>$ ipfs daemon</p>
+<p>Initializing daemon&hellip;
+go-ipfs version: 0.8.0
+Repo version: 11
+System version: amd64/linux
+Golang version: go1.15.8
+2021-06-17T15:24:50.585+0800	ERROR	cmd/ipfs	error from node construction: could not build arguments for function &ldquo;github.com/ipfs/go-ipfs/core/node&rdquo;.PeerWith.func1 (<a href="mailto:github.com/ipfs/go-ipfs@v0.8.0">github.com/ipfs/go-ipfs@v0.8.0</a>/core/node/peering.go:29): failed to build *peering.PeeringService: could not build arguments for function &ldquo;github.com/ipfs/go-ipfs/core/node&rdquo;.Peering (<a href="mailto:github.com/ipfs/go-ipfs@v0.8.0">github.com/ipfs/go-ipfs@v0.8.0</a>/core/node/peering.go:14): failed to build host.Host: could not build arguments for function &ldquo;github.com/ipfs/go-ipfs/core/node/libp2p&rdquo;.Host (<a href="mailto:github.com/ipfs/go-ipfs@v0.8.0">github.com/ipfs/go-ipfs@v0.8.0</a>/core/node/libp2p/host.go:40): could not build value group []config.Option[group=&ldquo;libp2p&rdquo;]: received non-nil error from function &ldquo;github.com/ipfs/go-ipfs/core/node/libp2p&rdquo;.PNet (<a href="mailto:github.com/ipfs/go-ipfs@v0.8.0">github.com/ipfs/go-ipfs@v0.8.0</a>/core/node/libp2p/pnet.go:21): failed to configure private network: EOF</p>
+<p>解决办法：swarm.key没有生成好  你可能生成的文件是空的  百度各种方法 反正我搞了半天</p>
+<p>报错：</p>
+<p>● ipfs.service - IPFS Daemon
+Loaded: loaded (/etc/systemd/system/ipfs.service; enabled; vendor preset: enabled)
+Active: failed (Result: exit-code) since Fri 2021-06-18 10:59:40 CST; 16s ago
+Process: 6385 ExecStart=/usr/local/bin/ipfs daemon &ndash;enable-namesys-pubsub (code=exite
+Main PID: 6385 (code=exited, status=1/FAILURE)</p>
+<p>6月 18 10:59:40 ubuntu systemd[1]: Started IPFS Daemon.
+6月 18 10:59:40 ubuntu ipfs[6385]: Initializing daemon&hellip;
+6月 18 10:59:40 ubuntu ipfs[6385]: go-ipfs version: 0.8.0
+6月 18 10:59:40 ubuntu ipfs[6385]: Repo version: 11
+6月 18 10:59:40 ubuntu ipfs[6385]: System version: amd64/linux
+6月 18 10:59:40 ubuntu ipfs[6385]: Golang version: go1.15.8
+6月 18 10:59:40 ubuntu ipfs[6385]: <strong>Error: resource temporarily unavailable</strong>
+6月 18 10:59:40 ubuntu systemd[1]: ipfs.service: Main process exited, code=exited, statu
+6月 18 10:59:40 ubuntu systemd[1]: ipfs.service: Failed with result &rsquo;exit-code'.</p>
+<p>解决办法</p>
+<p>ipfs奔溃了  可能是我昨晚没关电脑所致  好几次了 可以选择删掉这个虚拟机从头弄</p>
+<p>删掉LOCK  和repo.lock这两个文件 具体百度 我忘记抄了</p>
+<p>报错：</p>
+<p>● ipfs.service - IPFS Daemon
+Loaded: loaded (/etc/systemd/system/ipfs.service; enabled; vendor preset: enabled)
+Active: failed (Result: exit-code) since Fri 2021-06-18 11:26:49 CST; 3s ago
+Process: 11445 ExecStart=/usr/local/bin/ipfs daemon &ndash;enable-namesys-pubsub (code=exited, status=1/FAILURE)
+Main PID: 11445 (code=exited, status=1/FAILURE)</p>
+<p>6月 18 11:26:49 ubuntu ipfs[11445]: Swarm listening on /ip6/::1/tcp/4001
+6月 18 11:26:49 ubuntu ipfs[11445]: Swarm listening on /ip6/fdb2:2c26:f4e4:0:c42e:2211:d697:18e1/tcp/4001
+6月 18 11:26:49 ubuntu ipfs[11445]: Swarm listening on /ip6/fdb2:2c26:f4e4:0:dcb1:8b4e:6ee1:608d/tcp/4001
+6月 18 11:26:49 ubuntu ipfs[11445]: Swarm listening on /p2p-circuit
+6月 18 11:26:49 ubuntu ipfs[11445]: Swarm announcing /ip4/10.211.55.9/tcp/4001
+6月 18 11:26:49 ubuntu ipfs[11445]: Swarm announcing /ip4/127.0.0.1/tcp/4001
+6月 18 11:26:49 ubuntu ipfs[11445]: Swarm announcing /ip6/::1/tcp/4001
+6月 18 11:26:49 ubuntu ipfs[11445]: <strong>Error: serveHTTPApi: manet.Listen(/ip4/127.0.0.1/tcp/5001) failed: listen tcp4 127.0.0.1:5001: bind: address already in use</strong>
+6月 18 11:26:49 ubuntu systemd[1]: ipfs.service: Main process exited, code=exited, status=1/FAILURE
+6月 18 11:26:49 ubuntu systemd[1]: ipfs.service: Failed with result &rsquo;exit-code'.</p>
+<p>解决办法：</p>
+<p>端口被占用了  可能是我试那个非集群的时候导致的</p>
+<p>修改端口文件 config  5001我改成了6001</p>
+<p>我他妈心态崩了   三台虚拟机所有的坑试完 下一步</p>
+</blockquote>
+<h3 id="ipfs-cluster-安装">
+  IPFS-Cluster 安装
+  <a class="anchor" href="#ipfs-cluster-%e5%ae%89%e8%a3%85">#</a>
+</h3>
+<p>IPFS-Cluster 包含两个组件:</p>
+<ul>
+<li>
+<p><strong>ipfs-cluster-service</strong> 用于初始化集群 peer 并运行它的守护进程</p>
+</li>
+<li>
+<p><strong>ipfs-cluster-ctl</strong> 管理集群的节点和数据</p>
+</li>
+</ul>
+<p>我们将<code>ipfs-cluster</code>克隆到 GOPATH 下，然后 make 编译安装（系统已安装 make）:</p>
+<pre tabindex="0"><code>cd $GOPATH/src
+git clone https://github.com/ipfs/ipfs-cluster.git
+cd ipfs-cluster
+export GO111MODULE=on # optional, if checking out the repository in $GOPATH.
+go install ./cmd/ipfs-cluster-service
+go install ./cmd/ipfs-cluster-ctl
+go install ./cmd/ipfs-cluster-follow
+</code></pre><p>查看一下是否安装成功：</p>
+<pre tabindex="0"><code>ipfs-cluster-service --version
+ipfs-cluster-ctl --version
+</code></pre><blockquote>
+<p>报错：</p>
+<p>go:11:8: cannot find package &ldquo;unsafe&rdquo; in any of:
+/usr/local/go/src/unsafe (from $GOROOT)
+/home/tianzhiwei/go/src/unsafe (from $GOPATH)</p>
+<p>解决办法：</p>
+<p>鬼知道又是什么问题  换一种安装方法</p>
+<p>到官网下载https://dist.ipfs.io/#ipfs-cluster-service</p>
+<p>下载ipfs-cluster-service的二进制执行文件到$GOPATH/src文件夹下</p>
+<p>命令行运行解压 tar zxvf ipfs-cluster-service_v0.13.3_linux-amd64.tar.gz</p>
+<p>cd ipfs-cluster-service</p>
+<p>将ipfs-cluster-service文件复制到usr/local/bin</p>
+</blockquote>
+<h3 id="设置集群密钥">
+  设置集群密钥
+  <a class="anchor" href="#%e8%ae%be%e7%bd%ae%e9%9b%86%e7%be%a4%e5%af%86%e9%92%a5">#</a>
+</h3>
+<p>类似于 IPFS 的秘钥，我们管理节点中生成一个随机密钥：</p>
+<pre tabindex="0"><code> od -vN 32 -An -tx1 /dev/urandom | tr -d &#39; \n&#39;
+</code></pre><p>将生成的随机你字符串加入到环境变量中,比如： <code>b55262c36de6f97bd50b5233f75866445ec51db74613bad78e906c4dc9ba1d30</code> 分别修改每一个节点的的<code>~/.bashrc</code>添加到环境变量中:</p>
+<pre tabindex="0"><code>cd ~
+vi .bashrc
+最后一行加入
+export CLUSTER_SECRET=b55262c36de6f97bd50b5233f75866445ec51db74613bad78e906c4dc9ba1d30
+</code></pre><p>保存后别忘了 <code>source ~/.bashrc</code></p>
+<h3 id="初始化集群">
+  初始化集群
+  <a class="anchor" href="#%e5%88%9d%e5%a7%8b%e5%8c%96%e9%9b%86%e7%be%a4">#</a>
+</h3>
+<p>每一台节点执行初始化命令：</p>
+<pre tabindex="0"><code>ipfs-cluster-service init
+</code></pre><p>在管理节点启动进程</p>
+<pre tabindex="0"><code>ipfs-cluster-service daemon
+</code></pre><p>其他节点启动<code>--bootstrap</code>添加主节点：</p>
+<pre tabindex="0"><code>ipfs-cluster-service daemon --bootstrap /ip4/192.168.11.11/tcp/9096/ipfs/12D3KooWEGrD9d3n6UJNzAJDyhfTUZNQmQz4k56Hb6TrYEyxyW2F
+</code></pre><p>这里注意下，<code>12D3KooWEGrD9d3n6UJNzAJDyhfTUZNQmQz4k56Hb6TrYEyxyW2F</code> 是 IPFS-Cluster 节点 ID，不是 IPFS 节点 ID，可以通过<code>ipfs-cluster-service id</code> 查看。 可以通过命令查看集群节点状态:</p>
+<pre tabindex="0"><code>ipfs-cluster-ctl peers ls
+</code></pre><h3 id="将-ipfs-cluster-节点加入到系统进程中启动">
+  将 IPFS-Cluster 节点加入到系统进程中启动
+  <a class="anchor" href="#%e5%b0%86-ipfs-cluster-%e8%8a%82%e7%82%b9%e5%8a%a0%e5%85%a5%e5%88%b0%e7%b3%bb%e7%bb%9f%e8%bf%9b%e7%a8%8b%e4%b8%ad%e5%90%af%e5%8a%a8">#</a>
+</h3>
+<p>添<code>/etc/systemd/system/ipfs-cluster.service</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ini" data-lang="ini"><span style="display:flex;"><span><span style="color:#66d9ef">[Unit]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Description</span><span style="color:#f92672">=</span><span style="color:#e6db74">IPFS-Cluster Daemon</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Requires</span><span style="color:#f92672">=</span><span style="color:#e6db74">ipfs</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">After</span><span style="color:#f92672">=</span><span style="color:#e6db74">syslog.target network.target remote-fs.target nss-lookup.target ipfs</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">[Service]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Type</span><span style="color:#f92672">=</span><span style="color:#e6db74">simple</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">ExecStart</span><span style="color:#f92672">=</span><span style="color:#e6db74">/root/go/bin/ipfs-cluster-service daemon</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">User</span><span style="color:#f92672">=</span><span style="color:#e6db74">root</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">[Install]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">WantedBy</span><span style="color:#f92672">=</span><span style="color:#e6db74">multi-user.target</span>
+</span></span></code></pre></div><p>现在可以通过下面的命令来启动 ipfs-cluster 的后台守护进程了：</p>
+<pre tabindex="0"><code>systemctl daemon-reload
+systemctl enable ipfs-cluster
+systemctl start ipfs-cluster
+systemctl status ipfs-cluster
+</code></pre><blockquote>
+<p>报错：</p>
+<p>月 18 16:36:09 ubuntu systemd[1]: Started IPFS-Cluster Daemon.
+6月 18 16:36:09 ubuntu systemd[54464]: <strong>ipfs-cluster.service: Failed to execute command: No such file or directory</strong>
+6月 18 16:36:09 ubuntu systemd[54464]: <strong>ipfs-cluster.service: Failed at step EXEC spawning /root/go/bin/ipfs-cluster-service: No such fil&gt;</strong>
+6月 18 16:36:09 ubuntu systemd[1]: ipfs-cluster.service: Main process exited, code=exited, status=203/EXEC
+6月 18 16:36:09 ubuntu systemd[1]: ipfs-cluster.service: Failed with result &rsquo;exit-code'.</p>
+<p>解决办法</p>
+<p>跟上面一样 复制文件</p>
+<p>报错：</p>
+<p>ipfs-cluster.service - IPFS-Cluster Daemon
+Loaded: loaded (/etc/systemd/system/ipfs-cluster.service; enabled; vendor preset: enabled)
+Active: failed (Result: exit-code) since Fri 2021-06-18 16:46:46 CST; 4s ago
+Process: 56896 ExecStart=/usr/local/bin/ipfs-cluster-service daemon (code=exited, status=1/FAILURE)
+Main PID: 56896 (code=exited, status=1/FAILURE)</p>
+<p>6月 18 16:46:46 ubuntu systemd[1]: Started IPFS-Cluster Daemon.
+6月 18 16:46:46 ubuntu ipfs-cluster-service[56896]: 2021-06-18T16:46:46.208+0800        INFO        service        ipfs-cluster-service/&gt;
+6月 18 16:46:46 ubuntu ipfs-cluster-service[56896]: <strong>error creating libp2p host: failed to listen on any addresses: [listen tcp4 0.0.0.0:&gt;</strong>
+6月 18 16:46:46 ubuntu systemd[1]: <strong>ipfs-cluster.service: Main process exited, code=exited, status=1/FAILURE</strong>
+6月 18 16:46:46 ubuntu systemd[1]: ipfs-cluster.service: Failed with result &rsquo;exit-code'.</p>
+<p>解决办法：</p>
+<p>解决不了 心态崩了  不知道为什么要设置守护程序  不守护感觉也行啊</p>
+</blockquote>
+<h3 id="测试一下集群数据复制">
+  测试一下集群数据复制
+  <a class="anchor" href="#%e6%b5%8b%e8%af%95%e4%b8%80%e4%b8%8b%e9%9b%86%e7%be%a4%e6%95%b0%e6%8d%ae%e5%a4%8d%e5%88%b6">#</a>
+</h3>
+<p>在其中一台节点中添加一个文件:</p>
+<pre tabindex="0"><code>ipfs-cluster-ctl add test.txt
+</code></pre><p>通过添加的文件 CID 来查看文件状态，可以看到文件以及在所有节点中<code>PINNED</code></p>
+<pre tabindex="0"><code>ipfs-cluster-ctl status CID
+</code></pre><p><a href="https://www.itread01.com/content/1533578312.html">https://www.itread01.com/content/1533578312.html</a></p>
+<p>后面有心的大佬可以根据这个改一下   试试不设置系统守护程序会怎样</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#ipfs私有网络集群搭建">IPFS私有网络集群搭建</a>
+      <ul>
+        <li><a href="#前期准备">前期准备</a></li>
+        <li><a href="#安装golang">安装Golang</a></li>
+        <li><a href="#安装ipfs">安装IPFS</a></li>
+        <li><a href="#创建共享的-key">创建共享的 key</a></li>
+        <li><a href="#移除默认的-bootstrap-节点">移除默认的 bootstrap 节点</a></li>
+        <li><a href="#私有网络节点配置">私有网络节点配置</a></li>
+      </ul>
+    </li>
+    <li><a href="#这里将分开讲述">这里将分开讲述</a>
+      <ul>
+        <li><a href="#非集群搭建较简单">非集群搭建（较简单）</a>
+          <ul>
+            <li><a href="#私有网络节点配置-1">私有网络节点配置</a></li>
+            <li><a href="#启动服务">启动服务</a></li>
+            <li><a href="#服务测试">服务测试</a></li>
+          </ul>
+        </li>
+        <li><a href="#集群搭建">集群搭建</a>
+          <ul>
+            <li><a href="#将-ipfs-进程加入到系统进程中启动">将 IPFS 进程加入到系统进程中启动</a></li>
+            <li><a href="#ipfs-cluster-安装">IPFS-Cluster 安装</a></li>
+            <li><a href="#设置集群密钥">设置集群密钥</a></li>
+            <li><a href="#初始化集群">初始化集群</a></li>
+            <li><a href="#将-ipfs-cluster-节点加入到系统进程中启动">将 IPFS-Cluster 节点加入到系统进程中启动</a></li>
+            <li><a href="#测试一下集群数据复制">测试一下集群数据复制</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

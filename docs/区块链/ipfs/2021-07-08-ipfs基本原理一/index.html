@@ -1,0 +1,2108 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="IPFS基础 # 1.1 IPFS 概述 # IPFS（InterPlanetary File System)是一个基于内容寻址的、分布式的、新型超媒体传输协议。IPFS支持创建完全分布式的应用。它旨在使网络更快、更安全、更开放。IPFS是一个分布式文件系统，它的目标是将所有计算设备连接到同一个文件系统，从而成为一个全球统一的存储系统。
+IPFS项目通过整合已有的技术（BitTorrent、DHT、Git和SFS），创建一种点对点超媒体协议，试图打造一个更加快速、安全、开放的下一代互联网，实现互联网中永久可用、数据可以永久保存的全球文件存储系统。同时，该协议有内容寻址、版本化特性，尝试补充甚至最终取代超文本传输协议（HTTP协议）。IPFS是一个协议，也是一个P2P网络，它类似于现在的BT网络，只是拥有更强大的功能，使得IPFS拥有可以取代HTTP的潜力。
+它提供了更加便宜、安全、可快速集成的存储解决方案。
+1.1.1 HTTP四大问题 # 极易受到攻击，防范攻击成本搞。 数据存储成本高。 数据中心化带来泄露风险。 大规模数据存储、传输和维护难。 1.1.2 IPFS优势 # 下载速度快
+IPFS使用了BitTorrent协议作为数据传输方式，使得IPFS系统在数据传输速度上大幅度提高，并且能够节省约60%的网络带宽。
+优化全球存储
+IPFS采用为数据块内容建立哈希去重的方式存储数据，数据的存储成本将会显著下降。
+更加安全
+IPFS、Filecoin的分布式特性与加密算法使得数据存储更加安全，甚至可以抵挡黑客攻击。
+数据的可持续保存
+IPFS提供了一种使互联网数据可以被可持续保存的存储方式，并且提供数据历史版本（Git)的回溯功能。
+1.2 IPFS借鉴的技术 # 1.2.1 哈希表DHT # 全称为分布式哈希表（Distributed Hash Table)，是一种分布式存储方法。DHT的原理是：在不需要服务器的情况下，每一个客户端存储一小部分数据，并负责一定区域的检索，进而实现整个DHT网络的寻址和检索。
+1.2.2 Kademlia # 在Kademlia网络中，所有信息均以哈希表条目的形式加以存储，这些信息被分散的存储在各个节点上，从而形成一张巨大的分布式哈希表。
+1.2.3 Git # Git存储时会把文件拆成若干部分，并计算各个部分的哈希值，利用这些构建起于文件对应的有向无环图（DAG），DAG的根节点也就是该文件的哈希值。
+如果需要修改文件，那么只需要修改少数图中节点即可；需要分享文件，等价于分享这个图；需要传输全部的文件，按照图中的哈希值下载合并即可。
+1.2.4 默克尔树 # 在IPFS项目里，也借鉴了默克尔树的思想。数据分块存放在有向无环图中，如果数据被修改了，只需要修改对应默克尔有向无环图中的节点数据，而不需要向网络重新更新整个文件。
+1.2.5 IPFS 补充区块链两大缺陷 # 区块链存储效率低，成本高。 跨链需要各个链之间协同配合，难以协调。 1.3 IPFS的优势与价值 # 1.3.1 技术优势 # IPFS技术可以分为多层子协议栈，从上至下为身份层、网络层、路由层、交换层、对象层、文件层、命名层，每个协议栈各司其职，又互相协同。
+身份层和路由层 # 对等节点身份信息的生成以及路由规则是通过Kademlia协议生成制定的，该协议实质上是构建了一个分布式哈希表，简称DHT。每个加入这个DHT网络的节点都要生成自己的身份信息，然后才能通过这个身份信息去负责存储这个网络里的资源信息和其他成员的联系信息。
+网络层 # 比较核心，所使用的Libp2p可以支持主流传输层协议。NAT技术能让哪网中的设备共用同一个外网IP。">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="IPFS基本原理（一）" />
+<meta property="og:description" content="IPFS基础 # 1.1 IPFS 概述 # IPFS（InterPlanetary File System)是一个基于内容寻址的、分布式的、新型超媒体传输协议。IPFS支持创建完全分布式的应用。它旨在使网络更快、更安全、更开放。IPFS是一个分布式文件系统，它的目标是将所有计算设备连接到同一个文件系统，从而成为一个全球统一的存储系统。
+IPFS项目通过整合已有的技术（BitTorrent、DHT、Git和SFS），创建一种点对点超媒体协议，试图打造一个更加快速、安全、开放的下一代互联网，实现互联网中永久可用、数据可以永久保存的全球文件存储系统。同时，该协议有内容寻址、版本化特性，尝试补充甚至最终取代超文本传输协议（HTTP协议）。IPFS是一个协议，也是一个P2P网络，它类似于现在的BT网络，只是拥有更强大的功能，使得IPFS拥有可以取代HTTP的潜力。
+它提供了更加便宜、安全、可快速集成的存储解决方案。
+1.1.1 HTTP四大问题 # 极易受到攻击，防范攻击成本搞。 数据存储成本高。 数据中心化带来泄露风险。 大规模数据存储、传输和维护难。 1.1.2 IPFS优势 # 下载速度快
+IPFS使用了BitTorrent协议作为数据传输方式，使得IPFS系统在数据传输速度上大幅度提高，并且能够节省约60%的网络带宽。
+优化全球存储
+IPFS采用为数据块内容建立哈希去重的方式存储数据，数据的存储成本将会显著下降。
+更加安全
+IPFS、Filecoin的分布式特性与加密算法使得数据存储更加安全，甚至可以抵挡黑客攻击。
+数据的可持续保存
+IPFS提供了一种使互联网数据可以被可持续保存的存储方式，并且提供数据历史版本（Git)的回溯功能。
+1.2 IPFS借鉴的技术 # 1.2.1 哈希表DHT # 全称为分布式哈希表（Distributed Hash Table)，是一种分布式存储方法。DHT的原理是：在不需要服务器的情况下，每一个客户端存储一小部分数据，并负责一定区域的检索，进而实现整个DHT网络的寻址和检索。
+1.2.2 Kademlia # 在Kademlia网络中，所有信息均以哈希表条目的形式加以存储，这些信息被分散的存储在各个节点上，从而形成一张巨大的分布式哈希表。
+1.2.3 Git # Git存储时会把文件拆成若干部分，并计算各个部分的哈希值，利用这些构建起于文件对应的有向无环图（DAG），DAG的根节点也就是该文件的哈希值。
+如果需要修改文件，那么只需要修改少数图中节点即可；需要分享文件，等价于分享这个图；需要传输全部的文件，按照图中的哈希值下载合并即可。
+1.2.4 默克尔树 # 在IPFS项目里，也借鉴了默克尔树的思想。数据分块存放在有向无环图中，如果数据被修改了，只需要修改对应默克尔有向无环图中的节点数据，而不需要向网络重新更新整个文件。
+1.2.5 IPFS 补充区块链两大缺陷 # 区块链存储效率低，成本高。 跨链需要各个链之间协同配合，难以协调。 1.3 IPFS的优势与价值 # 1.3.1 技术优势 # IPFS技术可以分为多层子协议栈，从上至下为身份层、网络层、路由层、交换层、对象层、文件层、命名层，每个协议栈各司其职，又互相协同。
+身份层和路由层 # 对等节点身份信息的生成以及路由规则是通过Kademlia协议生成制定的，该协议实质上是构建了一个分布式哈希表，简称DHT。每个加入这个DHT网络的节点都要生成自己的身份信息，然后才能通过这个身份信息去负责存储这个网络里的资源信息和其他成员的联系信息。
+网络层 # 比较核心，所使用的Libp2p可以支持主流传输层协议。NAT技术能让哪网中的设备共用同一个外网IP。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/" /><meta property="article:section" content="docs" />
+<meta property="article:published_time" content="2021-07-08T17:46:47+00:00" />
+<meta property="article:modified_time" content="2021-07-08T17:46:47+00:00" />
+<title>IPFS基本原理（一） | Soulmate</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" >
+<link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.5623389946cf2cb816d7e28b27d101617d469cca326a6a0a0bf362549d6ba433.js" integrity="sha256-ViM4mUbPLLgW1&#43;KLJ9EBYX1GnMoyamoKC/NiVJ1rpDM=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo.png" alt="Logo" /><span>Soulmate</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-074eed0fb8c6f9d99dfeff898388792f" class="toggle"  />
+    <label for="section-074eed0fb8c6f9d99dfeff898388792f" class="flex justify-between">
+      <a role="button" class="">计算机基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="">Vim编程常用快捷键</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E9%85%8D%E7%BD%AEkylinv10/" class="">配置 Kylin V10</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="">计算机网络基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/linux%E5%9F%BA%E7%A1%80/" class="">Linux基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/git%E5%9F%BA%E7%A1%80/" class="">Git基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Golang</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-670eda717a06f31447c52422ec93a159" class="toggle"  />
+    <label for="section-670eda717a06f31447c52422ec93a159" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/" class="">go语言基础（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/cgo/" class="">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/flag/" class="">Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/grpc/" class="">Grpc</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/" class="">ProtoBuf</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">常用业务代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/" class="">go语言基础（三）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/" class="">go语言底层基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/" class="">benchmark测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/" class="">Goland常用技巧</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle"  />
+    <label for="section-c453881a62c640f6a4cceec99c02477e" class="flex justify-between">
+      <a role="button" class="">高阶</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" class="">Go高阶-语言基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f235e88e751d2cb18d527c1784763605" class="toggle"  />
+    <label for="section-f235e88e751d2cb18d527c1784763605" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/atomic/" class="">Atomic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/os/" class="">Os</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strconv/" class="">Strconv</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sort/" class="">Sort</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strings/" class="">Strings</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/reflect/" class="">Reflect</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/time/" class="">Time</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sync/" class="">Sync</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ee53da12118bfd3e9b35f3e9494ab55b" class="toggle"  />
+    <label for="section-ee53da12118bfd3e9b35f3e9494ab55b" class="flex justify-between">
+      <a role="button" class="">LeetCode</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/" class="">golang力扣刷题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/" class="">golang力扣刷题（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/%E5%BF%85%E5%88%B7top101/" class="">必刷top101</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" class="">LeetCode算法总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>数据库</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle"  />
+    <label for="section-94f26238d1ca3b5bcd40eadc7a88d726" class="flex justify-between">
+      <a role="button" class="">MySql</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" class="">MySql基础总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="">Mac连接数据库所遇到的问题</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="toggle"  />
+    <label for="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="flex justify-between">
+      <a role="button" class="">Redis</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="">Redis集群搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/" class="">Redis基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="">redis面试总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8be9c2251abd1fe110e3c1520cac6177" class="toggle"  />
+    <label for="section-8be9c2251abd1fe110e3c1520cac6177" class="flex justify-between">
+      <a role="button" class="">SQLite</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/" class="">Sqlite</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/" class="">Xorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ad390db13e5fa9e14f921f4e4f77900e" class="toggle"  />
+    <label for="section-ad390db13e5fa9e14f921f4e4f77900e" class="flex justify-between">
+      <a role="button" class="">C/C&#43;&#43;</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/cc&#43;&#43;/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>区块链</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle"  />
+    <label for="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="flex justify-between">
+      <a role="button" class="">Fabric</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">fabric相关机制与原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/" class="">智能合约</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/" class="">fabric-sdk-go详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/" class="">fabric-ca详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle"  />
+    <label for="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="flex justify-between">
+      <a role="button" class="">环境测试</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/" class="">fabric网络中的报错（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/" class="">fabric网络中的报错（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">fabric环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/" class="">solo节点测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/" class="">fabric多机搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/" class="">部署tape测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/" class="">手动生成ca证书搭建fabric网络</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/" class="">centos安装fabric1.2</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-25aef1d59a561fcefcaecb043ef8afd2" class="toggle"  />
+    <label for="section-25aef1d59a561fcefcaecb043ef8afd2" class="flex justify-between">
+      <a role="button" class="">配置文件</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/" class="">cryptogen生成的证书详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">docker-compose.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">configtx.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">crypto-config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/" class="">升级链码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/" class="">区块链网络添加组织</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/" class="">fabric浏览器搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/" class="">如何在已有组织中增加节点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/" class="">Fabric1.4多通道实验</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b07621083aa30b12de4c0333941e479f" class="toggle"  />
+    <label for="section-b07621083aa30b12de4c0333941e479f" class="flex justify-between">
+      <a role="button" class="">比特币</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">比特币相关机制与原理</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle" checked />
+    <label for="section-ff5477999ef29208270c84e8b56b2758" class="flex justify-between">
+      <a role="button" class="">IPFS</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/" class="">go-ipfs-api</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" class="">ipfs-webui可视化工具搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/" class="active">IPFS基本原理（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/" class="">IPFS私有网络搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-77a0a17b06e8d04cfb0fba9952941706" class="toggle"  />
+    <label for="section-77a0a17b06e8d04cfb0fba9952941706" class="flex justify-between">
+      <a role="button" class="">密码学</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" class="">区块链安全基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/" class="">椭圆曲线加密</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/" class="">密码学基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2e4d10b323fd668021dbd532575d8790" class="toggle"  />
+    <label for="section-2e4d10b323fd668021dbd532575d8790" class="flex justify-between">
+      <a role="button" class="">Docker</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/" class="">Docker基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/" class="">Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" class="">docker常用知识总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-70383d7f28a7ae4bf840a844eb61aa16" class="toggle"  />
+    <label for="section-70383d7f28a7ae4bf840a844eb61aa16" class="flex justify-between">
+      <a role="button" class="">共识算法</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">共识算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" class="">Raft共识算法</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>前端</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
+    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
+      <a role="button" class="">博客</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%9B%BE%E4%B9%A6/" class="">图书</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/" class="">工具库</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="https://gitee.com/chaincode"  target="_blank" rel="noopener">
+        Gitee
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>IPFS基本原理（一）</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#ipfs基础">IPFS基础</a>
+          <ul>
+            <li><a href="#11--ipfs-概述">1.1  IPFS 概述</a></li>
+            <li><a href="#12-ipfs借鉴的技术">1.2 IPFS借鉴的技术</a></li>
+            <li><a href="#13-ipfs的优势与价值">1.3 IPFS的优势与价值</a></li>
+          </ul>
+        </li>
+        <li><a href="#ipfs底层技术">IPFS底层技术</a>
+          <ul>
+            <li><a href="#21-分布式哈希表dht">2.1 分布式哈希表DHT</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h2 id="ipfs基础">
+  IPFS基础
+  <a class="anchor" href="#ipfs%e5%9f%ba%e7%a1%80">#</a>
+</h2>
+<h3 id="11--ipfs-概述">
+  1.1  IPFS 概述
+  <a class="anchor" href="#11--ipfs-%e6%a6%82%e8%bf%b0">#</a>
+</h3>
+<p>IPFS（InterPlanetary File System)是一个基于内容寻址的、分布式的、新型超媒体传输协议。IPFS支持创建完全分布式的应用。它旨在使网络更快、更安全、更开放。IPFS是一个分布式文件系统，它的目标是将所有计算设备连接到同一个文件系统，从而成为一个全球统一的存储系统。</p>
+<p>IPFS项目通过整合已有的技术（BitTorrent、DHT、Git和SFS），创建一种点对点超媒体协议，试图打造一个更加快速、安全、开放的下一代互联网，实现互联网中永久可用、数据可以永久保存的全球文件存储系统。同时，该协议有内容寻址、版本化特性，尝试补充甚至最终取代超文本传输协议（HTTP协议）。IPFS是一个协议，也是一个P2P网络，它类似于现在的BT网络，只是拥有更强大的功能，使得IPFS拥有可以取代HTTP的潜力。</p>
+<p>它提供了更加便宜、安全、可快速集成的存储解决方案。</p>
+<h4 id="111-http四大问题">
+  1.1.1 HTTP四大问题
+  <a class="anchor" href="#111-http%e5%9b%9b%e5%a4%a7%e9%97%ae%e9%a2%98">#</a>
+</h4>
+<ul>
+<li>极易受到攻击，防范攻击成本搞。</li>
+<li>数据存储成本高。</li>
+<li>数据中心化带来泄露风险。</li>
+<li>大规模数据存储、传输和维护难。</li>
+</ul>
+<h4 id="112-ipfs优势">
+  1.1.2 IPFS优势
+  <a class="anchor" href="#112-ipfs%e4%bc%98%e5%8a%bf">#</a>
+</h4>
+<ul>
+<li>
+<p>下载速度快</p>
+<p>IPFS使用了BitTorrent协议作为数据传输方式，使得IPFS系统在数据传输速度上大幅度提高，并且能够节省约60%的网络带宽。</p>
+</li>
+<li>
+<p>优化全球存储</p>
+<p>IPFS采用为数据块内容建立哈希去重的方式存储数据，数据的存储成本将会显著下降。</p>
+</li>
+<li>
+<p>更加安全</p>
+<p>IPFS、Filecoin的分布式特性与加密算法使得数据存储更加安全，甚至可以抵挡黑客攻击。</p>
+</li>
+<li>
+<p>数据的可持续保存</p>
+<p>IPFS提供了一种使互联网数据可以被可持续保存的存储方式，并且提供数据历史版本（Git)的回溯功能。</p>
+</li>
+</ul>
+<h3 id="12-ipfs借鉴的技术">
+  1.2 IPFS借鉴的技术
+  <a class="anchor" href="#12-ipfs%e5%80%9f%e9%89%b4%e7%9a%84%e6%8a%80%e6%9c%af">#</a>
+</h3>
+<h4 id="121-哈希表dht">
+  1.2.1 哈希表DHT
+  <a class="anchor" href="#121-%e5%93%88%e5%b8%8c%e8%a1%a8dht">#</a>
+</h4>
+<p>全称为分布式哈希表（Distributed Hash Table)，是一种分布式存储方法。DHT的原理是：在不需要服务器的情况下，每一个客户端存储一小部分数据，并负责一定区域的检索，进而实现整个DHT网络的寻址和检索。</p>
+<h4 id="122-kademlia">
+  1.2.2 Kademlia
+  <a class="anchor" href="#122-kademlia">#</a>
+</h4>
+<p>在Kademlia网络中，所有信息均以哈希表条目的形式加以存储，这些信息被分散的存储在各个节点上，从而形成一张巨大的分布式哈希表。</p>
+<h4 id="123-git">
+  1.2.3 Git
+  <a class="anchor" href="#123-git">#</a>
+</h4>
+<p>Git存储时会把文件拆成若干部分，并计算各个部分的哈希值，利用这些构建起于文件对应的有向无环图（DAG），DAG的根节点也就是该文件的哈希值。</p>
+<p>如果需要修改文件，那么只需要修改少数图中节点即可；需要分享文件，等价于分享这个图；需要传输全部的文件，按照图中的哈希值下载合并即可。</p>
+<h4 id="124-默克尔树">
+  1.2.4 默克尔树
+  <a class="anchor" href="#124-%e9%bb%98%e5%85%8b%e5%b0%94%e6%a0%91">#</a>
+</h4>
+<p>在IPFS项目里，也借鉴了默克尔树的思想。数据分块存放在有向无环图中，如果数据被修改了，只需要修改对应默克尔有向无环图中的节点数据，而不需要向网络重新更新整个文件。</p>
+<h4 id="125-ipfs-补充区块链两大缺陷">
+  1.2.5 IPFS 补充区块链两大缺陷
+  <a class="anchor" href="#125-ipfs-%e8%a1%a5%e5%85%85%e5%8c%ba%e5%9d%97%e9%93%be%e4%b8%a4%e5%a4%a7%e7%bc%ba%e9%99%b7">#</a>
+</h4>
+<ul>
+<li>区块链存储效率低，成本高。</li>
+<li>跨链需要各个链之间协同配合，难以协调。</li>
+</ul>
+<h3 id="13-ipfs的优势与价值">
+  1.3 IPFS的优势与价值
+  <a class="anchor" href="#13-ipfs%e7%9a%84%e4%bc%98%e5%8a%bf%e4%b8%8e%e4%bb%b7%e5%80%bc">#</a>
+</h3>
+<h4 id="131-技术优势">
+  1.3.1 技术优势
+  <a class="anchor" href="#131-%e6%8a%80%e6%9c%af%e4%bc%98%e5%8a%bf">#</a>
+</h4>
+<p>IPFS技术可以分为多层子协议栈，从上至下为身份层、网络层、路由层、交换层、对象层、文件层、命名层，每个协议栈各司其职，又互相协同。</p>
+<h5 id="身份层和路由层">
+  身份层和路由层
+  <a class="anchor" href="#%e8%ba%ab%e4%bb%bd%e5%b1%82%e5%92%8c%e8%b7%af%e7%94%b1%e5%b1%82">#</a>
+</h5>
+<p>对等节点身份信息的生成以及路由规则是通过Kademlia协议生成制定的，该协议实质上是构建了一个分布式哈希表，简称DHT。每个加入这个DHT网络的节点都要生成自己的身份信息，然后才能通过这个身份信息去负责存储这个网络里的资源信息和其他成员的联系信息。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208032226760.pdf" alt="" /></p>
+<h5 id="网络层">
+  网络层
+  <a class="anchor" href="#%e7%bd%91%e7%bb%9c%e5%b1%82">#</a>
+</h5>
+<p>比较核心，所使用的Libp2p可以支持主流传输层协议。NAT技术能让哪网中的设备共用同一个外网IP。</p>
+<h5 id="交换层">
+  交换层
+  <a class="anchor" href="#%e4%ba%a4%e6%8d%a2%e5%b1%82">#</a>
+</h5>
+<p>IPFS吸取了BitTorrent的技术，自研了BitSwap模块。使用BitSwap进行数据的分发和交换，用户上传分享数据会增加信用分，分享得越多信用分越高；用户下载数据会降低信用分，当信用分低于一定值时，将会被其他节点忽略。</p>
+<h5 id="对象层和文件层">
+  对象层和文件层
+  <a class="anchor" href="#%e5%af%b9%e8%b1%a1%e5%b1%82%e5%92%8c%e6%96%87%e4%bb%b6%e5%b1%82">#</a>
+</h5>
+<p>他们管理了IPFS上80%的数据结构，大部分数据对象都是以Merkle-DAG的结构存在，这为内容寻址和去重提供了便利。文件层有blob、tree、list、commit等多种结构体，并采用与Git类似的方式来支持版本控制。</p>
+<h5 id="命名层">
+  命名层
+  <a class="anchor" href="#%e5%91%bd%e5%90%8d%e5%b1%82">#</a>
+</h5>
+<p>具有自我验证的特性（当其他用户获取该对象时，将交换节点公钥进行验签，即验证公钥信息是否与NodeID匹配，从而来验证用户发布对象的真实性），并且加入IPNS这个巧妙的设计使得哈希过后的内容路径名称可定义，增强阅读性。</p>
+<h4 id="132-ipfs-基础模块">
+  1.3.2 IPFS 基础模块
+  <a class="anchor" href="#132-ipfs-%e5%9f%ba%e7%a1%80%e6%a8%a1%e5%9d%97">#</a>
+</h4>
+<p>IPFS将这几个模块集成为一种系统级的文件服务，以命令行（CLI）和Web服务的形式供大家使用。</p>
+<h5 id="multiformats">
+  Multiformats
+  <a class="anchor" href="#multiformats">#</a>
+</h5>
+<p>Multiformats是一系列散列函数和自描述方式（从值上就可以知道值是如何生成的）的集合，目前拥有多种主流的散列处理方式，用以加密和描述NodeID以及内容ID的生成。基于Multiformats用户可以很便捷的添加新的哈希算法，或者在不同的哈希算法之间迁移。</p>
+<h5 id="libp2p">
+  LibP2P
+  <a class="anchor" href="#libp2p">#</a>
+</h5>
+<p>LibP2P是IPFS模块体系内核心中的核心，用以适配各式各样的传输协议以及连接众多复杂的网络设备，它可以帮助开发者迅速建立一个高效可用的P2P网络层，非常利于区块链网络层的搭建。</p>
+<h5 id="ipld">
+  IPLD
+  <a class="anchor" href="#ipld">#</a>
+</h5>
+<p>IPLD是一个转换中间件，将现有的异构数据结构统一成一种格式，方便不同系统之间的数据交换和互操作。IPLD中间件可以把不同的区块结构统一成一个标准进行传输，为开发者提供了简单、易用、健壮的基础组件。</p>
+<h2 id="ipfs底层技术">
+  IPFS底层技术
+  <a class="anchor" href="#ipfs%e5%ba%95%e5%b1%82%e6%8a%80%e6%9c%af">#</a>
+</h2>
+<h3 id="21-分布式哈希表dht">
+  2.1 分布式哈希表DHT
+  <a class="anchor" href="#21-%e5%88%86%e5%b8%83%e5%bc%8f%e5%93%88%e5%b8%8c%e8%a1%a8dht">#</a>
+</h3>
+<p>DHT主要思想是：全网维护一个巨大的文件索引哈希表，这个表的条目形如&lt;key,value&gt;。这里key通常是文件的某个存储文件的IP地址。查询时，仅需要提供key，就能从表中查询到存储节点的地址并返回给查询节点。当然，这个哈希表会被分割成小块，按照一定的算法和规则分布到全网各个节点上。每个节点仅需要维护一小块哈希表。这样，节点查询文件时，只要把查询报文路由到相应的节点即可。</p>
+<h4 id="211-kademlia-dht">
+  2.1.1 Kademlia DHT
+  <a class="anchor" href="#211-kademlia-dht">#</a>
+</h4>
+<p>Kademlia DHT是分布式哈希表的一种实现</p>
+<h5 id="特性">
+  特性：
+  <a class="anchor" href="#%e7%89%b9%e6%80%a7">#</a>
+</h5>
+<ul>
+<li>节点ID与关键字是同样的值域，都是使用SHA-1算法生成的160位摘要，这样大大简化了查询时的信息量，便于查询。</li>
+<li>可以使用XOR，计算任意两个节点的距离或节点和关键字的距离。</li>
+<li>查找一条请求路径的时候，每个节点的信息是完备的，只需要进行Log(n)量级次跳转。</li>
+<li>可根据查询速度和存储量的需求调整每个节点需要维护的DHT大小。</li>
+</ul>
+<blockquote>
+<p>KAD网络对DHT有很大改进，一个新来的网络节点在初次连接网络时会被分配一个ID；每个节点自身维护一个路由表和一个DHT，这个路由表保存网络中一部分节点的连接信息，DHT用于存放文件信息；每个节点优先保存距离自己更近的节点信息，但一定确保距离在[2^n,2(n+1)-1]的全节点至少保存K个（k是常数），我们称作K-Bucket；每个网络节点需要优先存储与自己的ID距离较小的文件；每次检索时，计算查询文件的哈希值与自己的ID的距离，然后找到与这个距离对应的K-Bucket,向K-Bucket中的节点查询，接受查询的节点也做同样的检查，如果发现自己存有这个数据，便将其返回给查询的节点。</p>
+</blockquote>
+<h5 id="kademlia-二叉状态树">
+  Kademlia 二叉状态树
+  <a class="anchor" href="#kademlia-%e4%ba%8c%e5%8f%89%e7%8a%b6%e6%80%81%e6%a0%91">#</a>
+</h5>
+<p>kademlia网络的节点ID是由二叉树维护的，最终生成的二叉树的特点如下：</p>
+<ul>
+<li>每个网络节点从根节点出发，沿着它的最短唯一前缀到达。</li>
+<li>每个网络节点是叶子节点。对于任意的一个树的节点，我们可以沿着它的前缀作为路径，向下分解成一系列不包含自己的子树。kademlia二叉树的建立，需要确保每个网络的节点都能从树根沿着它的最短唯一前缀的路径到达。</li>
+</ul>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208032227627.pdf" alt="" /></p>
+<p>在kademlia中，每个DHT条目包含&lt;key,value&gt;对。key是文件的哈希值，value是节点ID。key和value有相同的值域，都是160位。每一个新加入网络的计算机都会被随机分配一个节点ID值。数据存放在key值与ID值最接近key值的节点上。XOR运算可以解决这个问题。&lt;key,value&gt;在160位Hash上，判断两个节点x,y的距离远近的方法是进行二进制运算异或。两个二进制位结果相同，它们的异或值是0，如不同，值为1.</p>
+<p>如果给定了x ,任意一个a(a&gt;=0)会唯一确定另一个节点y，满足d(x,y)=a。假设这里的x是我们需要查询的文件key，我们只需要不断更新y,使得y沿着d(x,y)下降的方向找下去，那么一定能收敛到距离x最近的点。</p>
+<blockquote>
+<p>文件就是放在网络编号与文件哈希的XOR最近的几个节点上。只要沿着XOR距离降低的方向查找，从任意一个网络节点开始查询，我们总能找到这个存放文件的地址。而且每次更新总能筛选掉一半的节点，那么最多只需logN步即可到达。</p>
+</blockquote>
+<h5 id="节点路由表k-bucket">
+  节点路由表K-Bucket
+  <a class="anchor" href="#%e8%8a%82%e7%82%b9%e8%b7%af%e7%94%b1%e8%a1%a8k-bucket">#</a>
+</h5>
+<p>节点路由表用于保存每个节点与自己一定距离范围内其他节点的连接信息。每一条路由信息由如下3部分组成：IP Address、UDP Port、Node ID。</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#ipfs基础">IPFS基础</a>
+          <ul>
+            <li><a href="#11--ipfs-概述">1.1  IPFS 概述</a></li>
+            <li><a href="#12-ipfs借鉴的技术">1.2 IPFS借鉴的技术</a></li>
+            <li><a href="#13-ipfs的优势与价值">1.3 IPFS的优势与价值</a></li>
+          </ul>
+        </li>
+        <li><a href="#ipfs底层技术">IPFS底层技术</a>
+          <ul>
+            <li><a href="#21-分布式哈希表dht">2.1 分布式哈希表DHT</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

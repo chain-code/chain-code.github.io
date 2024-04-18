@@ -1,0 +1,1660 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Home on Soulmate</title>
+    <link>https://chain-code.github.io/</link>
+    <description>Recent content in Home on Soulmate</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 27 Mar 2024 12:11:30 +0000</lastBuildDate><atom:link href="https://chain-code.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Docker基础</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Mon, 19 Sep 2022 21:02:07 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/</guid>
+      <description>Docker简介 # Docker是一个开源的容器引擎，它基于LCX容器技术，使用Go语言开发。
+源代码托管在Github上，并遵从Apache2.0协议。
+Docker采用C/S架构，其可以轻松的为任何应用创建一个轻量级的、可移植的、自给自足的容器。
+Docker就是一种快速解决生产问题的一种技术手段,开发，运行和部署应用程序的开放管理平台。
+Docker提供了在一个完全隔离的环境中打包和运行应用程序的能力，这个隔离的环境被称为容器。 由于容器的隔离性和安全性，因此可以在一个主机(宿主机)上同时运行多个相互隔离的容器，互不干预。
+Docker主要解决的问题:
+保证程序运行环境的一致性; 降低配置开发环境、生产环境的复杂度和成本; 实现程序的快速部署和分发。
+架构与结构 # 架构图 # Docker是采用了(c/s)架构模式的应用程序
+Client dockerCLI :客户端docker命令行
+REST API : 一套介于客户端与服务端的之间进行通信并指示其执行的接口
+Server docker daemon:服务端dacker守护进程等待客户端发送命令来执行
+Docker的四大核心技术
+IMAGE-镜像 CONTAINER-容器 DATA VOLUMES-数据卷 NETWORK-网络 结构图 # Docker客户端(Docker Client) # Docker客户端(Docker Client)是用户与Docker进行交互的最主要方式。当在终端输入docker命令时，对应的就会 在服务端产生对应的作用，并把结果返回给客户端。Docker Client除了连接本地服务端，通过更改或指定 DOCKER_HOST连接远程服务端。
+Docker服务端(Docker Server) # Docker Daemon其实就是Docker 的服务端。它负责监听Docker API请求(如Docker Client)并管理Docker对象(Docker Objects)，如镜像、容器、网络、数据卷等
+Docker Registries # 俗称Docker仓库，专门用于存储镜像的云服务环境.
+Docker Hub就是一个公有的存放镜像的地方，类似Github存储代码文件。同样的也可以类似Github那样搭建私有 的仓库。
+Docker 对象(Docker Objects) # 镜像:一个Docker的可执行文件，其中包括运行应用程序所需的所有代码内容、依赖库、环境变量和配置文件等。 容器:镜像被运行起来后的实例。 网络:外部或者容器间如何互相访问的网络方式，如host模式、bridge模式。 数据卷:容器与宿主机之间、容器与容器之间共享存储方式，类似虚拟机与主机之间的共享文件目录。
+docker特点 # 三大理念: # 构建:龙珠里的胶囊，将你需要的场景构建好，装在一个小胶囊里</description>
+    </item>
+    
+    <item>
+      <title>Go高阶-语言基础</title>
+      <link>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Wed, 07 Sep 2022 15:43:23 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/</guid>
+      <description>前言 # func main(){ name:=&amp;#34;张三&amp;#34; fmt.printf(&amp;#34;%d&amp;#34;,len(name)) } 6 每个汉字3个字符 逃逸分析 # Go语言中，调用new函数得到的内存不一定在堆上，还有可能在栈上。这是因为在Go语言中，堆和栈的区别被“模糊化”了，当然这一切都是Go编译器在后台完成的。
+一个变量是在堆上分配，还是在栈上分配，是经过编译器的逃逸分析之后得出的“结论”。
+Go语言里就是指编译器的逃逸分析：它是编译器执行静态代码分析后，对内存管理进行的优化和简化。
+在编译原理中，分析指针动态范围的方法被称为逃逸分析。通俗来讲，当一个对象的指针被多个方法或线程引用时，则称这个指针发生了逃逸。逃逸分析决定一个变量是分配在堆上还是分配在栈上。
+作用 # 逃逸分析把变量合理地分配到它该去的地方，“找准自己的位置”。即使是用new函数申请到的内存，如果编译器发现这块内存在退出函数后就没有使用了，那就分配到栈上，毕竟栈上的内存分配比堆上块很多；反之，即使表面上只是一个普通的变量，但是经过编译器的逃逸分析后发现，在函数之外还有其他的地方在引用，那就分配到堆上。真正做到了按需分配。
+如果变量都分配到堆上，堆不像栈可以自动清理。就会引起Go频繁的进行垃圾回收，而垃圾回收会占用比较大的系统开销。
+堆和栈相比，堆适合不可预知大小的的内存分配。但是为此付出的代价是分配速度较慢，而且会形成内存碎片；栈内存分配则会非常快。栈分配内存只需要通过PUSH指令，并且会被自动释放；而堆分配内存首先需要去找一个大小合适的内存块，之后要通过垃圾回收才能释放。
+通过逃逸分析，可以尽量把哪些不需要分配到堆上的变量直接分配到栈上，堆上的压力变小了，会减轻堆内存分配开销，同时也会减轻垃圾回收的压力，提高程序运行速度。
+原则 # Go语言逃逸分析最基本的原则是：如果一个函数返回对一个变量的引用，那么这个变量就会发生逃逸。
+Go中的变量只有在编译器可以证明在函数返回后不再被引用的，才分配到栈上，其他情况都分配到堆上。
+编译器会根据变量是否被外部引用来决定是否逃逸：
+如果变量在函数外部没有引用，则优先放到栈上。 如果变量在函数外部存在引用，则必定放到堆上。 针对第一条，放到堆上的情形：定义了一个很大的数组，需要申请的内存过大，超过了栈的存储能力。
+判断 # Go提供了相关的命令，可以查看变量是否发生逃逸。
+go build -gcflags &amp;#39;-m -l&amp;#39; main.go 其中-gcflags参数用于启动编译器支持的额外标志。例如，-m用于输出编译器的优化细节（包括使用逃逸分析这种优化），相反可以使用-N来关闭编译器优化；而-l则用于禁用foo函数的内联优化，防止逃逸被编译器通过内联彻底抹除。
+GO与C/C++中的堆和栈是同一个概念吗 # 不是
+C/C++中提及的“程序堆栈”本质上是操作系统层级的概念，它通过C/C++语言的编译器和所在的系统环境来共同决定。在程序启动时，操纵系统会自动维护一个所启动程序消耗内存的地址空间，并自动将这个空间从逻辑上划分为堆内存空间和栈内存空间。这时，“栈”的概念是指程序运行时自动获得的一小块内存，而后续的函数调用所消耗的栈大小，会在编译期间有编译器决定，用于保存局部变量或者保存函数调用栈。如果在C/C++中声明一个局部变量，则会执行逻辑上的压栈操作，在栈中记录局部变量。而当局部变量离开作用域之后，所谓的自动释放本质上是该位置的内存在下一次函数调用压栈过程中，可以被无条件的覆盖；对于堆而言，每当程序通过系统调用向操作系统申请内存时，会将所需的空间从维护的堆内存地址空间中分配出去，而在归还时则会将归还的内存合并到所维护的地址空间中。
+Go程序也是运行在操作系统上的程序，自然同样拥有前面提到的堆和栈的概念。但区别在于传统意义上的“栈”被Go语言的运行时全部消耗了，用于维护运行时各个组件之间的协调，例如调度器、垃圾回收、系统调用等。而对于用户态的Go代码而言，他们所消耗的“堆和栈”，其实只是Go运行时通过管理向操作系统申请的堆内存，构造的逻辑上的“堆和栈”，它们的本质都是从操作系统申请而来的堆内存。
+延迟语句 # 延迟语句defer，能把资源的释放语句与申请语句放到距离相近的位置，从而减少资源泄露的发生。
+defer是Go语言提供的一种用于注册延迟调用的机制：让函数或语句可以在当前函数执行完毕后（包括通过return正常结束或者Panic导致的异常结束）执行。通常用于一些成对操作的场景：打开连接/关闭连接、加锁/释放锁、打开文件/关闭文件等。
+defer会有短暂延迟，对时间要求特别高的程序，可以避免使用它。
+defer的执行顺序 # defer语句并不会马上执行，而是会进入一个栈，函数return前，会按先进后出的顺序执行。先进后出的原因是后面定义的函数可能会依赖前面的资源，自然要先执行；否则，如果前面的先执行了，那后面的函数依赖就没有了，因而可能会出错。
+在defer函数定义时，对外部变量的引用有两种方式：函数参数、闭包引用。前者在defer定义时就把值传递给defer，并且被cache起来；后者则会在defer函数真正调用时根据整个上下文确定参数当前的值。
+func main(){ var whatever [3]struct{} for i:=range whatever{ defer func(){ fmt.Println(i) }() } } 2 2 2 defer 后面跟的是一个闭包，i是“引用”类型的变量，for循环结束后i的值为2，因此后面打印了3个2.</description>
+    </item>
+    
+    <item>
+      <title>操作系统基础</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Sun, 07 Aug 2022 12:20:19 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/</guid>
+      <description>操作系统 # 基础 # 什么是操作系统？ # 操作系统（Operating System，简称OS）是管理计算机软件与硬件资源的程序。 本质上是一个运行在计算机上的软件程序。 操作系统的存在屏蔽了硬件层的复杂性。 操作系统的内核（Kernel）是操作系统的核心部分，它负责系统的内存管理，硬件设备的管理，文件系统的管理以及应用程序的管理。 什么是系统调用？ # 根据进程访问资源的特点，我们可以把进程在系统上的运行分为两个级别：
+1、用户态：用户态运行的进程可以直接读取用户程序的数据。
+2、系统态：系统态运行的进程或程序几乎可以访问计算机的任何资源，不受限制。
+我们运行的程序基本都是运行在用户态，凡是与系统态级别的资源有关的操作(如文件管理、进程控制、内存管理等)，都必须通过系统调用的方式向操作系统提出服务请求，并由操作系统代为完成。
+这些系统调用按功能大致可分为如下几类：
+设备管理。完成设备的请求或释放，以及设备启动等功能。 文件管理。完成文件的读、写、创建及删除等功能。 进程控制。完成进程的创建、撤销、阻塞及唤醒等功能。 进程通信。完成进程之间的消息传递或信号传递等功能。 内存管理。完成内存的分配、回收以及获取作业占用内存区大小及地址等功能。 简单说下你对并发和并行的理解？ # 并发
+在一个时间段中多个程序都启动运行在同一个处理机中
+并行
+假设目前A，B两个进程，两个进程分别由不同的 CPU 管理执行，两个进程不抢占 CPU 资源且可以同时运行，这叫做并行。
+同步、异步、阻塞、非阻塞的概念 # 同步：当一个同步调用发出后，调用者要一直等待返回结果。通知后，才能进行后续的执行。
+异步：当一个异步过程调用发出后，调用者不能立刻返回结果。实际处理这个调用的部件在完成后，通过状态，通知和回调来通知调用者。
+阻塞：是指调用结果返回前，当前线程会被挂起，即阻塞。
+非阻塞：是指调用结果没返回，也不会阻塞当前线程。
+形象比喻：
+小Q去钓鱼，抛完线后就傻傻的看着有没有动静，有则拉杆(同步阻塞) 小Q去钓鱼，拿鱼网捞一下，有没有鱼立即知道，不用等，直接就捞(同步非阻塞) 小Q去钓鱼，这个鱼缸比较牛皮，扔了后自己就打王者荣耀去了，因为鱼上钩了这个鱼缸带的报警器会通知我。这样实现异步(异步非阻塞） 异常的类型 # 故障 终止 自陷 缓存 # 为了缓解数据库的压力，往往在数据库前面增加一个缓存：
+缓存穿透 # 在缓存中查不到key，只能去数据库查询；当有大量请求直接穿透了缓存打到数据库，就是缓存穿透。
+解决
+系统写好参数校验 缓存空值，过期时间短一些 布隆过滤器 缓存雪崩 # 同一时间大规模key同时失效，大量的请求直接打在数据库上面，导致数据库压力巨大，如果在高并发的情况下，可能瞬间会导致数据库宕机。
+原因
+Redis宕机 大规模key使用了相同的过期时间 解决
+原有实效时间加随机值 熔断机制 数据库容灾，分库分表、读写分离 防止Redis宕机：Redis集群 缓存击穿 # 大并发集中对一个热点的key进行访问，突然这个key实效，导致大并发全部打在数据库上，导致数据库压力剧增。</description>
+    </item>
+    
+    <item>
+      <title>fabric相关机制与原理</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/</link>
+      <pubDate>Fri, 25 Feb 2022 09:22:44 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/</guid>
+      <description>Hyperledger fabric认知 # fabric由来 # ​ 2015年12月由Linux基金会主导并牵头，IBM、Intel、Cisco等制造和科技行业的巨头共同宣布了Hyperledger fabric联合项目成立。
+​	hyperledger fabric利用容器技术来托管链码，其中包括系统的应用程序逻辑。
+​	Hyperledger Fabric 是分布式账本解决方案的平台，采用模块化架构，提供高安全性、弹性、灵活性和可扩展性。它被设计为支持以可插拔方式实现不同组件，并适应复杂的经济生态系统。
+hyperledger fabric与其他公有区块链系统最大的不同主要体现在以下两个方面： （1）私有 fabric提供建立通道的功能，允许参与交易新建一个单独的账本。 （2）许可 与开放无须许可的网络系统允许未知身份的参与者加入网络不同（需要通过工作量证明协议来保证交易有效并维护网络的安全），Hyperledger fabric通过MSP来登记所有成员。 cURL是什么？有什么作用？
+cURL是一个可以在终端命令行下使用URL语法执行的开源文件传输工具。它支持基于HTTP/Socket的代理；cURL还支持使用SSL证书，支持HTTP POST、HTTP PUT，支持FTP上传，以及基于HTTP表单的上传；支持cookie，可以使用用户名+密码的方式实现认证等。
+Hyperledger fabric架构 # 交易流程 # 背书 # 一个示例背书策略可能这样定义：参与区块链网络的四个组织中有三个必须在交易被认为有效之前签署该交易。所有的交易，无论是有效的还是无效的，都会被添加到分布式账本中，但只有有效交易会更新世界状态。
+如果一项背书策略指定了必须有不止一个组织来签署交易，那么只有当足够数量的组织都执行了智能合约，才能够生成有效交易。
+背书策略是 Hyperledger Fabric 与以太坊（Ethereum）或比特币（Bitcoin）等其他区块链的区别所在。在这些区块链系统中，网络上的任何节点都可以生成有效的交易。而 Hyperledger Fabric 更真实地模拟了现实世界；交易必须由 Fabric 网络中受信任的组织验证。例如，一个政府组织必须签署一个有效的 issueIdentity 交易，或者一辆车的 买家 和 卖家 都必须签署一个 车辆 转移交易。
+有效交易 # 当智能合约执行时，它会在区块链网络中组织所拥有的节点上运行。智能合约提取一组名为交易提案的输入参数，并将其与程序逻辑结合起来使用以读写账本。对世界状态的更改被捕获为交易提案响应（或简称交易响应），该响应包含一个读写集，其中既含有已读取的状态，也含有还未书写的新状态（如果交易有效的话）。注意，在执行智能合约时世界状态没有更新！
+所有的交易都有一个识别符、一个提案和一个被一群组织签名的响应。所有交易，无论是否有效，都会被记录在区块链上，但仅有效交易会更新世界状态。
+一项交易被分发给网络中的所有节点，各节点通过两个阶段对其进行验证。首先，根据背书策略检查交易，确保该交易已被足够的组织签署。其次，继续检查交易，以确保当该交易在受到背书节点签名时它的交易读集与世界状态的当前值匹配，并且中间过程中没有被更新。如果一个交易通过了这两个测试，它就被标记为有效。所有交易，不管是有效的还是无效的，都会被添加到区块链历史中，但是仅有效的交易才会更新世界状态。
+共享账本 # Hyperledger Fabric 有一个账本子系统，包括两个组件： 世界状态 和 交易日志 。每个参与者都拥有他们所属的每个 Hyperledger Fabric 网络的账本副本。</description>
+    </item>
+    
+    <item>
+      <title>golang力扣刷题（一）</title>
+      <link>https://chain-code.github.io/docs/golang/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/</link>
+      <pubDate>Thu, 14 Oct 2021 21:03:50 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/</guid>
+      <description>力扣刷题（一） # 力扣刷题 全部题目模块（1～100）
+简单 # 山峰数组 # 符合下列属性的数组 arr 称为 山峰数组（山脉数组） ：arr.length &amp;gt;= 3存在 i（0 &amp;lt; i &amp;lt; arr.length - 1）使得： arr[0] &amp;lt; arr[1] &amp;lt; &amp;hellip; arr[i-1] &amp;lt; arr[i] arr[i] &amp;gt; arr[i+1] &amp;gt; &amp;hellip; &amp;gt; arr[arr.length - 1] 给定由整数组成的山峰数组 arr ，返回任何满足 arr[0] &amp;lt; arr[1] &amp;lt; &amp;hellip; arr[i - 1] &amp;lt; arr[i] &amp;gt; arr[i + 1] &amp;gt; &amp;hellip; &amp;gt; arr[arr.length - 1] 的下标 i ，即山峰顶部。
+示例 1：
+输入：arr = [0,1,0] 输出：1 示例 2：</description>
+    </item>
+    
+    <item>
+      <title>go语言基础（一）</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/</link>
+      <pubDate>Wed, 07 Apr 2021 16:58:12 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/</guid>
+      <description>第一章 概述 # go语言特征 # 简单
+并发模型
+go语言从根部将一切都并发化，运行时用Goroutine运行所有的一切，包括main.main入口函数。Goroutine是go的显著特征。它用类协程的方式处理并发单元，又在运行时层面做了更深度的优化处理。搭配channel,实现CSP模型。
+csp模型
+Actor 模型中 Actor 之间就是不能共享内存的，彼此之间通信只能依靠消息传递的方式。Golang 实现的 CSP 模型和 Actor 模型看上去非常相似，虽然 Golang 中协程之间，也能够以共享内存的方式通信，但是并不推荐；而推荐的以通信的方式共享内存，实际上指的就是协程之间以消息传递方式来通信。
+Channel模型中，worker之间不直接彼此联系，而是通过不同channel进行消息发布和侦听。消息的发送者和接收者之间通过Channel松耦合，发送者不知道自己消息被哪个接收者消费了，接收者也不知道是哪个发送者发送的消息。
+Go语言的CSP模型是由协程Goroutine与通道Channel实现：
+Go协程goroutine: 是一种轻量线程，它不是操作系统的线程，而是将一个操作系统线程分段使用，通过调度器实现协作式调度。是一种绿色线程，微线程，它与Coroutine协程也有区别，能够在发现堵塞后启动新的微线程。 通道channel: 类似Unix的Pipe，用于协程之间通讯和同步。协程之间虽然解耦，但是它们和Channel有着耦合。 内存分配
+刨去因配合垃圾回收器而修改的内容，内存分配器完整的保留了tcmalloc的原始架构。除偶尔因性能问题而被迫采用对象池和自主内存管理外，我们基本无须参与内存管理操作。
+垃圾回收
+​ go垃圾回收不咋地
+静态链接 只须编译一个可执行文件，无须附加任何东西就能部署。将运行时、依赖库直接打包到可执行文件内部，简化了部署和发布操作，无须事先安装运行环境和下载诸多第三方库。
+标准库 工具链 第二章 类型 # 变量 # 定义 # var a int //会自动初始化为0 var y=false //自动推断为bool类型 var x,y int x=1 y=2 //定义完变量后再赋值 var a int =2 var a,s=100,&amp;#34;abc&amp;#34; //初始化 var ( x,y int a,s=100,&amp;#34;abc&amp;#34; //字符串加“” ) a:=100 //自动推导类型 a,s:=100,&amp;#34;abc&amp;#34; 注意： * 定义变量，同时显示初始化 * 不能提供数据类型 * 只能用在函数内部 退化赋值 # 退化赋值的前提条件是：最少有一个新变量被定义，且必须是同一作用域。</description>
+    </item>
+    
+    <item>
+      <title>fabric网络中的报错（一）</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/</link>
+      <pubDate>Tue, 26 Jan 2021 11:17:56 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/</guid>
+      <description>重要声明 ，早期写的博客，后面发现里面的某些解决办法是错误的，看个开心就好 ，我也懒得改。 # 报错一： # Error: Could not assemble transaction, err Proposal response was not successful, error code 500, msg error starting container: error starting container: Post http://unix.sock/containers/create?name=dev-peer0.org2.example.com-mycc-1.0: dial unix /host/var/run/docker.sock: connect: no such file or directory
+问题原因 # 此问题是由适用于macOS的Docker Desktop的较新版本引起的。
+要解决此问题，请在Docker Desktop首选项中，取消选中该框Use gRPC FUSE for file sharing， 以使用旧版osxfs文件共享，然后单击**Apply****＆**Restart
+报错二： # 问题原因： # 环境配置问题，进入go.mod文件 重新配置
+github.com/Shopify/sarama v1.27.2 // indirect github.com/astaxie/beego v1.12.1 github.com/fsouza/go-dockerclient v1.7.0 // indirect github.com/grpc-ecosystem/go-grpc-middleware v1.2.2 // indirect github.</description>
+    </item>
+    
+    <item>
+      <title>CGo</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/cgo/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/cgo/</guid>
+      <description>CGO入门 # Golang 自带的 CGO 可以支持与 C 语言接口的互通。
+启用CGO特性 # 在 golang 代码中加入 import “C” 语句就可以启动 CGO 特性。这样在进行 go build 命令时，就会在编译和连接阶段启动 gcc 编译器。
+package main import &amp;#34;C&amp;#34; // import &amp;#34;C&amp;#34;更像是一个关键字，CGO工具在预处理时会删掉这一行 func main() { } 使用 -x 选项可以查看 go 程序编译过程中执行的所有指令。可以看到 golang 编译器已经为 test1.go 创建了 CGO 编译选项
+[root@VM-centos ~/cgo_test/golink2]# go build -x test1.go WORK=/tmp/go-build330287398 mkdir -p $WORK/b001/ cd /root/cgo_test/golink2 CGO_LDFLAGS=&amp;#39;&amp;#34;-g&amp;#34; &amp;#34;-O2&amp;#34;&amp;#39; /usr/lib/golang/pkg/tool/linux_amd64/cgo -objdir $WORK/b001/ -importpath command-line-arguments -- -I $WORK/b001/ -g -O2 .</description>
+    </item>
+    
+    <item>
+      <title>Channel</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/channel/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/channel/</guid>
+      <description>channel # 如何判断通道为空
+if len(channel) == 0 { // 通道为空 } select { case &amp;lt;-channel: // 通道不为空，可以接收元素 default: // 通道为空 } 如何判断通道已关闭
+v, ok := &amp;lt;-ch 通道各种花里胡哨用法
+https://learnku.com/articles/71310
+https://cloud.tencent.com/developer/article/1911948
+https://segmentfault.com/a/1190000017958702
+https://www.jianshu.com/p/554e210bdca4
+https://www.cnblogs.com/jiujuan/p/16014608.html
+https://colobu.com/2016/04/14/Golang-Channels/
+1、一个经典的算法题 有 4 个 goroutine，编号为 1、2、3、4。每秒钟会有一个 goroutine 打印出自己的编号，要求写一个程序，让输出的编号总是按照 1、2、3、4、1、2、3、4… 的顺序打印出来
+func main() { // 4个channel chs := make([]chan int, 4) for i, _ := range chs { chs[i] = make(chan int) // 开4个协程 go func(i int) { for { // 获取当前channel值并打印 v := &amp;lt;-chs[i] fmt.</description>
+    </item>
+    
+    <item>
+      <title>Flag</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/flag/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/flag/</guid>
+      <description># flag # 概述 # flag包提供了一系列解析命令行参数的功能接口，官方教程的地址为：https://golang.org/pkg/flag/#pkg-overview
+命令行语法 # 命令行语法主要有以下几种形式
+-flag //只支持bool类型 -flag=x -flag x //只支持非bool类型 以上语法对于一个或两个‘－’号，效果是一样的，但是要注意对于第三种情况，只支持非bool类型，原因是碰到如下情况时
+cmd -x * *为0，false有可能表示一个文件名或文件，也有可能表示x标签的值为0或false，会产生二义性，因此规定第三种只支持非bool类型。对于整形flag，合法的值可以为1234, 0664,0x1234或负数等。对于布尔型flag，可以为1, 0, t, f, T, F, true, false, TRUE, FALSE, True, False等
+命令行参数解析 # flag.Parse() 解析函数将会在碰到第一个非flag命令行参数时停止，非flag命令行参数是指不满足命令行语法的参数，如命令行参数为cmd --flag=true abc则第一个非flag命令行参数为“abc”
+调用Parse解析后，就可以直接使用flag本身(指针类型)或者绑定的变量了(值类型) fmt.Println(&amp;#34;ip has value &amp;#34;, *ip) fmt.Println(&amp;#34;flagvar has value &amp;#34;, flagvar) 12 还可通过flag.Args(), flag.Arg(i)来获取非flag命令行参数
+如果需要每个函数的详细demo，可参见Gopkg:flag
+命令行参数解析方法 # 使用flag主要包括以下几步
+定义flag参数，有三种方式
+通过flag.String(), Bool(), Int() 等flag.Xxx()方法，该种方式返回一个相应的指针 import &amp;#34;flag&amp;#34; var ip = flag.Int(&amp;#34;flagname&amp;#34;, 1234, &amp;#34;help message for flagname&amp;#34;) 通过flag.</description>
+    </item>
+    
+    <item>
+      <title>Grpc</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/grpc/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/grpc/</guid>
+      <description>gRPC # gRPC 是一个高性能、开源和通用的 RPC 框架，面向移动和 HTTP/2 设计。
+gRPC基于 HTTP/2标准设计，带来诸如双向流、流控、头部压缩、单 TCP连接上的多复用请求等特。这些特性使得 其在移动设备上表现更好，更省电和节省空间占用。
+RPC # RPC（Remote Procedure Call Protocol）——远程过程调用协议，它是一种通过网络从远程计算机程序上请求 服务，而不需要了解底层网络技术的协议。
+简单来说，就是跟远程访问或者web请求差不多，都是一个client向远端服务器请求服务返回结果，但是web请求 使用的网络协议是http高层协议，而rpc所使用的协议多为TCP，是网络层协议，减少了信息的包装，加快了处理速 度。
+golang本身有rpc包，可以方便的使用，来构建自己的rpc服务，下边是一个简单是实例，可以加深我们的理解
+1.调用客户端句柄；执行传送参数
+2.调用本地系统内核发送网络消息
+3.消息传送到远程主机
+4.服务器句柄得到消息并取得参数
+5.执行远程过程
+6.执行的过程将结果返回服务器句柄
+7.服务器句柄返回结果，调用远程系统内核
+8.消息传回本地主机
+9.客户句柄由内核接收消息
+10.客户接收句柄返回的数据
+服务端 # package main import ( &amp;#34;net/http&amp;#34; &amp;#34;net/rpc&amp;#34; &amp;#34;net&amp;#34; &amp;#34;github.com/astaxie/beego&amp;#34; &amp;#34;io&amp;#34; ) //- 方法是导出的 //- 方法有两个参数，都是导出类型或内建类型 //- 方法的第二个参数是指针 //- 方法只有一个error接口类型的返回值 //func (t *T) MethodName(argType T1, replyType *T2) error type Panda int; func (this *Panda)Getinfo(argType int, replyType *int) error { beego.</description>
+    </item>
+    
+    <item>
+      <title>Json序列化</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/</guid>
+      <description>一、忽略字段 # 我们知道，通过tag,可以有条件地实现定制Go JSON序列化的方式，比如json:&amp;quot;abc,omitempty&amp;quot;, 当字段的值为空的时候，我们可以在序列化后的数据中不包含这个值，而json:&amp;quot;-&amp;quot;可以直接不被JSON序列化,如果想被序列化key-，可以设置tag为json:&amp;quot;-,&amp;quot;,加个逗号
+二、改变一个字段显示 # 有下面这个结构体
+type MyUser struct { ID int64 `json:&amp;#34;id&amp;#34;` Name string `json:&amp;#34;name&amp;#34;` LastSeen time.Time `json:&amp;#34;lastSeen&amp;#34;` } 如果临时想改变LastSeen字段显示为时间戳（或者密码我们不想打印到日志中，用***代替）
+方案一 # 最简单的方式是引入另外一个辅助struct,在MarshalJSON中使用它进行正确的格式化：
+func (u *MyUser) MarshalJSON() ([]byte, error) { return json.Marshal(&amp;amp;struct { ID int64 `json:&amp;#34;id&amp;#34;` Name string `json:&amp;#34;name&amp;#34;` LastSeen int64 `json:&amp;#34;lastSeen&amp;#34;` }{ ID: u.ID, Name: u.Name, LastSeen: u.LastSeen.Unix(), }) } 方案二 # 方案一在遇到多字段的时候会很麻烦，如果我们能把原始struct嵌入到新的struct中，并让它继承所有不需要改变的字段就太好了:
+func (u *MyUser) MarshalJSON() ([]byte, error) { return json.Marshal(&amp;amp;struct { LastSeen int64 `json:&amp;#34;lastSeen&amp;#34;` *MyUser }{ LastSeen: u.</description>
+    </item>
+    
+    <item>
+      <title>ProtoBuf</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/</guid>
+      <description>ProtoBuf # protobuf是google旗下的一款平台无关，语言无关，可扩展的序列化结构数据格式。所以很适合用做数据存储和作 为不同应用，不同语言之间相互通信的数据交换格式，只要实现相同的协议格式即同一 proto文件被编译成不同的 语言版本，加入到各自的工程中去。这样不同语言就可以解析其他语言通过 protobuf序列化的数据。
+Google Protocol Buffer(简称 Protobuf)是一种轻便高效的结构化数据存储格式，平台无关、语言无关、可扩展， 可用于通讯协议和数据存储等领域。
+数据交互的格式比较 # 数据交互xml、json、protobuf格式比较
+1、json: 一般的web项目中，最流行的主要还是json。因为浏览器对于json数据支持非常好，有很多内建的函数支 持。
+2、xml: 在webservice中应用最为广泛，但是相比于json，它的数据更加冗余，因为需要成对的闭合标签。json使 用了键值对的方式，不仅压缩了一定的数据空间，同时也具有可读性。
+3、protobuf:是后起之秀，是谷歌开源的一种数据格式，适合高性能，对响应速度有要求的数据传输场景。因为 profobuf是二进制数据格式，需要编码和解码。数据本身不具有可读性。因此只能反序列化之后得到真正可读的数 据。
+相对于其它protobuf更具有优势
+1：序列化后体积相比Json和XML很小，适合网络传输
+2：支持跨平台多语言
+3：消息格式升级和兼容性还不错
+4：序列化反序列化速度很快，快于Json的处理速速
+protoBuf的优点 # Protobuf 有如 XML，不过它更小、更快、也更简单。你可以定义自己的数据结构，然后使用代码生成器生成的代 码来读写这个数据结构。你甚至可以在无需重新部署程序的情况下更新数据结构。只需使用 Protobuf 对数据结构 进行一次描述，即可利用各种不同语言或从各种不同数据流中对你的结构化数据轻松读写。
+它有一个非常棒的特性，即“向后”兼容性好，人们不必破坏已部署的、依靠“老”数据格式的程序就可以对数据结构 进行升级。
+Protobuf 语义更清晰，无需类似 XML 解析器的东西（因为 Protobuf 编译器会将 .proto 文件编译生成对应的数据 访问类以对 Protobuf 数据进行序列化、反序列化操作）。使用 Protobuf 无需学习复杂的文档对象模型， Protobuf 的编程模式比较友好，简单易学，同时它拥有良好的文档和示例，对于喜欢简单事物的人们而言， Protobuf 比其他的技术更加有吸引力。
+ProtoBuf 的不足 # Protobuf 与 XML 相比也有不足之处。它功能简单，无法用来表示复杂的概念。
+XML 已经成为多种行业标准的编写工具，Protobuf 只是 Google 公司内部使用的工具，在通用性上还差很多。 由 于文本并不适合用来描述数据结构，所以 Protobuf 也不适合用来对基于文本的标记文档（如 HTML）建模。另 外，由于 XML 具有某种程度上的自解释性，它可以被人直接读取编辑，在这一点上 Protobuf 不行，它以二进制的 方式存储，除非你有 .</description>
+    </item>
+    
+    <item>
+      <title>URL</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/url/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/url/</guid>
+      <description>Url # // 将bool类型转换为字符串
+bool到string
+string := strconv.FormatBool(bool) string到bool
+bool, err := strconv.ParseBool(string) string到float64
+strconv.ParseFloat(s string, bitSize int) (float64, error) float64到string
+strconv.FormatFloat(f float64, fmt byte, prec int, bitSize int) string func main() { f := 3.14159 // 将浮点数转换为字符串，保留两位小数 str := strconv.FormatFloat(f, &amp;#39;f&amp;#39;, 2, 64) fmt.Println(str) } 在上述示例中，我们使用strconv.FormatFloat()函数将浮点数f转换为字符串，并指定了以下参数：
+f：要转换的浮点数。 &#39;f&#39;：表示格式化为十进制表示法（浮点数），其他可选的格式有 &#39;b&#39;（科学计数法）和 &#39;e&#39;（指数表示法）。 2：保留小数点后的位数。 64：表示f的位大小，通常为32或64。 实战 # interface{}是结构体
+var v interface{} v = Person{ Name: &amp;#34;Alice&amp;#34;, Age: 30, Email: &amp;#34;alice@example.com&amp;#34;, } value := reflect.</description>
+    </item>
+    
+    <item>
+      <title>Vim编程常用快捷键</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</guid>
+      <description> 常用快捷键 # 插入 # 在光标后插入：a 在光标前插入：i 在光标下方新开一行插入：o (小写) 光标上下左右移动 # 左移：h 退格 //退格可以左移动到上一行 右移：l 空格 //空格可以右移到下一行 推荐空格 上移：k 下移：j 上下移动行 # 下移一行到第一个非空白字符串：+ enter //推荐enter 上移一行到第一个非空白字符串：- 快速上下移动 # 移动到文档末尾：G 移动到文档开头：gg 向下移动一段：} //代码中的空行 也算一段的隔离标识 向上移动一段：{ 向下移动一部分：[] //代码中就是一个函数一个函数的移动 比较实用 向上移动一部分：][ 单词左右移动 # 向左移动一个单词：w 向右移动一个单词：b 移动到当前行开头：0 （零） 移动到当前行末尾：$ 移动到当前单词末尾：e 选择文本 # 进入逐字可视模式：v 退出可视模式：Esc 删除 # 删除该行： dd 删除该单词：dw 复制粘贴 # 复制：y 剪切：d 和删除类似 粘贴：p 复制当前行：yy 剪切当前行：dd 撤销 # 撤销最后操作：u </description>
+    </item>
+    
+    <item>
+      <title>代码注释</title>
+      <link>https://chain-code.github.io/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/</guid>
+      <description>/***　*　瓦瓦　十　*　十齱龠己　亅瓦車己　*　乙龍龠毋日丶　丶乙己毋毋丶　*　十龠馬鬼車瓦　己十瓦毋毋　*　鬼馬龠馬龠十　己己毋車毋瓦　*　毋龠龠龍龠鬼乙丶丶乙車乙毋鬼車己　*　乙龠龍龍鬼龍瓦　十瓦毋乙瓦龠瓦亅　*　馬齱龍馬鬼十丶日己己己毋車乙丶　*　己齱馬鬼車十十毋日乙己己乙乙　*　車馬齱齱日乙毋瓦己乙瓦日亅　*　亅車齺龖瓦乙車龖龍乙乙十　*　日龠龠十亅車龍毋十十　*　日毋己亅　己己十亅亅　*　丶己十十乙　丶丶丶丶丶　*　亅己十龍龖瓦　丶　丶　乙十　*　亅己十龠龖毋　丶丶　丶己鬼鬼瓦亅　*　十日十十日亅丶亅丶　丶十日毋鬼馬馬車乙　*　十日乙十亅亅亅丶　十乙己毋鬼鬼鬼龍齺馬乙　*　丶瓦己乙十十亅丶亅乙乙乙己毋鬼鬼鬼龍齱齺齺鬼十　*　乙乙十十十亅乙瓦瓦己日瓦毋鬼鬼龠齱齱龍龍齱齱毋丶　*　亅十十十十乙瓦車毋瓦瓦日車馬龠龍龍龍龍龍龠龠龠馬亅 *　十十十十己毋車瓦瓦瓦瓦鬼馬龠龍龠龠龍龠龠龠馬龠車 *　亅十十日毋瓦日日瓦鬼鬼鬼龠龠馬馬龠龍龍龠馬馬車 *　亅亅亅乙瓦瓦毋車車車馬龍龠鬼鬼馬龠龍龍龠馬馬鬼 *　丶丶乙亅亅乙車鬼鬼鬼毋車龍龍龠鬼馬馬龠龍齱齱龍馬鬼 *　亅己十十己十日鬼鬼車瓦毋龠龍龠馬馬龠龠龠齱齺齺齱龠鬼 *　亅乙乙乙十車馬車毋馬齱齱龍龠龠龠馬龠龍齱龍龠龠鬼瓦 *　丶毋龠鬼車瓦車馬龠龍龠龠龍齱齱龠馬馬鬼毋日 *　十乙己日十　丶己鬼龍齱齺齱龍馬馬馬車毋己 *　丶十己乙亅丶　亅瓦馬龠龍龠龠馬毋瓦乙 *　丶十十乙亅十　亅己瓦車馬龠鬼車瓦乙 *　丶十乙十十丶　丶丶亅十瓦鬼車瓦己 *　丶亅亅丶　亅日瓦日 *　丶 */ /*** * .</description>
+    </item>
+    
+    <item>
+      <title>代码注释</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/</guid>
+      <description>/***　*　瓦瓦　十　*　十齱龠己　亅瓦車己　*　乙龍龠毋日丶　丶乙己毋毋丶　*　十龠馬鬼車瓦　己十瓦毋毋　*　鬼馬龠馬龠十　己己毋車毋瓦　*　毋龠龠龍龠鬼乙丶丶乙車乙毋鬼車己　*　乙龠龍龍鬼龍瓦　十瓦毋乙瓦龠瓦亅　*　馬齱龍馬鬼十丶日己己己毋車乙丶　*　己齱馬鬼車十十毋日乙己己乙乙　*　車馬齱齱日乙毋瓦己乙瓦日亅　*　亅車齺龖瓦乙車龖龍乙乙十　*　日龠龠十亅車龍毋十十　*　日毋己亅　己己十亅亅　*　丶己十十乙　丶丶丶丶丶　*　亅己十龍龖瓦　丶　丶　乙十　*　亅己十龠龖毋　丶丶　丶己鬼鬼瓦亅　*　十日十十日亅丶亅丶　丶十日毋鬼馬馬車乙　*　十日乙十亅亅亅丶　十乙己毋鬼鬼鬼龍齺馬乙　*　丶瓦己乙十十亅丶亅乙乙乙己毋鬼鬼鬼龍齱齺齺鬼十　*　乙乙十十十亅乙瓦瓦己日瓦毋鬼鬼龠齱齱龍龍齱齱毋丶　*　亅十十十十乙瓦車毋瓦瓦日車馬龠龍龍龍龍龍龠龠龠馬亅 *　十十十十己毋車瓦瓦瓦瓦鬼馬龠龍龠龠龍龠龠龠馬龠車 *　亅十十日毋瓦日日瓦鬼鬼鬼龠龠馬馬龠龍龍龠馬馬車 *　亅亅亅乙瓦瓦毋車車車馬龍龠鬼鬼馬龠龍龍龠馬馬鬼 *　丶丶乙亅亅乙車鬼鬼鬼毋車龍龍龠鬼馬馬龠龍齱齱龍馬鬼 *　亅己十十己十日鬼鬼車瓦毋龠龍龠馬馬龠龠龠齱齺齺齱龠鬼 *　亅乙乙乙十車馬車毋馬齱齱龍龠龠龠馬龠龍齱龍龠龠鬼瓦 *　丶毋龠鬼車瓦車馬龠龍龠龠龍齱齱龠馬馬鬼毋日 *　十乙己日十　丶己鬼龍齱齺齱龍馬馬馬車毋己 *　丶十己乙亅丶　亅瓦馬龠龍龠龠馬毋瓦乙 *　丶十十乙亅十　亅己瓦車馬龠鬼車瓦乙 *　丶十乙十十丶　丶丶亅十瓦鬼車瓦己 *　丶亅亅丶　亅日瓦日 *　丶 */ /*** * .</description>
+    </item>
+    
+    <item>
+      <title>常用业务代码</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/</guid>
+      <description>go语言在.csv文件中加入超链接 # func main() { // 打开文件以写入 CSV 数据 file, err := os.Create(&amp;#34;output.csv&amp;#34;) if err != nil { panic(err) } defer file.Close() // 创建 CSV writer writer := csv.NewWriter(file) defer writer.Flush() // 写入 CSV 头部 header := []string{&amp;#34;File Name&amp;#34;, &amp;#34;Hyperlink&amp;#34;} writer.Write(header) // 模拟一些文件名和相对路径数据 fileData := []struct { FileName string RelativePath string }{ {&amp;#34;video.MP4&amp;#34;, &amp;#34;./d/video.MP4&amp;#34;}, // 添加更多文件名和相对路径 } // 写入文件名和相对路径数据到 CSV 文件 for _, data := range fileData { // 构建超链接字符串 hyperlinkFormula := `=HYPERLINK(&amp;#34;` + data.</description>
+    </item>
+    
+    <item>
+      <title>微服务</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</guid>
+      <description>微服务 # 微服务框架是将复杂的系统使用组件化的方式进行拆分，并使用轻量级通讯方式进行整合的一种设计方法。
+微服务是通过这种架构设计方法拆分出来的一个独立的组件化的小应用。
+微服务架构和整体式架构的区别？ # 开发单体式（整体式）应用的不足之处 # 三层架构（MVC）的具体内容如下：
+表示层（view）： 用户使用应用程序时，看到的、听见的、输入的或者交互的部分。
+业务逻辑层（controller）： 根据用户输入的信息，进行逻辑计算或者业务处理的部分。
+数据访问层（model）： 关注有效地操作原始数据的部分，如将数据存储到存储介质（如数据库、文件系统）及从存储介质中读取数据等。
+虽然现在程序被分成了三层，但只是逻辑上的分层，并不是物理上的分层。也就是说，对不同层的代码而言，经过编译、打包和部署后，所有的代码最终还是运行在同一个进程中。而这，就是所谓的单块架构。
+单体架构在规模比较小的情况下工作情况良好，但是随着系统规模的扩大，它暴露出来的问题也越来越多，主要有 以下几点：
+复杂性逐渐变高
+比如有的项目有几十万行代码，各个模块之间区别比较模糊，逻辑比较混乱，代码越多复杂性越高，越难解决遇到的问题。
+技术债务逐渐上升
+公司的人员流动是再正常不过的事情，有的员工在离职之前，疏于代码质量的自我管束，导致留下来很多坑，由于单体项目代码量庞大的惊人，留下的坑很难被发觉，这就给新来的员工带来很大的烦恼，人员流动越大所留下的坑 越多，也就是所谓的技术债务越来越多。
+维护成本大
+当应用程序的功能越来越多、团队越来越大时，沟通成本、管理成本显著增加。当出现 bug 时，可能引起 bug 的原因组合越来越多，导致分析、定位和修复的成本增加；并且在对全局功能缺乏深度理解的情况下，容易在修复 bug 时引入新的 bug。
+持续交付周期长
+构建和部署时间会随着功能的增多而增加，任何细微的修改都会触发部署流水线。新人培养周期长：新成员了解背景、熟悉业务和配置环境的时间越来越长。 技术选型成本高 单块架构倾向于采用统一的技术平台或方案来解决所有问题，如果后续想引入新的技术或框架，成本和风险都很 大。
+可扩展性差
+随着功能的增加，垂直扩展的成本将会越来越大；而对于水平扩展而言，因为所有代码都运行在同一个进程，没办法做到针对应用程序的部分功能做独立的扩展。
+微服务架构的特性 # 单一职责
+微服务架构中的每个服务，都是具有业务逻辑的，符合高内聚、低耦合原则以及单一职责原则的单元，不同的服务通过“管道”的方式灵活组合，从而构建出庞大的系统。
+轻量级通信
+服务之间通过轻量级的通信机制实现互通互联，而所谓的轻量级，通常指语言无关、平台无关的交互方式。
+对于轻量级通信的格式而言，我们熟悉的 XML 和 JSON，它们是语言无关、平台无关的；对于通信的协议而言，通 常基于 HTTP，能让服务间的通信变得标准化、无状态化。目前大家熟悉的 REST（Representational State Transfer）是实现服务间互相协作的轻量级通信机制之一。使用轻量级通信机制，可以让团队选择更适合的语言、 工具或者平台来开发服务本身。
+问：REST是什么和restful一样吗？
+答：REST 指的是一组架构约束条件和原则。满足这些约束条件和原则的应用程序或设计就是 RESTful。
+独立性
+每个服务在应用交付过程中，独立地开发、测试和部署。
+在单块架构中所有功能都在同一个代码库，功能的开发不具有独立性；当不同小组完成多个功能后，需要经过集成 和回归测试，测试过程也不具有独立性；当测试完成后，应用被构建成一个包，如果某个功能存在 bug，将导致整 个部署失败或者回滚。
+在微服务架构中，每个服务都是独立的业务单元，与其他服务高度解耦，只需要改变当前服务本身，就可以完成独立的开发、测试和部署。
+进程隔离
+单块架构中，整个系统运行在同一个进程中，当应用进行部署时，必须停掉当前正在运行的应用，部署完成后再重启进程，无法做到独立部署。
+有时候我们会将重复的代码抽取出来封装成组件，在单块架构中，组件通常的形态叫做共享库（如 jar 包或者 DLL），但是当程序运行时，所有组件最终也会被加载到同一进程中运行.</description>
+    </item>
+    
+    <item>
+      <title>配置 Kylin V10</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E9%85%8D%E7%BD%AEkylinv10/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E9%85%8D%E7%BD%AEkylinv10/</guid>
+      <description>配置KylinV10 # 设置“root”登录密码 # sudo su - passwd # 设置登录密码 允许“root”远程登录 # sudo vim /etc/ssh/sshd_config # ↓↓↓↓修改的内容↓↓↓↓ PermitRootLogin yes # ↑↑↑↑修改的内容↑↑↑↑ sudo systemctl restart sshd 允许通过图像界面登录到“root” # sudo vim /usr/share/lightdm/lightdm.conf.d/95-ukui-greeter.conf 95-ukui-greeter.conf
+greeter-session=ukui-greeter user-session=ukui greeter-setup-script=/usr/lib/ukui-greeter/ukui-greeter-nm-start.sh # ↓↓↓↓追加的内容↓↓↓↓ allow-guest=false greeter-show-manual-login=true # ↑↑↑↑追加的内容↑↑↑↑ 开机自动登录到“root” # sudo vim /etc/lightdm/lightdm.conf lightdm.conf
+[SeatDefaults] autologin-guest=false # ↓↓↓↓修改的内容↓↓↓↓ autologin-user=root # ↑↑↑↑修改的内容↑↑↑↑ autologin-user-timeout=0 关闭“麒麟安全授权认证” # sudo vim /etc/default/grub grub
+# ... GRUB_DEFAULT=0 GRUB_TIMEOUT=5 GRUB_DISTRIBUTOR=`lsb_release -i -s 2&amp;gt; /dev/null || echo Debian` GRUB_DISTRIBUTOR_RELEASE=`lsb_release -d -s | awk -F&amp;#34; &amp;#34; &amp;#39;{print $2 &amp;#34; &amp;#34; $3}&amp;#39; 2&amp;gt; /dev/null || echo &amp;#34;&amp;#34;` GRUB_CMDLINE_LINUX_DEFAULT=&amp;#34;quiet splash&amp;#34; GRUB_CMDLINE_LINUX=&amp;#34;&amp;#34; # ↓↓↓↓修改的内容↓↓↓↓ # GRUB_CMDLINE_LINUX_SECURITY=&amp;#34;audit=0 security=kysec&amp;#34; GRUB_CMDLINE_LINUX_SECURITY=&amp;#34;audit=0 security=&amp;#34; # ↑↑↑↑修改的内容↑↑↑↑ # .</description>
+    </item>
+    
+    <item>
+      <title>Go高阶 语言类库</title>
+      <link>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/</link>
+      <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/</guid>
+      <description> unsafe # 利用unsafe包修改私有成员 # 利用unsafe获取slice和map的长度 # 实现字符串和byte切片的零复制转换 # context # 译作“上下文”，准确说它是goroutine的上下文。主要用来在goroutine之间传递上下文信息，包括：取消信号、超时时间、截止时间、k-v等。
+使用context几乎成为并发控制和超时控制的标准做法，与它协作的API都可以由外部控制执行“取消”操作，例如：取消一个HTTP请求的执行。
+另外，context.Context可以协调多个goroutine中的代码执行“取消”操作，并且可以存储键值对，最重要的是它是并发安全的操作。
+在Go的server里，对每个Request(请求)都会启动若干个goroutine同时工作：有些去内存查一些数据，有些去数据库拿数据，有些调用第三方接口获取相关数据等。
+这些goroutine需要共享请求的基本信息：例如登陆token，处理请求的最大超时时间（如果超过此值再返回数据，请求方会因为超时接收不到）等。当请求被取消或是处理时间太长，这有可能是使用者关闭了浏览器或是已经超过了请求方规定的超时时间，请求方直接放弃了这次请求结果。这时，所有正在为这个请求工作的goroutine需要快速退出，因为它们的“工作成果”不再被需要了。
+**Go语言中的server实际上是一个“协程模型”，处理一个请求需要多个协程。**例如在业务的高峰期，某个下游服务器的响应速度变慢，而当前系统的请求又没有超时控制，或者超过时间设置过大，那么等待下游服务器返回数据的协程就会越来越多。而协程师要消耗资源的，后果就是协程数激增，内存占用飙涨，Go调度器和GC不堪重用，甚至导致服务不可用。更严重的会导致雪崩效应，整个服务器对外表现为不可用，这肯定是P0级别的事故。
+其实前面描述的P0级别的事故，通过设置“允许下游最长处理时间”就可以避免。例如，给下游设置timeout是50ms，如果超过这个值还没有接收到返回数据，就直接向客户端返回一个默认值或者错误。例如返回商品的一个默认库数量。注意，这里设置的超时时间和创建一个HTTP client设置的读写超时时间不一样，后者表示一次TCP传输的时间，而一次请求可能包含多次TCP传输，前者则表示所有传输的总时间。
+而context包就是为了解决上面所说的问题开发的：在一组goroutine之间传递共享的值、取消信号、deadline等。
+在Go里，不能直接杀死协程，协程的关闭一般采用channel和select的方式来控制。但是在某些场景下，例如处理一个请求衍生了很多协程，这些协程之间是相互关联的：需要共享一些全局变量、有共同的deadline等，而且可以同时被关闭。用channel和select就会比较麻烦，这时可以通过context来实现。
+context用来解决goroutine之间退出通知、元数据传递的功能问题。
+context会在函数中间传递，只需要在适当的时间调用Cancel函数向goroutine发出取消信号或者调用Value函数取出context中的值。
+对使用context的几点建议：
+不要将context塞到结构体里。直接将context类型作为函数的第一参数，而且一般都命名为ctx。 不要向函数传入一个含有nil属性的context，如果实在不知道传什么，标准库准备好了一个context：todo。 不要把本应该作为函数参数的类型塞到context中，context存储的应该是一些共同的数据。例如，登陆的session、cookie等。 同一个context可能会传递到多个groutine，但别担心，context是并发安全的。 如何使用context # 传递共享的数据 # 定时取消 # 防止goroutine泄漏 # context底层原理 # error # 计时器 # 反射 # 反射是指计算机程序在运行时可以访问、检测和修改它本身状态或行为的一种能力。
+用比喻来说，反射就是程序在运行的时候能够观察并纠正自己的行为。
+Go语言提供了一种机制在运行时更新变量和检查它们的值、调用它们的方法，但是在编译时并不知道这些变量的具体类型，这称为反射机制。
+使用场景 # 不能明确接口调用那个函数，需要根据传入的参数在运行时决定。 不能明确传入参数的参数类型，需要在运行时处理任意对象。 不推荐使用原因 # 与反射相关的代码，难以阅读。 编译器无法提前发现一些类型错误，可能会运行很久后才会出错，会造成严重后果。 反射影响程序性能，比正常代码运行速度慢一到两个数量级。 </description>
+    </item>
+    
+    <item>
+      <title>计算机网络基础</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Fri, 16 Sep 2022 10:03:35 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/</guid>
+      <description>BS架构和CS架构 # CS（Client/Server）：客户端&amp;mdash;-服务器结构。CS结构在技术上很成熟，它的主要特点是交互性强、具有安全的存取模式、网络通信量低、相应速度快、利于处理大量数据。因为客户端要负责绝大多数的业务逻辑和UI展示，又称为胖客户端。它充分利用两端硬件，将任务分配到Client和Server两端，降低了系统的通讯开销。
+CS架构是一种典型的两层架构，其客户端包含一个或多个在用户电脑上运行的程序，而服务端游两种，一种是数据库服务器端，客户端通过数据库连接访问服务器端的数据；另一种是Socket服务器端，服务器端的程序通过Socket与客户端的程序通信。
+BS（Browser/Server）：浏览器&amp;mdash;-服务器结构，是目前应用系统的发展方向。BS是伴随着Internet技术的兴起，对CS架构的改进，为了区别于传统的CS 模式，特意称为BS模式。在这种结构下，通过浏览器来进入工作界面，极少部分事务逻辑在前端（Browser）实现，主要事务逻辑在服务器端（Server）实现，形成三层结构。这样使得客户端电脑负荷大大简化（因此被称为瘦客户端），减轻了系统维护、升级的支出成本，降低了用户的总体成本（TCO）。 BS的主要特点是分布性强、维护方便、开发简单且共享性强、总体拥有成本低。但存在数据安全性问题、对服务器要求过高、数据传输速度慢、软件的个性化特点明显降低，难以实现传统模式下的特殊功能要求。它是瘦客户端，对大量的数据输入以及报表的应答等都需要通过浏览器与服务器进行交互，通信开销大，而且对于实现复杂的应用构造有较大的困难。
+小结：CS响应速度快，安全性强，一般应用于局域网中，但是开发维护成本高；BS可以实现跨平台，客户端零维护，但是个性化能力低，响应速度较慢。所以有些单位日常办公应用BS，在实际生产中使用CS结构。
+HTTP # HTTP（HyperText Transfer Protocol）是超文本传输协议
+HTT报文结构 # 请求行 # 请求行的格式为：Method Request-URI HTTP-version CRLF
+method为大写，有以下几种：GET、POST、HEAD、OPTIONS、PUT、DELETE
+Request-URI是一个统一资源标识符
+HTTP-version为请求的HTTP的协议版本
+请求头 # 请求头的格式为键值对。一般常见的请求头如下：
+User-Agent:PostmanRuntime/7.26.8 表示产生请求的客户端程序
+Accept:/ 表示可接受的响应的类型为全部类型
+Accept-Language:zh 表示可接受的响应的语言为中文
+Accept-Encoding:gzip 表示客户端请求的压缩方式
+Cookie:value 值由登陆之后服务端下发
+token:value 值由登陆之后服务端下发
+请求正文 # 一般为空
+HTTP五大类状态码 # 1xx 提示信息，表示目前协议处理的中间状态，还需要后续的操作
+2xx 成功，报文已经收到并被正确处理
+3xx 重定向，资源位置发生变动，需要客户端重新发送请求
+4xx 客户端错误，请求报文有误，服务器无法处理
+5xx 服务器错误，服务器在处理请求时内部发生了错误
+HTTP的特性 # 1、简单，易于理解
+2、灵活和易于扩展
+​	HTTP协议里的各类请求方法、URI/UPL、状态码、头字段等每个组成要求都没有被固定死，都允许开发人员自定义和扩充。
+​	同时，HTTP由于是工作在应用层（OSI第七层)，则它下层可以随意变化。
+3、应用广泛和跨平台
+缺点
+无状态双刃剑
+无状态的好处：因为服务器不回去记忆HTTP的状态，所以不需要额外的资源来记录状态信息，这能减轻服务器的负担，能够把更多的CPU和内存用来对外提供服务。
+无状态的坏处：既然服务器没有记忆能力，它在完成有关联性的操作时会非常麻烦。
+例如登录-&amp;gt;添加购物车-&amp;gt;下单-&amp;gt;结算-&amp;gt;支付，这系列操作都要知道用户的身份才行。但服务器不知道这些请求是有关联的，每次都要问一遍身份信息。
+这样每操作一次，都要验证信息，这样的购物体验还能愉快吗？别问，问就是酸爽！</description>
+    </item>
+    
+    <item>
+      <title>golang力扣刷题（二）</title>
+      <link>https://chain-code.github.io/docs/golang/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/</link>
+      <pubDate>Thu, 04 Nov 2021 10:06:27 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/</guid>
+      <description>力扣刷题（二） # 力扣刷题 全部题目模块（101～200）
+简单 # 对称二叉树 # 给你一个二叉树的根节点 root ， 检查它是否轴对称。
+输入：root = [1,2,2,3,4,4,3] 输出：true //不能使用中序遍历后看其是否对称，例如[1,2,2,2,null,2] func isSymmetric(root *TreeNode) bool { return metric(root.Left,root.Right) } func metric(left *TreeNode,right *TreeNode) bool{ if left==nil&amp;amp;&amp;amp;right==nil{ //如果都为nil证明到底了返回true return true } if left==nil||right==nil{ //一个为nil一个不为nil返回false return false } if left.Val!=right.Val{ //不相等返回false return false } return metric(left.Left,right.Right)&amp;amp;&amp;amp;metric(left.Right,right.Left) //将两边同时放进去递归 } 执行用时：0 ms, 在所有 Go 提交中击败了100.00%的用户 内存消耗：2.7 MB, 在所有 Go 提交中击败了67.20%的用户 相交链表 # 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回 null 。</description>
+    </item>
+    
+    <item>
+      <title>go语言基础（二）</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/</link>
+      <pubDate>Tue, 26 Oct 2021 15:04:57 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/</guid>
+      <description>copy函数 # Go语言的内置函数 copy() 可以将一个数组切片复制到另一个数组切片中，如果加入的两个数组切片不一样大，就会按照其中较小的那个数组切片的元素个数进行复制。
+//1.不同类型的切片无法复制 //2.如果s1的长度大于s2的长度，将s2中对应位置上的值替换s1中对应位置的值 //3.如果s1的长度小于s2的长度，多余的将不做替换 func main() { s1 := []int{1, 2, 3} s2 := []int{4, 5} s3 := []int{6, 7, 8, 9} copy(s1, s2) fmt.Println(s1) //[4 5 3] copy(s2, s3) fmt.Println(s2) //[6 7] } l:=make([]string,len(s)) copy(h,s) var, :=, new() ， make()的区别 # 说明 # go语言中，提供了多种变量声明和初始化的方法。这里着重一一说明。并提供一个简单的指南。
+指南 # 使用make()，来初始化slice，map 和channel 。 大多数场合，类型明确的场合下，使用短变量声明方式:=。 当使用文字方式初始化一个变量，并且需要指明类型时，使用var变量声明方式。 避免使用new()，除非你需要一个指针变量。 变量声明方式 # go语言可以使用 var 来声明一个变量，并指明变量的数据类型。
+// 初始化整数变量，值为10。 var v int = 10 fmt.</description>
+    </item>
+    
+    <item>
+      <title>fabric网络中的报错（二）</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/</link>
+      <pubDate>Mon, 22 Mar 2021 18:51:50 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/</guid>
+      <description>重要声明 ，早期写的博客，后面发现里面的某些解决办法是错误的，看个开心就好 ，我也懒得改。 # 问题一： # fatal: unable to access &amp;lsquo;https://github.com/hyperledger/fabric-samples.git/&#39;: Failed to connect to github.com port 443: 拒绝连接
+解决办法： # 命令行输入： git config --global --unset http.proxy git config --global --unset https.proxy 问题二； # Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Post http://%2Fvar%2Frun%2Fdocker.sock/v1.40/images/create?fromImage=hyperledger%2Ffabric-ca&amp;tag=1.4.9: dial unix /var/run/docker.sock: connect: permission denied
+解决办法： # 用VPN下载
+Fabric2.3.0版本测试网络运行问题解决办法 # 问题一： # Starting nodes with CLI timeout of &amp;lsquo;5&amp;rsquo; tries and CLI delay of &amp;lsquo;3&amp;rsquo; seconds and using database &amp;rsquo;leveldb&amp;rsquo; with crypto from &amp;lsquo;cryptogen&amp;rsquo;</description>
+    </item>
+    
+    <item>
+      <title>Go高阶 高级特性</title>
+      <link>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/</link>
+      <pubDate>Thu, 03 Nov 2022 13:46:27 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/</guid>
+      <description>调度机制 # goroutine与线程的区别 # 内存消耗 创建一个goroutine的栈内存消耗为2KB，世纪运行过程中，如果栈空间不够用，会自动进行扩容。创建一个线程则需要消耗1MB栈内存，而且还需要一个被称为“a gurad page“的区域用于和其他thread的栈空间进行隔离。
+对于一个用Go构建的HTTP server而言，对到来的每个请求，分别创建一个goroutine用来处理是一个非常轻松的事情。而对于一个使用线程作为并发原语的语言（例如java）构建的服务来说，每个请求对应一个线程则太浪费资源了，如果不加限制，可能会出OOM错误（Out Of Mermory Error)。
+创建和销毁 线程创建和销毁都会产生巨大的消耗，因为要和操作系统打交道，是内核级的。通常解决的办法就是使用线程池，尽量复用，减小重复创建和销毁的开销。而goroutine由Go runtime负责管理，创建和销毁的消耗非常小，是用户级的。
+切换 当线程切换时，需要保存各种寄存器，以便将来恢复。
+而goroutine切换时只需要保存三个寄存器：Program Counter、Stack Pointer和BP。
+一般而言，线程切换回消耗1000～1500ns，而goroutine的切换约为200ns，goroutine的切换成本比threads小的多。
+Go sheduler # Go程序的执行有两个层面：Go Program 和Runtime，即用户程序和运行时。它们之间通过函数调用来实现内存管理、channel通信、goroutine创建等功能。用户程序进行的系统调用都会被Runtime拦截，以此来帮助它进行调度以及垃圾回收相关的工作。
+Go sheduler的目标：将goroutine调度到内核线程上。
+Go sheduler的核心思想：
+重用线程 限制同时运行（不包括阻塞）的线程数为N，N等于CPU的核心数目。 线程私有runqueues，并且可以从其他线程偷取goroutine来运行，线程阻塞后，可以将runqueues传递给其他线程。 Go scheduler会启动一个后台线程sysmon，用来检测长时间（超过10ms)运行到goroutine，将其“停靠”到global runqueues。这是一个全局的runqueues，优先级比较低，以示惩罚。
+G goroutine协程
+P processor处理器
+M thread线程
+Processor 它包含了运行goroutine的资源，如果线程想运行goroutine,必须先获取P，P中还包含了可运行的G队列。
+在Go中，线程是运行goroutine的实体，调度器的功能是把可运行的goroutine分配到工作线程上。
+全局队列：存放等待运行的G P的本地队列：同全局队列类似，存放的也是等待运行的G，存的数量有限，不超过256个。新建 G’时，G’优先加入到 P 的本地队列，如果队列满了，则会把本地队列中一半的 G 移动到全局队列。 P列表：所有的P都在程序启动时创建，并保存在数组中，最多有 GOMAXPROCS(可配置) 个。 M：线程想运行任务就得获取P，从P的本地队列获取G，P队列为空时，M 也会尝试从全局队列拿一批 G 放到 P 的本地队列，或从其他 P 的本地队列偷一半放到自己 P 的本地队列。M 运行 G，G 执行之后，M 会从 P 获取下一个 G，不断重复下去。 Goroutine 调度器和 OS 调度器是通过 M 结合起来的，每个 M 都代表了 1 个内核线程，OS 调度器负责把内核线程分配到 CPU 的核上执行。</description>
+    </item>
+    
+    <item>
+      <title>数据库基础</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Fri, 16 Sep 2022 10:04:24 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/</guid>
+      <description>数据库 # 索引 # 索引是什么，有什么作用，有何优缺点？ # 索引是帮助Mysql高效获取数据的一种数据结构，通常用B树，B+树实现（Mysql不支持hash）
+数据库索引，hash索引与B+树索引的适用场景，为什么用B+树索引 # B+树是一个平衡的多叉树，从根结点到每个叶子结点的高度差不超过1，而且同层级的结点间有指针相互连接。
+在B+树上的常规检索，从根结点到叶子结点的搜索效率基本相当，不会出现大幅的波动，而且基于索引的顺序扫描时，也可以利用双指针快速左右移动，效率非常高。因此，B+树索引被广泛应用于数据库、文件系统等场景。
+Hash索引，就是采用一定的Hash算法，把键值换算成新的Hash值，检索时不需要类似B+树那样从根结点到叶子结点逐级查找，只需要一次Hash算法即可立即定位到相应的位置，速度非常快。
+对比
+如果是等值查询，那么Hash索引明显有绝对优势，因为只需要经过一次算法即可找到相应的键值。前提是键值唯一。 如果是范围查询检索，这时候Hash索引就毫无用武之地了。 同理，Hash索引也无法利用索引完成排序，以及Like这样的部分模糊查询，这种模糊查询本质上也是范围查询。 Hash索引不支持复合索引，对于复合索引来说，Hash索引再计算Hash值的时候是将索引键合并后再一起计算Hash值，不会对每个索引单独计算Hash值。因此，如果用到复合索引的一个或者几个索引时，索引会失效。 B+树索引的关键字检索效率比较平均，不像B树那样波动幅度大，在有大量重复键的情况下，Hash索引的效率也是极低的，因为存在哈希冲突问题。 应用场景
+B+树索引结构适用于绝大多数场景 如果数据离散型高、基数大，且为等值查询的时候，Hash索引特别有优势 B 树与 B+ 树的对比
+在单行查询的时候，B+ 树会自顶向下逐层查找结点，最终找到匹配的叶子结点。这看起来和 B 树差不多，但其实有两点不同。首先，B+ 树的中间结点没有具体数据，所以同样大小的磁盘页可以容纳更多的结点元素，这就意味着，数据量相同的情况下，B+ 树的结构比 B 树更加 “矮胖”，因此查询时 IO 次数也更少。其次，B+ 树的查询必须最终查找到叶子结点，而 B 树只要找到匹配元素即可，无论匹配元素处于中间结点还是叶子结点。因此，B 树的查找性能并不稳定（最好情况是只查根结点，最坏情况是查到叶子结点）。而 B+ 树的每一次查找都是稳定的
+我们再来看看范围查询。B 树做范围查询只能依靠繁琐的中序遍历，而 B+ 树只需要在链表上做遍历即可：即先自顶向下找到范围的下限，再通过链表指针遍历到目标元素
+除了查询，还有插入和删除操作，因为 B+ 树的叶子结点包含所有元素，并且以有序的链表结构存储，这样大大提高了增删结点的效率
+综上，B+ 树相比 B 树的优势：
+磁盘 IO 次数更少 查询性能稳定 范围查询简便 增删结点时，效率更高
+主键与非主键和索引的关系 # 主键索引指的就是在主键上做索引，而非主键索引也就是在非主键上加索引。主键索引和非主键索引是有区别的，主键索引存放的值是整行字段的数据，而非主键索引上存放的值不是整行字段的数据，而存放主键字段的值。
+因此在使用主键索引查询的时候，直接就可以获得想要的数据，而用非主键索引则会先查询到主键，之后根据主键查询到具体的信息。
+非主键索引又称为二级索引，主键索引又称为聚簇索引。
+聚簇索引定义：
+索引和数据是放在一块的（一个文件存储，主键索引的B+树的叶子节点中存放了索引值和数据行所有字段） 索引的顺序和数据的物理存储一致（因为字段也在B+树的叶子节点中，因此索引按序则整个数据行也是按序的） 非聚簇索引定义： 索引和数据是分开存放的（两个文件存储，索引的B+树的叶子节点中只存放了索引值和指向对应数据行的物理地址） 索引的顺序和数据的物理存储不一致（B+树中的索引值是按序的，但指针中的对应数据行的物理地址并不是按序的） 记住一个结论：</description>
+    </item>
+    
+    <item>
+      <title>go语言基础（三）</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/</link>
+      <pubDate>Wed, 14 Sep 2022 09:58:30 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/</guid>
+      <description>Golang易错知识点 # GoMock # GoMock可以对interface打桩 GoMock可以对类成员函数打桩 GoMock可以对函数打桩 GoMock打桩后的依赖注入可以通过GoStub完成 GoStub # GoStub可以对全局变量打桩 GoStub可以对函数打桩 GoStub可以动态打桩，比如对一个函数打桩后，多次调用该函数会有不同的行为 作用域 # func main() { a := 12 { a := 13 _ = a // make compiler happy } fmt.Println(a) } 输出 12。 在作用域内的 a 在作用域外失效，所以输出 12。
+添加方法 # 可以给任意类型添加相应的方法。这一说法是否正确 false
+如果直接给int添加method会报错
+任意自定义类型(包括内置类型，但不包括指针类型)添加相应的方法。
+序列化 # type S struct { A int B *int C float64 d func() string e chan struct{} } func main() { s := S{ A: 1, B: nil, C: 12.</description>
+    </item>
+    
+    <item>
+      <title>数据结构-go</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/</link>
+      <pubDate>Sun, 27 Mar 2022 19:41:51 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/</guid>
+      <description>链表 # 链表定义 # type ListNode struct{//单链表 Val int Next *ListNode } type DoubleNode struct{//双链表 Val int Prev *DoubleNode Next *DoubleNode } 创建链表 # func CreatListNode(list []int) (tai *ListNode ){ head := &amp;amp;ListNode{Val: list[0]} //无头节点情况 head:=&amp;amp;ListNode{} tail := head for i := 1; i &amp;lt; len(list); i++ { //有头节点，这里i=0 head.Next = &amp;amp;ListNode{Val: list[i]} head = head.Next } return tail } func CreatDoubleNode(list []int) (head *DoubleNode) { //创建双链表 p := &amp;amp;DoubleNode{} q := p for i := 0; i &amp;lt; len(list); i++ { p.</description>
+    </item>
+    
+    <item>
+      <title>智能合约</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/</link>
+      <pubDate>Mon, 10 May 2021 09:27:50 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/</guid>
+      <description>智能合约 # 1.什么是链码 # 链码是程序，用Go，Node.js，Java其中一种语言编写的，提供分布式账本的状态处理逻辑。链码运行在Peer的独立进程中，负责初始化账本，管理账本状态。
+链码能够独立运行在具有安全特性的受保护的Docker容器中，以gRPC协议与相应的Peer节点进行通信，并操作（初始化或管理）分布式账本中的数据。
+链码通常用来处理网络成员同意的逻辑事务，所以它也被称为“智能合约”。可以调用链码更新或者查询交易。如果有合适的权限，两码可以调用另一个链码，无论是否在一个channel中，获取账本状态。
+注意如果被调用的链码和链码处于不同的channel中，只有读权限。也就是说被调用链码只有读功能，不参与后续事务的验证和检查。
+在hyperledger fabric中链码一般分为系统链码和用户链码。
+（1）系统链码
+系统链码负责fabric节点自身的处理逻辑，包括系统配置、背书、校验等工作。hypgeledger fabric 系统链码仅支持go语言，在peer节点启动时会自动完成注册和部署。
+配置系统链码 生命周期系统链码 查询系统链码 背书管理系统链码 验证系统链码 （2）用户链码
+开发人员编写的基于区块链分布式账本状态的业务处理逻辑代码运行在链码容器中。通过hyperledger fabric 提供的接口与账本状态进行交互。
+生命周期 # install：安装在指定的Peer节点中。 instantiate：进行实例化 //过时了 upgrade：链码升级 package：对链码进行打包 singnpackage：对打包的文件进行签名 链码安装在一个节点中还是安装在多个节点中？有什么区别？
+​	在实际生产环境中，必须在应用通道上每一个要运行链码的背书节点上安装链码，其他未安装链码的节点不能执行链码，但仍可以验证交易并提交到账本中。
+链码执行查询与执行事务的流程相同吗？
+不同，执行查询操作，则客户端接收到背书的交易提案响应后不会再将交易请求提交给Orderer节点。
+背书策略具体指的是什么？
+背书策略是一种在实例化链码时指定由当前通道中的那些成员节点进行背书签名的策略。
+如果在实例化链码时没有指定背书策略，那么会有节点进行背书吗？
+会，默认的背书策略时MSP标识DEFAULT成员的签名
+CORE_PEER_ADDRESS=peer:7052中的7052端口指的是什么，为什么不是7051？
+7052是用于指定链码的专用监听地址及端口号，而7051是peer节点监听的网络端口。
+2.初始整理 # 首先创建一个存放链码的目录，我们使用以下命令在GOPATH下创建一个目录
+cd $GOPATH mkdir chaincode cd chaincode 接着使用以下命令初始化这个项目并创建一个go文件
+go mod init chaincode touch sacc.go 链代码的包名的必须是main
+package main 必须要引入的包shim 和peer，用于客户端与Fabric框架通信
+import ( &amp;#34;github.com/hyperledger/fabric-chaincode-go/shim&amp;#34; &amp;#34;github.com/hyperledger/fabric-protos-go/peer&amp;#34; ) 自定义一个结构体, 基于这个结构体实现一些接口函数</description>
+    </item>
+    
+    <item>
+      <title>fabric-sdk-go详解</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Sat, 08 May 2021 20:47:33 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/</guid>
+      <description>fabric-go-sdk # 1、概述 # ​	Fabric的Peer节点和Orderer节点都提供了基于GRPC协议(Google开发的远程过程调用RPC)的接口，通过这些接口可以和Peer节点与Orderer节点进行命令/数据交互，为了简化开发，官方提供了多语言版本的SDK。
+fabric-go-sdk官方网址为https://github.com/hyperledger/fabric-sdk-go
+pkg目录是fabric-go-sdk的主要实现，internel目录和third_party目录包含了fabric-go-sdk依赖的一些代码。
+pkg/fabsdk：Fabric SDK 的主包。此包支持基于配置创建上下文。这些上下文由下面列出的客户端包使用。参考：https ://godoc.org/github.com/hyperledger/fabric-sdk-go/pkg/fabsdk
+pkg/client/channel：提供通道事务能力。参考：https ://godoc.org/github.com/hyperledger/fabric-sdk-go/pkg/client/channel
+pkg/client/event：提供通道事件能力。参考：https ://godoc.org/github.com/hyperledger/fabric-sdk-go/pkg/client/event
+pkg/client/ledger：启用对通道底层账本的查询。参考：https ://godoc.org/github.com/hyperledger/fabric-sdk-go/pkg/client/ledger
+pkg/client/resmgmt：提供安装链码等资源管理能力。参考：https ://godoc.org/github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt
+pkg/client/msp：启用身份管理功能。参考：https ://godoc.org/github.com/hyperledger/fabric-sdk-go/pkg/client/msp
+基本工作流程
+1) 使用配置实例化一个 fabsdk 实例。 注意：fabsdk 维护缓存，因此您应该最小化 fabsdk 本身的实例。 2) 使用您的 fabsdk 实例创建基于用户和组织的上下文。 注意：通道上下文还需要通道 ID。 3) 使用它的 New func 创建一个客户端实例，传递上下文。 注意：您为所需的每个上下文创建一个新的客户端实例。 4）使用每个客户提供的功能来创建您的解决方案！ 5) 调用 fabsdk.Close() 释放资源和缓存。 2、准备网络环境 # 准备证书文件 # 具体参照solo节点测试
+在$GOPATH/src目录下创建一个名为sdktest的文件夹做为项目根目录,在此目录下创建名为fixtures的文件夹存放我们网络相关配置文件。
+编辑crypto-config.yaml的文件（这里为一个组织两个节点）
+cryptogen generate --config=crypto-config.yaml 生成证书 在fixtures路径下创建一个名为configtx.yaml的文件
+编辑configtx.yaml文件
+生成创世块文件
+生成通道文件
+锚节点更新（两个组织都要更新）
+完成后：channel-artifacts文件夹 channel.tx Org1MSPanchors.tx Org1MSPanchors.tx genesis.block 配置docker-compose文件</description>
+    </item>
+    
+    <item>
+      <title>fabric环境搭建</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Wed, 24 Mar 2021 17:12:42 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</guid>
+      <description>Hyperledger Fabric基础环境之Docker # Docker 是一个开源的应用容器引擎，基于Go语言并遵从Apache2.0 协议开源。Docker 可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。容器是完全使用沙箱机制，相互之间不会有任何接口,更重要的是容器性能开销极低。Docker 从 17.03 版本之后分为 CE（Community Edition: 社区版） 和 EE（Enterprise Edition: 企业版），我们用社区版就可以了。
+1.Docker安装与配置 # 使用 Docker 仓库进行安装在新主机上首次安装 Docker Engine-Community 之前，需要设置 Docker 仓库。之后，您可以从仓库安装和更新 Docker 。
+使用apt-get命令更新包索引。
+sudo apt-get update 使用apt-get命令安装依赖包，用于通过HTTPS来获取仓库。
+sudo apt-get install \ apt-transport-https \ ca-certificates \ curl \ git \ gnupg-agent \ software-properties-common 使用curl命令添加 Docker 的官方 GPG 密钥。
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - 9DC8 5822 9FC7 DD38 854A E2D8 8D81 803C 0EBF CD88 使用以下命令通过搜索指纹的后8个字符，验证您现在是否拥有带有指纹的密钥。</description>
+    </item>
+    
+    <item>
+      <title>fabric-ca详解</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Thu, 15 Apr 2021 14:30:23 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/</guid>
+      <description>MSP # msp定义 # MSP是hyperleger fabric对网络中的组成成员进行身份管理与验证的模块组件。
+作用：
+管理用户ID
+验证想要加入网络的节点
+为客户发起的交易提供凭证
+MSP 在Hyperledger Fabric中按级别分类如下：
+网络MSP：对整个hyperledger fabric网络中的成员进行管理；定义参与组织的MSP，以及组织成员中的那些成员被授权执行管理任务（如创建通道）
+通道MSP：对一个通道中的成员进行管理，通道在特定的一组组织之间提供私有通信；在该通道的MSP环境中（通道策略）定义了谁有权限参与通道上的某些行为（如添加组织或实例化链码）。
+Peer MSP：每个Peer节点都有一个单独的MSP实例，执行与通道MSP完全相同的功能，其限制是它仅适用于定义它的Peer节点。
+Orderer MSP：与Peer MSP相同，Orederer节点的本地MSP也在其节点的文件系统上定义，仅适用于该Orderer节点。
+User MSP：每个组织都可以拥有多个不同的用户，都在其Organization节点的文件系统上定义，仅适用于定义它的Peer节点。
+在Hyperledger Fabric中，各个网络参与者之间的通信安全依赖于PKI（Public Key Infrastructure,公钥基础结构）标准实现，并确保在区块链上发布的消息得到相应的认证。
+PKI只是一个体系结构，负责生成及颁发证书。在H yperledger fabric 中，默认MSP实际上使用符合X.509标准的证书作为身份，采用传统的PKI分层模型来实现。
+PKI的四个关键要素：
+数字证书：最常见的证书类型符合X.509标准的证书。
+公钥和私钥：
+证书颁发机构：这些证书由CA进行数字签名，CA是为组织的参与者提供可验证的数字身份的基础。
+证书撤销列表：
+MSP的组成结构 # MSP
+RCA 根CA ：文件夹包含根CA的自签名X.509证书列表，用于自签名及给中间CA证书签名。 ICA 中间CA ：包含根CA颁发的证书列表。 OU 组织单位：这些单位列在$FABRIC_CFG_PATH/msp/config.yaml文件中，包含一个组织单位列表，其成员被视为该MSP所代表的组织的一部分。 B 管理页：此文件夹包含一个标识列表，用于定义具有此组织管理员角色的角色。 ReCA 撤销证书：保存已被撤销参与者身份的信息。 SCA 签名证书：背书节点在交易提案响应中的签名证书。 KeyStore 私钥： TLS RCA TLS根CA TLS ICA TLS中间CA Fabric-ca # fabric-ca 项目是专门为了解决Fabric账号问题而发起的一个开源项目, 它非常完美的解决了fabric账号生成的问题。fabric-ca项目由 fabric-server 和fabric-client这两个模块组成。其中fabric-server在 fabric中占有非常重要的作用。我们使用cryptogen命令可以同配置文件生成一些账号信息, 但是如果有动态添加账号的需求, 就无法满足, 所以这个时候我们就应该在项目中引入fabric-ca。</description>
+    </item>
+    
+    <item>
+      <title>solo节点测试</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/</link>
+      <pubDate>Thu, 25 Mar 2021 19:18:57 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/</guid>
+      <description>生成Fabric证书 # Hyperledger Fabric通过证书文件来配置组织、节点以及用户。证书文件（实际上，数字证书就是经过CA认证过的公钥）的标准为X.509，编码格式为PEM，以—–BEGIN开头,以—–END结尾。X.509 数字证书不但包括用户名和公共密钥，而且还包括有关该用户的其他信息。除了扩展名为PEM的还有以下这些：
+CRT ：应该是certificate的三个字母，还是证书的意思。打开看也是PEM编码格式。 KEY： 用来存放一个公钥或私钥，并非X.509证书。打开看依然PEM格式。 证书的默认签名算法为ECDSA，Hash算法为SHA-256。Fabric中设计中考虑了三种类型证书:
+登记证书（ECert）：颁发给提供了注册凭证的用户或节点实体，长期有效。（主要就是通ECert对实体身份检验） 通信证书（TLSCert）：TLS证书用来保障通信链路安全，控制对网络层的接入访问，可以对远端实体身份校验，防止窃听。 交易证书（TCert）：颁发给用户，控制每个交易的权限，一般针对某个交易，短期有效。 1.证书的文件的编写 # 首先我们使用以下命令在进入~/hyperledger目录并创建一个项目目录solotest。
+cd ~/hyperledger mkdir solotest cd solotest 我们可以使用以下命令来查看生成证书文件的模板文件。
+cryptogen showtemplate 使用以下命令将模板文件复制到当前目录下。
+cryptogen showtemplate &amp;gt; crypto-config.yaml 配置文件的模板如下：
+OrdererOrgs:	- Name: Orderer	Domain: example.com	Specs: - Hostname: orderer - Hostname: orderer2 PeerOrgs: - Name: Org1	Domain: org1.example.com	EnableNodeOUs: true	Template:	Count: 2 Users:	Count: 2 - Name: Org2 Domain: org2.example.com EnableNodeOUs: true Template: Count: 2 Specs: - Hostname: hello Users: Count: 1 OrdererOrgs 排序节点组织信息</description>
+    </item>
+    
+    <item>
+      <title>gin框架</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/</link>
+      <pubDate>Mon, 27 Dec 2021 21:22:31 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/</guid>
+      <description>简介 # 介绍 # Gin是一个golang的微框架，封装比较优雅，API友好，源码注释比较明确，具有快速灵活，容错方便等特点 对于golang而言，web框架的依赖要远比Python，Java之类的要小。自身的net/http足够简单，性能也非常不错 借助框架开发，不仅可以省去很多常用的封装带来的时间，也有助于团队的编码风格和形成规范 安装 # 要安装Gin软件包，您需要安装Go并首先设置Go工作区。
+1.首先需要安装Go（需要1.10+版本），然后可以使用下面的Go命令安装Gin。
+go get -u github.com/gin-gonic/gin
+2.将其导入您的代码中：
+import &amp;ldquo;github.com/gin-gonic/gin&amp;rdquo;
+3.（可选）导入net/http。例如，如果使用常量，则需要这样做http.StatusOK。
+import &amp;ldquo;net/http&amp;rdquo;
+hello word # package main import ( &amp;#34;net/http&amp;#34; &amp;#34;github.com/gin-gonic/gin&amp;#34; ) func main() { // 1.创建路由 r := gin.Default() // 2.绑定路由规则，执行的函数 // gin.Context，封装了request和response r.GET(&amp;#34;/&amp;#34;, func(c *gin.Context) { c.String(http.StatusOK, &amp;#34;hello World!&amp;#34;) }) // 3.监听端口，默认在8080 // Run(&amp;#34;里面不指定端口号默认为8080&amp;#34;) r.Run(&amp;#34;:8000&amp;#34;) } GORM # 特性 # 全功能 ORM 关联 (Has One，Has Many，Belongs To，Many To Many，多态，单表继承) Create，Save，Update，Delete，Find 中钩子方法 支持 Preload、Joins 的预加载 事务，嵌套事务，Save Point，Rollback To Saved Point Context、预编译模式、DryRun 模式 批量插入，FindInBatches，Find/Create with Map，使用 SQL 表达式、Context Valuer 进行 CRUD SQL 构建器，Upsert，数据库锁，Optimizer/Index/Comment Hint，命名参数，子查询 复合主键，索引，约束 Auto Migration 自定义 Logger 灵活的可扩展插件 API：Database Resolver（多数据库，读写分离）、Prometheus… 每个特性都经过了测试的重重考验 开发者友好 安装 # go get -u gorm.</description>
+    </item>
+    
+    <item>
+      <title>fabric多机搭建</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Thu, 25 Mar 2021 19:26:42 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/</guid>
+      <description>多机搭建前准备 # 这部分实验内容使用的是Ubuntu操作系统，所需要的实验环境与单节点搭建部分相同，包括docker的安装golang的安装fabric的安装等。为了方便，以上环境已在虚拟机中安装完成。
+1.网络结构 # 这部分课程我们要搭建一个多机多节点的网络，结构如下。网络中有两个组织分别为org1、org2，每个组织各有一个peer节点，同时还有一个orderer节点。
+名称 IP hosts 组织机构 Orderer 172.17.0.10 orderer.test.com orderer Org1peer0 172.17.0.11 peer0.org1.test.com org1 Org2peer0 172.17.0.12 peer0.org2.test.com org2 2.设置网络host # 使用以下命令，我们在三台虚拟机中分别查看当前虚拟机的IP，其中最后一行为本机IP。
+cat /etc/hosts 127.0.0.1	localhost ::1	localhost ip6-localhost ip6-loopback fe00::0	ip6-localnet ff00::0	ip6-mcastprefix ff02::1	ip6-allnodes ff02::2	ip6-allrouters 172.17.0.10	1cbb99f39f9a 配置所有服务器网络host,在三台虚拟机中都进行以下操作。
+vi /etc/hosts 在最后插入（IP与host任意指定，确定后不能更改），写入以下内容后，按 Esc 键退回一般模式，然后输入 :wq 命令并回车保存退出文件。
+172.17.0.10 orderer.test.com 172.17.0.11 peer0.org1.test.com 172.17.0.12 peer0.org2.test.com 3.ssh安装 # 在多机搭建的过程中我们会使用到scp命令。Linux scp 命令用于 Linux 之间复制文件和目录。
+scp 是 secure copy 的缩写, scp 是 Linux 系统下基于 ssh 登陆进行安全的远程文件拷贝命令。</description>
+    </item>
+    
+    <item>
+      <title>Beego框架</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/</link>
+      <pubDate>Sun, 07 Mar 2021 13:48:22 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/</guid>
+      <description>beego框架 # beego框架了解 # Beego框架是go语言开发的web框架。
+beego是中国人开发的，开发文档比较详细
+beego网址 MVC架构 # Beego是MVC架构。MVC 是一种应用非常广泛的体系架构，几乎所有的编程语言都会使用到，而且所有的程序员在工作中都会遇到！用 MVC 的方式开发程序，可以让程序的结构更加合理和清晰。 我们画图说明
+环境搭建 # 这里默认大家已经搭建好了go语言的开发环境。
+需要安装Beego go get -u github.com/beego/bee/v2@master go install github.com/beego/bee/v2@master //上面没用就试试这个 而后运行 bee version | ___ \| |_/ / ___ ___| ___ \ / _ \ / _ \| |_/ /| __/| __/\____/ \___| \___| v2.0.2├── Beego : Beego is not installed. Please do consider installing it first: https://github.com/beego/beego/v2. If you are using go mod, and you don&amp;#39;t install the beego under $GOPATH/src/github.</description>
+    </item>
+    
+    <item>
+      <title>Atomic</title>
+      <link>https://chain-code.github.io/docs/golang/package/atomic/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/atomic/</guid>
+      <description>Go语言中的 sync/atomic 包提供了一组原子操作函数，用于在多线程或并发环境下执行对共享变量的原子操作。这些操作是原子的，不会受到其他并发操作的干扰，从而避免了竞态条件和数据竞争问题。sync/atomic 包通常用于同步和管理共享资源，以确保线程安全。
+原子加载（Load）： Load 函数用于原子地加载变量的值。例如，atomic.LoadInt32(&amp;amp;myVariable) 会原子地获取 myVariable 的值。 原子存储（Store）： Store 函数用于原子地存储一个值到变量中。例如，atomic.StoreInt32(&amp;amp;myVariable, newValue) 会原子地将 newValue 存储到 myVariable 中。 原子交换（Swap）： Swap 函数用于原子地交换变量的值，并返回之前的值。例如，atomic.SwapInt32(&amp;amp;myVariable, newValue) 会原子地将 newValue 存储到 myVariable 中，并返回之前的值。 原子增减（Add/Sub）： Add 和 Sub 函数用于原子地增加或减少变量的值。例如，atomic.AddInt32(&amp;amp;myVariable, delta) 会原子地将 myVariable 的值增加 delta。 原子比较并交换（CompareAndSwap）： CompareAndSwap 函数用于原子地比较变量的当前值与期望值，如果相等则交换成新值。这通常用于实现乐观锁定机制。例如，atomic.CompareAndSwapInt32(&amp;amp;myVariable, expectedValue, newValue) 会比较 myVariable 的当前值是否等于 expectedValue，如果是，则将其替换为 newValue。 原子增减并返回新值（AddInt32, AddInt64, SubInt32, SubInt64）： 这些函数用于原子地增加或减少变量的值，并返回新的值。例如，atomic.AddInt32(&amp;amp;myVariable, delta) 会原子地将 myVariable 的值增加 delta，并返回新的值。 </description>
+    </item>
+    
+    <item>
+      <title>业务代码</title>
+      <link>https://chain-code.github.io/docs/cc&#43;&#43;/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/</link>
+      <pubDate>Wed, 27 Mar 2024 12:11:30 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/cc&#43;&#43;/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/</guid>
+      <description> 监听windows是否处于休眠唤醒状态 # #include &amp;lt;windows.h&amp;gt; #include &amp;lt;iostream&amp;gt; #include &amp;lt;powrprof.h&amp;gt; #pragma comment(lib, &amp;#34;Powrprof.lib&amp;#34;) using namespace std; ULONG CALLBACK DeviceCallback(PVOID Context, ULONG Type, PVOID Setting) { if (Type == PBT_APMSUSPEND) { cout &amp;lt;&amp;lt; &amp;#34;close&amp;#34; &amp;lt;&amp;lt; endl; } if (Type == PBT_APMRESUMESUSPEND) { cout &amp;lt;&amp;lt; &amp;#34;open&amp;#34; &amp;lt;&amp;lt; endl; } return ERROR_SUCCESS; } int main() { HPOWERNOTIFY g_power_notify_handle = NULL; DEVICE_NOTIFY_SUBSCRIBE_PARAMETERS params; params.Callback = DeviceCallback; params.Context = 0; PowerRegisterSuspendResumeNotification(DEVICE_NOTIFY_CALLBACK, &amp;amp;params, &amp;amp;g_power_notify_handle); MSG msg; while (GetMessage(&amp;amp;msg, NULL, 0, 0)) { TranslateMessage(&amp;amp;msg); DispatchMessage(&amp;amp;msg); } PowerUnregisterSuspendResumeNotification(g_power_notify_handle); return 0; } </description>
+    </item>
+    
+    <item>
+      <title>Os</title>
+      <link>https://chain-code.github.io/docs/golang/package/os/</link>
+      <pubDate>Fri, 05 May 2023 11:51:49 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/os/</guid>
+      <description>Go文件操作 # 文件系统简介 # 文件系统是计算机用于存储和组织数据的一种方式，它定义了如何在计算机硬件上存储、读取、写入和管理文件和目录。文件系统通常由操作系统提供，它们可以支持不同的文件格式和存储设备，如磁盘驱动器、闪存驱动器、CD-ROM和网络驱动器等。文件系统可以帮助用户和应用程序组织和管理计算机中的文件和文件夹，使它们易于访问和处理。它们还提供了安全性和数据完整性方面的保护，以确保用户的数据不会被意外删除或破坏。一些常见的文件系统包括Windows的NTFS和FAT32、Linux的EXT4和Btrfs，以及Mac OS X的HFS+和APFS。
+Windows操作系统支持 NTFS, FAT32, and exFAT三种不同文件系统。NTFS是目前Windows系统中一种现代文件系统，目前使用最广泛，内置的硬盘大多数都是NTFS格式。FAT32是一种相对老旧的文件系统，不能像NTFS格式支持很多现代文件格式的属性，但对于不同系统平台具有良好的兼容性，可以在Linux、Mac或Android系统平台上通用。exFAT是FAT32文件格式的替代品，很多设备和操作系统都支持该文件系统，但是目前用的不多。
+目前的大部分 Linux 文件系统都默认采用 ext4 文件系统，正如以前的 Linux 发行版默认使用 ext3、ext2 以及更久前的 ext。
+NTFS # NTFS（New Technology File System）是Windows操作系统中使用的一种先进的文件系统，是Windows NT家族的标准文件系统。NTFS支持更高级的文件管理功能，如文件和目录的权限、加密、压缩、磁盘配额等，也支持更大的磁盘容量和更大的文件大小。以下是NTFS的一些特点：
+安全性：NTFS支持文件和文件夹的权限控制，可以为每个用户或组设置不同的访问权限，确保数据的安全性和隐私性。 可靠性：NTFS使用日志记录和故障容错技术，可以检测并修复磁盘上的错误和损坏。 空间利用率：NTFS使用动态存储分配和簇大小调整，使得文件系统可以更有效地利用磁盘空间。 文件压缩：NTFS支持文件和文件夹的压缩，可以节省磁盘空间，并且对于大量文本数据可以获得更高的数据压缩比。 数据加密：NTFS支持文件和文件夹的加密，可以保护数据的机密性。 大文件支持：NTFS支持极大的文件和分区大小，最大文件大小为16EB（EB表示艾字节，1EB=1024PB），最大分区大小为256TB。 总之，NTFS是一个高级的、功能强大的文件系统，提供了许多重要的功能和优势，因此它被广泛用于Windows操作系统和应用程序中。
+FAT32 # FAT32（File Allocation Table 32），用于在Windows操作系统中格式化存储设备，如磁盘、USB驱动器等。FAT32是FAT文件系统的一种升级版本，它支持更大的磁盘空间和文件大小，并且具有更好的兼容性。以下是FAT32的一些特点：
+兼容性：FAT32是一种通用的文件系统，几乎可以在所有操作系统和设备上进行访问和读取，例如Windows、Mac、Linux、Android和其他平台。 可移植性：FAT32格式化的设备可以轻松地从一台计算机或设备移动到另一台计算机或设备，这是它在可移动存储设备上广泛使用的原因之一。 支持大容量存储设备：FAT32支持最大容量为2TB的存储设备，因此它被广泛用于外部硬盘、闪存驱动器等大容量存储设备上。 支持大文件：FAT32支持最大文件大小为4GB，这是相对较小的文件大小限制，但对于大多数常见文件类型而言足够了。 简单：FAT32是一个相对简单的文件系统，易于实现和使用。 总之，FAT32是一种简单、兼容性强、可移植性好的文件系统，它被广泛应用于可移动存储设备、外部硬盘和其他大容量存储设备上。虽然它有一些限制，例如文件大小限制，但对于普通用户而言，它仍然是一种可靠和方便的文件系统。
+EXFAT # exFAT（Extended File Allocation Table）是一种用于可移动存储设备的文件系统，由Microsoft开发，它是FAT文件系统的一种升级版本。exFAT支持更大的文件和存储设备容量，也具有更好的兼容性。以下是exFAT的一些特点：
+大文件支持：exFAT支持极大的文件大小，最大文件大小为16EB，这是比FAT32更高的限制，对于处理大型媒体文件等需要大文件支持的应用程序非常有用。 大容量支持：exFAT支持极大的存储设备容量，最大容量为128PB，这使得它非常适合用于大型存储设备，如高容量的移动硬盘或SD卡。 兼容性：exFAT文件系统可以在Windows、Mac OS X、Linux和其他操作系统上进行访问和读取，这使得它非常适合在跨平台环境中使用。 文件系统简单：exFAT文件系统比NTFS更简单，因此更易于实现和使用。 文件碎片化更少：与FAT32相比，exFAT可以减少文件碎片化的问题，从而提高文件访问速度。 总之，exFAT是一种高效、可靠、具有更大文件和存储设备容量限制的文件系统，特别适合用于可移动存储设备，如SD卡、U盘等。由于其更好的兼容性，它在跨平台数据共享和数据传输方面非常有用。
+EXT4 # EXT4是Linux操作系统中使用的一种高性能的日志式文件系统。它是EXT3文件系统的后继版本，支持更大的文件和文件系统容量，并且具有更好的文件系统安全性和稳定性。以下是EXT4的一些特点：
+支持大文件和大容量：EXT4支持极大的文件和文件系统容量，最大文件大小为16TB，最大文件系统容量为1EB，这使得它非常适合于处理大型数据库和媒体文件等应用程序。 快速的文件系统检查和修复：EXT4引入了一个称为ext4fsck的新工具，它可以更快地检查和修复文件系统错误，这可以大大减少系统恢复的时间。 可靠性和稳定性：EXT4使用日志式文件系统技术，它记录文件系统操作，可以在文件系统崩溃或意外断电等情况下恢复数据。此外，EXT4还使用了额外的检查和纠正功能，可以减少数据损坏和丢失的可能性。 高性能：EXT4的读取和写入速度比EXT3更快，它采用了新的文件分配方式，提高了文件系统的性能，特别是在处理大型文件和大容量数据的情况下。 支持多种操作系统：EXT4文件系统可以在Linux、BSD和其他一些操作系统上进行访问和读取，这使得它非常适合在跨平台环境中使用。 总之，EXT4是一种高性能、可靠和稳定的文件系统，支持大文件和大容量，特别适合于处理大型数据库和媒体文件等应用程序。它的快速检查和修复功能可以提高文件系统的可用性，同时它也具有更好的数据安全性和稳定性。由于它可以在多种操作系统上进行访问和读取，它在跨平台环境中的使用也越来越广泛。</description>
+    </item>
+    
+    <item>
+      <title>Strconv</title>
+      <link>https://chain-code.github.io/docs/golang/package/strconv/</link>
+      <pubDate>Fri, 05 May 2023 11:36:52 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/strconv/</guid>
+      <description> strconv 字符串和数字相互转换 # 需引入&amp;quot;strconv&amp;quot;包
+string到int
+int,err:=strconv.Atoi(string) string到int64
+int64, err := strconv.ParseInt(string, 10, 64) int到string
+string:=strconv.Itoa(int) int64到string
+string:=strconv.FormatInt(int64,10) 10进制转16进制
+strconv.FormatInt(int64, 16) 想保留前面的数
+func main() { decimal := 2 hex := fmt.Sprintf(&amp;#34;%02x&amp;#34;, decimal) fmt.Println(hex) // 输出：02 } </description>
+    </item>
+    
+    <item>
+      <title>Sort</title>
+      <link>https://chain-code.github.io/docs/golang/package/sort/</link>
+      <pubDate>Fri, 05 May 2023 11:36:34 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/sort/</guid>
+      <description>sort —— 排序算法 # sort包提供了对[]int切片、[]float64切片和[]string切片完整支持，主要包括：
+对基本数据类型切片的排序支持 基本数据元素查找 判断基本数据类型切片是否已经排好序 对排好序的数据集合逆序 对[]int切片排序是更常使用sort.Ints()，而不是直接使用IntSlice类型。
+s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据 sort.Ints(s) fmt.Println(s) //将会输出[1 2 3 4 5 6] 如果要使用降序排序，显然要用前面提到的Reverse()方法：
+s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据 sort.Sort(sort.Reverse(sort.IntSlice(s))) fmt.Println(s) //将会输出[6 5 4 3 2 1] 如果要查找整数x在切片a中的位置，相对于前面提到的Search()方法，sort包提供了SearchInts():
+func SearchInts(a []int, x int) int 注意，SearchInts()的使用条件为：切片a已经升序排序
+s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据 sort.Ints(s) //排序后的s为[1 2 3 4 5 6] fmt.</description>
+    </item>
+    
+    <item>
+      <title>Strings</title>
+      <link>https://chain-code.github.io/docs/golang/package/strings/</link>
+      <pubDate>Fri, 05 May 2023 11:36:12 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/strings/</guid>
+      <description>strings.Split # func Split(s, sep string) []string strings.Split 函数用于通过指定的分隔符切割字符串，并返回切割后的字符串切片。
+func main() { fmtPrintln(stringsSplit(&amp;#34;Linux, Unix, Windows, Android&amp;#34;, &amp;#34;, &amp;#34;)) fmtPrintln(stringsSplit(&amp;#34; Linux is very very very good! &amp;#34;, &amp;#34; &amp;#34;)) } 输出：返回的是字符串数组。 [Linux Unix Windows Android] [ Linux is very very very good! ] strings.Split(s, sep) 1 s：待分割的字符串（字符串类型的参数） sep：分隔符 （字符串类型的参数） 返回值： 返回一个字符串切片。 strings.Join # func Join(elems []string, sep string) string 作用：使用 sep 作为分隔符，将elems 中的所有字符连接起来：
+func main() { elems := []string{&amp;#34;I&amp;#34;, &amp;#34;like&amp;#34;, &amp;#34;golang&amp;#34;, &amp;#34;!</description>
+    </item>
+    
+    <item>
+      <title>Sqlite</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/</link>
+      <pubDate>Sun, 30 Apr 2023 16:16:50 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/</guid>
+      <description>SQLite # SQLite 是一个开源的嵌入式关系数据库，实现自包容、零配置、支持事务的 SQL 数据库引擎。其特点是高度便携、使用方便、结构紧凑、高效、可靠。 与其他数据库管理系统不同，SQLite 的安装和运行非常简单，在大多数情况下，只要确保 SQLite 的二进制文件存在即可开始创建、连接和使用数据库。如果您正在寻找一个嵌入式数据库项目或解决方案，SQLite 是绝对值得考虑。</description>
+    </item>
+    
+    <item>
+      <title>Xorm</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/</link>
+      <pubDate>Sun, 30 Apr 2023 16:16:50 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/</guid>
+      <description>https://lunny.gitbooks.io/xorm-manual-zh-cn/content/chapter-01/index.html
+https://xorm.io/docs/chapter-01/readme/
+创建Orm引擎 # 在xorm里面，可以同时存在多个Orm引擎，一个Orm引擎称为Engine，一个Engine一般只对应一个数据库。Engine通过调用xorm.NewEngine生成，如：
+import ( _ &amp;#34;github.com/go-sql-driver/mysql&amp;#34; &amp;#34;github.com/go-xorm/xorm&amp;#34; ) var engine *xorm.Engine func main() { var err error engine, err = xorm.NewEngine(&amp;#34;mysql&amp;#34;, &amp;#34;root:[email protected]/test?charset=utf8&amp;#34;) } or
+import ( _ &amp;#34;github.com/mattn/go-sqlite3&amp;#34; &amp;#34;github.com/go-xorm/xorm&amp;#34; ) var engine *xorm.Engine func main() { var err error engine, err = xorm.NewEngine(&amp;#34;sqlite3&amp;#34;, &amp;#34;./test.db&amp;#34;)//数据库文件路径 } 一般情况下如果只操作一个数据库，只需要创建一个engine即可。engine是GoRutine安全的。
+创建完成engine之后，并没有立即连接数据库，此时可以通过engine.Ping()来进行数据库的连接测试是否可以连接到数据库。另外对于某些数据库有连接超时设置的，可以通过起一个定期Ping的Go程来保持连接鲜活。
+对于有大量数据并且需要分区的应用，也可以根据规则来创建多个Engine，比如：
+var err error for i:=0;i&amp;lt;5;i++ { engines[i], err = xorm.NewEngine(&amp;#34;sqlite3&amp;#34;, fmt.Sprintf(&amp;#34;./test%d.db&amp;#34;, i)) } engine可以通过engine.Close来手动关闭，但是一般情况下可以不用关闭，在程序退出时会自动关闭。
+NewEngine传入的参数和sql.Open传入的参数完全相同，因此，在使用某个驱动前，请查看此驱动中关于传入参数的说明文档。以下为各个驱动的连接符对应的文档链接：
+sqlite3 mysql dsn mymysql postgres 在engine创建完成后可以进行一些设置，如：</description>
+    </item>
+    
+    <item>
+      <title>Web Socket</title>
+      <link>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/websocket/</link>
+      <pubDate>Wed, 19 Apr 2023 20:07:07 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/websocket/</guid>
+      <description>WebSocket # WebSocket - Web API 接口参考 |多核 (mozilla.org)
+WebSocket API是一种先进的技术，可以在用户的浏览器和服务器之间打开双向交互通信会话。使用此 API，您可以向服务器发送消息并接收事件驱动的响应，而无需轮询服务器以获取答复。
+官方示例 # Chat Example
+官方示例可参照synk项目结合gin框架
+官方介绍
+main.go # package main import ( &amp;#34;flag&amp;#34; &amp;#34;log&amp;#34; &amp;#34;net/http&amp;#34; ) var addr = flag.String(&amp;#34;addr&amp;#34;, &amp;#34;:8080&amp;#34;, &amp;#34;http service address&amp;#34;) func serveHome(w http.ResponseWriter, r *http.Request) { log.Println(r.URL) if r.URL.Path != &amp;#34;/&amp;#34; { http.Error(w, &amp;#34;Not found&amp;#34;, http.StatusNotFound) return } if r.Method != http.MethodGet { http.Error(w, &amp;#34;Method not allowed&amp;#34;, http.StatusMethodNotAllowed) return } http.ServeFile(w, r, &amp;#34;home.html&amp;#34;) } func main() { flag.</description>
+    </item>
+    
+    <item>
+      <title>Reflect</title>
+      <link>https://chain-code.github.io/docs/golang/package/reflect/</link>
+      <pubDate>Wed, 19 Apr 2023 20:05:56 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/reflect/</guid>
+      <description>Reflect # reflect包是Go语言标准库中的一个包，它提供了一组功能，允许我们在运行时动态地查看和操作Go程序中的变量、函数和类型。通过使用reflect包，我们可以以一种通用的方式处理和操作各种类型的值，而无需知道它们的具体类型。
+TypeOf()和ValueOf() # TypeOf()和ValueOf()函数是reflect包中最常用的两个函数之一。TypeOf()函数可以返回任何变量的类型，而ValueOf()函数可以返回变量的值。这两个函数都接受一个interface{}类型的参数，并返回一个reflect.Type和reflect.Value类型的结果。
+lessCopy codevar x int = 42 fmt.Println(reflect.TypeOf(x)) // 输出：int fmt.Println(reflect.ValueOf(x)) // 输出：42 IsZero() # IsZero() 方法检查该反射值是否为零值。
+IsZero() 方法则返回一个布尔值，表示该反射值是否为其类型的零值。对于大部分类型来说，零值就是其类型的默认值，例如 int 类型的零值是 0，string 类型的零值是空字符串 &amp;quot;&amp;quot;。
+func (v Value) IsZero() bool valueOf := reflect.ValueOf(data) //获取数据 if valueOf.IsZero() { //判断是否为其类型的零值 panic(&amp;#34;WriteData data is zero&amp;#34;) } Interface() # 可以使用 Interface() 方法将其转换为对应的接口类型值。
+在将反射值转换为接口类型值时需要使用断言操作符 .(interface{}) 显式地将其转换为 interface{} 类型。
+if implStruct, ok := valueOf.Interface().(model.TypeCheckSelf); ok { implStruct.TypeCheckSelf() } Indirect() # reflect.Indirect(v)函数用于获取v指向的值，即，如果v是nil指针，则Indirect返回零值。如果v不是指针，则Indirect返回v。</description>
+    </item>
+    
+    <item>
+      <title>Time</title>
+      <link>https://chain-code.github.io/docs/golang/package/time/</link>
+      <pubDate>Wed, 19 Apr 2023 20:05:22 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/time/</guid>
+      <description>Time # After # After(d Duration) &amp;lt;-chan Time：返回一个通道，该通道将在指定的时间间隔后发送当前时间。可以用它来实现定时器
+例如，程序需要等待一段时间后再执行某个操作，可以使用After()函数来实现。示例代码：
+select { case &amp;lt;-time.After(5 * time.Second): fmt.Println(&amp;#34;5秒后执行&amp;#34;) } AfterFunc # func AfterFunc(d Duration, f func()) *Timer创建一个新的定时器，并在定时器触发时调用指定的回调函数f。参数d是一个time.Duration类型的值，表示定时器的持续时间。返回值是一个指向Timer结构体的指针。
+func main() { t := time.AfterFunc(3*time.Second, func() { fmt.Println(&amp;#34;定时器已触发&amp;#34;) }) fmt.Println(&amp;#34;定时器已启动&amp;#34;) time.Sleep(4 * time.Second) t.Stop() fmt.Println(&amp;#34;定时器已停止&amp;#34;) } Sleep # Sleep(d Duration)：使当前程序暂停指定的时间间隔。可以用它来实现程序的延迟操作，例如，程序需要在某个操作之后暂停一段时间再继续执行，可以使用Sleep()函数来实现。
+示例代码：
+fmt.Println(&amp;#34;开始执行&amp;#34;) time.Sleep(2 * time.Second) fmt.Println(&amp;#34;暂停2秒后继续执行&amp;#34;) Tick # Tick(d Duration) &amp;lt;-chan Time：返回一个通道，该通道会定期发送时间，每个时间间隔为指定的时间间隔。可以用它来实现定时器，例如，程序需要每隔一段时间执行某个操作，可以使用Tick()函数来实现。
+示例代码：
+for t := range time.Tick(2 * time.Second) { fmt.Println(&amp;#34;每隔2秒执行一次，当前时间为：&amp;#34;, t) } NewTicker # NewTicker(d Duration) *Ticker是 Go 编程语言time包中的一个函数，它创建一个新的自动收报机，以指定的时间间隔在通道上发送信号。</description>
+    </item>
+    
+    <item>
+      <title>Sync</title>
+      <link>https://chain-code.github.io/docs/golang/package/sync/</link>
+      <pubDate>Thu, 24 Nov 2022 15:24:08 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/sync/</guid>
+      <description>go中的sync包
+在Go语言中，除了使用channel进行goroutine之间的通信和同步操作外，还可以使用syne包下的并发工具。
+并发工具类 说明 Mutex 互斥锁 RWMutex 读写锁 WaitGroup 并发等待组 Map 并发安全字典 Cond 同步等待条件 Once 只执行一次 Pool 临时对象池 临界区 # 有时候在Go代码中可能会存在多个goroutine同时操作一个资源区（临界区），这种情况会发生竟态问题（数据竟态）。
+临界区：当程序并发地运行时，多个 [Go 协程]不应该同时访问那些修改共享资源的代码。这些修改共享资源的代码称为临界区。
+package main import ( &amp;#34;fmt&amp;#34; &amp;#34;sync&amp;#34; ) var x = 10 var wg sync.WaitGroup func add() { for i := 0; i &amp;lt; 5000; i++ { x = x + 1 } wg.Done() } func main() { wg.Add(2) go add() go add() wg.Wait() fmt.Println(x) } 代码中我们开启了两个goroutine去累加变量x的值，这两个goroutine在访问和修改x变量的时候就会存在数据竞争，导致最后的结果与期待的不符。</description>
+    </item>
+    
+    <item>
+      <title>算法基础</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Wed, 02 Nov 2022 20:37:13 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/</guid>
+      <description> AVL树 # 红黑树 # </description>
+    </item>
+    
+    <item>
+      <title>Linux基础</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/linux%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Thu, 22 Sep 2022 14:56:19 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/linux%E5%9F%BA%E7%A1%80/</guid>
+      <description>Unix/Linux操作系统介绍 # Linux和Unix的联系 # UNIX系统是工作站上最常用的操作系统，它是一个多用户、多任务的实时操作系统，允许多人同时访问计算机， 并同时运行多个任务。UNIX系统具有稳定、高效、安全、方便、功能强大等诸多优点，自20世纪70年代开始便运行在许多大型和小型计算机上。
+UNIX虽然是一个安全、稳定且功能强大的操作系统，但它也一直是一种大型的而且对运行平台要求很高的操作系统，只能在工作站或小型机上才能发挥全部功能，并且价格昂贵，对普通用户来说是可望而不可及的，这为后来Linux的崛起提供了机会，Linux是一个类UNIX操作系统。
+Linux是免费的、不受版权制约、与UNIX兼容的操作系统。
+Linux在x86架构上实现了UNIX系统的全部特性，具有多用户多任务的能力，同时保持了高效性和稳定性，Linux具有如下的优秀的特点：
+开放性； 完全免费； 多用户，多任务； 设备独立性； 丰富的网络功能； 可靠的系统安全性； Unix/Linux开发应用领域 # Unix/Linux服务器
+嵌入式Linux系统
+桌面应用
+电子政务
+文件系统 # 目录和路径 # 目录 # 目录是一组相关文件的集合。
+一个目录下面除了可以存放文件之外还可以存放其他目录，即可包含子目录。
+在确定文件、目录位置时，DOS和Unix/Linux都采用“路径名+文件名”的方式。路径反映的是目录与目录之间的关系。
+路径 # Unix/Linux路径由到达定位文件的目录组成。在Unix/Linux系统中组成路径的目录分割符为斜杠“/”，而DOS则用反斜杠“\”来分割各个目录。
+路径分为绝对路径和相对路径：
+绝对路径 # 绝对路径是从目录树的树根“/”目录开始往下直至到达文件所经过的所有节点目录。
+下级目录接在上级目录后面用“/”隔开。
+注意：绝对路径都是从“/”开始的，所以第一个字符一定是“/”。
+相对路径 # 相对路径是指目标目录相对于当前目录的位置。
+如果不在当前目录下，则需要使用两个特殊目录&amp;quot;.&amp;ldquo;和&amp;rdquo;..&amp;ldquo;了。目录“.”指向当前目录，而目录“..”。
+Linux目录结构 # 和Windows操作系统类似，所有Unix/Linux的数据都是由文件系统按照树型目录结构管理的。而且Unix/Linux操作系统同样要区分文件的类型，判断文件的存取属性和可执行属性。
+Unix/Linux也采用了树状结构的文件系统，它由目录和目录下的文件一起构成。但Unix/Linux文件系统不使用驱动器这个概念，而是使用单一的根目录结构，所有的分区都挂载到单一的“/”目录上，其结构示意图如图所示：
+无论何种版本的 Linux 发行版，桌面、应用是 Linux 的外衣，文件组织、目录结构才是Linux的内心。
+结构 # /：根目录，一般根目录下只存放目录，在Linux下有且只有一个根目录。所有的东西都是从这里开始。当你在终端里输入“/home”，你其实是在告诉电脑，先从/（根目录）开始，再进入到home目录。
+/bin: /usr/bin: 可执行二进制文件的目录，如常用的命令ls、tar、mv、cat等。
+/root：系统管理员root的家目录（宿主目录）。
+/etc：系统配置文件存放的目录，不建议在此目录下存放可执行文件，重要的配置文件有 /etc/inittab、/etc/fstab、/etc/init.d、/etc/X11、/etc/sysconfig、/etc/xinetd.d。
+/home：系统默认的用户家目录，新增用户账号时，用户的家目录都存放在此目录下，~表示当前用户的家目录，~edu 表示用户 edu 的家目录。
+/usr：应用程序存放目录，/usr/bin 存放应用程序，/usr/share 存放共享数据，/usr/lib 存放不能直接运行的，却是许多程序运行所必需的一些函数库文件。/usr/local: 存放软件升级包。/usr/share/doc: 系统说明文件存放目录。/usr/share/man: 程序说明文件存放目录。/usr/include:存放头文件。</description>
+    </item>
+    
+    <item>
+      <title>Dockerfile</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/</link>
+      <pubDate>Wed, 21 Sep 2022 17:04:41 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/</guid>
+      <description>简介 # Dockerfile类似于我们学习过的脚本，将我们在上面学到的docker镜像，使用自动化的方式实现出来。
+Dockerfile的作用：
+找一个镜像: ubuntu 创建一个容器: docker run ubuntu 进入容器: docker exec -it 容器 命令 操作: 各种应用配置&amp;hellip;. 构造新镜像: docker commit Dockerfile 使用准则：
+大: 首字母必须大写D 空: 尽量将Dockerfile放在空目录中。 单: 每个容器尽量只有一个功能。 少: 执行的命令越少越好。 Dockerfile文件内容:
+首行注释信息 指令(大写) 参数 #构建镜像命令格式: docker build -t [镜像名]:[版本号][Dockerfile所在目录] #构建样例: docker build -t nginx:v0.2 /opt/dockerfile/nginx/ #参数详解: -t 指定构建后的镜像信息， /opt/dockerfile/nginx/ 则代表Dockerfile存放位置，如果是当前目录，则用 .(点)表示 快速入门 # 接下来我们快速的使用Dockerfile来基于ubuntu创建一个定制化的镜像:nginx。
+#创建Dockerfile专用目录 $ mkdir ./docker/images/nginx -p $ cd docker/images/nginx/ #创建Dockerfile文件 :~/docker/images/nginx$ vim Dockerfile # 构建一个基于ubuntu的docker定制镜像 # 基础镜像 FROM ubuntu # 镜像作者 MAINTAINER panda kstwoak47@163.</description>
+    </item>
+    
+    <item>
+      <title>必刷top101</title>
+      <link>https://chain-code.github.io/docs/golang/leetcode/%E5%BF%85%E5%88%B7top101/</link>
+      <pubDate>Sat, 17 Sep 2022 11:40:17 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/leetcode/%E5%BF%85%E5%88%B7top101/</guid>
+      <description>题目来源：牛客网面试必刷TOP101
+链表 # 反转链表 # 给定一个单链表的头结点pHead(该头节点是有值的，比如在下图，它的val是1)，长度为n，反转该链表后，返回新链表的表头。
+数据范围： 0≤n≤10000≤n≤1000
+要求：空间复杂度 O(1)O(1) ，时间复杂度 O(n)O(n) 。
+如当输入链表{1,2,3}时，
+经反转后，原链表变为{3,2,1}，所以对应的输出为{3,2,1}。
+以上转换过程如下图所示：
+输入：{1,2,3} 返回值：{3,2,1} func ReverseList( pHead *ListNode ) *ListNode { if pHead==nil||pHead.Next==nil{ return pHead } p:=&amp;amp;ListNode{Val:-1,Next:pHead} //设置一个头节点，防止冲突 pHead=p p=pHead.Next q:=p for p.Next!=nil{ q=p.Next p.Next=q.Next q.Next=pHead.Next //这道题的重点在这里=头节点的下一个 pHead.Next=q } return pHead.Next } 链表内指定区间反转 # 将一个节点数为 size 链表 m 位置到 n 位置之间的区间反转，要求时间复杂度 O(n)O(n)，空间复杂度 O(1)O(1)。
+例如： 给出的链表为 1→2→3→4→5→NULL1→2→3→4→5→NULL, m=2,n=4, 返回 1→4→3→2→5→NULL1→4→3→2→5→NULL. func reverseBetween( head *ListNode , m int , n int ) *ListNode { // write code here if head.</description>
+    </item>
+    
+    <item>
+      <title>Git基础</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/git%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Fri, 02 Sep 2022 22:11:34 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/git%E5%9F%BA%E7%A1%80/</guid>
+      <description>简介 # git是目前世界上最先进的分布式版本控制系统。
+git的两大特点 # 版本控制：可以解决多人同时开发的代码问题，也可以解决找回历史代码的问题。
+分布式：Git是分布式版本控制系统，同一个Git仓库，可以分布到不同的机器上。首先找一台电脑充当服务器的角色，每天24小时开机，其他每个人都从这个“服务器”仓库克隆一份到自己的电脑上，并且各自把各自的提交推送到服务器仓库里，也从服务器仓库中拉取别人的提交。可以自己搭建这台服务器，也可以使用GitHub网站。
+安装与配置 # brew install git 创建一个版本库 # 新建一个目录git_test，在git_test目录下创建一个版本库，命令如下：
+git init 可以看到在git_test目录下创建了一个.git隐藏目录，这就是版本库目录。
+版本创建与回退 # 使用 # 在git_test目录下创建一个文件code.txt，编辑内容如下：
+使用如下两条命令可以创建一个版本：
+git add code.txt git commit –m &amp;#39;版本1&amp;#39; 添加身份标识（git不做检查）
+git config --global user.email &amp;#34;you@example.com&amp;#34; git config --global user.name &amp;#34;Your Name&amp;#34; 然后再执行git commit -m ‘版本一’
+使用如下命令可以查看版本记录：
+git log 继续编辑code.txt，在里面增加一行。
+使用如下命令再创建一个版本并查看版本记录：
+现在若想回到某一个版本，可以使用如下命令：
+git reset --hard HEAD^ 其中HEAD表示当前最新版本，HEAD^表示当前版本的前一个版本,HEAD^^表示当前版本的前前个版本，也可以使用HEAD~1表示当前版本的前一个版本,HEAD~100表示当前版本的前100版本。
+现在若觉得想回到版本1，可以使用如下命令：
+执行命令后使用git log查看版本记录，发现现在只能看到版本1的记录，cat code.txt查看文件内容，现在只有一行，也就是第一个版本中code.txt的内容。
+假如我们现在又想回到版本2，这个时候怎么办？
+可以使用如下命令：
+git reset --hard 版本号 从上面可以看到版本2的版本号为：</description>
+    </item>
+    
+    <item>
+      <title>个人博客搭建Hugo</title>
+      <link>https://chain-code.github.io/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/</link>
+      <pubDate>Sat, 27 Aug 2022 12:11:30 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/</guid>
+      <description>基于Macbook M2芯片（主要原因是换电脑了，同时自己主学go语言，于是打算将Hexo换成Hugo，练练手)
+https://copyfuture.com/blogs-details/20191229203259169ljtxcq9vmlzjyvf http://scarletsky.github.io/2019/05/02/migrate-hexo-to-hugo/ https://www.tomczhen.com/2019/06/04/getting-start-blog-with-hugo/ https://lequ7.com/guan-yu-hugo-bo-ke-qian-yi-zhi-lu-cong-hexo-huan-cheng-hugo.html https://blog.csdn.net/hqweay/article/details/101233371 搭建过程从头开始
+环境安装 # 安装Homebrew # /bin/zsh -c &amp;#34;$(curl -fsSL https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&amp;#34; 根据提示安装Git
+根据提示往下选择
+运行 source /Users/wangb/.zprofile 运行brew doctor根据提示处理现有的问题
+brew doctor 安装Golang # 查看可安装的golang版本
+brew search go //最好使用手动安装，m2系列brew安装的go会出一些小问题 没找到什么原因 安装go环境：
+brew install go@1.18//改成你喜欢的版本号 在.zshrc 文件中追加配置
+vim ~/.zshrc 在文件最后输入一下内容：
+export GOROOT=/usr/local/go export GOPATH=$HOME/go export GOBIN=$GOPATH/bin export PATH=$PATH:$GOROOT/bin:$GOBIN export GO111MODULE=on 按 Esc 键退回一般模式，然后输入 :wq 命令并回车保存退出文件。再使用以下命令使变量立即生效。
+source .zshrc 由于Golang的官方代理源速度慢有时候会出现包不能下载的情况，我们使用以下命令把代理源设置为国内的代理源。
+go env -w GOPROXY=https://goproxy.cn,direct 使用以下命令查看Golang版本信息。
+go version go1.16.4 linux/amd64 使用以下命令查看Golang环境变量配置。</description>
+    </item>
+    
+    <item>
+      <title>区块链安全基础</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Mon, 15 Aug 2022 10:16:44 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/</guid>
+      <description> 双花攻击 # 双花攻击(double spend attack)又叫双重消费攻击。就是一笔资金，攻击者通过不停发起和撤销交易，将一定数额的代币反复在账号之间转账实现获利。
+对于双花问题，区块链网络是这么应对的：
+1、每笔交易都需要先确认对应比特币之前的状态，如果它之前已经被标记为花掉，那么新的交易会被拒绝。
+2、如果先发起一笔交易，在它被确认前，也就是这个时间段的交易还未被记账成区块block时，进行矛盾的第二笔交易，那么在记账时，这些交易会被拒绝。
+如果诈骗者可以把第一笔交易向一半网络进行广播，把第二笔交易向另一半网络广播，然后两边正好有两个矿工几乎同时取得记账权，把各自的block发布给大家的话（这个概率很低），网络是不会混乱的。
+区块链的规则是这样的：先选择任意一个账本都可以，这时候原来统一的账本出现了分叉：
+但是在两个账本中各只有一笔交易，诈骗者不会有好处。接下来，下一个矿工选择在A基础上继续记账的话，A分支就会比B分支更长，根据区块链的规则，最长的分支会被认可，短的分支会被放弃，账本还是会回归为一个，交易也只有一笔有效：
+那么这个诈骗犯会这么做：如果是A分支被认可（B也一样），相应交易确认，拿到商品之后，立刻自己变身矿工，争取到连续两次记账权，然后在B分支上连加两个block：
+于是B分支成为认可的分支，A被舍弃，A分支中的交易不再成立，但他已经拿到商品，诈骗成功。
+在B分支落后的情况下要强行让它超过A分支，其实是挺难的，假设诈骗者掌握了全网1%的计算能力，那么他争取到记账权的概率就是1%，两次就是10的负4次方。但这个概率还没有太低。
+如果诈骗者算力占据绝对优势，那么，即使落后很多，他追上也只是时间问题，这就是比特币的“51%攻击”，也就能实现双花攻击了。
+区块链网络是一个分布式系统，没有一个绝对的控制中心能够监控整个系统，自然很难发现哪个节点可能会控制超过51%算力。而当某个节点掌控超过51%算力，并且对区块链网络系统进行双花攻击时，人们能够做的仅是让合作的交易所暂时提升交易确认次数。但这并不能从根本上阻止攻击者，只不过提升了其攻击成本。
+DDos攻击 # </description>
+    </item>
+    
+    <item>
+      <title>共识算法基础</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Sun, 14 Aug 2022 11:07:25 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/</guid>
+      <description>PoW # 概念 # PoW（工作量证明，Proof of Work），比特币，俗称挖矿。Pow是指系统为达到某一目标而设置的度量方法。简单理解就是一份证明，用来确认你做过一定量的工作。监测工作的整个过程通常是极为低效的，而通过对工作的结果进行认证来证明完成了相应的工作量，则是一种非常高效的方式。
+工作量证明（Pow）通过计算一个数值（nonce），使得拼凑上交易数据后内容的Hash值满足规定的上限。在结点成功找到满足的Hash值之后，会马上对全网进行广播打包区块，网络的结点收到广播打包区块，会立刻对其进行验证。
+如何才能创建一个新区块呢？通过解决一个问题：即找到一个nonce值，使得新区块头的哈希值小于某个指定的值，即区块头结构中的“难度目标”。
+如果验证通过，则表明已经有结点成功解谜，自己就不再竞争当前区块打包，而是选择接受这个区块，记录到自己的账本中，然后进行下一个区块的竞争。
+假如结点有任何的作弊行为，都会导致网络的结点验证不通过，直接丢弃其打包的区块，这个区块就无法记录到总帐本中，作弊的节点耗费的成本就白费了，因此在巨大的挖矿成本下，也使得矿工自觉自愿的遵守比特币系统的共识协议，也就确保了整个系统的安全。
+父区块头哈希值：前一区块的哈希值，使用SHA256(SHA256(父区块头))计算。占32字节 版本：区块版本号，表示本区块遵守的验证规则。占4字节 时间戳：该区块产生的近似时间，精确到秒的UNIX时间戳，必须严格大于前11个区块时间的中值，同时全节点也会拒绝那些超出自己2个小时时间戳的区块。占4字节 难度：该区块工作量证明算法的难度目标，已经使用特定算法编码。占4字节 随机数(Nonce)：为了找到满足难度目标所设定的随机数，为了解决32位随机数在算力飞升的情况下不够用的问题，规定时间戳和coinbase交易信息均可更改，以此扩展nonce的位数。占4字节 Merkle根：该区块中交易的Merkle树根的哈希值，同样采用SHA256(SHA256())计算。占32字节
+如此，细心的同学会发现，区块头总共占了80字节。
+区块体除了筹币交易记录（由一棵Merkle二叉树组成)外，还有一个交易计数。
+Pow工作量证明的三要素 # 工作机制
+为了使区块链交易数据记录在区块链上并在一定时间内达到一致（共识），Pow提供了一种思路，即所有区块链的网络节点参与者进行竞争记账，所谓竞争记账是指，如果想生成一个新的区块并写入区块链，必须解出比特币网络出的工作量证明谜题，谁先解出答案，谁就活的记账权利，然后开始记账并将解出的答案和交易记录广播给其他节点进行验证，自己则开始下一轮挖矿。如果区块的交易被其他节点参与者验证有效并且谜题的答案正确，就意味着这个答案是可信的，新的节点将被写入验证者的节点区块链，同时验证者进入下一轮竞争挖矿。
+这道题关键的三个要素是工作量证明函数、区块及难度值。工作量证明函数是这道题的计算方法，区块决定了这道题的输入数据，难度决定了这道题所需要的计算量。
+工作量证明函数
+比特币中使用SHA256算法函数，是密码哈希函数家族中输出值为256位的哈希算法。
+区块
+Merkle树算法：
+难度值
+关于难度值，我们直接看公式：
+新难度值=旧难度值*（过去2016个区块花费时长/20160分钟）
+tips：难度值是随网络变动的，目的是为了在不同的网络环境下，确保每十分钟能生成一个块。
+新难度值解析：撇开旧难度值，按比特币理想情况每十分钟出块的速度，过去2016个块的总花费接近2016分钟，这样，这个值永远趋近于1。
+目标值=最大值/难度值,
+目标值解析：最大目标值为一个固定数，若过去2016个区块花费时长少于20160分，那么这个系数会小，目标值将会被调大些，反之，目标值会被调小，因此，比特币的难度和出块速度将成反比例适当调整出块速度。
+那如何计算呢？SHA256(SHA256(Block_Header))，即只需要对区块头进行两次SHA256运算即可，得到的值和目标值进行比较，小于目标值即可。
+区块头中有一个重要的东西叫MerkleRoot的hash值。这个东西的意义在于：为了使区块头能体现区块所包含的所有交易，在区块的构造过程中，需要将该区块要包含的交易列表，通过Merkle Tree算法生成Merkle Root Hash，并以此作为交易列表的摘要存到区块头中。
+至此，我们发现区块头中除过nonce(随机数)以外，其余的数据都是明确的，解题的核心就在于不停的调整nonce的值，对区块头进行双重SHA256运算。
+Pow工作量证明流程 # 从流程图中看出，pow工作量证明的流程主要经历三步：
+1.生成Merkle根哈希 生成Merkle根哈希，即节点自己生成一笔筹币交易，并且与其他所有即将打包的交易通过Merkle树算法生成Merkle根哈希，所以为什么说区块是工作量证明的三要素之一。
+2.组装区块头 区块头将被作为计算出工作量证明输出的一个输入参数，因此第一步计算出来的Merkle根哈希和区块头的其他组成部分组装成区块头。
+3.计算出工作量证明的输出 下面我们直接通过公式和一些伪代码去理解工作量证明的输出：
+i. 工作量证明的输出=SHA256(SHA256(区块头))
+ii. if（工作量证明的输出&amp;lt;目标值），证明工作量完成
+iii.if（工作量证明的输出&amp;gt;=目标值）,变更随机数，递归i的逻辑，继续与目标值比对。
+Pow共识记账 # 在比特币平台中，中本聪就是运用的pow工作量证明来使全网节点达到51%及以上的共识记账，以下将介绍pow工作量证明共识是如何记账的？
+首先，客户端产生新的交易，向全网广播
+第二，每个节点收到请求，将交易纳入区块中
+第三，每个节点通过上述中描述的进行pow工作量证明
+第四，当某个节点找到了证明，向全网广播
+第五，当且仅当该区块的交易是有效的且在之前中未存在的，其他节点才认同该区块的有效性
+第六，接受该区块且在该区块的末尾制造新的区块
+大概时序图如下：
+Pow的优缺点 # 优点：
+完全去中心化（任何人都可以加入） 结点自由进出，容易实现 破坏系统花费成本巨大 关于破坏系统成本巨大可以分两层意思理解：</description>
+    </item>
+    
+    <item>
+      <title>go语言底层基础</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Wed, 03 Aug 2022 10:46:26 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/</guid>
+      <description>Go语言相关 # GMP模型 # G goroutine协程
+P processor处理器
+M thread线程
+Processor 它包含了运行goroutine的资源，如果线程想运行goroutine,必须先获取P，P中还包含了可运行的G队列。
+在Go中，线程是运行goroutine的实体，调度器的功能是把可运行的goroutine分配到工作线程上。
+全局队列：存放等待运行的G P的本地队列：同全局队列类似，存放的也是等待运行的G，存的数量有限，不超过256个。新建 G’时，G’优先加入到 P 的本地队列，如果队列满了，则会把本地队列中一半的 G 移动到全局队列。 P列表：所有的P都在程序启动时创建，并保存在数组中，最多有 GOMAXPROCS(可配置) 个。 M：线程想运行任务就得获取P，从P的本地队列获取G，P队列为空时，M 也会尝试从全局队列拿一批 G 放到 P 的本地队列，或从其他 P 的本地队列偷一半放到自己 P 的本地队列。M 运行 G，G 执行之后，M 会从 P 获取下一个 G，不断重复下去。 Goroutine 调度器和 OS 调度器是通过 M 结合起来的，每个 M 都代表了 1 个内核线程，OS 调度器负责把内核线程分配到 CPU 的核上执行。
+P 处理器的作用 # 负责调度G
+P和M的个数问题 # 1、P的数量：
+由启动时环境变量 $GOMAXPROCS 或者是由 runtime 的方法 GOMAXPROCS() 决定。这意味着在程序执行的任意时刻都只有 $GOMAXPROCS 个 goroutine 在同时运行。 2、M的数量：</description>
+    </item>
+    
+    <item>
+      <title>Gorm</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/</link>
+      <pubDate>Tue, 24 May 2022 15:47:27 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/</guid>
+      <description>字段标签 # 标签是声明模型时可选的标记，标记不区分大小写，GORM 支持以下标记：
+声明model时，tag是可选的，GORM支持以下tag：tag名大小写不敏感，但建议使用camelcase风格
+标签名 说明 column 指定列名 type 列数据类型，推荐使用兼容性好的通用类型，例如：所有数据库都支持bool、int、uint、float、string、time、bytes并且可以和其他标签一起使用，例如：not null、size、autoIncrement&amp;hellip;像varbinary（8）这样指定数据库数据类型也是支持的。在使用指定数据库数据类型时，它需要是完整的数据库数据类型，如：MEDIUMINT、UNSIGNED、not、NULL、AUTO、INSTREMENT size 指定列大小，例如：size: 256 primaryKey 指定列为主键 unique 指定列为唯一 default 指定列的默认值 precision 指定列的精度 scale 指定列大小 not null 不能为空 autolncrement 指定列为自动增长 embedded 嵌套字段 embeddedPrefix 嵌入字段的列名前缀 autoCreateTime 创建时追踪当前时间，对于int字段，它会追踪时间戳秒数，您可以使用nano/milli来追踪纳秒、毫秒时间戳，例如autoCreateTime:nano autoUpdateTime 创建/更新时追踪当前时间，对于int字段，它会追踪时间戳秒数，您可以使用nano/milli来追踪纳秒、毫秒时间戳，例如：autoupdateTime:milli index 根据参数创建索引1，多个字段使用相同的名称则创建复合索引，查看索引获取详情 uniqueindex 与index相同，但创建的是唯一索引 check 创建检查约束，例如check:age＞13查看约束获取详情 &amp;lt;- 设置字段写入的权限，&amp;lt;-:create只创建、&amp;lt;-:update只更新、&amp;lt;-:false无写入权限、「&amp;lt;-创建和更新权限 -&amp;gt; 设置字段读的权限，-&amp;gt;:false无读权限 - 忽略该字段，-无读写权限 gorm使用中遇到的坑点 # 3、Count方法不适合放在raw方法后面，否则将会出错
+count:=0 db.Raw(sql).Count(&amp;amp;count) 正确用法
+db.Model(&amp;amp;User{}).Where(&amp;#34;name = ?&amp;#34;, &amp;#34;jinzhu&amp;#34;).Count(&amp;amp;count) //正确用法 result := engine.Raw(querySQL, args...).Find(resultData) if result.Error != nil { err = fmt.</description>
+    </item>
+    
+    <item>
+      <title>升级链码</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/</link>
+      <pubDate>Thu, 14 Apr 2022 11:14:32 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/</guid>
+      <description>https://blog.csdn.net/xiaohanshasha/article/details/123664164
+https://blog.csdn.net/weixin_43839871/article/details/106410693
+https://uzshare.com/view/830631
+找的博客 突然又不想试了 先记录一下 以后再说</description>
+    </item>
+    
+    <item>
+      <title>Raft共识算法</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/</link>
+      <pubDate>Sat, 26 Mar 2022 21:22:14 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/</guid>
+      <description>分布式共识算法 # 首先我们先明确这个问题：为什么需要分布式共识算法？
+这就要从当前的分布式系统设计的缺陷来看了，假设我们的集群现在有两个客户端和三个服务端，如下图：
+在这个分布式系统的设计中，往往要满足CAP理论，而分布式共识算法解决的就是CAP理论中的一致性问题。整个一致性问题分为三种问题：
+顺序一致性 线性一致性 因果一致性 顺序一致性 # 假设执行结果与这些处理器以某一串行顺序执行的结果相同，同时每个处理器内部操作的执行看起来又与程序描述的顺序一致。满足该条件的多处理器系统我们就认为是顺序一致的。实际上，处理器可以看做一个进程或者一个线程，甚至是一个分布式系统。
+这句话并不是很好理解，我们看一下分布式系统中顺序一致性的一个例子：
+假设客户端A有两条命令： command1:set(x,1)	//设置x为1 command2:set(x,3) 客户端B有一下两条命令： command3:get(x)	//得到x的当前值 command4:set(x,4) 那么如果服务端那边收到的节点只要满足command2在command1后面执行并且comand4在command3后面执行我们就认为其满足顺序一致性。 线性一致性 # 线性一致性或称原子一致性或严格一致性，指的是程序在执行顺序组合中存在可线性化点P的执行模型，这意味着一个操作将在程序的调用和返回之间的某个点P生效，之后被系统中并发运行的所有其他线程所感知。
+通俗来讲，线性一致性可以说是顺序一致性的升级版。其会有一个全局时钟，假设还是上面发送的命令，只不过加上了时间信息： 客户端A发送的命令如下：
+[14:01]command1:set(x,1)	//设置x为1 [14:02]command2:set(x,3) 客户端B发送的命令如下：
+[14:03]command3:get(x)	//得到x的当前值 [14:04]command4:set(x,4) 注： 这里假设时延可能是几分钟级别的，所以有可能是command3在command1之前到
+所以，假设初始值x = 0，而我们到达的顺序如下：
+command1-&amp;gt;command3-&amp;gt;command2-&amp;gt;command4 command1-&amp;gt;command3-&amp;gt;command4-&amp;gt;command2 ... 这个顺序确实是满足顺序一致性，但是我们get(x)获得的值可谓是千奇百怪，可能是0，1，3 。为了解决顺序一致性的不足，所以才提出的线性一致性。其要求命令满足全局时钟的时序性。所以很容易就知道，满足线性一致性的一定满足顺序一致性；相反，满足顺序一致性的不一定会满足线性一致性。 因果一致性 # 线性一致性要求所有线程的操作按照一个绝对的时钟顺序执行，这意味着线性一致性是限制并发的，否则这种顺序性就无法保证。由于在真实环境中很难保证绝对时钟同步，因此线性一致性是一种理论。实现线性一致性的代价也最高，但是实战中可以弱化部分线性一致性：只保证有因果关系的事件的顺序，没有因果关系的事件可以并发执行，其指的是假设有两个事件：A事件和B事件，如果A发生在B后面，那么就称A和B具有因果关系。
+拜占庭将军问题 # 拜占庭将军问题是一个协议问题，拜占庭帝国军队的将军们必须全体一致的决定是否攻击某一支敌军。问题是这些将军在地理上是分隔开来的，并且将军中存在叛徒。叛徒可以任意行动以达到以下目标：欺骗某些将军采取进攻行动；促成一个不是所有将军都同意的决定，如当将军们不希望进攻时促成进攻行动；或者迷惑某些将军，使他们无法做出决定。如果叛徒达到了这些目的之一，则任何攻击行动的结果都是注定要失败的，只有完全达成一致的努力才能获得胜利。
+含义是在存在消息丢失的不可靠信道上试图通过消息传递的方式达到一致性是不可能的。
+Raft共识 # 简介 # Raft实现一致性的机制是：首先选择一个leader全权负责管理日志复制，leader从客户端接收log entries（日志条目），将它们复制给集群中的其他机器，然后负责告诉它机器什么时候将日志应用于它们的状态机。举个例子，leader可以在无需询问其他server的情况下决定把新entries放在哪个位置，数据永远是从leader流向其他机器（leader的强一致性）。一个leader可以fail或者与其他机器失去连接，这种情况下会有新的leader被选举出来。
+在任何时刻，每个server节点有三种状态：leader、candidate、follower。
+leader：作为客户端的接收者，接收客户端发送的日志复制请求，并将日志信息复制到follower节点中，维持网络各个节点的状态。 candidate：在leader选举阶段存在的状态，通过任期号term和票数进行领导人身份竞争，获胜者将成为下一任期的领导人。 follower：作为leader节点发送日志复制请求的接收者，与leader节点通信，接收账本信息，并确认账本信息的有效性，完成日志信息的提交和存储。 正常运行时，只有一个leader，其余全是follower。follower是被动的：它们不主动提出请求，只是响应leader和candidate的请求。leader负责处理所有客户端请求（如果客户端先连接某个follower，该follower负责将它重定向到leader）。candidate状态用户选举leader节点。
+如何让跨网络机器之间协调一致性？
+状态的立即一致性 状态的最终一致性 raft来源于paxos，它简化了paxos，以易于理解为首要目标，尽量提供与paxos一样的功能与性能。
+提出问题：
+1、输入：写入命令
+2、输出：所有节点最终处于相同的状态
+2、约束</description>
+    </item>
+    
+    <item>
+      <title>区块链网络添加组织</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/</link>
+      <pubDate>Fri, 25 Mar 2022 13:49:25 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/</guid>
+      <description>介绍configtxlator工具 # configtxlator工具提供了一个真正的无状态REST API，独立于SDK，以简化Hyperledger Fabric区块链网络中的配置任务。该工具可以在不同的等效数据表示/格式之间轻松转换。例如，在一种工具操作模式下，该工具在二进制protobuf格式之间执行转换为人类可读的JSON文本格式，反之亦然。此外，该工具可以根据两组不同配置事务之间的差异计算配置更新。
+1、环境配置 # 运行官方测试网络，确保它正常运行，详情请见fabric环境搭建后面测试部分。
+进入CLI容器，并使用容器内的以下命令检查对等版本：
+docker exec -it cli /bin/bash peer version 运行以下命令，确保JQ工具已在CLI容器中安装并正常工作：
+jq --version jq 运行以下命令，确保configtxlator工具可用，验证工具版本，在后台启动工具，并验证工具在后台、CLI容器内正确运行
+configtxlator version 后台启动configtxlator并查看网络状态 （两行一起复制粘贴进去）
+configtxlator start &amp;amp; netstat -ap 2、检索当前配置 # 通过在CLI容器中运行以下命令来设置和验证以下环境变量：
+export CHANNEL_NAME=mychannel export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem 生成第三个组织的证书文件及配置文件
+文章路径主要看你test-network中脚本文件的路径做出修改，根据实际情况改
+#生成证书文件 另开一个命令行进入test-network/addOrg3 cryptogen generate --config=org3-crypto.yaml --output=&amp;#34;../organizations&amp;#34; #指定组织3的证书配置文件 #生成json格式的配置文件 configtxgen -printOrg Org3MSP &amp;gt; ../organizations/peerOrganizations/org3.example.com/org3.json configtxgen -printOrg Org3MSP&amp;gt;./channel-artifacts/org3.json #生成的配置文件需要放到cli中使用 3、组织注册 # 1、CLI容器中运行以下命令来检索当前配置的配置块 # peer channel fetch config config_block.pb -o orderer.example.com:7050 -c $CHANNEL_NAME --tls --cafile $ORDERER_CA 报错：</description>
+    </item>
+    
+    <item>
+      <title>Redis集群搭建</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Mon, 21 Mar 2022 15:23:09 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</guid>
+      <description>有空再说
+https://www.cnblogs.com/wuxl360/p/5920330.html
+还没整理
+为什么要有集群
+a) 服务器可能因为代码原因，人为原因，或者自然灾害等造成服务器损坏。数据服务就挂掉了
+b) 大公司都会有很多的服务器(华东地区、华南地区、华中地区、华北地区、西北地区、西南地区、东北地区、台港澳地区机房)
+集群的概念
+集群是一组相互独立的、通过高速网络互联的计算机，它们构成了一个组，并以单一系统的模式加以管理。一个客户与集群相互作用时，集群像是一个独立的服务器。集群配置是用于提高可用性和可缩放性。
+当请求到来首先由负载均衡服务器处理，把请求转发到另外的一台服务器上。
+百度的ip地址 119.75.217.109/
+​ 61.135.169.121/
+Redis集群
+分类
+Ø 软件层面
+Ø 硬件层面
+软件层面：只有一台电脑，在这台电脑上启动了多台redis服务
+硬件层面：存在多台实体电脑,每台电脑都启动了一个redis或者多个redis服务
+参考阅读
+Redis搭建集群http://www.cnblogs.com/wuxl360/p/5920330.html
+go语言redis-cluster开源客户端https://github.com/gitstliu/go-redis-cluster
+配置机器1 # Ø 在演示中，192.168.110.37为当前ubuntu机器的ip
+Ø 在192.168.110.37上进⼊Desktop⽬录，创建conf⽬录
+Ø 在conf⽬录下创建⽂件7000.conf，编辑内容如下
+port 7000 bind 192.168.110.37 daemonize yes pidfile 7000.pid cluster-enabled yes cluster-config-file 7000_node.conf cluster-node-timeout 15000 appendonly yese Ø 在conf⽬录下创建⽂件7001.conf，编辑内容如下
+port 7001 bind 192.168.110.37 daemonize yes pidfile 7001.pid cluster-enabled yes cluster-config-file 7001_node.conf cluster-node-timeout 15000 appendonly yes Ø 在conf⽬录下创建⽂件7002.conf，编辑内容如下</description>
+    </item>
+    
+    <item>
+      <title>Redis基础</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Sun, 20 Mar 2022 14:47:04 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/</guid>
+      <description>Redis # 是一种高性能的Key-Value数据库
+NoSQL介绍 # NoSQL：一类新出现的数据库(not only sql)，它的特点：
+1.不支持SQL语法
+2.存储结构跟传统关系型数据库中的那种关系表完全不同，nosql中存储的数据都是Key-Value形式
+3.NoSQL的世界中没有一种通用的语言，每种nosql数据库都有自己的api和语法，以及擅长的业务场景
+NoSQL和SQL数据库的比较： # 适用场景不同：sql数据库适合用于关系特别复杂的数据查询场景，nosql反之
+两者在不断地取长补短，呈现融合趋势
+Redis简介 # Redis是一个开源的使用ANSI C语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。从2010年3月15日起，Redis的开发工作由VMware主持。从2013年5月开始，Redis的开发由Pivotal赞助。
+Redis是 NoSQL技术阵营中的一员，它通过多种键值数据类型来适应不同场景下的存储需求，借助一些高层级的接口使用其可以胜任，如缓存、队列系统的不同角色。
+Redis特性 # Redis 与其他 key - value 缓存产品有以下三个特点：
+Redis支持数据的持久化，可以将内存中的数据保存在磁盘中，重启的时候可以再次加载进行使用。 Redis不仅仅支持简单的key-value类型的数据，同时还提供list列表，set集合，zset有序集合，hash等数据结构的存储。 Redis支持数据的备份，即master-slave模式的数据备份。 Redis 优势 # 性能极高 – Redis能读的速度是110000次/s,写的速度是81000次/s 。 丰富的数据类型 – Redis支持二进制案例的 Strings, Lists, Hashes, Sets 及 Ordered Sets 数据类型操作。 原子 – Redis的所有操作都是原子性的，同时Redis还支持对几个操作全并后的原子性执行。 丰富的特性 – Redis还支持 publish/subscribe, 通知, key 过期等等特性。 Redis应用场景 # 用来做缓存(ehcache/memcached)——redis的所有数据是放在内存中的（内存数据库） 可以在某些特定应用场景下替代传统数据库——比如社交类的应用 在一些大型系统中，巧妙地实现一些特定的功能：session共享、购物车 只要你有丰富的想象力，redis可以用在可以给你无限的惊喜……. 中文官网
+Redis安装（Mac） # 直接brew安装</description>
+    </item>
+    
+    <item>
+      <title>比特币相关机制与原理</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/</link>
+      <pubDate>Fri, 25 Feb 2022 11:13:16 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/</guid>
+      <description>什么是区块链？ # 一个分布式账本
+区块链网络的核心是一个分布式账本，记录网络上发生的所有交易。
+区块链账本通常被描述为 去中心化的 ，因为它会被复制到许多网络参与者中，每个参与者都在 协作 维护账本。
+除了分散和协作之外，信息仅能以附加的方式记录到区块链上，并使用加密技术保证一旦将交易添加到账本就无法修改。这种“不可修改”的属性简化了信息的溯源，因为参与者可以确定信息在记录后没有改变过。这就是为什么区块链有时被描述为 证明系统 。
+什么是去中心化？ # 去中心化就是在一个分布有众多节点的系统中，每个节点都具有高度自治的特征。节点之间可以自由连接，形成新的连接单元。任何一个节点都有可能成为阶段性的中心。
+优势
+容错性能力强 不易被攻击 数据无法篡改 对等网络 # 也称P2P网络，位于网络中的每一个节点都彼此对等，各个节点共同提供网络服务。区块链网络基于国际互联网的P2P网络架构，由对等节点Peer构成，每个节点以扁平的拓扑结构互相连通，不存在任何服务端、中心化服务，以及层级结构，而且必须遵守相同的约定（P2P协议）。
+交易池 # 张三验证交易有效后，将交易写入自己的草稿本。这个草稿本也称交易池，存放每个节点收到的有效交易。每个节点的交易池中都有很多交易，可能每个人的交易池不一样，比如并非每一条交易都传递到每个人手中。
+挖矿 # 解答数学题的过程叫挖矿，谁解出答案，告知大家，其他人就停止答题，本轮记账权的获胜者已产生。每个人草稿上上的内容是不一样的。谁有记账权，谁将自己草稿本上的内容写入账本。
+创币交易 # 为了鼓励大家答题，获胜者获得5元钱，以交易的形式写入账本。实现货币总量的增长，比特币中“获胜矿工”获得的奖励除了创币金额外，还包括交易费。同时，比特币的创币金额是衰减的。
+工作量证明 # 如果把挖矿当作一份工作，解题答案也被称为工作量证明。
+矿工获得记账权后，翻开自己的账本，到最新页，将奖励作为第一条交易，草稿上的逐个抄入，每次最多只能写满一页，多余的舍弃，少的留白。多余的交易，不算成功，由发起者再度创建，写入纸条继续在大厅传递。交易写入账本后，在大厅黑白上写明。其他人开始验证，验证结束后写人自己的账本。
+共识与共识算法 # 所有节点验证成功后记入自己的账本，保证账本数据的一致性，即节点达成了共识。共识通过村民验证解题答案，即工作量证明而达成的。采用工作量证明（POW）来达成共识也被称为工作量证明共识算法或共识机制。
+确认 # 交易写入区块链就能得到确认，但由于共识算法自身的原因会导致偶然事件的发生，可能会出现区块链数据在接下来几个区块内数据回滚的情况，比如比特币的偶然分叉。比特币交易的永久生效需要在当前区块上继续添加6个区块。
+诚实节点和恶意节点 # 遵守规则的节点和不遵守规则的节点
+区块链分叉 # 恶意节点创建无效交易，使得网络中出现节点数据不一致的情形，称为区块链分叉。这种分叉是短暂的，新区块会替换掉旧区块，而且，无效区块会导致记账节点失去奖励，得不偿失。
+软分叉
+当系统中出现了新版本的软件（或协议），而旧软件能接受新软件的区块，新老双方始终都工作在同一条链上，这称为软分叉。
+硬分叉
+当系统中出现了新版本的软件（或协议），并且和前版本软件不能兼容，老软件节点无法接受新软件节点挖出的全部或部分区块（认为不合法），导致同时出现两条链。尽管新节点算力较大，比如99%的算力为新节点，1%的老节点依然会维护着不同的一条链，因为新节点产生的区块老节点实在无法接受（尽管它知道网络上99%的节点都接受了），这称为硬分叉。
+智能合约 # 为了支持以同样的方式更新信息，并实现一整套账本功能（交易，查询等），区块链使用 智能合约 来提供对账本的受控访问。
+智能合约不仅是在网络中封装和简化信息的关键机制，它还可以被编写成自动执行参与者的特定交易的合约。
+共识 # 保持账本在整个网络中同步的过程称为 共识 。该过程确保账本仅在交易被相应参与者批准时更新，并且当账本更新时，它们以相同的顺序更新相同的交易。
+比特币 # 简介 # 比特币（Bitcoin）的概念最初由中本聪在2008年11月1日提出，并于2009年1月3日正式诞生。
+根据中本聪的思路设计发布的开源软件以及建构其上的P2P网络。比特币是一种P2P形式的虚拟的加密数字货币。点对点的传输意味着一个去中心化的支付系统。
+与所有的货币不同，比特币不依靠特定货币机构发行，它依据特定算法，通过大量的计算产生，比特币经济使用整个P2P网络中众多节点构成的分布式数据库来确认并记录所有的交易行为，并使用密码学的设计来确保货币流通各个环节安全性。P2P的去中心化特性与算法本身可以确保无法通过大量制造比特币来人为操控币值。基于密码学的设计可以使比特币只能被真实的拥有者转移或支付。这同样确保了货币所有权与流通交易的匿名性。比特币与其他虚拟货币最大的不同，是其总数量非常有限，具有的稀缺性。</description>
+    </item>
+    
+    <item>
+      <title>benchmark测试</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/</link>
+      <pubDate>Mon, 20 Dec 2021 17:44:59 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/</guid>
+      <description>Go 中的基准测试在许多方面类似于单元测试，但有关键的不同之处，并且服务于不同的目的。由于它们不像 Go 中的单元测试那样广为人知，本文旨在介绍 Go 的基准测试：如何创建、如何运行它们、如何读取结果以及一些指向创建基准测试的一些高级主题的指针在去。
+基准测试是测试 Go 代码性能的函数，它们包含testing在标准 Go 库的包中，因此无需任何外部库的依赖即可使用。
+执行基准测试时，会向您提供有关执行时间的一些信息，如果需要，还会提供基准测试下代码的内存占用量。
+创建基准 # 创建cc_test.go文件
+要创建基准测试，您需要在 go 文件中导入testing包并以创建测试函数的类似方式创建基准测试函数。
+例如，在定义单元测试时，我们func TestAny(t *testing)以开头的形式编写函数，而在定义基准测试时，我们将创建一个**func BenchmarkAny(b \*testing.B)**.
+Go 的基准测试在单元测试方面的一个显着差异是从 0 到b.N. 事实上，基准测试会运行多次，以确保收集到足够的数据以提高基准测试下代码性能测量的准确性。
+该字段b.N不是固定值，而是动态调整以确保基准测试功能至少运行 1 秒。
+这里展示的是基准和测试函数之间的比较：
+func Benchmark1Sort(b *testing.B) { for i := 0; i &amp;lt; b.N; i++ { sort.Ints(generateSlice(1000)) } } func Test1Sort(t *testing.T) { slice := generateSlice(1000) if len(slice) != 1000 { t.Errorf(&amp;#34;unexpected slice size: %d&amp;#34;, len(slice)) } } 运行基准 # 运行 Go 的基准测试的起点是go test命令，在这里我们将看到我们需要确保我们不只是运行单元测试。</description>
+    </item>
+    
+    <item>
+      <title>部署tape测试</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/</link>
+      <pubDate>Mon, 20 Dec 2021 10:11:10 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/</guid>
+      <description>安装 # cd hyperledger git clone https://github.com/Hyperledger-TWGC/tape.git cd tape go build ./cmd/tape 测试 # 测试前将organizations文件夹放到tape 里面去 复制一下 就是里面包含各种证书的文件夹 配路径
+修改config.yaml文件
+# Definition of nodes peer1: &amp;amp;peer1 addr: localhost:7051 tls_ca_cert: ./organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem peer2: &amp;amp;peer2 addr: localhost:9051 tls_ca_cert: ./organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp/tlscacerts/tlsca.org2.example.com-cert.pem orderer1: &amp;amp;orderer1 addr: localhost:7050 tls_ca_cert: ./organizations/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem # Nodes to interact with endorsers: - *peer1 - *peer2 # we might support multi-committer in the future for more complex test scenario, # i.e. consider tx committed only if it&amp;#39;s done on &amp;gt;50% of nodes.</description>
+    </item>
+    
+    <item>
+      <title>go-ipfs-api</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/</link>
+      <pubDate>Sun, 05 Dec 2021 21:28:22 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/</guid>
+      <description>json文件 # 上传获取数据 # package main import ( &amp;#34;bytes&amp;#34; &amp;#34;encoding/json&amp;#34; &amp;#34;fmt&amp;#34; &amp;#34;io/ioutil&amp;#34; shell &amp;#34;github.com/ipfs/go-ipfs-api&amp;#34; ) var sh *shell.Shell //交易结构体(未来的通道) type Transaction struct { Person1 string `json:&amp;#34;person1,omitempty&amp;#34; xml:&amp;#34;person1&amp;#34;` Person2 string `json:&amp;#34;person2,omitempty&amp;#34; xml:&amp;#34;person2&amp;#34;` Person1money string `json:&amp;#34;person1Money,omitempty&amp;#34; xml:&amp;#34;person1Money&amp;#34;` Person2money string `json:&amp;#34;person2Money,omitempty&amp;#34; xml:&amp;#34;person2Money&amp;#34;` } //数据上传到ipfs func UploadIPFS(str string) string { sh = shell.NewShell(&amp;#34;localhost:5001&amp;#34;) //连接客户端 hash, err := sh.Add(bytes.NewBufferString(str)) if err != nil { fmt.Println(&amp;#34;上传ipfs时错误：&amp;#34;, err) } return hash } //从ipfs获取数据 只读 func CatIPFS(hash string) string { sh = shell.</description>
+    </item>
+    
+    <item>
+      <title>LeetCode算法总结</title>
+      <link>https://chain-code.github.io/docs/golang/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Thu, 28 Oct 2021 22:03:24 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/</guid>
+      <description>动态规划 # 介绍 # 当最优化问题具有重复子问题和最优子结构的时候，适合使用动态规划算法。动态规划算法的核心就是提供了一个memory来缓存重复子问题的结果，避免了递归的过程中的大量的重复计算。动态规划算法的难点在于怎么将问题转化为能够利用动态规划算法来解决。当重复子问题的数目比较小时，动态规划的效果也会很差。如果问题存在大量的重复子问题的话，动态规划的效率较高。
+例题 # 正则表达式匹配 # 给你一个字符串 s 和一个字符规律 p，请你来实现一个支持 &amp;lsquo;.&amp;rsquo; 和 &amp;lsquo;*&amp;rsquo; 的正则表达式匹配。
+&amp;lsquo;.&amp;rsquo; 匹配任意单个字符 &amp;lsquo;*&amp;rsquo; 匹配零个或多个前面的那一个元素 所谓匹配，是要涵盖 整个 字符串 s的，而不是部分字符串。
+示例 1：
+输入：s = &amp;#34;aa&amp;#34; p = &amp;#34;a&amp;#34; 输出：false 解释：&amp;#34;a&amp;#34; 无法匹配 &amp;#34;aa&amp;#34; 整个字符串。 示例 2:
+输入：s = &amp;#34;aa&amp;#34; p = &amp;#34;a*&amp;#34; 输出：true 解释：因为 &amp;#39;*&amp;#39; 代表可以匹配零个或多个前面的那一个元素, 在这里前面的元素就是 &amp;#39;a&amp;#39;。因此，字符串 &amp;#34;aa&amp;#34; 可被视为 &amp;#39;a&amp;#39; 重复了一次。 func isMatch(s string, p string) bool { m, n := len(s), len(p) matches := func(i, j int) bool { if i == 0 { return false } if p[j-1] == &amp;#39;.</description>
+    </item>
+    
+    <item>
+      <title>ipfs-webui可视化工具搭建</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Mon, 12 Jul 2021 20:27:55 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/</guid>
+      <description>介绍 # 注意这里是私链搭建webui，公链没有这么麻烦
+在IPFS项目的组织架构中，有一个IPFS-GUI工作组，主要目的是开发IPFS可视化工具，并使工具更简单、更易用、更美观。
+IPFS WebUI是IPFS的Web界面，可以用来检查您的节点统计信息，展示由IPLD驱动的默克尔树结构，查看世界各地的节点并管理您的文件，而无需触摸命令行工具。
+这都是粘贴的，废话不多说，直接开始安装
+安装 # 拉取ipfs-webui文件 cd ~ git clone https://github.com/ipfs/ipfs-webui.git 进入安装 cd ipfs-webui npm install 报错：
+request to https://dist.ipfs.io/go-ipfs/versions failed, reason: connect ECONNREFUSED 69.171.233.24:443 。。。。。。。。。。。。 。。。。。。。。。。。。 npm ERR! code ELIFECYCLE npm ERR! errno 1 npm ERR! go-ipfs-dep@0.4.18 install: `node src/bin.js` npm ERR! Exit status 1 npm ERR! npm ERR! Failed at the go-ipfs-dep@0.4.18 install script. npm ERR! This is probably not a problem with npm.</description>
+    </item>
+    
+    <item>
+      <title>IPFS基本原理（一）</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/</link>
+      <pubDate>Thu, 08 Jul 2021 17:46:47 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/</guid>
+      <description>IPFS基础 # 1.1 IPFS 概述 # IPFS（InterPlanetary File System)是一个基于内容寻址的、分布式的、新型超媒体传输协议。IPFS支持创建完全分布式的应用。它旨在使网络更快、更安全、更开放。IPFS是一个分布式文件系统，它的目标是将所有计算设备连接到同一个文件系统，从而成为一个全球统一的存储系统。
+IPFS项目通过整合已有的技术（BitTorrent、DHT、Git和SFS），创建一种点对点超媒体协议，试图打造一个更加快速、安全、开放的下一代互联网，实现互联网中永久可用、数据可以永久保存的全球文件存储系统。同时，该协议有内容寻址、版本化特性，尝试补充甚至最终取代超文本传输协议（HTTP协议）。IPFS是一个协议，也是一个P2P网络，它类似于现在的BT网络，只是拥有更强大的功能，使得IPFS拥有可以取代HTTP的潜力。
+它提供了更加便宜、安全、可快速集成的存储解决方案。
+1.1.1 HTTP四大问题 # 极易受到攻击，防范攻击成本搞。 数据存储成本高。 数据中心化带来泄露风险。 大规模数据存储、传输和维护难。 1.1.2 IPFS优势 # 下载速度快
+IPFS使用了BitTorrent协议作为数据传输方式，使得IPFS系统在数据传输速度上大幅度提高，并且能够节省约60%的网络带宽。
+优化全球存储
+IPFS采用为数据块内容建立哈希去重的方式存储数据，数据的存储成本将会显著下降。
+更加安全
+IPFS、Filecoin的分布式特性与加密算法使得数据存储更加安全，甚至可以抵挡黑客攻击。
+数据的可持续保存
+IPFS提供了一种使互联网数据可以被可持续保存的存储方式，并且提供数据历史版本（Git)的回溯功能。
+1.2 IPFS借鉴的技术 # 1.2.1 哈希表DHT # 全称为分布式哈希表（Distributed Hash Table)，是一种分布式存储方法。DHT的原理是：在不需要服务器的情况下，每一个客户端存储一小部分数据，并负责一定区域的检索，进而实现整个DHT网络的寻址和检索。
+1.2.2 Kademlia # 在Kademlia网络中，所有信息均以哈希表条目的形式加以存储，这些信息被分散的存储在各个节点上，从而形成一张巨大的分布式哈希表。
+1.2.3 Git # Git存储时会把文件拆成若干部分，并计算各个部分的哈希值，利用这些构建起于文件对应的有向无环图（DAG），DAG的根节点也就是该文件的哈希值。
+如果需要修改文件，那么只需要修改少数图中节点即可；需要分享文件，等价于分享这个图；需要传输全部的文件，按照图中的哈希值下载合并即可。
+1.2.4 默克尔树 # 在IPFS项目里，也借鉴了默克尔树的思想。数据分块存放在有向无环图中，如果数据被修改了，只需要修改对应默克尔有向无环图中的节点数据，而不需要向网络重新更新整个文件。
+1.2.5 IPFS 补充区块链两大缺陷 # 区块链存储效率低，成本高。 跨链需要各个链之间协同配合，难以协调。 1.3 IPFS的优势与价值 # 1.3.1 技术优势 # IPFS技术可以分为多层子协议栈，从上至下为身份层、网络层、路由层、交换层、对象层、文件层、命名层，每个协议栈各司其职，又互相协同。
+身份层和路由层 # 对等节点身份信息的生成以及路由规则是通过Kademlia协议生成制定的，该协议实质上是构建了一个分布式哈希表，简称DHT。每个加入这个DHT网络的节点都要生成自己的身份信息，然后才能通过这个身份信息去负责存储这个网络里的资源信息和其他成员的联系信息。
+网络层 # 比较核心，所使用的Libp2p可以支持主流传输层协议。NAT技术能让哪网中的设备共用同一个外网IP。</description>
+    </item>
+    
+    <item>
+      <title>IPFS私有网络搭建</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Wed, 02 Jun 2021 15:42:42 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/</guid>
+      <description>IPFS私有网络集群搭建 # 前期准备 # 对于联盟链的业务中搭建一个私有网络的 IPFS 集群还是很有必要的，私有网络集群允许 IPFS 节点只连接到拥有共享密钥的其他对等节点，网络中的节点不响应来自网络外节点的通信。 IPFS-Cluster 是一个独立的应用程序和一个 CLI 客户端，它跨一组 IPFS 守护进程分配、复制和跟踪 pin。它使用基于 Raft 一致性算法来协调存储，将数据集分布到参与节点上。对于我们要将一个 peer 上的存储同步备份到所有集群上其他的 peers 时，或者对集群的节点管理，这时 IPFS-Cluster 就会起到一个很好的作用。
+本人使用三台虚拟机 主机列表
+节点 名称 IP 管理节点peer0 Ubuntu1.0 10.211.55.7 peer1 Ubuntu2.0 10.211.55.9 peer2 Ubuntu3.0 10.211.55.10 IPFS 和 IPFS-Cluster 默认的端口: IPFS：
+4001 – 与其他节点同学端口 5001 – API server 8080 – Gateway server IPFS-CLUSTER：
+9094 – HTTP API endpoint 9095 – IPFS proxy endpoint 9096 – Cluster swarm 集群几点通信端口 安装Golang # IPFS 官方提供的安装方式有安装包方式，ipfs-update 方式，源码编译安装方式，具体可以查看 https://docs.</description>
+    </item>
+    
+    <item>
+      <title>redis面试总结</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Sun, 02 May 2021 20:45:09 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/</guid>
+      <description>1、什么是redis? 2、Reids的特点 3、使用redis有哪些好处？ 4、redis相比memcached有哪些优势？ 5、Memcache与Redis的区别都有哪些？ 6、redis适用于的场景? 7、redis的缓存失效策略和主键失效机制 8、为什么redis需要把所有数据放到内存中? 9、Redis是单进程单线程的 10、redis的并发竞争问题如何解决? 11、redis常见性能问题和解决方案 12、redis事物的了解CAS(check-and-set 操作实现乐观锁 )? 13、WATCH命令和基于CAS的乐观锁? 14、使用过Redis分布式锁么，它是什么回事？ 15、假如Redis里面有1亿个key，其中有10w个key是以某个固定的已知的前缀开头的，如果将它们全部找出来？ 16、使用过Redis做异步队列么，你是怎么用的？ 17、如果有大量的key需要设置同一时间过期，一般需要注意什么？ 18、Redis如何做持久化的？ 19、Pipeline有什么好处，为什么要用pipeline？ 20、Redis的同步机制了解么？ 21、是否使用过Redis集群，集群的原理是什么？ 1、什么是redis? # redis是一个高性能的key-value数据库，它是完全开源免费的，而且redis是一个NOSQL类型数据库，是为了解决高并发、高扩展，大数据存储等一系列的问题而产生的数据库解决方案，是一个非关系型的数据库
+2、Reids的特点 # Redis本质上是一个Key-Value类型的内存数据库，很像memcached，整个数据库统统加载在内存当中进行操作，定期通过异步操作把数据库数据flush到硬盘上进行保存。因为是纯内存操作，Redis的性能非常出色，每秒可以处理超过 10万次读写操作，是已知性能最快的Key-Value DB。
+Redis的出色之处不仅仅是性能，Redis最大的魅力是支持保存多种数据结构，此外单个value的最大限制是1GB，不像 memcached只能保存1MB的数据，因此Redis可以用来实现很多有用的功能，比方说用他的List来做FIFO双向链表，实现一个轻量级的高性 能消息队列服务，用他的Set可以做高性能的tag系统等等。另外Redis也可以对存入的Key-Value设置expire时间，因此也可以被当作一 个功能加强版的memcached来用。
+Redis的主要缺点是数据库容量受到物理内存的限制，不能用作海量数据的高性能读写，因此Redis适合的场景主要局限在较小数据量的高性能操作和运算上。
+3、使用redis有哪些好处？ # 3.1 速度快，因为数据存在内存中，类似于HashMap，HashMap的优势就是查找和操作的时间复杂度都是O(1)
+3.2 支持丰富数据类型，支持string，list，set，sorted set，hash
+String # 常用命令 ：set/get/decr/incr/mget等；
+应用场景 ：String是最常用的一种数据类型，普通的key/value存储都可以归为此类；
+实现方式：String在redis内部存储默认就是一个字符串，被redisObject所引用，当遇到incr、decr等操作时会转成数值型进行计算，此时redisObject的encoding字段为int。
+Hash # 常用命令 ：hget/hset/hgetall等
+应用场景 ：我们要存储一个用户信息对象数据，其中包括用户ID、用户姓名、年龄和生日，通过用户ID我们希望获取该用户的姓名或者年龄或者生日；
+实现方式：Redis的Hash实际是内部存储的Value为一个HashMap，并提供了直接存取这个Map成员的接口。如图所示，Key是用户ID, value是一个Map。这个Map的key是成员的属性名，value是属性值。这样对数据的修改和存取都可以直接通过其内部Map的Key(Redis里称内部Map的key为field)，也就是通过 key(用户ID) + field(属性标签) 就可以操作对应属性数据。当前HashMap的实现有两种方式：当HashMap的成员比较少时Redis为了节省内存会采用类似一维数组的方式来紧凑存储，而不会采用真正的HashMap结构，这时对应的value的redisObject的encoding为zipmap，当成员数量增大时会自动转成真正的HashMap,此时redisObject的encoding字段为int。
+List # 常用命令 ：lpush/rpush/lpop/rpop/lrange等；
+应用场景 ：Redis list的应用场景 非常多，也是Redis最重要的数据结构之一，比如twitter的关注列表，粉丝列表等都可以用Redis的list结构来实现；</description>
+    </item>
+    
+    <item>
+      <title>fabric浏览器搭建</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Sun, 02 May 2021 10:38:23 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/</guid>
+      <description>fabric浏览器 # Hyperledger Explorer是一个简单，强大，易于使用，维护良好的开源实用程序，可浏览底层区块链网络上的活动。用户可以在MacOS和Ubuntu上配置和构建Hyperledger Explorer。
+先要保证你之前的项目已启动
+搭建目录结构 # 1、$GOPATH/src目录下创建edu-explorer文件夹
+2、edu-explorer文件夹下创建以下目录结构
+docker-compose.yaml config.json connection-profile/test-network.json organizations/ordererOrganizations/ 第3、4解决 organizations/peerOrganizations/ 3、复制自己的项目中crypto-config 文件夹 到edu-explorer文件中
+cp -r cp -r $GOPATH/src/education/conf/crypto-config ../edu-explorer 4、改名 把crypto-config改成organizations 保持跟官方目录结构一样
+mv crypto-config organizations 官方给出的文件内容 # 复制以下内容到相应文件中去
+docker-compose.yaml # # SPDX-License-Identifier: Apache-2.0 version: &amp;#39;2.1&amp;#39; volumes: pgdata: walletstore: networks: mynetwork.com: external: name: net_test services: explorerdb.mynetwork.com: image: hyperledger/explorer-db:latest container_name: explorerdb.mynetwork.com hostname: explorerdb.mynetwork.com environment: - DATABASE_DATABASE=fabricexplorer - DATABASE_USERNAME=hppoc - DATABASE_PASSWORD=password healthcheck: test: &amp;#34;pg_isready -h localhost -p 5432 -q -U postgres&amp;#34; interval: 30s timeout: 10s retries: 5 volumes: - pgdata:/var/lib/postgresql/data networks: - mynetwork.</description>
+    </item>
+    
+    <item>
+      <title>手动生成ca证书搭建fabric网络</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/</link>
+      <pubDate>Sat, 01 May 2021 17:16:17 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/</guid>
+      <description>亲测有效 # 【摘要】 之前介绍了使用官方脚本自动化启动一个Fabric网络，并且所有的证书都是通过官方的命令行工具cryptogen直接生成网络中的所有节点的证书。在开发环境可以这么简单进行，但是生成环境下还是需要我们自定义对网络中的节点的证书进行配置。所以在本文中，将会详细介绍一个从手动生成证书一直到启动网络的整体步骤。本文只交代整体的搭建步骤。对于Fabric-Ca的讲解不在本文的范围内。
+之前介绍了使用官方脚本自动化启动一个Fabric网络，并且所有的证书都是通过官方的命令行工具cryptogen直接生成网络中的所有节点的证书。在开发环境可以这么简单进行，但是生成环境下还是需要我们自定义对网络中的节点的证书进行配置。 所以在本文中，将会详细介绍一个从手动生成证书一直到启动网络的整体步骤。本文只交代整体的搭建步骤。对于Fabric-Ca的讲解不在本文的范围内，将在另一篇文章中说明。 在这里贴出官方文档地址.
+1.整体架构 # 架构图直接贴过来好了： 官方文档采用的是多机环境，这里简洁化一点，所有的操作都在一台机器上进行，至于多机环境，以后再补充好了。 介绍一下本文所采用的整体架构：
+三个组织 Org0 -&amp;gt; 组织0 Org1 -&amp;gt; 组织1 Org2 -&amp;gt; 组织2 组织中的成员 Org0 一个Orderer节点，一个Org0的Admin节点 Org1 两个Peer节点，一个Org1的Admin节点，一个Org1的User节点 Org2 两个Peer节点，一个Org2的Admin节点，一个Org2的User节点 共有四台CA服务器 TLS服务器 -&amp;gt; 为网络中所有节点颁发TLS证书，用于通信的加密 Org1的CA服务器 -&amp;gt; 为组织1中所有用户颁发证书 Org2的Ca服务器 -&amp;gt; 为组织2中所有用户颁发证书 Org0的CA服务器 -&amp;gt; 为组织0中所有用户颁发证书 这里的四台CA服务器都是根服务器。彼此之间都是独立的存在，没有任何关系。，也就是说每一个CA服务器生成的证书在其他CA服务器都是不能用的。 介绍完之后，可以进入正题了。
+1.1Fabric，Fabric-Ca安装 # 本文默认读者都是对Fabric有一定的了解的，所以一些安装过程这里就没有重复说明。 第一步是安装Fabric-Ca环境，可以参考这里,这篇文章还没有写完，以后慢慢补，不过环境的安装已经有说明。 还有就是Fabric的环境安装，可以参考这里。
+完成环境搭建后，我们还需要一个HOME文件夹，用于存放我们生成的证书文件与fabric配置相关的文件。 本文设置HOME文件夹路径为:
+$GOPATH/src/github.com/caDemo/ 请读者自行创建，一般不要用太复杂的路径,也不要用中文路径，会为之后的操作带来很多麻烦。在下文中简单称HOME文件夹为工作目录,除非特殊说明，一般命令的执行都是在工作目录进行。
+2 CA服务器配置 # 2.1启动TLS CA服务器 # 前期工作准备好之后，我们开始启动第一台CA服务器。本文中使用Docker容器启动。 首先在工作目录创建docker-compose.yaml文件：
+touch docker-compose.yaml 并在文件内添加以下内容(tips:内容格式不要乱掉)：
+version: &amp;#39;2&amp;#39; networks: fabric-ca: services: ca-tls: container_name: ca-tls image: hyperledger/fabric-ca command: sh -c &amp;#39;fabric-ca-server start -d -b tls-ca-admin:tls-ca-adminpw --port 7052&amp;#39; environment: - FABRIC_CA_SERVER_HOME=/ca/tls - FABRIC_CA_SERVER_TLS_ENABLED=true - FABRIC_CA_SERVER_CSR_CN=ca-tls - FABRIC_CA_SERVER_CSR_HOSTS=0.</description>
+    </item>
+    
+    <item>
+      <title>cryptogen生成的证书详解</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Sat, 01 May 2021 14:40:46 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/</guid>
+      <description>crypto-config # 用cryptogen生成证书后
+peerOrganizations # 本文以peerOrganizations组织树为例，打开该目录，可以看到如下两个组织的证书目录：
+org1.example.com # 每个组织中又有如下目录：
+每个组织都会生成单独的根证书。
+ca # ca ：存放了组织的根证书和对应的私钥文件，采用的是EC算法，证书为自签名（自已签发自己的公钥）。组织内的实体将基于该证书作为证书根。
+map # msp：存放代表该组织的身份信息。
+（1）admincerts：被根证书签名的组织管理员的身份验证证书。
+（2）cacerts：组织的根证书，和ca目录下的文件相同。
+（3）tlscacerts：用于TLS的ca证书，证书为自签名。
+peer # peers：存放该组织下所有peer节点的证书：
+peer0.org1.example.com # 每个peer节点的证书结构都是相同的，我们以peer0为例：
+msp： # ​ admincerts：组织管理员的身份验证证书，用于验证交易签名者是否为管理员身份。
+​ cacerts：存放组织的根证书。
+​ keystore：本节点的身份私钥，用来签名。
+​ signcerts： 验证本节点签名的证书，被组织根证书签名。
+​ tlscacerts：TLS连接用的身份证书，即组织TLS证书。
+tls: # 存放tls相关的证书和私钥。
+​ ca.crt：组织的根证书。
+​ server.crt：验证本节点签名的证书，被组织根证书签名。
+​ server.key：本节点的身份私钥，用来签名。
+users # users：存放属于该组织的用户实体。
+Admin@org1.example.com # Admin：管理员用户的信息，包括其msp证书和tls证书。
+msp： # ​
+​ admincerts：管理员身份证书。
+​ cacerts：存放组织的根证书。
+​ keystore：本用户的身份私钥，用来签名。
+​ signcerts： 管理员用户的身份验证证书，由组织根证书签名，要放到Peer的msp/admincerts下才会被这个Peer认可。
+​ tlscacerts：TLS连接用的身份证书，即组织TLS证书。
+tls： # 存放TLS相关的证书和私钥。</description>
+    </item>
+    
+    <item>
+      <title>docker常用知识总结</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Fri, 30 Apr 2021 19:43:22 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</guid>
+      <description>docker常用基础命令 # docker rmi -f $(docker images -q) 删除镜像 docker rm -f .... 删除容器 docker exec -it ca.org1.example.com bash 进入容器 docker exec -it peer0.org1.example.com sh exit 退出容器 control+P+Q 退出容器 docker stop $(docker ps -q) 停止所有容器 docker rm $(docker ps -aq) 删除所有容器 sudo docker volume prune sudo docker network prune docker logs id 查看docker容器日志 docker文件管理 # docker cp 容器 ID 或名称: 容器目录 物理机目录 docker目录拷贝到物理机 docker cp 物理机目录 容器 ID 或名称: 容器目录 物理机目录拷贝到docker docker cp /home/lishuma b2860e937844:/home/ 如果是把上一条命令结尾斜杠去掉，那么意思就变成了将物理机/home/lishuma 目录拷贝到容器根目录中，并且拷贝进去的目录重命名为 home。 docker cp b2860e937844:/home/lishuma /home/lishuma/test/ 反过来容器向外拷贝的命令如果去掉最后一个斜杠，那么意思同样是变成拷贝出来后，重命名为 test。 docker文件挂载 # docker run -v /home/tianzhiwei/hyperledger/catest/crypto-config/peerOrganizations/:/etc/hyperledger/fabric-ca-server-config/msp hyperledger/fabric-ca:1.</description>
+    </item>
+    
+    <item>
+      <title>MySql基础总结</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Tue, 20 Apr 2021 18:07:08 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/</guid>
+      <description>基础概念 # 数据库：是一个以某种有组织的方式存储的数据集合。
+表：是一种结构化的文件，可用来存储某种特定类型的数据。
+模式：
+模式可以用来描述数据库中特定的表以及整个数据库（和其中表的关系） 关于数据库和表的布局及特性的信息 列：表中的一个字段。数据库中每个列都有相应的数据类型，数据类型定义列可以存储的数据种类。
+行：表中的数据是按行存储的，表中的一个记录。
+**主键：**一列（或一组列），其值能够唯一区分表中每个行。主键用来表示一个特定的行。
+满足主键的条件
+任意两行都不具有相同的主键值； 每个行都必须具有一个主键值（主键列不允许NULL值） 可以一起使用多个列作为主键。
+SQL structured query language 结构化查询语言。
+数据库的发展史 # 第一代数据库：层次模型、网状模型
+层次模型
+缺点：
+1、 查找不同类的数据效率低了（导航的结构的缺点）
+2、 数据不完整（不能区分到底是一个李白还是两个李白）
+网状模型
+网状模型解决了层次数据的数据不完整的问题，但是没有解决层次模型的导航问题。
+关系型数据库
+特点：
+每个表都是独立的
+表与表之间通过公共字段来建立关系
+优点：解决了导航问题，并且数据完整性得到解决
+缺点：多表查询效率低了
+提示：我们现在用的主流的数据库都是关系模型的。
+MySql安装 # 在Ubuntu中，默认情况下，只有最新版本的MySQL包含在APT软件包存储库中,要安装它，只需更新服务器上的包索引并安装默认包apt-get。
+#命令1 sudo apt-get update #命令2 sudo apt-get install mysql-server 初始化配置 # sudo mysql_secure_installation 配置项较多，如下所示：
+#1 VALIDATE PASSWORD PLUGIN can be used to test passwords... Press y|Y for Yes, any other key for No: N (我的选项) #2 Please set the password for root here.</description>
+    </item>
+    
+    <item>
+      <title>如何在已有组织中增加节点</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/</link>
+      <pubDate>Sat, 17 Apr 2021 19:04:25 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/</guid>
+      <description>fabric网络在创建时就已经确定了初始的节点数量，而在实际应用场景中可能会需要在某个组织中动态增加节点。
+这里讲述两种方式 # 一种是cryptogen工具生成新节点加入到网络中去（现实没有意义）
+一种是用fabric-ca生成新节点加入到网络中去
+方法一：cryptogen工具 # 一、追加新节点的身份信息 # 在这之前可参照fabric solo节点测试搭建一个fabric网络
+首先需要在组织org1的MSP目录中追加新节点的证书和私钥信息，主要是用到cryptogen工具
+1.修改crypto-config.yaml文件（或者直接新建一个文件）中Template字段里的count参数，设置为需要该组织中存在的节点总数,可一次增加多个节点。
+这里只在org1加入一个节点，所以crypto-config.yaml文件修改部分如下：
+PeerOrgs: - Name: Org1 Domain: org1.example.com EnableNodeOUs: true Template: Count: 2 #之前是1 Users: Count: 1 2.执行extend命令完成追加操作 在此文件目录下执行：
+cryptogen extend --config=./crypto-config.yaml 可在crypto-config/peerOrganizations/org1.example.com/peers/下发现新增加的peer1.org1.example.com文件夹
+注：&amp;ndash;config参数应以实际情况下配置文件的名称及路径为准
+3.启动容器
+在docker-compose.yaml文件中加入新节点信息
+version: &amp;#39;2&amp;#39; volumes: orderer.example.com: peer0.org1.example.com: peer1.org1.example.com: //加这里 networks: test: peer1.org1.example.com: container_name: peer1.org1.example.com image: hyperledger/fabric-peer:latest environment: #Generic peer variables - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock # the following setting starts chaincode containers on the same # bridge network as the peers # https://docs.</description>
+    </item>
+    
+    <item>
+      <title>Fabric1.4多通道实验</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/</link>
+      <pubDate>Thu, 15 Apr 2021 16:11:57 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/</guid>
+      <description>Hyperledger Fabric支持在一组相同的机构之间的多通道部署， 每个通道都相当于一个单独的区块链。Fabric的多通道特性 不仅可以满足机构之间不同的数据共享需求，同时也可以提高 整个Fabric网络的吞吐量。本文将演示如何使用Hyperledger Fabric 1.4.3搭建一个多通道的区块链网络、部署并访问链码。
+1、Hyperledger Fabric多通道网络实验环境概述 # 我们将构造一个包含3个机构的Hyperledger Fabric网络：Org1、Org2和Org3， 每个机构中包含一个节点Peer0。网络包含两个通道：由Org1、 Org2和Org3组成的ChannelAll，以及由Org1和Org2组成的Channel12，因此 这个Fabric网络是多通道的配置。在这两个Fabric通道上我们将部署同样的链码， 即Fabrc-Samples中提供的Simple Asset链码：
+2、Hyperledger Fabric多通道网络实验环境搭建 # Step 1：在Hyperledger官方提供的fabric-samples目录下克隆本教程提供的示例代码：
+cd fabric-samples git clone https://github.com/kctam/3org2ch_143.git cd 3org2ch_143 Step 2：为参与Fabric通道的机构生成所需的密码学资料
+../bin/cryptogen generate --config=./crypto-config.yaml Step 3：生成Fabric通道素材
+mkdir channel-artifacts &amp;amp;&amp;amp; export FABRIC_CFG_PATH=$PWD ../bin/configtxgen -profile OrdererGenesis \ -outputBlock ./channel-artifacts/genesis.block export CHANNEL_ONE_NAME=channelall export CHANNEL_ONE_PROFILE=ChannelAll export CHANNEL_TWO_NAME=channel12 export CHANNEL_TWO_PROFILE=Channel12 ../bin/configtxgen -profile ${CHANNEL_ONE_PROFILE} \ -outputCreateChannelTx ./channel-artifacts/${CHANNEL_ONE_NAME}.tx \ -channelID $CHANNEL_ONE_NAME ../bin/configtxgen -profile ${CHANNEL_TWO_PROFILE} \ -outputCreateChannelTx ./channel-artifacts/${CHANNEL_TWO_NAME}.tx \ -channelID $CHANNEL_TWO_NAME .</description>
+    </item>
+    
+    <item>
+      <title>椭圆曲线加密</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/</link>
+      <pubDate>Mon, 12 Apr 2021 12:17:45 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/</guid>
+      <description>通过椭圆曲线加密实现数字签名 # 私钥公钥如何产生？ # 随机生成一个256位的二进制数
+11011100111110101100101010000100111100101000011&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;
+dcfaca84f325f65a&amp;hellip;,&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip; 16进制
+一、为什么叫椭圆曲线 # 圆锥曲线可以用二次方程表示。椭圆曲线是用三次方程表示，如下： 其中，a 和 b 的取值不同，椭圆曲线的形状会有所改变，经典的形状如下图所示：
+椭圆曲线有以下两个特点：
+画一条直线跟椭圆曲线相交，它们最多有三个交点； 关于 X 轴对称。 A（x,y) k* A
+二、椭圆曲线运算法则 # 1. 椭圆曲线加法 # 根据上面介绍的椭圆曲线的特性“画一条直线跟椭圆曲线相交，它们最多有三个交点”，可以进行以下定义：
+假设椭圆曲线上有 P、Q 两个点，经过这两个点做一条直线和椭圆曲线相交于第三点 R，然后做关于 x 轴的对称点 -R，-R 即是 R 的逆元，根据阿贝尔群的定义，-R 也一定在椭圆曲线上。定义 P+Q = -R，也就是说椭圆曲线上任意两点的和也在椭圆曲线上，同样可以引申出椭圆曲线上任意三点的和为 0 即 P+Q+R = 0。如图：
+假如 P=Q，则作椭圆曲线在 P 点的切线，与曲线相交于 R，则 R = P+P = 2P 2. 椭圆曲线乘法 # 根据上面椭圆曲线的加法可以得出下列等式：P+P = 2P（过点 P 切线作一条直线）P+2P = 3P（过点 P 和 2P 作一条直线）P+3P = 4P（过点 P 和 3P 作一条直线）假设 P 是椭圆曲线上的一个点，正整数 K 乘以 P 可以总结成公式为：(k-1) * P + P = k * P如果把 k 看作是两个数相乘即 k = m * n，则可以得出满足以下性质（在椭圆曲线密钥交换中会用到）：(m * n) * P = m * (n * P) = (n * m)p = n * (m*P)</description>
+    </item>
+    
+    <item>
+      <title>config.yaml文件详解</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Tue, 30 Mar 2021 15:47:11 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</guid>
+      <description>基于fabric 2.3 # 客户端使用sdk与fabric网络交互，需要告诉sdk两类信息：
+我是谁：即当前客户端的信息，包含所属组织、密钥和证书文件的路径等， 这是每个客户端专用的信息。 对方是谁：即fabric网络结构的信息，channel、org、orderer和peer等 的怎么组合起当前fabric网络的，这些结构信息应当与configytx.yaml中是一致的。这是通用配置，每个客户端都可以拿来使用。另外，这部分信息并不需要是完整fabric网络信息，如果当前客户端只和部分节点交互，那配置文件中只需要包含所使用到的网络信息。 原文件 # 我们复制官方的config_e2e_multiorg_bootstrap.yaml文件
+文件位置：https://github.com/hyperledger/fabric-sdk-go/blob/main/test/fixtures/config/config_e2e_multiorg_bootstrap.yaml
+######################## 声明部分 ############################### # Copyright SecureKey Technologies Inc. All Rights Reserved. # 版权所有 SecureKey Technologies Inc. 保留所有权利。 # SPDX-License-Identifier: Apache-2.0 # # The network connection profile provides client applications the information about the target blockchain network that are necessary #for the applications to interact with it. These are all knowledge #that must be acquired from out-of-band sources. This file provides #such a source.</description>
+    </item>
+    
+    <item>
+      <title>docker-compose.yaml文件详解</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Tue, 30 Mar 2021 15:46:41 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</guid>
+      <description>基于fabric2.3
+原文件 # # Copyright IBM Corp. All Rights Reserved. # # SPDX-License-Identifier: Apache-2.0 # version: &amp;#39;2&amp;#39; volumes: # 数据卷映射, 本地 -&amp;gt; docker镜像 orderer.example.com: peer0.org1.example.com: peer1.org1.example.com: networks: # 指定容器运行的网络, 同一网络中的容器才能相互通信 test: services: orderer.example.com: # 定义的第1个服务名 container_name: orderer.example.com # 容器名称, 可以自定义 image: hyperledger/fabric-orderer:latest environment: # 环境变量设置 - FABRIC_LOGGING_SPEC=DEBUG #日志级别 - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0 #orderer节点监听的地址 - ORDERER_GENERAL_LISTENPORT=7050 #orderer默认监听7050，端口可修改 - ORDERER_GENERAL_GENESISMETHOD=file #创世块的来源，file表示来源于文件 #指定创世块文件路径 - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block - ORDERER_GENERAL_LOCALMSPID=OrdererMSP #这个ID不一样会出问题 - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp #msp账号路径 # enabled TLS - ORDERER_GENERAL_TLS_ENABLED=true #通信时是否使用TLS加密 #私钥文件 - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.</description>
+    </item>
+    
+    <item>
+      <title>configtx.yaml文件详解</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Mon, 29 Mar 2021 19:38:28 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</guid>
+      <description>基于fabric2.3
+原文件 # --- Organizations: #部分指定OrdereOrg与PeerOrg的组织信息 - &amp;amp;OrdererOrg #相当于定义了一个变量，其他地方可以引用 Name: OrdererOrg #组织名称 #将MSP定义加载为ID ID: OrdererMSP #MSP的ID MSPDir: crypto-config/ordererOrganizations/example.com/msp #MSP配置文件的路径 Policies: #组织策略， 其中`Rule`定义了规则，`OR`为或，`AND`为并 Readers: Type: Signature Rule: &amp;#34;OR(&amp;#39;OrdererMSP.member&amp;#39;)&amp;#34; Writers: Type: Signature Rule: &amp;#34;OR(&amp;#39;OrdererMSP.member&amp;#39;)&amp;#34; Admins: Type: Signature Rule: &amp;#34;OR(&amp;#39;OrdererMSP.admin&amp;#39;)&amp;#34; #Admins策略只能由管理员角色的身份提交的事务来满足 #OrdererEndpoints是所有orderers这个组织运行，其客户名单和同级可以分别连接以推送事务和接收块。 OrdererEndpoints: - orderer.example.com:7050 - &amp;amp;Org1 Name: Org1MSP ID: Org1MSP MSPDir: crypto-config/peerOrganizations/org1.example.com/msp Policies: Readers: Type: Signature Rule: &amp;#34;OR(&amp;#39;Org1MSP.admin&amp;#39;, &amp;#39;Org1MSP.peer&amp;#39;, &amp;#39;Org1MSP.client&amp;#39;)&amp;#34; Writers: Type: Signature Rule: &amp;#34;OR(&amp;#39;Org1MSP.admin&amp;#39;, &amp;#39;Org1MSP.client&amp;#39;)&amp;#34; Admins: Type: Signature Rule: &amp;#34;OR(&amp;#39;Org1MSP.admin&amp;#39;)&amp;#34; Endorsement: #有具有对等角色的身份才能满足该Endorsement策略 Type: Signature Rule: &amp;#34;OR(&amp;#39;Org1MSP.</description>
+    </item>
+    
+    <item>
+      <title>crypto-config.yaml文件详解</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Mon, 29 Mar 2021 18:48:08 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</guid>
+      <description>基于fabric2.3
+源码 # OrdererOrgs: #排序节点组织信息 - Name: Orderer #排序节点组织名 Domain: example.com #排序节点组织根域名 EnableNodeOUs: false #指定是否生成config.yaml文件 Specs: - Hostname: orderer #hostname+domain组成orderer节点的完整域名 PeerOrgs: #对等节点组织信息 - Name: Org1 #第一个组织名，自己起 Domain: org1.example.com #第一个组织根域名 EnableNodeOUs: false #在msp下生成config.yaml文件 Template: #组织中peer节点的数目 Count: 1 Users: #组织中普通用户的数目 Count: 1 - Name: Org2 Domain: org2.example.com EnableNodeOUs: false Template: Count: 1 Users: Count: 1 使用以下命令生成证书文件。
+cryptogen工具 # 子命令 # generate：生成的组织结构及身份证书信息。
+showtemplate：显示默认配置模版
+version：显示版本信息
+参数 # &amp;ndash;config ：指定要使用的配置模版文件
+&amp;ndash;output；指定生成内容的输出目录
+cryptogen generate --config=crypto-config.yaml Fabric证书文件结构</description>
+    </item>
+    
+    <item>
+      <title>centos安装fabric1.2</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/</link>
+      <pubDate>Thu, 18 Mar 2021 16:04:53 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/</guid>
+      <description>一、环境安装 # 1、安装基本工具 # yum install curl 2、安装docker # 2.1确保yum包更新到最新 # yum update -y 2.2 对服务器进行清理， 如果之前安装过Docker ， 需要先执行卸载操作，具体命令 # sudo yum remove docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-selinux docker-engine-selinux docker-engine 2.3 安装需要的软件包： # yum install -y yum-utils device-mapper-persistent-data lvm2 2.4添加docker yum 源 # sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo 2.5安装docker # yum install docker-ce -y 2.6查看docker版本信息，是否安装成功 # docker --version 2.7 docker基本命令 # 启动docker：
+systemctl start docker 停止docker：
+systemctl stop docker 重启docker：</description>
+    </item>
+    
+    <item>
+      <title>密码学基础</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Thu, 04 Mar 2021 15:29:17 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/</guid>
+      <description>DES 数据加密标准 # 不安全 ，分组密码，8
+3DES # 安全，进行了3次des加密
+加密过程：加密，解密，加密
+解密过程：解密，加密，解密
+CBC 密码块链模式 # 特点：密文没有规律，经常使用
+最后一个明文分组需要填充
+需要初始化向量-一个数组
+明文分组的填充 刚好够也需要填充 填充明文分组代码实现 # package main //编写填充函数，如果最后一个分组字数不够，填充 //、、、、、字数刚好合适，添加一个新的分组 //填充的字节的值==缺少的字节数 func paddingLastGroup(plainText []byte, bloclSize int) []byte { //plainText 参数：明文 bloclSize 明文分组字节长度 []byte 返回值 //1、求出最后一个组中剩余的字节数 28%8=3..4 32%8=4.。0 padNum:=ploclSize-len(plainText)%bloclSize //填充的字数 //2、创建新的切片，长度==padNum, 每个字节值byte(padNum) char :=[]byte{byte(padNum)} //长度1， //切片创建，并初始化 newPlan := bytes.Repeat(char,padNum) //3、newPlain数组追加到原始明文的后边 newText := append(plainText,newPlain..) return newText } 删除尾部明文分组实现 # func unPaddingLastGrooup(plainText []byte) []byte { //1、拿去切片中的最后一个字节 length := len(plainText) lastChar :=plainText[length -1] //byte 类型 number :=int (lastChar) //尾部填充的字节个数 return plainText[:length -number] } 对称加密实现（go） # #加密流程： 1、创建一个底层使用des/3des/aes的密码接口 &amp;#34;crypto/des&amp;#34; func NewCipher(key []byte) (cipher.</description>
+    </item>
+    
+    <item>
+      <title>个人博客搭建Hexo</title>
+      <link>https://chain-code.github.io/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/</link>
+      <pubDate>Mon, 11 Jan 2021 16:15:02 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/</guid>
+      <description>基于Mac # 所需环境 # 一 安装git # 二 安装node.js # # 首先检查时候安装了git和node.js，终端输入一下命令， node -v #是否出现安装版本信息，出现说明已经安装了 git --version #同上述情况 # 如果没有安装，则进行安装,都可以通过直接下载安装测序进行安装，这里不演示，提供下载网址： [git]: https://sourceforge.net/projects/git-osx-installer/ [node.js]: https://nodejs.org/en/ 三 安装hexo # npm install -g hexo-cli 创建blog文件夹，并初始化建立博客框架 # 在你的家目录下创建一个blog文件夹 mkdir blog # 进入目录 cd blog # 初始化目录 hexo init 开启本地服务 # hexo s 出现 http://localhost:4000 可以在浏览器输入网址访问查看效果
+现在 整个hexo 博客已经部署完成
+设置主题 # 一 克隆GitHub文件到blog/themes文件夹下
+git clone -b master https://github.com/jerryc127/hexo-theme-butterfly.git themes/butterfly 二 在 Hexo 网站根目录中输入
+npm i hexo-theme-butterfly 三 在hexo工作文件夹的根配置文件_config.</description>
+    </item>
+    
+    <item>
+      <title>Mac连接数据库所遇到的问题</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Mon, 11 Jan 2021 16:12:38 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/</guid>
+      <description>在Mac上安装好之后，在系统偏好设置里找到mysql，点击并选择启动mysql；
+打开终端面板，输入：mysql -u root -p
+问题来了，因为之后显示的是：-bash: mysql: command not found
+方法如下：
+1.在你的Mac终端,输入： cd ~
+会进入~文件夹
+2.然后输入：touch .bash_profile
+回车执行后，
+3.再输入：open -e .bash_profile
+这时候会出现一个TextEdit，如果以前没有配置过环境变量，呈现在你眼前的就是一个空白文档，你需要在这个空白文档里输入：export PATH=$PATH:/usr/local/mysql/bin
+然后关闭这个TextEdit
+4.继续回到终端面板，输入：source ~/.bash_profile
+以上，问题就解决啦！！！
+现在你再输入：mysql -u root -p
+回车后就会显示：Enter password:</description>
+    </item>
+    
+    <item>
+      <title>Goland常用技巧</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/</guid>
+      <description>注释 # IDEA注释 # // 这是一个单行注释 /* 这是一个多行注释 可以用于注释多行代码 */ 函数注释 # // add 函数将两个整数相加并返回结果 // 参数: a - 第一个整数, b - 第二个整数 // 返回值: 两个整数的和 func add(a, b int) int { return a + b } TODO：英语翻译为待办事项，备忘录。如果代码中有该标识，说明在标识处有功能代码待编写，待实现的功能在说明中会简略说明。
+FIXME：可以拆成短语，fix me ，意为修理我。如果代码中有该标识，说明标识处代码需要修正，甚至代码是错误的，不能工作，需要修复，如何修正会在说明中简略说明。
+// FIXME: 这里有一个需要修复的问题 可小写 // TODO: 添加错误处理代码 添加新的注释格式 # 标签 说明 TODO: 以后要添加的功能 FIXME: 已知的BUG,以后需要修正 HACK: 代码不太好，需要优化 XXX: 包含所有tag的tag,不好明确到底用哪个tag REVIEW: 虽然好用，最好还是评审一下 OPTIMIZE: 性能不好，需要优化 NOTE: 一些说明 WARNING: 请注意 代码报红处理方法 # 设置import规范 # 1、标准库</description>
+    </item>
+    
+  </channel>
+</rss>

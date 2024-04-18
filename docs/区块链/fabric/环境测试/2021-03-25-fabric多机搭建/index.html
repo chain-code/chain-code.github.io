@@ -1,0 +1,2692 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="多机搭建前准备 # 这部分实验内容使用的是Ubuntu操作系统，所需要的实验环境与单节点搭建部分相同，包括docker的安装golang的安装fabric的安装等。为了方便，以上环境已在虚拟机中安装完成。
+1.网络结构 # 这部分课程我们要搭建一个多机多节点的网络，结构如下。网络中有两个组织分别为org1、org2，每个组织各有一个peer节点，同时还有一个orderer节点。
+名称 IP hosts 组织机构 Orderer 172.17.0.10 orderer.test.com orderer Org1peer0 172.17.0.11 peer0.org1.test.com org1 Org2peer0 172.17.0.12 peer0.org2.test.com org2 2.设置网络host # 使用以下命令，我们在三台虚拟机中分别查看当前虚拟机的IP，其中最后一行为本机IP。
+cat /etc/hosts 127.0.0.1	localhost ::1	localhost ip6-localhost ip6-loopback fe00::0	ip6-localnet ff00::0	ip6-mcastprefix ff02::1	ip6-allnodes ff02::2	ip6-allrouters 172.17.0.10	1cbb99f39f9a 配置所有服务器网络host,在三台虚拟机中都进行以下操作。
+vi /etc/hosts 在最后插入（IP与host任意指定，确定后不能更改），写入以下内容后，按 Esc 键退回一般模式，然后输入 :wq 命令并回车保存退出文件。
+172.17.0.10 orderer.test.com 172.17.0.11 peer0.org1.test.com 172.17.0.12 peer0.org2.test.com 3.ssh安装 # 在多机搭建的过程中我们会使用到scp命令。Linux scp 命令用于 Linux 之间复制文件和目录。
+scp 是 secure copy 的缩写, scp 是 Linux 系统下基于 ssh 登陆进行安全的远程文件拷贝命令。">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="fabric多机搭建" />
+<meta property="og:description" content="多机搭建前准备 # 这部分实验内容使用的是Ubuntu操作系统，所需要的实验环境与单节点搭建部分相同，包括docker的安装golang的安装fabric的安装等。为了方便，以上环境已在虚拟机中安装完成。
+1.网络结构 # 这部分课程我们要搭建一个多机多节点的网络，结构如下。网络中有两个组织分别为org1、org2，每个组织各有一个peer节点，同时还有一个orderer节点。
+名称 IP hosts 组织机构 Orderer 172.17.0.10 orderer.test.com orderer Org1peer0 172.17.0.11 peer0.org1.test.com org1 Org2peer0 172.17.0.12 peer0.org2.test.com org2 2.设置网络host # 使用以下命令，我们在三台虚拟机中分别查看当前虚拟机的IP，其中最后一行为本机IP。
+cat /etc/hosts 127.0.0.1	localhost ::1	localhost ip6-localhost ip6-loopback fe00::0	ip6-localnet ff00::0	ip6-mcastprefix ff02::1	ip6-allnodes ff02::2	ip6-allrouters 172.17.0.10	1cbb99f39f9a 配置所有服务器网络host,在三台虚拟机中都进行以下操作。
+vi /etc/hosts 在最后插入（IP与host任意指定，确定后不能更改），写入以下内容后，按 Esc 键退回一般模式，然后输入 :wq 命令并回车保存退出文件。
+172.17.0.10 orderer.test.com 172.17.0.11 peer0.org1.test.com 172.17.0.12 peer0.org2.test.com 3.ssh安装 # 在多机搭建的过程中我们会使用到scp命令。Linux scp 命令用于 Linux 之间复制文件和目录。
+scp 是 secure copy 的缩写, scp 是 Linux 系统下基于 ssh 登陆进行安全的远程文件拷贝命令。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/" /><meta property="article:section" content="docs" />
+<meta property="article:published_time" content="2021-03-25T19:26:42+00:00" />
+<meta property="article:modified_time" content="2021-03-25T19:26:42+00:00" />
+<title>fabric多机搭建 | Soulmate</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" >
+<link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.5623389946cf2cb816d7e28b27d101617d469cca326a6a0a0bf362549d6ba433.js" integrity="sha256-ViM4mUbPLLgW1&#43;KLJ9EBYX1GnMoyamoKC/NiVJ1rpDM=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo.png" alt="Logo" /><span>Soulmate</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-074eed0fb8c6f9d99dfeff898388792f" class="toggle"  />
+    <label for="section-074eed0fb8c6f9d99dfeff898388792f" class="flex justify-between">
+      <a role="button" class="">计算机基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="">Vim编程常用快捷键</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E9%85%8D%E7%BD%AEkylinv10/" class="">配置 Kylin V10</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="">计算机网络基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/linux%E5%9F%BA%E7%A1%80/" class="">Linux基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/git%E5%9F%BA%E7%A1%80/" class="">Git基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Golang</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-670eda717a06f31447c52422ec93a159" class="toggle"  />
+    <label for="section-670eda717a06f31447c52422ec93a159" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/" class="">go语言基础（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/cgo/" class="">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/flag/" class="">Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/grpc/" class="">Grpc</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/" class="">ProtoBuf</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">常用业务代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/" class="">go语言基础（三）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/" class="">go语言底层基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/" class="">benchmark测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/" class="">Goland常用技巧</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle"  />
+    <label for="section-c453881a62c640f6a4cceec99c02477e" class="flex justify-between">
+      <a role="button" class="">高阶</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" class="">Go高阶-语言基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f235e88e751d2cb18d527c1784763605" class="toggle"  />
+    <label for="section-f235e88e751d2cb18d527c1784763605" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/atomic/" class="">Atomic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/os/" class="">Os</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strconv/" class="">Strconv</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sort/" class="">Sort</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strings/" class="">Strings</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/reflect/" class="">Reflect</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/time/" class="">Time</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sync/" class="">Sync</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ee53da12118bfd3e9b35f3e9494ab55b" class="toggle"  />
+    <label for="section-ee53da12118bfd3e9b35f3e9494ab55b" class="flex justify-between">
+      <a role="button" class="">LeetCode</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/" class="">golang力扣刷题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/" class="">golang力扣刷题（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/%E5%BF%85%E5%88%B7top101/" class="">必刷top101</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" class="">LeetCode算法总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>数据库</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle"  />
+    <label for="section-94f26238d1ca3b5bcd40eadc7a88d726" class="flex justify-between">
+      <a role="button" class="">MySql</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" class="">MySql基础总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="">Mac连接数据库所遇到的问题</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="toggle"  />
+    <label for="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="flex justify-between">
+      <a role="button" class="">Redis</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="">Redis集群搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/" class="">Redis基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="">redis面试总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8be9c2251abd1fe110e3c1520cac6177" class="toggle"  />
+    <label for="section-8be9c2251abd1fe110e3c1520cac6177" class="flex justify-between">
+      <a role="button" class="">SQLite</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/" class="">Sqlite</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/" class="">Xorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ad390db13e5fa9e14f921f4e4f77900e" class="toggle"  />
+    <label for="section-ad390db13e5fa9e14f921f4e4f77900e" class="flex justify-between">
+      <a role="button" class="">C/C&#43;&#43;</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/cc&#43;&#43;/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>区块链</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle" checked />
+    <label for="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="flex justify-between">
+      <a role="button" class="">Fabric</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">fabric相关机制与原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/" class="">智能合约</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/" class="">fabric-sdk-go详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/" class="">fabric-ca详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle" checked />
+    <label for="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="flex justify-between">
+      <a role="button" class="">环境测试</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/" class="">fabric网络中的报错（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/" class="">fabric网络中的报错（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">fabric环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/" class="">solo节点测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/" class="active">fabric多机搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/" class="">部署tape测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/" class="">手动生成ca证书搭建fabric网络</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/" class="">centos安装fabric1.2</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-25aef1d59a561fcefcaecb043ef8afd2" class="toggle"  />
+    <label for="section-25aef1d59a561fcefcaecb043ef8afd2" class="flex justify-between">
+      <a role="button" class="">配置文件</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/" class="">cryptogen生成的证书详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">docker-compose.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">configtx.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">crypto-config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/" class="">升级链码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/" class="">区块链网络添加组织</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/" class="">fabric浏览器搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/" class="">如何在已有组织中增加节点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/" class="">Fabric1.4多通道实验</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b07621083aa30b12de4c0333941e479f" class="toggle"  />
+    <label for="section-b07621083aa30b12de4c0333941e479f" class="flex justify-between">
+      <a role="button" class="">比特币</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">比特币相关机制与原理</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle"  />
+    <label for="section-ff5477999ef29208270c84e8b56b2758" class="flex justify-between">
+      <a role="button" class="">IPFS</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/" class="">go-ipfs-api</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" class="">ipfs-webui可视化工具搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/" class="">IPFS基本原理（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/" class="">IPFS私有网络搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-77a0a17b06e8d04cfb0fba9952941706" class="toggle"  />
+    <label for="section-77a0a17b06e8d04cfb0fba9952941706" class="flex justify-between">
+      <a role="button" class="">密码学</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" class="">区块链安全基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/" class="">椭圆曲线加密</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/" class="">密码学基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2e4d10b323fd668021dbd532575d8790" class="toggle"  />
+    <label for="section-2e4d10b323fd668021dbd532575d8790" class="flex justify-between">
+      <a role="button" class="">Docker</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/" class="">Docker基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/" class="">Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" class="">docker常用知识总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-70383d7f28a7ae4bf840a844eb61aa16" class="toggle"  />
+    <label for="section-70383d7f28a7ae4bf840a844eb61aa16" class="flex justify-between">
+      <a role="button" class="">共识算法</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">共识算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" class="">Raft共识算法</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>前端</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
+    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
+      <a role="button" class="">博客</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%9B%BE%E4%B9%A6/" class="">图书</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/" class="">工具库</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="https://gitee.com/chaincode"  target="_blank" rel="noopener">
+        Gitee
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>fabric多机搭建</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#多机搭建前准备">多机搭建前准备</a>
+          <ul>
+            <li><a href="#1网络结构">1.网络结构</a></li>
+            <li><a href="#2设置网络host">2.设置网络host</a></li>
+            <li><a href="#3ssh安装">3.ssh安装</a></li>
+          </ul>
+        </li>
+        <li><a href="#生成fabric证书">生成Fabric证书</a>
+          <ul>
+            <li><a href="#1创建项目目录">1.创建项目目录</a></li>
+            <li><a href="#2编写证书文件">2.编写证书文件</a></li>
+            <li><a href="#3生成证书文件">3.生成证书文件</a></li>
+          </ul>
+        </li>
+        <li><a href="#生成通道文件">生成通道文件</a>
+          <ul>
+            <li><a href="#1创世块文件的编写">1.创世块文件的编写</a></li>
+            <li><a href="#2生成创世块文件和通道文件">2.生成创世块文件和通道文件</a></li>
+          </ul>
+        </li>
+        <li><a href="#docker-compose文件编写">docker-compose文件编写</a>
+          <ul>
+            <li><a href="#1orderer节点">1.orderer节点</a></li>
+            <li><a href="#2org1">2.org1</a></li>
+            <li><a href="#3org2">3.org2</a></li>
+          </ul>
+        </li>
+        <li><a href="#通道操作">通道操作</a>
+          <ul>
+            <li><a href="#1-创建通道">1 创建通道</a></li>
+            <li><a href="#2-加入通道">2 加入通道</a></li>
+            <li><a href="#3更新锚节点">3更新锚节点</a></li>
+          </ul>
+        </li>
+        <li><a href="#安装调用智能合约">安装调用智能合约</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h2 id="多机搭建前准备">
+  多机搭建前准备
+  <a class="anchor" href="#%e5%a4%9a%e6%9c%ba%e6%90%ad%e5%bb%ba%e5%89%8d%e5%87%86%e5%a4%87">#</a>
+</h2>
+<p>这部分实验内容使用的是Ubuntu操作系统，所需要的实验环境与单节点搭建部分相同，包括<code>docker</code>的安装<code>golang</code>的安装<code>fabric</code>的安装等。为了方便，以上环境已在虚拟机中安装完成。</p>
+<h3 id="1网络结构">
+  1.网络结构
+  <a class="anchor" href="#1%e7%bd%91%e7%bb%9c%e7%bb%93%e6%9e%84">#</a>
+</h3>
+<p>这部分课程我们要搭建一个多机多节点的网络，结构如下。网络中有两个组织分别为<code>org1</code>、<code>org2</code>，每个组织各有一个<code>peer</code>节点，同时还有一个<code>orderer</code>节点。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">名称</th>
+<th style="text-align:center">IP</th>
+<th style="text-align:center">hosts</th>
+<th style="text-align:center">组织机构</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Orderer</td>
+<td style="text-align:center">172.17.0.10</td>
+<td style="text-align:center">orderer.test.com</td>
+<td style="text-align:center">orderer</td>
+</tr>
+<tr>
+<td style="text-align:center">Org1peer0</td>
+<td style="text-align:center">172.17.0.11</td>
+<td style="text-align:center">peer0.org1.test.com</td>
+<td style="text-align:center">org1</td>
+</tr>
+<tr>
+<td style="text-align:center">Org2peer0</td>
+<td style="text-align:center">172.17.0.12</td>
+<td style="text-align:center">peer0.org2.test.com</td>
+<td style="text-align:center">org2</td>
+</tr>
+</tbody>
+</table>
+<h3 id="2设置网络host">
+  2.设置网络host
+  <a class="anchor" href="#2%e8%ae%be%e7%bd%ae%e7%bd%91%e7%bb%9chost">#</a>
+</h3>
+<p>使用以下命令，我们在三台虚拟机中分别查看当前虚拟机的IP，其中最后一行为本机IP。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cat /etc/hosts
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>127.0.0.1	localhost
+</span></span><span style="display:flex;"><span>::1	localhost ip6-localhost ip6-loopback
+</span></span><span style="display:flex;"><span>fe00::0	ip6-localnet
+</span></span><span style="display:flex;"><span>ff00::0	ip6-mcastprefix
+</span></span><span style="display:flex;"><span>ff02::1	ip6-allnodes
+</span></span><span style="display:flex;"><span>ff02::2	ip6-allrouters
+</span></span><span style="display:flex;"><span>172.17.0.10	1cbb99f39f9a
+</span></span></code></pre></div><p>配置所有服务器网络host,在三台虚拟机中都进行以下操作。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>vi /etc/hosts
+</span></span></code></pre></div><p>在最后插入（IP与host任意指定，确定后不能更改），写入以下内容后，按 <code>Esc</code> 键退回一般模式，然后输入 <code>:wq</code> 命令并回车保存退出文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>172.17.0.10 orderer.test.com
+</span></span><span style="display:flex;"><span>172.17.0.11 peer0.org1.test.com
+</span></span><span style="display:flex;"><span>172.17.0.12 peer0.org2.test.com
+</span></span></code></pre></div><h3 id="3ssh安装">
+  3.ssh安装
+  <a class="anchor" href="#3ssh%e5%ae%89%e8%a3%85">#</a>
+</h3>
+<p>在多机搭建的过程中我们会使用到<code>scp</code>命令。Linux <code>scp</code> 命令用于 Linux 之间复制文件和目录。</p>
+<p><code>scp</code> 是 <code>secure copy</code> 的缩写, <code>scp</code> 是 Linux 系统下基于 ssh 登陆进行安全的远程文件拷贝命令。</p>
+<p>以下内容需要在三台虚拟机中都操作。</p>
+<p>实验环境中打开终端默认直接进入<code>root</code>用户，在您个人的终端下需要键入<code>su</code>来切换至<code>root</code>用户。接着执行以下命令：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>passwd root
+</span></span></code></pre></div><p>输入要修改的<code>root</code>用户密码，此指导书中以<code>123456</code>为<code>root</code>用户密码。输出信息如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Changing password <span style="color:#66d9ef">for</span> user root.
+</span></span><span style="display:flex;"><span>New password: 
+</span></span><span style="display:flex;"><span>BAD PASSWORD: The password is shorter than <span style="color:#ae81ff">8</span> characters
+</span></span><span style="display:flex;"><span>Retype new password: 
+</span></span><span style="display:flex;"><span>passwd: all authentication tokens updated successfully.
+</span></span></code></pre></div><p>使用以下命令安装ssh，过程中会被询问是否继续安装，输入<code>y</code>并按回车。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo apt-get install openssh-server
+</span></span></code></pre></div><p>使用以下命令打开ssh配置文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>vim /etc/ssh/sshd_config
+</span></span></code></pre></div><p>将<code>PermitRootLogin prohibit-password</code>改为<code>PermitRootLogin yes</code>后按 <code>Esc</code> 键退回一般模式，然后输入 <code>:wq</code> 命令并回车保存退出文件。</p>
+<p>使用以下命令重启ssh服务。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>systemctl restart ssh
+</span></span></code></pre></div><h2 id="生成fabric证书">
+  生成Fabric证书
+  <a class="anchor" href="#%e7%94%9f%e6%88%90fabric%e8%af%81%e4%b9%a6">#</a>
+</h2>
+<h3 id="1创建项目目录">
+  1.创建项目目录
+  <a class="anchor" href="#1%e5%88%9b%e5%bb%ba%e9%a1%b9%e7%9b%ae%e7%9b%ae%e5%bd%95">#</a>
+</h3>
+<p>在三台虚拟机上使用以下命令创建相同的项目目录（三台虚拟机项目路径要相同）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cd ~/hyperledger
+</span></span><span style="display:flex;"><span>mkdir multinodes
+</span></span></code></pre></div><h3 id="2编写证书文件">
+  2.编写证书文件
+  <a class="anchor" href="#2%e7%bc%96%e5%86%99%e8%af%81%e4%b9%a6%e6%96%87%e4%bb%b6">#</a>
+</h3>
+<p>证书文件的编写过程以及配置的内容与之前单节点搭建时大致相同，唯一不同的是这次我们要设置两个组织。创建证书文件的过程在任意一台主机上完成即可，以下的过程在<code>orderer</code>节点的主机上完成。</p>
+<p>首先使用以下命令进入项目目录。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cd ~/hyperledger/multinodes
+</span></span></code></pre></div><p>使用以下命令将模板文件复制到当前目录下。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cryptogen showtemplate &gt; crypto-config.yaml
+</span></span></code></pre></div><p>使用vim将配置文件进行修改，修改如下（与单节点搭建相比我们新增了一个组织二，别的没有任何区别），按 <code>Esc</code> 键退回一般模式，然后输入 <code>:wq</code> 命令并回车保存退出文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">OrdererOrgs</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">Name</span>: <span style="color:#ae81ff">Orderer</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Domain</span>: <span style="color:#ae81ff">test.com</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">EnableNodeOUs</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Specs</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">Hostname</span>: <span style="color:#ae81ff">orderer</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">PeerOrgs</span>:
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">Name</span>: <span style="color:#ae81ff">org1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Domain</span>: <span style="color:#ae81ff">org1.test.com</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">EnableNodeOUs</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Template</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">Count</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Users</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">Count</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">Name</span>: <span style="color:#ae81ff">org2</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Domain</span>: <span style="color:#ae81ff">org2.test.com</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">EnableNodeOUs</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Template</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">Count</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Users</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">Count</span>: <span style="color:#ae81ff">1</span>      
+</span></span></code></pre></div><h3 id="3生成证书文件">
+  3.生成证书文件
+  <a class="anchor" href="#3%e7%94%9f%e6%88%90%e8%af%81%e4%b9%a6%e6%96%87%e4%bb%b6">#</a>
+</h3>
+<p>使用以下命令生成证书文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cryptogen generate --config<span style="color:#f92672">=</span>crypto-config.yaml
+</span></span></code></pre></div><p>使用<code>ls</code>命令查看生成的文件，可以看到生成了<code>crypto-config</code>文件，这里存放所有的证书文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ls
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>crypto-config  crypto-config.yaml
+</span></span></code></pre></div><p>使用<code>scp</code>命令将证书文件复制到其他两台虚拟机中（使用<code>scp</code>命令时会要求输入主机密码，就是我们之前设置的<code>123456</code>）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>scp crypto-config root@172.17.0.11:~/hyperledger/multinodes/
+</span></span></code></pre></div><pre tabindex="0"><code>scp crypto-config root@172.17.0.12:~/hyperledger/multinodes/
+</code></pre><p>复制后使用以下命令在其他两台虚拟机的<code>multinodes</code>目录下查看是否复制成功。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ls
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>crypto-config
+</span></span></code></pre></div><h2 id="生成通道文件">
+  生成通道文件
+  <a class="anchor" href="#%e7%94%9f%e6%88%90%e9%80%9a%e9%81%93%e6%96%87%e4%bb%b6">#</a>
+</h2>
+<h3 id="1创世块文件的编写">
+  1.创世块文件的编写
+  <a class="anchor" href="#1%e5%88%9b%e4%b8%96%e5%9d%97%e6%96%87%e4%bb%b6%e7%9a%84%e7%bc%96%e5%86%99">#</a>
+</h3>
+<p>首先回到orderer节点的虚拟机。</p>
+<p>首先我们可以参考官方示例项目<code>test-network</code>中的<code>configtx.yaml</code>配置文件，使用以下命令进入其目录。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cd /root/hyperledger/fabric-samples/test-network/configtx
+</span></span></code></pre></div><p>使用<code>ls</code>命令查看文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ls
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>configtx.yaml
+</span></span></code></pre></div><p>使用以下命令将这个配置文件复制到我们的项目路径中。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cp * ~/hyperledger/multinodes
+</span></span></code></pre></div><p>使用以下命令回到我们的项目路径。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cd ~/hyperledger/multinodes
+</span></span></code></pre></div><p>使用vim编辑器将<code>configtx.yaml</code>改为以下内容，写入以下内容后，按 <code>Esc</code> 键退回一般模式，然后输入 <code>:wq</code> 命令并回车保存退出文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Organizations</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#75715e">&amp;OrdererOrg</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Name</span>: <span style="color:#ae81ff">OrdererOrg</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">ID</span>: <span style="color:#ae81ff">OrdererMSP</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">MSPDir</span>: <span style="color:#ae81ff">./crypto-config/ordererOrganizations/test.com/msp</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Policies</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Readers</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">Signature</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;OR(&#39;OrdererMSP.member&#39;)&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Writers</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">Signature</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;OR(&#39;OrdererMSP.member&#39;)&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Admins</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">Signature</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;OR(&#39;OrdererMSP.admin&#39;)&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">OrdererEndpoints</span>:
+</span></span><span style="display:flex;"><span>            - <span style="color:#ae81ff">orderer.test.com:7050</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#75715e">&amp;Org1</span>
+</span></span><span style="display:flex;"><span>   
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Name</span>: <span style="color:#ae81ff">Org1MSP</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">ID</span>: <span style="color:#ae81ff">Org1MSP</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">MSPDir</span>: <span style="color:#ae81ff">./crypto-config/peerOrganizations/org1.test.com/msp</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Policies</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Readers</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">Signature</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;OR(&#39;Org1MSP.admin&#39;, &#39;Org1MSP.peer&#39;, &#39;Org1MSP.client&#39;)&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Writers</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">Signature</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;OR(&#39;Org1MSP.admin&#39;, &#39;Org1MSP.client&#39;)&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Admins</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">Signature</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;OR(&#39;Org1MSP.admin&#39;)&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Endorsement</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">Signature</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;OR(&#39;Org1MSP.peer&#39;)&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">AnchorPeers</span>:
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">Host</span>: <span style="color:#ae81ff">peer0.org1.test.com</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">Port</span>: <span style="color:#ae81ff">7051</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#75715e">&amp;Org2</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Name</span>: <span style="color:#ae81ff">Org2MSP</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">ID</span>: <span style="color:#ae81ff">Org2MSP</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">MSPDir</span>: <span style="color:#ae81ff">./crypto-config/peerOrganizations/org2.test.com/msp</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Policies</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Readers</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">Signature</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;OR(&#39;Org2MSP.admin&#39;, &#39;Org2MSP.peer&#39;, &#39;Org2MSP.client&#39;)&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Writers</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">Signature</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;OR(&#39;Org2MSP.admin&#39;, &#39;Org2MSP.client&#39;)&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Admins</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">Signature</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;OR(&#39;Org2MSP.admin&#39;)&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Endorsement</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">Signature</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;OR(&#39;Org2MSP.peer&#39;)&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">AnchorPeers</span>:
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">Host</span>: <span style="color:#ae81ff">peer0.org2.test.com</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">Port</span>: <span style="color:#ae81ff">9051</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Capabilities</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Channel</span>: <span style="color:#75715e">&amp;ChannelCapabilities</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">V2_0</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Orderer</span>: <span style="color:#75715e">&amp;OrdererCapabilities</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">V2_0</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Application</span>: <span style="color:#75715e">&amp;ApplicationCapabilities</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">V2_0</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Application</span>: <span style="color:#75715e">&amp;ApplicationDefaults</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Organizations</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Policies</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Readers</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">ImplicitMeta</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;ANY Readers&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Writers</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">ImplicitMeta</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;ANY Writers&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Admins</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">ImplicitMeta</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;MAJORITY Admins&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">LifecycleEndorsement</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">ImplicitMeta</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;MAJORITY Endorsement&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Endorsement</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">ImplicitMeta</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;MAJORITY Endorsement&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Capabilities</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;&lt;</span>: <span style="color:#75715e">*ApplicationCapabilities</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Orderer</span>: <span style="color:#75715e">&amp;OrdererDefaults</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">OrdererType</span>: <span style="color:#ae81ff">solo </span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Addresses</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">orderer.test.com:7050</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">EtcdRaft</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Consenters</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">Host</span>: <span style="color:#ae81ff">orderer.example.com</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">Port</span>: <span style="color:#ae81ff">7050</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">ClientTLSCert</span>: <span style="color:#ae81ff">../organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">ServerTLSCert</span>: <span style="color:#ae81ff">../organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">BatchTimeout</span>: <span style="color:#ae81ff">2s</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">BatchSize</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">MaxMessageCount</span>: <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">AbsoluteMaxBytes</span>: <span style="color:#ae81ff">99</span> <span style="color:#ae81ff">MB</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">PreferredMaxBytes</span>: <span style="color:#ae81ff">512</span> <span style="color:#ae81ff">KB</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Organizations</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Policies</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Readers</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">ImplicitMeta</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;ANY Readers&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Writers</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">ImplicitMeta</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;ANY Writers&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Admins</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">ImplicitMeta</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;MAJORITY Admins&#34;</span>
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">BlockValidation</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">ImplicitMeta</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;ANY Writers&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Channel</span>: <span style="color:#75715e">&amp;ChannelDefaults</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Policies</span>:
+</span></span><span style="display:flex;"><span>       
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Readers</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">ImplicitMeta</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;ANY Readers&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Writers</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">ImplicitMeta</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;ANY Writers&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Admins</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Type</span>: <span style="color:#ae81ff">ImplicitMeta</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Rule</span>: <span style="color:#e6db74">&#34;MAJORITY Admins&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Capabilities</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;&lt;</span>: <span style="color:#75715e">*ChannelCapabilities</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Profiles</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">TwoOrgsOrdererGenesis</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;&lt;</span>: <span style="color:#75715e">*ChannelDefaults</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Orderer</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;&lt;</span>: <span style="color:#75715e">*OrdererDefaults</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Organizations</span>:
+</span></span><span style="display:flex;"><span>                - <span style="color:#75715e">*OrdererOrg</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Capabilities</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;&lt;</span>: <span style="color:#75715e">*OrdererCapabilities</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Consortiums</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">SampleConsortium</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">Organizations</span>:
+</span></span><span style="display:flex;"><span>                    - <span style="color:#75715e">*Org1</span>
+</span></span><span style="display:flex;"><span>                    - <span style="color:#75715e">*Org2</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">TwoOrgsChannel</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Consortium</span>: <span style="color:#ae81ff">SampleConsortium</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;&lt;</span>: <span style="color:#75715e">*ChannelDefaults</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">Application</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;&lt;</span>: <span style="color:#75715e">*ApplicationDefaults</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Organizations</span>:
+</span></span><span style="display:flex;"><span>                - <span style="color:#75715e">*Org1</span>
+</span></span><span style="display:flex;"><span>                - <span style="color:#75715e">*Org2</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">Capabilities</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;&lt;</span>: <span style="color:#75715e">*ApplicationCapabilities</span>
+</span></span></code></pre></div><p>与单节点搭建的区别：</p>
+<ul>
+<li>Organizations部分多了Org2的配置。</li>
+<li>Profiles的部分创世块名称与通道名称不同。单节点搭建部分为soloOrgsOrdererGenesis和soloOrgsChannel，多节点搭建部分为TwoOrgsOrdererGenesis和TwoOrgsChannel。（创世块名称与通道名称自己任意取，但是后面使用命令生成文件时命令要与配置文件所定义的名称一致）</li>
+<li>Profiles部分创世块配置与通道配置中都多加入了Org2。</li>
+</ul>
+<h3 id="2生成创世块文件和通道文件">
+  2.生成创世块文件和通道文件
+  <a class="anchor" href="#2%e7%94%9f%e6%88%90%e5%88%9b%e4%b8%96%e5%9d%97%e6%96%87%e4%bb%b6%e5%92%8c%e9%80%9a%e9%81%93%e6%96%87%e4%bb%b6">#</a>
+</h3>
+<p>使用以下命令生成创世区块。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>./bin/configtxgen -profile TwoOrgsgenesis -channelID fabric-channel -outputBlock ./channel-artifacts/genesis.block
+</span></span></code></pre></div><p>使用以下命令生成通道文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>./bin/configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID mychannel
+</span></span></code></pre></div><p>使用以下命令为 Org1 定义锚节点。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>./bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID mychannel -asOrg Org1MSP
+</span></span></code></pre></div><p>使用以下命令为 Org2 定义锚节点。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>./bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID mychannel -asOrg Org2MSP
+</span></span></code></pre></div><p>使用以下命令将生成的文件拷贝到另两台主机（过程中会需要输入宿主机的密码，就是我们之前设置的123456）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>scp -r channel-artifacts root@172.17.0.11:~/hyperledger/multipeer/
+</span></span><span style="display:flex;"><span>scp -r channel-artifacts root@172.17.0.11:~/hyperledger/multipeer/
+</span></span></code></pre></div><p>复制后使用以下命令在其他两台虚拟机的<code>multinodes</code>目录下查看是否复制成功。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ls
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>channel-artifacts
+</span></span></code></pre></div><h2 id="docker-compose文件编写">
+  docker-compose文件编写
+  <a class="anchor" href="#docker-compose%e6%96%87%e4%bb%b6%e7%bc%96%e5%86%99">#</a>
+</h2>
+<p>在单节点实验中我们编写过一个docker-compose文件，在其中我们配置了orderer节点与peer节点。在多机部署的时候我们需要为每台虚拟机都编写一个docker-compose文件来配置相应的节点。多机部署与单机部署的配置文件内容大致相同，下面会介绍单机与多机的异同点。</p>
+<h3 id="1orderer节点">
+  1.orderer节点
+  <a class="anchor" href="#1orderer%e8%8a%82%e7%82%b9">#</a>
+</h3>
+<p>使用以下命令在orderer节点的虚拟机的项目路径上创建一个<code>docker-compose.yaml</code>文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cd ~/hyperledger/multinodes
+</span></span><span style="display:flex;"><span>vim docker-compose.yaml
+</span></span></code></pre></div><p>写入以下内容后，按 <code>Esc</code> 键退回一般模式，然后输入 <code>:wq</code> 命令并回车保存退出文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;2&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">services</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">orderer.test.com</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">orderer.test.com</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">hyperledger/fabric-orderer:latest</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">FABRIC_LOGGING_SPEC=INFO</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">ORDERER_GENERAL_LISTENADDRESS=0.0.0.0</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">ORDERER_GENERAL_LISTENPORT=7050</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">ORDERER_GENERAL_GENESISMETHOD=file</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">ORDERER_GENERAL_LOCALMSPID=OrdererMSP</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">ORDERER_GENERAL_TLS_ENABLED=true</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">ORDERER_KAFKA_TOPIC_REPLICATIONFACTOR=1</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">ORDERER_KAFKA_VERBOSE=true</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">working_dir</span>: <span style="color:#ae81ff">/opt/gopath/src/github.com/hyperledger/fabric</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">command</span>: <span style="color:#ae81ff">orderer</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./crypto-config/ordererOrganizations/test.com/orderers/orderer.test.com/msp:/var/hyperledger/orderer/msp</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./crypto-config/ordererOrganizations/test.com/orderers/orderer.test.com/tls/:/var/hyperledger/orderer/tls</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">7050</span>:<span style="color:#ae81ff">7050</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">extra_hosts</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;orderer.test.com:172.17.0.10&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;peer0.org1.test.com:172.17.0.11&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;peer0.org2.test.com:172.17.0.12&#34;</span>
+</span></span></code></pre></div><p>与单机搭建的不同：</p>
+<ul>
+<li>没有了卷挂载目录<code>orderer.test.com:/var/hyperledger/production/orderer</code>。</li>
+<li>单机搭建中的网络名<code>networks: - test</code>改为<code>extra_hosts:</code>，因为我们是多机搭建有真实的IP，所以网络名称都改为真实的IP地址。</li>
+</ul>
+<h3 id="2org1">
+  2.org1
+  <a class="anchor" href="#2org1">#</a>
+</h3>
+<p>Fabric中peer节点的世界状态数据库默认是Leveldb，在这个部分我们将使用Couchdb。</p>
+<p>Fabric的状态存储支持可插拔的模式，兼容LevelDB、CouchDB等存储。Fabric使用CouchDB作为状态存储与其他数据库相比具有较多优势：</p>
+<ul>
+<li>CouchDB是一种NoSQL解决方案。它是一个面向文档的数据库，其中文档字段存储为键值映射。字段可以是简单的键值对、列表或映射。除了支持类似LevelDB的键控/合成键/键范围查询之外，CouchDB还支持完整的数据富查询功能，比如针对整个区块链数据的非键查询，因为它的数据内容是以JSON格式存储的，并且是完全可查询的。因此，CouchDB可以满足LevelDB不支持的许多用例的链代码、审计和报告需求。</li>
+<li>CouchDB还可以增强区块链中的遵从性和数据保护的安全性。因为它能够通过筛选和屏蔽事务中的各个属性来实现字段级别的安全性，并且只在需要时授权只读权限。</li>
+<li>CouchDB属于CAP定理的ap类型(可用性和分区公差)。它使用具有最终一致性的主-主复制模型。更多信息可以在CouchDB文档的最终一致性页面上找到。然而，在每个fabric对等点下，没有数据库副本，对数据库的写操作保证一致和持久(而不是最终的一致性)。</li>
+<li>CouchDB是Fabric的第一个外部可插入状态数据库，可以而且应该有其他外部数据库选项。例如，IBM为其区块链启用关系数据库。还可能需要cp类型(一致性和分区容忍度)的数据库，以便在不保证应用层的情况下实现数据一致性。</li>
+</ul>
+<p>使用以下命令在org1节点的虚拟机的项目路径上创建一个<code>docker-compose.yaml</code>文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cd ~/hyperledger/multinodes
+</span></span><span style="display:flex;"><span>vim docker-compose.yaml
+</span></span></code></pre></div><p>写入以下内容后，按 <code>Esc</code> 键退回一般模式，然后输入 <code>:wq</code> 命令并回车保存退出文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;2&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">services</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">couchdb0.org1.test.com</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">couchdb0.org1.test.com</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">couchdb:3.1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">COUCHDB_USER=admin</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">COUCHDB_PASSWORD=adminpw</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">5984</span>:<span style="color:#ae81ff">5984</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">peer0.org1.test.com</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">peer0.org1.test.com</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">hyperledger/fabric-peer:latest</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_ID=peer0.org1.test.com</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_ADDRESS=peer0.org1.test.com:7051</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_LISTENADDRESS=0.0.0.0:7051</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_CHAINCODEADDRESS=peer0.org1.test.com:7052</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.test.com:7051</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.test.com:7051</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_LOCALMSPID=Org1MSP</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">FABRIC_LOGGING_SPEC=INFO</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_TLS_ENABLED=true</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_GOSSIP_USELEADERELECTION=true</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_GOSSIP_ORGLEADER=false</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_PROFILE_ENABLED=true</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_CHAINCODE_EXECUTETIMEOUT=300s</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_LEDGER_STATE_STATEDATABASE=CouchDB</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0.org1.test.com:5984</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">depends_on</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">couchdb0.org1.test.com</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">working_dir</span>: <span style="color:#ae81ff">/opt/gopath/src/github.com/hyperledger/fabric/peer</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">command</span>: <span style="color:#ae81ff">peer node start</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">/var/run/:/host/var/run/</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./crypto-config/peerOrganizations/org1.test.com/peers/peer0.org1.test.com/msp:/etc/hyperledger/fabric/msp</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./crypto-config/peerOrganizations/org1.test.com/peers/peer0.org1.test.com/tls:/etc/hyperledger/fabric/tls</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">7051</span>:<span style="color:#ae81ff">7051</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">7052</span>:<span style="color:#ae81ff">7052</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">7053</span>:<span style="color:#ae81ff">7053</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">extra_hosts</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;orderer.test.com:172.17.0.10&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;peer0.org1.test.com:172.17.0.11&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;peer0.org2.test.com:172.17.0.12&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">cli</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">cli</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">hyperledger/fabric-tools:latest</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">tty</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">stdin_open</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">GOPATH=/opt/gopath</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">FABRIC_LOGGING_SPEC=INFO</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_ID=cli</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_ADDRESS=peer0.org1.test.com:7051</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_LOCALMSPID=Org1MSP</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_TLS_ENABLED=true</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.test.com/peers/peer0.org1.test.com/tls/server.crt</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.test.com/peers/peer0.org1.test.com/tls/server.key</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.test.com/peers/peer0.org1.test.com/tls/ca.crt</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.test.com/users/Admin@org1.test.com/msp</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">working_dir</span>: <span style="color:#ae81ff">/opt/gopath/src/github.com/hyperledger/fabric/peer</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">command</span>: <span style="color:#ae81ff">/bin/bash</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">/var/run/:/host/var/run/</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./chaincode/go/:/opt/gopath/src/github.com/hyperledger/fabric-cluster/chaincode/go</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">extra_hosts</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;orderer.test.com:172.17.0.10&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;peer0.org1.test.com:172.17.0.11&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;peer0.org2.test.com:172.17.0.12&#34;</span>
+</span></span></code></pre></div><p>与单机搭建的不同：</p>
+<ul>
+<li>多了couchdb的配置。</li>
+<li>peer0节点环境变量多了<code>CORE_LEDGER_STATE_STATEDATABASE=CouchDB</code>，表示peer0节点的状态数据库采用了couchdb。</li>
+<li>多了<code>depends_on: - couchdb0.org1.test.com</code>，表示在couchdb启动后再启动peer0节点。</li>
+<li>单机搭建中的网络名<code>networks: - test</code>改为<code>extra_hosts:</code>，因为我们是多机搭建有真实的IP，所以网络名称都改为真实的IP地址。</li>
+</ul>
+<h3 id="3org2">
+  3.org2
+  <a class="anchor" href="#3org2">#</a>
+</h3>
+<p>组织二的配置文件与组织一基本相同，唯一不同点是把org1改为org2。</p>
+<p>使用以下命令在org2节点的虚拟机的项目路径上创建一个<code>docker-compose.yaml</code>文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cd ~/hyperledger/multinodes
+</span></span><span style="display:flex;"><span>vim docker-compose.yaml
+</span></span></code></pre></div><p>写入以下内容后，按 <code>Esc</code> 键退回一般模式，然后输入 <code>:wq</code> 命令并回车保存退出文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;2&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">services</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">couchdb0.org2.test.com</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">couchdb0.org2.test.com</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">couchdb:3.1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">COUCHDB_USER=admin</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">COUCHDB_PASSWORD=adminpw</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">5984</span>:<span style="color:#ae81ff">5984</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">peer0.org2.test.com</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">peer0.org2.test.com</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">hyperledger/fabric-peer:latest</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_ID=peer0.org2.test.com</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_ADDRESS=peer0.org2.test.com:7051</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_LISTENADDRESS=0.0.0.0:7051</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_CHAINCODEADDRESS=peer0.org2.test.com:7052</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.test.com:7051</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.test.com:7051</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_LOCALMSPID=Org2MSP</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">FABRIC_LOGGING_SPEC=INFO</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_TLS_ENABLED=true</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_GOSSIP_USELEADERELECTION=true</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_GOSSIP_ORGLEADER=false</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_PROFILE_ENABLED=true</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_CHAINCODE_EXECUTETIMEOUT=300s</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_LEDGER_STATE_STATEDATABASE=CouchDB</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0.org2.test.com:5984</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">depends_on</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">couchdb0.org2.test.com</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">working_dir</span>: <span style="color:#ae81ff">/opt/gopath/src/github.com/hyperledger/fabric/peer</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">command</span>: <span style="color:#ae81ff">peer node start</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">/var/run/:/host/var/run/</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./crypto-config/peerOrganizations/org2.test.com/peers/peer0.org2.test.com/msp:/etc/hyperledger/fabric/msp</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./crypto-config/peerOrganizations/org2.test.com/peers/peer0.org2.test.com/tls:/etc/hyperledger/fabric/tls</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">7051</span>:<span style="color:#ae81ff">7051</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">7052</span>:<span style="color:#ae81ff">7052</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">7053</span>:<span style="color:#ae81ff">7053</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">extra_hosts</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;orderer.test.com:172.17.0.10&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;peer0.org1.test.com:172.17.0.11&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;peer0.org2.test.com:172.17.0.12&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">cli</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">cli</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">hyperledger/fabric-tools:latest</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">tty</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">stdin_open</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">GOPATH=/opt/gopath</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">FABRIC_LOGGING_SPEC=INFO</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_ID=cli</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_ADDRESS=peer0.org2.test.com:7051</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_LOCALMSPID=Org2MSP</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_TLS_ENABLED=true</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.test.com/peers/peer0.org2.test.com/tls/server.crt</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.test.com/peers/peer0.org2.test.com/tls/server.key</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.test.com/peers/peer0.org2.test.com/tls/ca.crt</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.test.com/users/Admin@org2.test.com/msp</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">working_dir</span>: <span style="color:#ae81ff">/opt/gopath/src/github.com/hyperledger/fabric/peer</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">command</span>: <span style="color:#ae81ff">/bin/bash</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">/var/run/:/host/var/run/</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./chaincode/go/:/opt/gopath/src/github.com/hyperledger/fabric-cluster/chaincode/go</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">extra_hosts</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;orderer.test.com:172.17.0.10&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;peer0.org1.test.com:172.17.0.11&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;peer0.org2.test.com:172.17.0.12&#34;</span>
+</span></span></code></pre></div><p>使用<code>docker-compose</code>启动服务(三台机器均需要)。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker-compose up
+</span></span><span style="display:flex;"><span>docker ps -a
+</span></span></code></pre></div><h2 id="通道操作">
+  通道操作
+  <a class="anchor" href="#%e9%80%9a%e9%81%93%e6%93%8d%e4%bd%9c">#</a>
+</h2>
+<p>本节主要介绍的<code>peer channel</code>命令，<code>peer channel</code>命令主要是用于创建通道以及节点加入通道。</p>
+<h3 id="1-创建通道">
+  1 创建通道
+  <a class="anchor" href="#1-%e5%88%9b%e5%bb%ba%e9%80%9a%e9%81%93">#</a>
+</h3>
+<p>使用<code>docker exec</code>命令进入客户端容器（在Org1主机上操作）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker exec -it cli bash
+</span></span></code></pre></div><p>使用以下命令在客户端容器中创建通道（在Org1容器上操作）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>peer channel create -o orderer.test.com:7050 -c mychannel -f ./channel-artifacts/channel.tx --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/test.com/msp/tlscacerts/tlsca.test.com-cert.pem
+</span></span></code></pre></div><ul>
+<li><code>-o</code>,<code> --orderer</code>: orderer节点的地址。</li>
+<li><code>-c</code>, <code>--channelID</code>: 要创建的通道的ID, 必须小写, 在250个字符以内。</li>
+<li><code>-f</code>, <code>-file</code>: 由<code>configtxgen </code>生成的通道文件, 用于提交给orderer。</li>
+<li><code>-t</code>, <code>--timeout</code>: 创建通道的超时时长, 默认为5s。</li>
+<li><code>--tls</code>: 通信时是否使用tls加密。</li>
+<li><code>--cafile</code>: 当前orderer节点pem格式的tls证书文件, 要使用绝对路径。</li>
+<li>orderer节点pem格式的tls证书文件路径为：<code>crypto-config/ordererOrganizations/test.com/orderers/orderer.test.com/msp/tlscacerts/tlsca.test.com-cert.pem。</code></li>
+</ul>
+<p>使用<code>ls</code>命令查看生成的文件（在Org1容器上操作）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ls
+</span></span></code></pre></div><pre tabindex="0"><code>channel-artifacts  crypto  mychannel.block
+</code></pre><p>使用以下命令将通道文件 mychannel.block 拷贝到宿主机（在Org1主机上操作）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker cp cli:/opt/gopath/src/github.com/hyperledger/fabric/peer/mychannel.block ./
+</span></span></code></pre></div><p>然后使用以下命令拷贝到其他服务器上用于其他节点加入通道（在Org1主机上操作）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>scp mychannel.block root@172.17.0.12:~/hyperledger/multipeer/
+</span></span></code></pre></div><p>使用以下命令将通道文件拷贝到容器中（在Org2主机上操作）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker cp mychannel.block cli:/opt/gopath/src/github.com/hyperledger/fabric/peer/
+</span></span></code></pre></div><p>使用以下命令进入 <code>cli </code>容器（在Org2主机上操作）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker exec -it cli bash
+</span></span></code></pre></div><h3 id="2-加入通道">
+  2 加入通道
+  <a class="anchor" href="#2-%e5%8a%a0%e5%85%a5%e9%80%9a%e9%81%93">#</a>
+</h3>
+<p>将每个组织的每个节点都加入到通道中需要客户端来完成，一个客户端同时只能连接一个peer节点, 如果想要该客户端连接其他节点, 那么就必须修改当前客户端中相关的环境变量。我们当前在<code>docker-compose.yaml</code>文件中所配置的<code>cli</code>连接的是Go组织的<code>peer0</code>节点。</p>
+<p>使用以下命令让<code>peer0</code>节点加入通道（在Org1和Org2容器上操作）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>peer channel join -b mychannel.block
+</span></span></code></pre></div><p><code>-b</code>, <code>--blockpath</code>: <code>block</code>文件路径（通过 peer channel create 命令生成的通道文件）。</p>
+<p>输出如下，此时组织的<code>peer0</code>已经加入通道。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span> -&gt; INFO <span style="color:#ae81ff">002</span> Successfully submitted proposal to join channel
+</span></span></code></pre></div><h3 id="3更新锚节点">
+  3更新锚节点
+  <a class="anchor" href="#3%e6%9b%b4%e6%96%b0%e9%94%9a%e8%8a%82%e7%82%b9">#</a>
+</h3>
+<p>使用以下命令来更新锚节点（在org1和org2容器上操作）。</p>
+<pre tabindex="0"><code>peer channel update -o orderer.test.com:7050 -c mychannel -f ./channel-artifacts/Org1MSPanchors.tx
+</code></pre><ul>
+<li>
+<p><code>-o</code>,<code> --orderer</code>:<code> orderer</code>节点的地址。</p>
+</li>
+<li>
+<p><code>-c</code>, <code>--channelID</code>: 要创建的通道的ID, 必须小写, 在250个字符以内。</p>
+</li>
+<li>
+<p><code>-f</code>, <code>-file</code>: 由<code>cryptogen </code>生成的锚节点文件。</p>
+</li>
+</ul>
+<h2 id="安装调用智能合约">
+  安装调用智能合约
+  <a class="anchor" href="#%e5%ae%89%e8%a3%85%e8%b0%83%e7%94%a8%e6%99%ba%e8%83%bd%e5%90%88%e7%ba%a6">#</a>
+</h2>
+<p>进入org1虚拟机。</p>
+<p>首先我们使用以下命令在项目路径下创建一个文件夹名为<code>chaincode</code>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>mkdir chaincode
+</span></span></code></pre></div><p>然后使用以下命令将官方示例的智能合约复制到我们刚刚创建的<code>chaincode</code>文件夹中。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cd ~/hyperledger/fabric-samples/chaincode
+</span></span><span style="display:flex;"><span>cp -r sacc ~/hyperledger/multinodes/chaincode/go/
+</span></span></code></pre></div><p>使用以下命令进入容器。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker exec -it cli bash
+</span></span></code></pre></div><p>使用以下命令进入链码所在目录。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cd /opt/gopath/src/github.com/hyperledger/fabric-cluster/chaincode/go/sacc
+</span></span></code></pre></div><p>使用以下命令设置go语言依赖包。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>go env -w GOPROXY<span style="color:#f92672">=</span>https://goproxy.cn,direct
+</span></span><span style="display:flex;"><span>go env -w GO111MODULE<span style="color:#f92672">=</span>on
+</span></span><span style="display:flex;"><span>go mod init sacc
+</span></span><span style="display:flex;"><span>go mod tidy
+</span></span><span style="display:flex;"><span>go mod vendor
+</span></span></code></pre></div><p>使用以下命令回到peer目录下。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cd /opt/gopath/src/github.com/hyperledger/fabric/peer
+</span></span></code></pre></div><p>Fabric生命周期将链码打包在易于阅读的tar文件中，方便协调跨多个组织的安装，使用以下命令打包链码。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>peer lifecycle chaincode package sacc.tar.gz <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --path github.com/chaincode/sacc/go/ <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --label sacc_1
+</span></span></code></pre></div><p>使用以下命令退出容器。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>exit
+</span></span></code></pre></div><p>使用以下命令将打包好的链码复制到Org2虚拟机中。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker cp cli:/opt/gopath/src/github.com/hyperledger/fabric/peer/sacc.tar.gz ./ 
+</span></span><span style="display:flex;"><span>scp sacc.tar.gz root@172.10.0.12:~/hyperledger/multinodes
+</span></span></code></pre></div><p>在Org2的虚拟机中使用以下命令将打包好的链码复制到<code>cli</code>客户端中。</p>
+<pre tabindex="0"><code>docker cp ~/hyperledger/multinodes/sacc.tar.gz cli:/opt/gopath/src/github.com/hyperledger/fabric/peer
+</code></pre><p>使用以下命令分别在两个组织的虚拟机上安装链码（Org1和Org2的虚拟机中都要进行以下操作）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>peer lifecycle chaincode install myassetcontract.tar.gz
+</span></span></code></pre></div><p>使用以下命令查询链码（Org1和Org2的虚拟机中都要进行以下操作）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>peer lifecycle chaincode queryinstalled
+</span></span></code></pre></div><p>使用以下命令批准链码（Org1和Org2的虚拟机中都要进行以下操作）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>peer lifecycle chaincode approveformyorg --channelID mychannel --name sacc --version 1.0 --init-required --package-id sacc_1:1d9838e6893e068a94f055e807b18289559af748e5196a79a640b66305a74428 --sequence <span style="color:#ae81ff">1</span> --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/test.com/orderers/orderer.test.com/msp/tlscacerts/tlsca.test.com-cert.pem
+</span></span></code></pre></div><p>使用以下命令查看链码是否就绪（Org1和Org2的虚拟机中都要进行以下操作）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>peer lifecycle chaincode checkcommitreadiness --channelID mychannel --name sacc --version 1.0 --init-required --sequence <span style="color:#ae81ff">1</span> --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/test.com/orderers/orderer.test.com/msp/tlscacerts/tlsca.test.com-cert.pem --output json
+</span></span></code></pre></div><p>使用以下命令提交链码（在组织一或者组织二上）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>peer lifecycle chaincode commit -o orderer.test.com:7050 --channelID mychannel --name sacc --version 1.0 --sequence <span style="color:#ae81ff">1</span> --init-required --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/test.com/orderers/orderer.test.com/msp/tlscacerts/tlsca.test.com-cert.pem --peerAddresses peer0.org1.test.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.test.com/peers/peer0.org1.test.com/tls/ca.crt --peerAddresses peer0.org2.test.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.test.com/peers/peer0.org2.test.com/tls/ca.crt
+</span></span></code></pre></div><p>使用以下命令将链码初始化。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>peer chaincode invoke -o orderer.test.com:7050 --isInit --ordererTLSHostnameOverride orderer.test.com --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/test.com/orderers/orderer.test.com/msp/tlscacerts/tlsca.test.com-cert.pem -C mychannel -n sacc --peerAddresses peer0.org1.test.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.test.com/peers/peer0.org1.test.com/tls/ca.crt --peerAddresses peer0.org2.test.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.test.com/peers/peer0.org2.test.com/tls/ca.crt -c <span style="color:#e6db74">&#39;{&#34;Args&#34;:[&#34;a&#34;,&#34;bb&#34;]}&#39;</span> 
+</span></span></code></pre></div><pre tabindex="0"><code>INFO 001 Chaincode invoke successful. result: status:200 
+</code></pre><p>使用以下命令查询数据。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>peer chaincode query -C mychannel -n sacc -c <span style="color:#e6db74">&#39;{&#34;Args&#34;:[&#34;query&#34;,&#34;a&#34;]}&#39;</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cc
+</span></span></code></pre></div><p>使用以下命令调用链码，新增数据。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>peer chaincode invoke -o orderer.test.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/test.com/orderers/orderer.test.com/msp/tlscacerts/tlsca.test.com-cert.pem -C mychannel -n sacc --peerAddresses peer0.org1.test.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.test.com/peers/peer0.org1.test.com/tls/ca.crt --peerAddresses peer0.org2.test.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.test.com/peers/peer0.org2.test.com/tls/ca.crt -c <span style="color:#e6db74">&#39;{&#34;Args&#34;:[&#34;set&#34;,&#34;a&#34;,&#34;cc&#34;]}&#39;</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>INFO <span style="color:#ae81ff">001</span> Chaincode invoke successful. result: status:200 payload:<span style="color:#e6db74">&#34;cc&#34;</span> 
+</span></span></code></pre></div><p>使用以下命令查询数据。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>peer chaincode query -C mychannel -n sacc -c <span style="color:#e6db74">&#39;{&#34;Args&#34;:[&#34;query&#34;,&#34;a&#34;]}&#39;</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cc
+</span></span></code></pre></div></article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#多机搭建前准备">多机搭建前准备</a>
+          <ul>
+            <li><a href="#1网络结构">1.网络结构</a></li>
+            <li><a href="#2设置网络host">2.设置网络host</a></li>
+            <li><a href="#3ssh安装">3.ssh安装</a></li>
+          </ul>
+        </li>
+        <li><a href="#生成fabric证书">生成Fabric证书</a>
+          <ul>
+            <li><a href="#1创建项目目录">1.创建项目目录</a></li>
+            <li><a href="#2编写证书文件">2.编写证书文件</a></li>
+            <li><a href="#3生成证书文件">3.生成证书文件</a></li>
+          </ul>
+        </li>
+        <li><a href="#生成通道文件">生成通道文件</a>
+          <ul>
+            <li><a href="#1创世块文件的编写">1.创世块文件的编写</a></li>
+            <li><a href="#2生成创世块文件和通道文件">2.生成创世块文件和通道文件</a></li>
+          </ul>
+        </li>
+        <li><a href="#docker-compose文件编写">docker-compose文件编写</a>
+          <ul>
+            <li><a href="#1orderer节点">1.orderer节点</a></li>
+            <li><a href="#2org1">2.org1</a></li>
+            <li><a href="#3org2">3.org2</a></li>
+          </ul>
+        </li>
+        <li><a href="#通道操作">通道操作</a>
+          <ul>
+            <li><a href="#1-创建通道">1 创建通道</a></li>
+            <li><a href="#2-加入通道">2 加入通道</a></li>
+            <li><a href="#3更新锚节点">3更新锚节点</a></li>
+          </ul>
+        </li>
+        <li><a href="#安装调用智能合约">安装调用智能合约</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

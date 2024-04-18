@@ -1,0 +1,2236 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="DES 数据加密标准 # 不安全 ，分组密码，8
+3DES # 安全，进行了3次des加密
+加密过程：加密，解密，加密
+解密过程：解密，加密，解密
+CBC 密码块链模式 # 特点：密文没有规律，经常使用
+最后一个明文分组需要填充
+需要初始化向量-一个数组
+明文分组的填充 刚好够也需要填充 填充明文分组代码实现 # package main //编写填充函数，如果最后一个分组字数不够，填充 //、、、、、字数刚好合适，添加一个新的分组 //填充的字节的值==缺少的字节数 func paddingLastGroup(plainText []byte, bloclSize int) []byte { //plainText 参数：明文 bloclSize 明文分组字节长度 []byte 返回值 //1、求出最后一个组中剩余的字节数 28%8=3..4 32%8=4.。0 padNum:=ploclSize-len(plainText)%bloclSize //填充的字数 //2、创建新的切片，长度==padNum, 每个字节值byte(padNum) char :=[]byte{byte(padNum)} //长度1， //切片创建，并初始化 newPlan := bytes.Repeat(char,padNum) //3、newPlain数组追加到原始明文的后边 newText := append(plainText,newPlain..) return newText } 删除尾部明文分组实现 # func unPaddingLastGrooup(plainText []byte) []byte { //1、拿去切片中的最后一个字节 length := len(plainText) lastChar :=plainText[length -1] //byte 类型 number :=int (lastChar) //尾部填充的字节个数 return plainText[:length -number] } 对称加密实现（go） # #加密流程： 1、创建一个底层使用des/3des/aes的密码接口 &#34;crypto/des&#34; func NewCipher(key []byte) (cipher.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="密码学基础" />
+<meta property="og:description" content="DES 数据加密标准 # 不安全 ，分组密码，8
+3DES # 安全，进行了3次des加密
+加密过程：加密，解密，加密
+解密过程：解密，加密，解密
+CBC 密码块链模式 # 特点：密文没有规律，经常使用
+最后一个明文分组需要填充
+需要初始化向量-一个数组
+明文分组的填充 刚好够也需要填充 填充明文分组代码实现 # package main //编写填充函数，如果最后一个分组字数不够，填充 //、、、、、字数刚好合适，添加一个新的分组 //填充的字节的值==缺少的字节数 func paddingLastGroup(plainText []byte, bloclSize int) []byte { //plainText 参数：明文 bloclSize 明文分组字节长度 []byte 返回值 //1、求出最后一个组中剩余的字节数 28%8=3..4 32%8=4.。0 padNum:=ploclSize-len(plainText)%bloclSize //填充的字数 //2、创建新的切片，长度==padNum, 每个字节值byte(padNum) char :=[]byte{byte(padNum)} //长度1， //切片创建，并初始化 newPlan := bytes.Repeat(char,padNum) //3、newPlain数组追加到原始明文的后边 newText := append(plainText,newPlain..) return newText } 删除尾部明文分组实现 # func unPaddingLastGrooup(plainText []byte) []byte { //1、拿去切片中的最后一个字节 length := len(plainText) lastChar :=plainText[length -1] //byte 类型 number :=int (lastChar) //尾部填充的字节个数 return plainText[:length -number] } 对称加密实现（go） # #加密流程： 1、创建一个底层使用des/3des/aes的密码接口 &#34;crypto/des&#34; func NewCipher(key []byte) (cipher." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/" /><meta property="article:section" content="docs" />
+<meta property="article:published_time" content="2021-03-04T15:29:17+00:00" />
+<meta property="article:modified_time" content="2021-03-04T15:29:17+00:00" />
+<title>密码学基础 | Soulmate</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" >
+<link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.5623389946cf2cb816d7e28b27d101617d469cca326a6a0a0bf362549d6ba433.js" integrity="sha256-ViM4mUbPLLgW1&#43;KLJ9EBYX1GnMoyamoKC/NiVJ1rpDM=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo.png" alt="Logo" /><span>Soulmate</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-074eed0fb8c6f9d99dfeff898388792f" class="toggle"  />
+    <label for="section-074eed0fb8c6f9d99dfeff898388792f" class="flex justify-between">
+      <a role="button" class="">计算机基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="">Vim编程常用快捷键</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E9%85%8D%E7%BD%AEkylinv10/" class="">配置 Kylin V10</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="">计算机网络基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/linux%E5%9F%BA%E7%A1%80/" class="">Linux基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/git%E5%9F%BA%E7%A1%80/" class="">Git基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Golang</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-670eda717a06f31447c52422ec93a159" class="toggle"  />
+    <label for="section-670eda717a06f31447c52422ec93a159" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/" class="">go语言基础（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/cgo/" class="">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/flag/" class="">Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/grpc/" class="">Grpc</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/" class="">ProtoBuf</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">常用业务代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/" class="">go语言基础（三）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/" class="">go语言底层基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/" class="">benchmark测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/" class="">Goland常用技巧</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle"  />
+    <label for="section-c453881a62c640f6a4cceec99c02477e" class="flex justify-between">
+      <a role="button" class="">高阶</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" class="">Go高阶-语言基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f235e88e751d2cb18d527c1784763605" class="toggle"  />
+    <label for="section-f235e88e751d2cb18d527c1784763605" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/atomic/" class="">Atomic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/os/" class="">Os</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strconv/" class="">Strconv</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sort/" class="">Sort</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strings/" class="">Strings</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/reflect/" class="">Reflect</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/time/" class="">Time</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sync/" class="">Sync</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ee53da12118bfd3e9b35f3e9494ab55b" class="toggle"  />
+    <label for="section-ee53da12118bfd3e9b35f3e9494ab55b" class="flex justify-between">
+      <a role="button" class="">LeetCode</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/" class="">golang力扣刷题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/" class="">golang力扣刷题（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/%E5%BF%85%E5%88%B7top101/" class="">必刷top101</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" class="">LeetCode算法总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>数据库</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle"  />
+    <label for="section-94f26238d1ca3b5bcd40eadc7a88d726" class="flex justify-between">
+      <a role="button" class="">MySql</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" class="">MySql基础总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="">Mac连接数据库所遇到的问题</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="toggle"  />
+    <label for="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="flex justify-between">
+      <a role="button" class="">Redis</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="">Redis集群搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/" class="">Redis基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="">redis面试总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8be9c2251abd1fe110e3c1520cac6177" class="toggle"  />
+    <label for="section-8be9c2251abd1fe110e3c1520cac6177" class="flex justify-between">
+      <a role="button" class="">SQLite</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/" class="">Sqlite</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/" class="">Xorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ad390db13e5fa9e14f921f4e4f77900e" class="toggle"  />
+    <label for="section-ad390db13e5fa9e14f921f4e4f77900e" class="flex justify-between">
+      <a role="button" class="">C/C&#43;&#43;</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/cc&#43;&#43;/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>区块链</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle"  />
+    <label for="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="flex justify-between">
+      <a role="button" class="">Fabric</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">fabric相关机制与原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/" class="">智能合约</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/" class="">fabric-sdk-go详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/" class="">fabric-ca详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle"  />
+    <label for="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="flex justify-between">
+      <a role="button" class="">环境测试</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/" class="">fabric网络中的报错（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/" class="">fabric网络中的报错（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">fabric环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/" class="">solo节点测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/" class="">fabric多机搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/" class="">部署tape测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/" class="">手动生成ca证书搭建fabric网络</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/" class="">centos安装fabric1.2</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-25aef1d59a561fcefcaecb043ef8afd2" class="toggle"  />
+    <label for="section-25aef1d59a561fcefcaecb043ef8afd2" class="flex justify-between">
+      <a role="button" class="">配置文件</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/" class="">cryptogen生成的证书详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">docker-compose.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">configtx.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">crypto-config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/" class="">升级链码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/" class="">区块链网络添加组织</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/" class="">fabric浏览器搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/" class="">如何在已有组织中增加节点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/" class="">Fabric1.4多通道实验</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b07621083aa30b12de4c0333941e479f" class="toggle"  />
+    <label for="section-b07621083aa30b12de4c0333941e479f" class="flex justify-between">
+      <a role="button" class="">比特币</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">比特币相关机制与原理</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle"  />
+    <label for="section-ff5477999ef29208270c84e8b56b2758" class="flex justify-between">
+      <a role="button" class="">IPFS</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/" class="">go-ipfs-api</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" class="">ipfs-webui可视化工具搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/" class="">IPFS基本原理（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/" class="">IPFS私有网络搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-77a0a17b06e8d04cfb0fba9952941706" class="toggle" checked />
+    <label for="section-77a0a17b06e8d04cfb0fba9952941706" class="flex justify-between">
+      <a role="button" class="">密码学</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" class="">区块链安全基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/" class="">椭圆曲线加密</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/" class="active">密码学基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2e4d10b323fd668021dbd532575d8790" class="toggle"  />
+    <label for="section-2e4d10b323fd668021dbd532575d8790" class="flex justify-between">
+      <a role="button" class="">Docker</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/" class="">Docker基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/" class="">Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" class="">docker常用知识总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-70383d7f28a7ae4bf840a844eb61aa16" class="toggle"  />
+    <label for="section-70383d7f28a7ae4bf840a844eb61aa16" class="flex justify-between">
+      <a role="button" class="">共识算法</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">共识算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" class="">Raft共识算法</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>前端</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
+    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
+      <a role="button" class="">博客</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%9B%BE%E4%B9%A6/" class="">图书</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/" class="">工具库</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="https://gitee.com/chaincode"  target="_blank" rel="noopener">
+        Gitee
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>密码学基础</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#des-数据加密标准">DES 数据加密标准</a></li>
+            <li><a href="#对称加密实现go">对称加密实现（go）</a></li>
+            <li><a href="#对称加密">对称加密</a></li>
+            <li><a href="#非对称加密">非对称加密</a></li>
+            <li><a href="#单向散列函数">单向散列函数</a></li>
+            <li><a href="#消息认证码">消息认证码</a></li>
+            <li><a href="#数字签名">数字签名</a></li>
+            <li><a href="#证书">证书</a></li>
+            <li><a href="#哈希函数">哈希函数</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h3 id="des-数据加密标准">
+  DES 数据加密标准
+  <a class="anchor" href="#des-%e6%95%b0%e6%8d%ae%e5%8a%a0%e5%af%86%e6%a0%87%e5%87%86">#</a>
+</h3>
+<blockquote>
+<p>不安全 ，分组密码，8</p>
+</blockquote>
+<h4 id="3des">
+  3DES
+  <a class="anchor" href="#3des">#</a>
+</h4>
+<blockquote>
+<p>安全，进行了3次des加密</p>
+<p>加密过程：加密，解密，加密</p>
+<p>解密过程：解密，加密，解密</p>
+</blockquote>
+<h4 id="cbc-密码块链模式">
+  CBC 密码块链模式
+  <a class="anchor" href="#cbc-%e5%af%86%e7%a0%81%e5%9d%97%e9%93%be%e6%a8%a1%e5%bc%8f">#</a>
+</h4>
+<blockquote>
+<p>特点：密文没有规律，经常使用</p>
+<p><strong>最后一个明文分组需要填充</strong></p>
+<p>需要初始化向量-一个数组</p>
+</blockquote>
+<pre tabindex="0"><code>明文分组的填充 刚好够也需要填充
+</code></pre><h4 id="填充明文分组代码实现">
+  <strong>填充明文分组代码实现</strong>
+  <a class="anchor" href="#%e5%a1%ab%e5%85%85%e6%98%8e%e6%96%87%e5%88%86%e7%bb%84%e4%bb%a3%e7%a0%81%e5%ae%9e%e7%8e%b0">#</a>
+</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//编写填充函数，如果最后一个分组字数不够，填充
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//、、、、、字数刚好合适，添加一个新的分组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//填充的字节的值==缺少的字节数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">paddingLastGroup</span>(<span style="color:#a6e22e">plainText</span> []<span style="color:#66d9ef">byte</span>, <span style="color:#a6e22e">bloclSize</span> <span style="color:#66d9ef">int</span>) []<span style="color:#66d9ef">byte</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//plainText 参数：明文  bloclSize 明文分组字节长度    []byte 返回值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//1、求出最后一个组中剩余的字节数 28%8=3..4     32%8=4.。0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">padNum</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">ploclSize</span><span style="color:#f92672">-</span>len(<span style="color:#a6e22e">plainText</span>)<span style="color:#f92672">%</span><span style="color:#a6e22e">bloclSize</span> <span style="color:#75715e">//填充的字数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">//2、创建新的切片，长度==padNum, 每个字节值byte(padNum)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">char</span> <span style="color:#f92672">:=</span>[]<span style="color:#66d9ef">byte</span>{byte(<span style="color:#a6e22e">padNum</span>)} <span style="color:#75715e">//长度1，
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">//切片创建，并初始化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">newPlan</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">bytes</span>.<span style="color:#a6e22e">Repeat</span>(<span style="color:#a6e22e">char</span>,<span style="color:#a6e22e">padNum</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//3、newPlain数组追加到原始明文的后边
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">newText</span> <span style="color:#f92672">:=</span> append(<span style="color:#a6e22e">plainText</span>,<span style="color:#a6e22e">newPlain</span>..)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">newText</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="删除尾部明文分组实现">
+  删除尾部明文分组实现
+  <a class="anchor" href="#%e5%88%a0%e9%99%a4%e5%b0%be%e9%83%a8%e6%98%8e%e6%96%87%e5%88%86%e7%bb%84%e5%ae%9e%e7%8e%b0">#</a>
+</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">unPaddingLastGrooup</span>(<span style="color:#a6e22e">plainText</span> []<span style="color:#66d9ef">byte</span>) []<span style="color:#66d9ef">byte</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//1、拿去切片中的最后一个字节
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">length</span> <span style="color:#f92672">:=</span> len(<span style="color:#a6e22e">plainText</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">lastChar</span> <span style="color:#f92672">:=</span><span style="color:#a6e22e">plainText</span>[<span style="color:#a6e22e">length</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]  <span style="color:#75715e">//byte 类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">number</span> <span style="color:#f92672">:=</span><span style="color:#66d9ef">int</span> (<span style="color:#a6e22e">lastChar</span>) <span style="color:#75715e">//尾部填充的字节个数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">plainText</span>[:<span style="color:#a6e22e">length</span> <span style="color:#f92672">-</span><span style="color:#a6e22e">number</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="对称加密实现go">
+  对称加密实现（go）
+  <a class="anchor" href="#%e5%af%b9%e7%a7%b0%e5%8a%a0%e5%af%86%e5%ae%9e%e7%8e%b0go">#</a>
+</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span><span style="color:#a6e22e">加密流程</span><span style="color:#960050;background-color:#1e0010">：</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">、</span><span style="color:#a6e22e">创建一个底层使用des</span><span style="color:#f92672">/</span><span style="color:#ae81ff">3</span><span style="color:#a6e22e">des</span><span style="color:#f92672">/</span><span style="color:#a6e22e">aes的密码接口</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;crypto/des&#34;</span>     
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewCipher</span>(<span style="color:#a6e22e">key</span> []<span style="color:#66d9ef">byte</span>) (<span style="color:#a6e22e">cipher</span>.<span style="color:#a6e22e">Block</span>, <span style="color:#66d9ef">error</span>) <span style="color:#960050;background-color:#1e0010">#</span> <span style="color:#f92672">--</span> <span style="color:#a6e22e">des</span>    
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewTripleDESCipher</span>(<span style="color:#a6e22e">key</span> []<span style="color:#66d9ef">byte</span>) (<span style="color:#a6e22e">cipher</span>.<span style="color:#a6e22e">Block</span>, <span style="color:#66d9ef">error</span>)   <span style="color:#960050;background-color:#1e0010">#</span> <span style="color:#f92672">--</span> <span style="color:#ae81ff">3</span><span style="color:#a6e22e">des</span>   <span style="color:#e6db74">&#34;crypto/aes&#34;</span>   
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewCipher</span>(<span style="color:#a6e22e">key</span> []<span style="color:#66d9ef">byte</span>) (<span style="color:#a6e22e">cipher</span>.<span style="color:#a6e22e">Block</span>, <span style="color:#66d9ef">error</span>) <span style="color:#960050;background-color:#1e0010">#</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">aes</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2</span><span style="color:#960050;background-color:#1e0010">、</span><span style="color:#a6e22e">如果使用的是cbc</span><span style="color:#f92672">/</span><span style="color:#a6e22e">ecb分组模式需要对明文分组进行填充</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3</span><span style="color:#960050;background-color:#1e0010">、</span><span style="color:#a6e22e">创建一个密码分组模式的接口对象</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">-</span> <span style="color:#a6e22e">cbc</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewCBCEncrypter</span>(<span style="color:#a6e22e">b</span> <span style="color:#a6e22e">Block</span>, <span style="color:#a6e22e">iv</span> []<span style="color:#66d9ef">byte</span>) <span style="color:#a6e22e">BlockMode</span> <span style="color:#960050;background-color:#1e0010">#</span> <span style="color:#a6e22e">加密</span>     
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">-</span> <span style="color:#a6e22e">cfb</span>    
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewCFBEncrypter</span>(<span style="color:#a6e22e">block</span> <span style="color:#a6e22e">Block</span>, <span style="color:#a6e22e">iv</span> []<span style="color:#66d9ef">byte</span>) <span style="color:#a6e22e">Stream</span> <span style="color:#960050;background-color:#1e0010">#</span> <span style="color:#a6e22e">加密</span> 
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">-</span> <span style="color:#a6e22e">ofb</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">-</span> <span style="color:#a6e22e">ctr</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">4</span><span style="color:#960050;background-color:#1e0010">、</span><span style="color:#a6e22e">加密</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">得到密文</span>
+</span></span></code></pre></div><h4 id="des-加密代码">
+  DES 加密代码：
+  <a class="anchor" href="#des-%e5%8a%a0%e5%af%86%e4%bb%a3%e7%a0%81">#</a>
+</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// src -&gt; 要加密的明文 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// key -&gt; 秘钥, 大小为: 8byte 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">DesEncrypt_CBC</span>(<span style="color:#a6e22e">src</span>, <span style="color:#a6e22e">key</span> []<span style="color:#66d9ef">byte</span>) []<span style="color:#66d9ef">byte</span>{  
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 1. 创建并返回一个使用DES算法的cipher.Block接口  
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">block</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">des</span>.<span style="color:#a6e22e">NewCipher</span>(<span style="color:#a6e22e">key</span>)     
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 2. 判断是否创建成功     
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span>{    
+</span></span><span style="display:flex;"><span>      panic(<span style="color:#a6e22e">err</span>)    
+</span></span><span style="display:flex;"><span>     }     
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 3. 对最后一个明文分组进行数据填充   (明文填充)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">src</span> = <span style="color:#a6e22e">PKCS5Padding</span>(<span style="color:#a6e22e">src</span>, <span style="color:#a6e22e">block</span>.<span style="color:#a6e22e">BlockSize</span>())    
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//4. 创建一个密码分组为链接模式的, 底层使用DES加密的BlockMode接口（cbc分组接口） 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>   <span style="color:#75715e">// 参数iv的长度, 必须等于b的块尺寸    
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>     <span style="color:#a6e22e">tmp</span> <span style="color:#f92672">:=</span> []byte(<span style="color:#e6db74">&#34;helloAAA&#34;</span>)     
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">blackMode</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">cipher</span>.<span style="color:#a6e22e">NewCBCEncrypter</span>(<span style="color:#a6e22e">block</span>, <span style="color:#a6e22e">tmp</span>)    
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 5. 加密连续的数据块 （加密）   
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>     <span style="color:#a6e22e">dst</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">byte</span>, len(<span style="color:#a6e22e">src</span>))    
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">blackMode</span>.<span style="color:#a6e22e">CryptBlocks</span>(<span style="color:#a6e22e">dst</span>, <span style="color:#a6e22e">src</span>)
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;加密之后的数据: &#34;</span>, <span style="color:#a6e22e">dst</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 6. 将加密数据返回 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>     <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">dst</span> <span style="color:#ae81ff">24</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="des解密">
+  DES解密
+  <a class="anchor" href="#des%e8%a7%a3%e5%af%86">#</a>
+</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// src -&gt; 要解密的密文 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// key -&gt; 秘钥, 和加密秘钥相同, 大小为: 8byte 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">DesDecrypt_CBC</span>(<span style="color:#a6e22e">src</span>, <span style="color:#a6e22e">key</span> []<span style="color:#66d9ef">byte</span>) []<span style="color:#66d9ef">byte</span> { 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 1. 创建并返回一个使用DES算法的cipher.Block接口    
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">block</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">des</span>.<span style="color:#a6e22e">NewCipher</span>(<span style="color:#a6e22e">key</span>)    
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 2. 判断是否创建成功    
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span>{    
+</span></span><span style="display:flex;"><span>     panic(<span style="color:#a6e22e">err</span>)     
+</span></span><span style="display:flex;"><span>    }    
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 3. 创建一个密码分组为链接模式的, 底层使用DES解密的BlockMode接口 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">tmp</span> <span style="color:#f92672">:=</span> []byte(<span style="color:#e6db74">&#34;helloAAA&#34;</span>)    
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">blockMode</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">cipher</span>.<span style="color:#a6e22e">NewCBCDecrypter</span>(<span style="color:#a6e22e">block</span>, <span style="color:#a6e22e">tmp</span>)  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 4. 解密数据    
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">dst</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">src</span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">blockMode</span>.<span style="color:#a6e22e">CryptBlocks</span>(<span style="color:#a6e22e">src</span>, <span style="color:#a6e22e">dst</span>)    
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 5. 去掉最后一组填充的数据  
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">dst</span> = <span style="color:#a6e22e">PKCS5UnPadding</span>(<span style="color:#a6e22e">dst</span>)
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 6. 返回结果
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">dst</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>最后一个分组添加填充数据和移除添加数据代码</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 使用pks5的方式填充 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">PKCS5Padding</span>(<span style="color:#a6e22e">ciphertext</span> []<span style="color:#66d9ef">byte</span>, <span style="color:#a6e22e">blockSize</span> <span style="color:#66d9ef">int</span>) []<span style="color:#66d9ef">byte</span>{  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 1. 计算最后一个分组缺多少个字节  
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">padding</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">blockSize</span> <span style="color:#f92672">-</span> (len(<span style="color:#a6e22e">ciphertext</span>)<span style="color:#f92672">%</span><span style="color:#a6e22e">blockSize</span>)    
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 2. 创建一个大小为padding的切片, 每个字节的值为padding   
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">padText</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">bytes</span>.<span style="color:#a6e22e">Repeat</span>([]<span style="color:#66d9ef">byte</span>{byte(<span style="color:#a6e22e">padding</span>)}, <span style="color:#a6e22e">padding</span>)  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 3. 将padText添加到原始数据的后边, 将最后一个分组缺少的字节数补齐    
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">newText</span> <span style="color:#f92672">:=</span> append(<span style="color:#a6e22e">ciphertext</span>, <span style="color:#a6e22e">padText</span><span style="color:#f92672">...</span>)   
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">newText</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 删除pks5填充的尾部数据 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">PKCS5UnPadding</span>(<span style="color:#a6e22e">origData</span> []<span style="color:#66d9ef">byte</span>) []<span style="color:#66d9ef">byte</span>{ 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 1. 计算数据的总长度    
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">length</span> <span style="color:#f92672">:=</span> len(<span style="color:#a6e22e">origData</span>)    
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 2. 根据填充的字节值得到填充的次数   
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">number</span> <span style="color:#f92672">:=</span> int(<span style="color:#a6e22e">origData</span>[<span style="color:#a6e22e">length</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 3. 将尾部填充的number个字节去掉   
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">origData</span>[:(<span style="color:#a6e22e">length</span><span style="color:#f92672">-</span><span style="color:#a6e22e">number</span>)] 
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>测试函数</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">DESText</span>() {  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 加密   
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">key</span> <span style="color:#f92672">:=</span> []byte(<span style="color:#e6db74">&#34;11111111&#34;</span>)    
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">result</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">DesEncrypt_CBC</span>([]byte(<span style="color:#e6db74">&#34;床前明月光, 疑是地上霜. 举头望明月, 低头思故乡.&#34;</span>), <span style="color:#a6e22e">key</span>) 
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">base64</span>.<span style="color:#a6e22e">StdEncoding</span>.<span style="color:#a6e22e">EncodeToString</span>(<span style="color:#a6e22e">result</span>))   
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 解密   
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">result</span> = <span style="color:#a6e22e">DesDecrypt_CBC</span>(<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">key</span>)  
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;解密之后的数据: &#34;</span>, string(<span style="color:#a6e22e">result</span>)) 
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>重要的函数说明</strong></p>
+<blockquote>
+<p>最后一个分组添加填充数据和移除添加数据代码
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+测试函数
+重要的函数说明</p>
+</blockquote>
+<p>1、生成一个底层使用DES加/解密的Block接口对象</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">函数对应的包</span>: <span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;crypto/des&#34;</span> 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewCipher</span>(<span style="color:#a6e22e">key</span> []<span style="color:#66d9ef">byte</span>) (<span style="color:#a6e22e">cipher</span>.<span style="color:#a6e22e">Block</span>, <span style="color:#66d9ef">error</span>)  
+</span></span><span style="display:flex;"><span>     <span style="color:#f92672">-</span> <span style="color:#a6e22e">参数</span> <span style="color:#a6e22e">key</span>: <span style="color:#a6e22e">des对称加密使用的密码</span>, <span style="color:#a6e22e">密码长度为64bit</span>, <span style="color:#a6e22e">即8byte</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">-</span> <span style="color:#a6e22e">返回值</span> <span style="color:#a6e22e">cipher</span>.<span style="color:#a6e22e">Block</span>: <span style="color:#a6e22e">创建出的使用DES加</span><span style="color:#f92672">/</span><span style="color:#a6e22e">解密的Block接口对象</span>
+</span></span></code></pre></div><p>2	、创建一个密码分组为CBC模式, 底层使用b加密的BlockMode接口对象</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">函数对应的包</span>: <span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;crypto/cipher&#34;</span> 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewCBCEncrypter</span>(<span style="color:#a6e22e">b</span> <span style="color:#a6e22e">Block</span>, <span style="color:#a6e22e">iv</span> []<span style="color:#66d9ef">byte</span>) <span style="color:#a6e22e">BlockMode</span>  
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">-</span> <span style="color:#a6e22e">参数</span> <span style="color:#a6e22e">b</span>: <span style="color:#a6e22e">使用des</span>.<span style="color:#a6e22e">NewCipher函数创建出的Block接口对象</span> 
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">-</span> <span style="color:#a6e22e">参数</span> <span style="color:#a6e22e">iv</span>: <span style="color:#a6e22e">事先准备好的一个长度为一个分组长度的比特序列</span>, <span style="color:#a6e22e">每个分组为64bit</span>, <span style="color:#a6e22e">即</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#ae81ff">8</span><span style="color:#66d9ef">byte</span>  
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">-</span> <span style="color:#a6e22e">返回值</span>: <span style="color:#a6e22e">得到的BlockMode接口对象</span>
+</span></span></code></pre></div><ol start="3">
+<li>
+<p>使用cipher包的BlockMode接口对象对数据进行加/解密</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">接口对应的包</span>: <span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;crypto/cipher&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">BlockMode</span> <span style="color:#66d9ef">interface</span> { 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 返回加密字节块的大小    
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">BlockSize</span>() <span style="color:#66d9ef">int</span>    
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 加密或解密连续的数据块，src的尺寸必须是块大小的整数倍，src和dst可指向同一内存地址    
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">CryptBlocks</span>(<span style="color:#a6e22e">dst</span>, <span style="color:#a6e22e">src</span> []<span style="color:#66d9ef">byte</span>) 
+</span></span><span style="display:flex;"><span>} 
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">接口中的</span> <span style="color:#a6e22e">CryptBlocks</span>(<span style="color:#a6e22e">dst</span>, <span style="color:#a6e22e">src</span> []<span style="color:#66d9ef">byte</span>) <span style="color:#a6e22e">方法</span>: 
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">-</span> <span style="color:#a6e22e">参数</span> <span style="color:#a6e22e">dst</span>: <span style="color:#a6e22e">传出参数</span>, <span style="color:#a6e22e">存储加密或解密运算之后的结果</span> 
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">-</span> <span style="color:#a6e22e">参数</span> <span style="color:#a6e22e">src</span>: <span style="color:#a6e22e">传入参数</span>, <span style="color:#a6e22e">需要进行加密或解密的数据切片</span>(<span style="color:#a6e22e">字符串</span>)
+</span></span></code></pre></div></li>
+<li>
+<p>创建一个密码分组为CBC模式, 底层使用b解密的BlockMode接口对象</p>
+</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">函数对应的包</span>: <span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;crypto/cipher&#34;</span> 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewCBCDecrypter</span>(<span style="color:#a6e22e">b</span> <span style="color:#a6e22e">Block</span>, <span style="color:#a6e22e">iv</span> []<span style="color:#66d9ef">byte</span>) <span style="color:#a6e22e">BlockMode</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">-</span> <span style="color:#a6e22e">参数</span> <span style="color:#a6e22e">b</span>: <span style="color:#a6e22e">使用des</span>.<span style="color:#a6e22e">NewCipher函数创建出的Block接口对象</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">-</span> <span style="color:#a6e22e">参数</span> <span style="color:#a6e22e">iv</span>: <span style="color:#a6e22e">事先准备好的一个长度为一个分组长度的比特序列</span>, <span style="color:#a6e22e">每个分组为64bit</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">8</span><span style="color:#66d9ef">byte</span>, <span style="color:#a6e22e">该序列的值需要和NewCBCEncrypter函数的第二个参数iv值相同</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">-</span> <span style="color:#a6e22e">返回值</span>: <span style="color:#a6e22e">得到的BlockMode接口对象</span>
+</span></span></code></pre></div><ol start="5">
+<li>自定义函数介绍</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">对称加密加密需要对数据进行分组</span>, <span style="color:#a6e22e">保证每个分组的数据长度相等</span>, <span style="color:#a6e22e">如果最后一个分组长度不够</span>, <span style="color:#a6e22e">需要进行填充</span> 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">PKCS5Padding</span>(<span style="color:#a6e22e">ciphertext</span> []<span style="color:#66d9ef">byte</span>, <span style="color:#a6e22e">blockSize</span> <span style="color:#66d9ef">int</span>) []<span style="color:#66d9ef">byte</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">-</span> <span style="color:#a6e22e">参数</span> <span style="color:#a6e22e">ciphertext</span>: <span style="color:#a6e22e">需要加密的原始数据</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">-</span> <span style="color:#a6e22e">参数</span> <span style="color:#a6e22e">blockSize</span>: <span style="color:#a6e22e">每个分组的长度</span>, <span style="color:#a6e22e">跟使用的加密算法有关系</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">*</span> <span style="color:#a6e22e">des</span><span style="color:#960050;background-color:#1e0010">：</span><span style="color:#ae81ff">64</span><span style="color:#a6e22e">bit</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">8</span><span style="color:#66d9ef">byte</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">*</span> <span style="color:#ae81ff">3</span><span style="color:#a6e22e">des</span><span style="color:#960050;background-color:#1e0010">：</span><span style="color:#ae81ff">64</span><span style="color:#a6e22e">bit</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">8</span><span style="color:#66d9ef">byte</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">*</span> <span style="color:#a6e22e">aes</span><span style="color:#960050;background-color:#1e0010">：</span> <span style="color:#ae81ff">128</span><span style="color:#a6e22e">bit</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">16</span><span style="color:#66d9ef">byte</span>
+</span></span></code></pre></div><h3 id="对称加密">
+  对称加密
+  <a class="anchor" href="#%e5%af%b9%e7%a7%b0%e5%8a%a0%e5%af%86">#</a>
+</h3>
+<blockquote>
+<p>对效率要求很高的时候使用对称加密</p>
+<p>Des  3des aes</p>
+<p>密钥分发比较困难</p>
+<p>密钥可以用非对称加密分发</p>
+</blockquote>
+<h3 id="非对称加密">
+  非对称加密
+  <a class="anchor" href="#%e9%9d%9e%e5%af%b9%e7%a7%b0%e5%8a%a0%e5%af%86">#</a>
+</h3>
+<blockquote>
+<p>私钥比公钥长</p>
+<p>公钥加密私钥解密-&gt;数据通信</p>
+<p>私钥加密公钥解密-&gt;数字签名</p>
+<p>保证数据完整性</p>
+<p>防止否认</p>
+<p>数据对谁重要，谁拿私钥</p>
+<p>非对称加密的机密性取决于密钥长度</p>
+</blockquote>
+<h3 id="单向散列函数">
+  单向散列函数
+  <a class="anchor" href="#%e5%8d%95%e5%90%91%e6%95%a3%e5%88%97%e5%87%bd%e6%95%b0">#</a>
+</h3>
+<blockquote>
+<p>单向散列函数 &ndash; 获取消息的指纹</p>
+<p>有一个输入和一个输出，其中输入成为消息，输出称为散列值，单向散列函数可以根据消息的内容计算出散列值，而散列值就可以被用来检查消息的完整性。</p>
+</blockquote>
+<p><strong>性质</strong></p>
+<pre tabindex="0"><code>1、根据任意长度的消息计算出固定长度的散列值
+2、能够快速计算出散列值
+3、消息不同散列值不同
+4、具备抗碰撞性。（难以发现碰撞的性质称为抗碰撞性）
+5、具备单向性
+</code></pre><h3 id="消息认证码">
+  消息认证码
+  <a class="anchor" href="#%e6%b6%88%e6%81%af%e8%ae%a4%e8%af%81%e7%a0%81">#</a>
+</h3>
+<blockquote>
+<p>一种确认完整性并进行认证的技术。MAC      散列值</p>
+<p><strong>1、需要将要发送的数据进行哈希运算</strong></p>
+<p><strong>2、进行哈希运算时引入加密步骤</strong></p>
+<p>3、在消息认证生成的一方和校验的一方，必须有一个密钥</p>
+<p>4.、约定使用相同的哈希函数运算</p>
+<p><strong>弊端</strong>：</p>
+<ul>
+<li>密钥分发困难
+<ul>
+<li>使用非对称加密</li>
+</ul>
+</li>
+<li>不能第三方认证</li>
+<li>不能防止否认</li>
+</ul>
+</blockquote>
+<h4 id="消息认证码能干什么">
+  消息认证码能干什么？
+  <a class="anchor" href="#%e6%b6%88%e6%81%af%e8%ae%a4%e8%af%81%e7%a0%81%e8%83%bd%e5%b9%b2%e4%bb%80%e4%b9%88">#</a>
+</h4>
+<blockquote>
+<p>防止信息被修改 被盗取 消息进行加密，然后加消息认证码  进行验证 如果验证对不上，则消息被修改过。</p>
+<p>保证数据的完整性，一致性。</p>
+</blockquote>
+<h3 id="数字签名">
+  数字签名
+  <a class="anchor" href="#%e6%95%b0%e5%ad%97%e7%ad%be%e5%90%8d">#</a>
+</h3>
+<pre tabindex="0"><code>1、签名
+  * 有原始数据对其进行哈希运算。-&gt;散列值
+  * 使用非对称加密的私钥对散列值加密 -&gt;签名
+  * 将原始数据和签名一并发送给对方
+2、验证
+  * 接受数据
+    # 原始数据
+    # 数字签名
+  * 数字签名，需要使用公钥解密，得到散列值
+  * 对原始数据进行哈希运算得到新的散列值
+  
+</code></pre><h4 id="数字签名是什么">
+  数字签名是什么？
+  <a class="anchor" href="#%e6%95%b0%e5%ad%97%e7%ad%be%e5%90%8d%e6%98%af%e4%bb%80%e4%b9%88">#</a>
+</h4>
+<blockquote>
+<p>1、签名的人生成非对称加密的密钥对</p>
+<p>2、签名的人将公钥进行分发</p>
+<p>3、签名的人将原始数据进行哈希运算-&gt;散列值</p>
+<p>4、签名的人使用自己的私钥对散列值进行非对称加密-&gt;最终得到的数据就是签名</p>
+</blockquote>
+<h3 id="证书">
+  证书
+  <a class="anchor" href="#%e8%af%81%e4%b9%a6">#</a>
+</h3>
+<blockquote>
+<p>公钥证书：里面记有姓名、组织、邮箱地址等个人信息，以及属于此人的公钥，并由认证机构施加数字签名。公钥证书简称为证书</p>
+</blockquote>
+<h3 id="哈希函数">
+  哈希函数
+  <a class="anchor" href="#%e5%93%88%e5%b8%8c%e5%87%bd%e6%95%b0">#</a>
+</h3>
+<blockquote>
+<p>哈希函数：接受一个输入，经过计算得到一个输出，长度是固定的</p>
+<p>可以进行数据校验、数据完整性验证、秒传</p>
+</blockquote>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#des-数据加密标准">DES 数据加密标准</a></li>
+            <li><a href="#对称加密实现go">对称加密实现（go）</a></li>
+            <li><a href="#对称加密">对称加密</a></li>
+            <li><a href="#非对称加密">非对称加密</a></li>
+            <li><a href="#单向散列函数">单向散列函数</a></li>
+            <li><a href="#消息认证码">消息认证码</a></li>
+            <li><a href="#数字签名">数字签名</a></li>
+            <li><a href="#证书">证书</a></li>
+            <li><a href="#哈希函数">哈希函数</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

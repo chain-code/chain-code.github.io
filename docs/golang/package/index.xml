@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Package on Soulmate</title>
+    <link>https://chain-code.github.io/docs/golang/package/</link>
+    <description>Recent content in Package on Soulmate</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 05 May 2023 11:51:49 +0800</lastBuildDate><atom:link href="https://chain-code.github.io/docs/golang/package/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Atomic</title>
+      <link>https://chain-code.github.io/docs/golang/package/atomic/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/atomic/</guid>
+      <description>Go语言中的 sync/atomic 包提供了一组原子操作函数，用于在多线程或并发环境下执行对共享变量的原子操作。这些操作是原子的，不会受到其他并发操作的干扰，从而避免了竞态条件和数据竞争问题。sync/atomic 包通常用于同步和管理共享资源，以确保线程安全。
+原子加载（Load）： Load 函数用于原子地加载变量的值。例如，atomic.LoadInt32(&amp;amp;myVariable) 会原子地获取 myVariable 的值。 原子存储（Store）： Store 函数用于原子地存储一个值到变量中。例如，atomic.StoreInt32(&amp;amp;myVariable, newValue) 会原子地将 newValue 存储到 myVariable 中。 原子交换（Swap）： Swap 函数用于原子地交换变量的值，并返回之前的值。例如，atomic.SwapInt32(&amp;amp;myVariable, newValue) 会原子地将 newValue 存储到 myVariable 中，并返回之前的值。 原子增减（Add/Sub）： Add 和 Sub 函数用于原子地增加或减少变量的值。例如，atomic.AddInt32(&amp;amp;myVariable, delta) 会原子地将 myVariable 的值增加 delta。 原子比较并交换（CompareAndSwap）： CompareAndSwap 函数用于原子地比较变量的当前值与期望值，如果相等则交换成新值。这通常用于实现乐观锁定机制。例如，atomic.CompareAndSwapInt32(&amp;amp;myVariable, expectedValue, newValue) 会比较 myVariable 的当前值是否等于 expectedValue，如果是，则将其替换为 newValue。 原子增减并返回新值（AddInt32, AddInt64, SubInt32, SubInt64）： 这些函数用于原子地增加或减少变量的值，并返回新的值。例如，atomic.AddInt32(&amp;amp;myVariable, delta) 会原子地将 myVariable 的值增加 delta，并返回新的值。 </description>
+    </item>
+    
+    <item>
+      <title>Os</title>
+      <link>https://chain-code.github.io/docs/golang/package/os/</link>
+      <pubDate>Fri, 05 May 2023 11:51:49 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/os/</guid>
+      <description>Go文件操作 # 文件系统简介 # 文件系统是计算机用于存储和组织数据的一种方式，它定义了如何在计算机硬件上存储、读取、写入和管理文件和目录。文件系统通常由操作系统提供，它们可以支持不同的文件格式和存储设备，如磁盘驱动器、闪存驱动器、CD-ROM和网络驱动器等。文件系统可以帮助用户和应用程序组织和管理计算机中的文件和文件夹，使它们易于访问和处理。它们还提供了安全性和数据完整性方面的保护，以确保用户的数据不会被意外删除或破坏。一些常见的文件系统包括Windows的NTFS和FAT32、Linux的EXT4和Btrfs，以及Mac OS X的HFS+和APFS。
+Windows操作系统支持 NTFS, FAT32, and exFAT三种不同文件系统。NTFS是目前Windows系统中一种现代文件系统，目前使用最广泛，内置的硬盘大多数都是NTFS格式。FAT32是一种相对老旧的文件系统，不能像NTFS格式支持很多现代文件格式的属性，但对于不同系统平台具有良好的兼容性，可以在Linux、Mac或Android系统平台上通用。exFAT是FAT32文件格式的替代品，很多设备和操作系统都支持该文件系统，但是目前用的不多。
+目前的大部分 Linux 文件系统都默认采用 ext4 文件系统，正如以前的 Linux 发行版默认使用 ext3、ext2 以及更久前的 ext。
+NTFS # NTFS（New Technology File System）是Windows操作系统中使用的一种先进的文件系统，是Windows NT家族的标准文件系统。NTFS支持更高级的文件管理功能，如文件和目录的权限、加密、压缩、磁盘配额等，也支持更大的磁盘容量和更大的文件大小。以下是NTFS的一些特点：
+安全性：NTFS支持文件和文件夹的权限控制，可以为每个用户或组设置不同的访问权限，确保数据的安全性和隐私性。 可靠性：NTFS使用日志记录和故障容错技术，可以检测并修复磁盘上的错误和损坏。 空间利用率：NTFS使用动态存储分配和簇大小调整，使得文件系统可以更有效地利用磁盘空间。 文件压缩：NTFS支持文件和文件夹的压缩，可以节省磁盘空间，并且对于大量文本数据可以获得更高的数据压缩比。 数据加密：NTFS支持文件和文件夹的加密，可以保护数据的机密性。 大文件支持：NTFS支持极大的文件和分区大小，最大文件大小为16EB（EB表示艾字节，1EB=1024PB），最大分区大小为256TB。 总之，NTFS是一个高级的、功能强大的文件系统，提供了许多重要的功能和优势，因此它被广泛用于Windows操作系统和应用程序中。
+FAT32 # FAT32（File Allocation Table 32），用于在Windows操作系统中格式化存储设备，如磁盘、USB驱动器等。FAT32是FAT文件系统的一种升级版本，它支持更大的磁盘空间和文件大小，并且具有更好的兼容性。以下是FAT32的一些特点：
+兼容性：FAT32是一种通用的文件系统，几乎可以在所有操作系统和设备上进行访问和读取，例如Windows、Mac、Linux、Android和其他平台。 可移植性：FAT32格式化的设备可以轻松地从一台计算机或设备移动到另一台计算机或设备，这是它在可移动存储设备上广泛使用的原因之一。 支持大容量存储设备：FAT32支持最大容量为2TB的存储设备，因此它被广泛用于外部硬盘、闪存驱动器等大容量存储设备上。 支持大文件：FAT32支持最大文件大小为4GB，这是相对较小的文件大小限制，但对于大多数常见文件类型而言足够了。 简单：FAT32是一个相对简单的文件系统，易于实现和使用。 总之，FAT32是一种简单、兼容性强、可移植性好的文件系统，它被广泛应用于可移动存储设备、外部硬盘和其他大容量存储设备上。虽然它有一些限制，例如文件大小限制，但对于普通用户而言，它仍然是一种可靠和方便的文件系统。
+EXFAT # exFAT（Extended File Allocation Table）是一种用于可移动存储设备的文件系统，由Microsoft开发，它是FAT文件系统的一种升级版本。exFAT支持更大的文件和存储设备容量，也具有更好的兼容性。以下是exFAT的一些特点：
+大文件支持：exFAT支持极大的文件大小，最大文件大小为16EB，这是比FAT32更高的限制，对于处理大型媒体文件等需要大文件支持的应用程序非常有用。 大容量支持：exFAT支持极大的存储设备容量，最大容量为128PB，这使得它非常适合用于大型存储设备，如高容量的移动硬盘或SD卡。 兼容性：exFAT文件系统可以在Windows、Mac OS X、Linux和其他操作系统上进行访问和读取，这使得它非常适合在跨平台环境中使用。 文件系统简单：exFAT文件系统比NTFS更简单，因此更易于实现和使用。 文件碎片化更少：与FAT32相比，exFAT可以减少文件碎片化的问题，从而提高文件访问速度。 总之，exFAT是一种高效、可靠、具有更大文件和存储设备容量限制的文件系统，特别适合用于可移动存储设备，如SD卡、U盘等。由于其更好的兼容性，它在跨平台数据共享和数据传输方面非常有用。
+EXT4 # EXT4是Linux操作系统中使用的一种高性能的日志式文件系统。它是EXT3文件系统的后继版本，支持更大的文件和文件系统容量，并且具有更好的文件系统安全性和稳定性。以下是EXT4的一些特点：
+支持大文件和大容量：EXT4支持极大的文件和文件系统容量，最大文件大小为16TB，最大文件系统容量为1EB，这使得它非常适合于处理大型数据库和媒体文件等应用程序。 快速的文件系统检查和修复：EXT4引入了一个称为ext4fsck的新工具，它可以更快地检查和修复文件系统错误，这可以大大减少系统恢复的时间。 可靠性和稳定性：EXT4使用日志式文件系统技术，它记录文件系统操作，可以在文件系统崩溃或意外断电等情况下恢复数据。此外，EXT4还使用了额外的检查和纠正功能，可以减少数据损坏和丢失的可能性。 高性能：EXT4的读取和写入速度比EXT3更快，它采用了新的文件分配方式，提高了文件系统的性能，特别是在处理大型文件和大容量数据的情况下。 支持多种操作系统：EXT4文件系统可以在Linux、BSD和其他一些操作系统上进行访问和读取，这使得它非常适合在跨平台环境中使用。 总之，EXT4是一种高性能、可靠和稳定的文件系统，支持大文件和大容量，特别适合于处理大型数据库和媒体文件等应用程序。它的快速检查和修复功能可以提高文件系统的可用性，同时它也具有更好的数据安全性和稳定性。由于它可以在多种操作系统上进行访问和读取，它在跨平台环境中的使用也越来越广泛。</description>
+    </item>
+    
+    <item>
+      <title>Strconv</title>
+      <link>https://chain-code.github.io/docs/golang/package/strconv/</link>
+      <pubDate>Fri, 05 May 2023 11:36:52 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/strconv/</guid>
+      <description> strconv 字符串和数字相互转换 # 需引入&amp;quot;strconv&amp;quot;包
+string到int
+int,err:=strconv.Atoi(string) string到int64
+int64, err := strconv.ParseInt(string, 10, 64) int到string
+string:=strconv.Itoa(int) int64到string
+string:=strconv.FormatInt(int64,10) 10进制转16进制
+strconv.FormatInt(int64, 16) 想保留前面的数
+func main() { decimal := 2 hex := fmt.Sprintf(&amp;#34;%02x&amp;#34;, decimal) fmt.Println(hex) // 输出：02 } </description>
+    </item>
+    
+    <item>
+      <title>Sort</title>
+      <link>https://chain-code.github.io/docs/golang/package/sort/</link>
+      <pubDate>Fri, 05 May 2023 11:36:34 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/sort/</guid>
+      <description>sort —— 排序算法 # sort包提供了对[]int切片、[]float64切片和[]string切片完整支持，主要包括：
+对基本数据类型切片的排序支持 基本数据元素查找 判断基本数据类型切片是否已经排好序 对排好序的数据集合逆序 对[]int切片排序是更常使用sort.Ints()，而不是直接使用IntSlice类型。
+s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据 sort.Ints(s) fmt.Println(s) //将会输出[1 2 3 4 5 6] 如果要使用降序排序，显然要用前面提到的Reverse()方法：
+s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据 sort.Sort(sort.Reverse(sort.IntSlice(s))) fmt.Println(s) //将会输出[6 5 4 3 2 1] 如果要查找整数x在切片a中的位置，相对于前面提到的Search()方法，sort包提供了SearchInts():
+func SearchInts(a []int, x int) int 注意，SearchInts()的使用条件为：切片a已经升序排序
+s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据 sort.Ints(s) //排序后的s为[1 2 3 4 5 6] fmt.</description>
+    </item>
+    
+    <item>
+      <title>Strings</title>
+      <link>https://chain-code.github.io/docs/golang/package/strings/</link>
+      <pubDate>Fri, 05 May 2023 11:36:12 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/strings/</guid>
+      <description>strings.Split # func Split(s, sep string) []string strings.Split 函数用于通过指定的分隔符切割字符串，并返回切割后的字符串切片。
+func main() { fmtPrintln(stringsSplit(&amp;#34;Linux, Unix, Windows, Android&amp;#34;, &amp;#34;, &amp;#34;)) fmtPrintln(stringsSplit(&amp;#34; Linux is very very very good! &amp;#34;, &amp;#34; &amp;#34;)) } 输出：返回的是字符串数组。 [Linux Unix Windows Android] [ Linux is very very very good! ] strings.Split(s, sep) 1 s：待分割的字符串（字符串类型的参数） sep：分隔符 （字符串类型的参数） 返回值： 返回一个字符串切片。 strings.Join # func Join(elems []string, sep string) string 作用：使用 sep 作为分隔符，将elems 中的所有字符连接起来：
+func main() { elems := []string{&amp;#34;I&amp;#34;, &amp;#34;like&amp;#34;, &amp;#34;golang&amp;#34;, &amp;#34;!</description>
+    </item>
+    
+    <item>
+      <title>Reflect</title>
+      <link>https://chain-code.github.io/docs/golang/package/reflect/</link>
+      <pubDate>Wed, 19 Apr 2023 20:05:56 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/reflect/</guid>
+      <description>Reflect # reflect包是Go语言标准库中的一个包，它提供了一组功能，允许我们在运行时动态地查看和操作Go程序中的变量、函数和类型。通过使用reflect包，我们可以以一种通用的方式处理和操作各种类型的值，而无需知道它们的具体类型。
+TypeOf()和ValueOf() # TypeOf()和ValueOf()函数是reflect包中最常用的两个函数之一。TypeOf()函数可以返回任何变量的类型，而ValueOf()函数可以返回变量的值。这两个函数都接受一个interface{}类型的参数，并返回一个reflect.Type和reflect.Value类型的结果。
+lessCopy codevar x int = 42 fmt.Println(reflect.TypeOf(x)) // 输出：int fmt.Println(reflect.ValueOf(x)) // 输出：42 IsZero() # IsZero() 方法检查该反射值是否为零值。
+IsZero() 方法则返回一个布尔值，表示该反射值是否为其类型的零值。对于大部分类型来说，零值就是其类型的默认值，例如 int 类型的零值是 0，string 类型的零值是空字符串 &amp;quot;&amp;quot;。
+func (v Value) IsZero() bool valueOf := reflect.ValueOf(data) //获取数据 if valueOf.IsZero() { //判断是否为其类型的零值 panic(&amp;#34;WriteData data is zero&amp;#34;) } Interface() # 可以使用 Interface() 方法将其转换为对应的接口类型值。
+在将反射值转换为接口类型值时需要使用断言操作符 .(interface{}) 显式地将其转换为 interface{} 类型。
+if implStruct, ok := valueOf.Interface().(model.TypeCheckSelf); ok { implStruct.TypeCheckSelf() } Indirect() # reflect.Indirect(v)函数用于获取v指向的值，即，如果v是nil指针，则Indirect返回零值。如果v不是指针，则Indirect返回v。</description>
+    </item>
+    
+    <item>
+      <title>Time</title>
+      <link>https://chain-code.github.io/docs/golang/package/time/</link>
+      <pubDate>Wed, 19 Apr 2023 20:05:22 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/time/</guid>
+      <description>Time # After # After(d Duration) &amp;lt;-chan Time：返回一个通道，该通道将在指定的时间间隔后发送当前时间。可以用它来实现定时器
+例如，程序需要等待一段时间后再执行某个操作，可以使用After()函数来实现。示例代码：
+select { case &amp;lt;-time.After(5 * time.Second): fmt.Println(&amp;#34;5秒后执行&amp;#34;) } AfterFunc # func AfterFunc(d Duration, f func()) *Timer创建一个新的定时器，并在定时器触发时调用指定的回调函数f。参数d是一个time.Duration类型的值，表示定时器的持续时间。返回值是一个指向Timer结构体的指针。
+func main() { t := time.AfterFunc(3*time.Second, func() { fmt.Println(&amp;#34;定时器已触发&amp;#34;) }) fmt.Println(&amp;#34;定时器已启动&amp;#34;) time.Sleep(4 * time.Second) t.Stop() fmt.Println(&amp;#34;定时器已停止&amp;#34;) } Sleep # Sleep(d Duration)：使当前程序暂停指定的时间间隔。可以用它来实现程序的延迟操作，例如，程序需要在某个操作之后暂停一段时间再继续执行，可以使用Sleep()函数来实现。
+示例代码：
+fmt.Println(&amp;#34;开始执行&amp;#34;) time.Sleep(2 * time.Second) fmt.Println(&amp;#34;暂停2秒后继续执行&amp;#34;) Tick # Tick(d Duration) &amp;lt;-chan Time：返回一个通道，该通道会定期发送时间，每个时间间隔为指定的时间间隔。可以用它来实现定时器，例如，程序需要每隔一段时间执行某个操作，可以使用Tick()函数来实现。
+示例代码：
+for t := range time.Tick(2 * time.Second) { fmt.Println(&amp;#34;每隔2秒执行一次，当前时间为：&amp;#34;, t) } NewTicker # NewTicker(d Duration) *Ticker是 Go 编程语言time包中的一个函数，它创建一个新的自动收报机，以指定的时间间隔在通道上发送信号。</description>
+    </item>
+    
+    <item>
+      <title>Sync</title>
+      <link>https://chain-code.github.io/docs/golang/package/sync/</link>
+      <pubDate>Thu, 24 Nov 2022 15:24:08 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/sync/</guid>
+      <description>go中的sync包
+在Go语言中，除了使用channel进行goroutine之间的通信和同步操作外，还可以使用syne包下的并发工具。
+并发工具类 说明 Mutex 互斥锁 RWMutex 读写锁 WaitGroup 并发等待组 Map 并发安全字典 Cond 同步等待条件 Once 只执行一次 Pool 临时对象池 临界区 # 有时候在Go代码中可能会存在多个goroutine同时操作一个资源区（临界区），这种情况会发生竟态问题（数据竟态）。
+临界区：当程序并发地运行时，多个 [Go 协程]不应该同时访问那些修改共享资源的代码。这些修改共享资源的代码称为临界区。
+package main import ( &amp;#34;fmt&amp;#34; &amp;#34;sync&amp;#34; ) var x = 10 var wg sync.WaitGroup func add() { for i := 0; i &amp;lt; 5000; i++ { x = x + 1 } wg.Done() } func main() { wg.Add(2) go add() go add() wg.Wait() fmt.Println(x) } 代码中我们开启了两个goroutine去累加变量x的值，这两个goroutine在访问和修改x变量的时候就会存在数据竞争，导致最后的结果与期待的不符。</description>
+    </item>
+    
+  </channel>
+</rss>

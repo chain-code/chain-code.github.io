@@ -1,0 +1,2072 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="介绍configtxlator工具 # configtxlator工具提供了一个真正的无状态REST API，独立于SDK，以简化Hyperledger Fabric区块链网络中的配置任务。该工具可以在不同的等效数据表示/格式之间轻松转换。例如，在一种工具操作模式下，该工具在二进制protobuf格式之间执行转换为人类可读的JSON文本格式，反之亦然。此外，该工具可以根据两组不同配置事务之间的差异计算配置更新。
+1、环境配置 # 运行官方测试网络，确保它正常运行，详情请见fabric环境搭建后面测试部分。
+进入CLI容器，并使用容器内的以下命令检查对等版本：
+docker exec -it cli /bin/bash peer version 运行以下命令，确保JQ工具已在CLI容器中安装并正常工作：
+jq --version jq 运行以下命令，确保configtxlator工具可用，验证工具版本，在后台启动工具，并验证工具在后台、CLI容器内正确运行
+configtxlator version 后台启动configtxlator并查看网络状态 （两行一起复制粘贴进去）
+configtxlator start &amp; netstat -ap 2、检索当前配置 # 通过在CLI容器中运行以下命令来设置和验证以下环境变量：
+export CHANNEL_NAME=mychannel export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem 生成第三个组织的证书文件及配置文件
+文章路径主要看你test-network中脚本文件的路径做出修改，根据实际情况改
+#生成证书文件 另开一个命令行进入test-network/addOrg3 cryptogen generate --config=org3-crypto.yaml --output=&#34;../organizations&#34; #指定组织3的证书配置文件 #生成json格式的配置文件 configtxgen -printOrg Org3MSP &gt; ../organizations/peerOrganizations/org3.example.com/org3.json configtxgen -printOrg Org3MSP&gt;./channel-artifacts/org3.json #生成的配置文件需要放到cli中使用 3、组织注册 # 1、CLI容器中运行以下命令来检索当前配置的配置块 # peer channel fetch config config_block.pb -o orderer.example.com:7050 -c $CHANNEL_NAME --tls --cafile $ORDERER_CA 报错：">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="区块链网络添加组织" />
+<meta property="og:description" content="介绍configtxlator工具 # configtxlator工具提供了一个真正的无状态REST API，独立于SDK，以简化Hyperledger Fabric区块链网络中的配置任务。该工具可以在不同的等效数据表示/格式之间轻松转换。例如，在一种工具操作模式下，该工具在二进制protobuf格式之间执行转换为人类可读的JSON文本格式，反之亦然。此外，该工具可以根据两组不同配置事务之间的差异计算配置更新。
+1、环境配置 # 运行官方测试网络，确保它正常运行，详情请见fabric环境搭建后面测试部分。
+进入CLI容器，并使用容器内的以下命令检查对等版本：
+docker exec -it cli /bin/bash peer version 运行以下命令，确保JQ工具已在CLI容器中安装并正常工作：
+jq --version jq 运行以下命令，确保configtxlator工具可用，验证工具版本，在后台启动工具，并验证工具在后台、CLI容器内正确运行
+configtxlator version 后台启动configtxlator并查看网络状态 （两行一起复制粘贴进去）
+configtxlator start &amp; netstat -ap 2、检索当前配置 # 通过在CLI容器中运行以下命令来设置和验证以下环境变量：
+export CHANNEL_NAME=mychannel export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem 生成第三个组织的证书文件及配置文件
+文章路径主要看你test-network中脚本文件的路径做出修改，根据实际情况改
+#生成证书文件 另开一个命令行进入test-network/addOrg3 cryptogen generate --config=org3-crypto.yaml --output=&#34;../organizations&#34; #指定组织3的证书配置文件 #生成json格式的配置文件 configtxgen -printOrg Org3MSP &gt; ../organizations/peerOrganizations/org3.example.com/org3.json configtxgen -printOrg Org3MSP&gt;./channel-artifacts/org3.json #生成的配置文件需要放到cli中使用 3、组织注册 # 1、CLI容器中运行以下命令来检索当前配置的配置块 # peer channel fetch config config_block.pb -o orderer.example.com:7050 -c $CHANNEL_NAME --tls --cafile $ORDERER_CA 报错：" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/" /><meta property="article:section" content="docs" />
+<meta property="article:published_time" content="2022-03-25T13:49:25+00:00" />
+<meta property="article:modified_time" content="2022-03-25T13:49:25+00:00" />
+<title>区块链网络添加组织 | Soulmate</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" >
+<link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.5623389946cf2cb816d7e28b27d101617d469cca326a6a0a0bf362549d6ba433.js" integrity="sha256-ViM4mUbPLLgW1&#43;KLJ9EBYX1GnMoyamoKC/NiVJ1rpDM=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo.png" alt="Logo" /><span>Soulmate</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-074eed0fb8c6f9d99dfeff898388792f" class="toggle"  />
+    <label for="section-074eed0fb8c6f9d99dfeff898388792f" class="flex justify-between">
+      <a role="button" class="">计算机基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="">Vim编程常用快捷键</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E9%85%8D%E7%BD%AEkylinv10/" class="">配置 Kylin V10</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="">计算机网络基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/linux%E5%9F%BA%E7%A1%80/" class="">Linux基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/git%E5%9F%BA%E7%A1%80/" class="">Git基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Golang</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-670eda717a06f31447c52422ec93a159" class="toggle"  />
+    <label for="section-670eda717a06f31447c52422ec93a159" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/" class="">go语言基础（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/cgo/" class="">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/flag/" class="">Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/grpc/" class="">Grpc</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/" class="">ProtoBuf</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">常用业务代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/" class="">go语言基础（三）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/" class="">go语言底层基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/" class="">benchmark测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/" class="">Goland常用技巧</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle"  />
+    <label for="section-c453881a62c640f6a4cceec99c02477e" class="flex justify-between">
+      <a role="button" class="">高阶</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" class="">Go高阶-语言基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f235e88e751d2cb18d527c1784763605" class="toggle"  />
+    <label for="section-f235e88e751d2cb18d527c1784763605" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/atomic/" class="">Atomic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/os/" class="">Os</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strconv/" class="">Strconv</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sort/" class="">Sort</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strings/" class="">Strings</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/reflect/" class="">Reflect</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/time/" class="">Time</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sync/" class="">Sync</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ee53da12118bfd3e9b35f3e9494ab55b" class="toggle"  />
+    <label for="section-ee53da12118bfd3e9b35f3e9494ab55b" class="flex justify-between">
+      <a role="button" class="">LeetCode</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/" class="">golang力扣刷题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/" class="">golang力扣刷题（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/%E5%BF%85%E5%88%B7top101/" class="">必刷top101</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" class="">LeetCode算法总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>数据库</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle"  />
+    <label for="section-94f26238d1ca3b5bcd40eadc7a88d726" class="flex justify-between">
+      <a role="button" class="">MySql</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" class="">MySql基础总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="">Mac连接数据库所遇到的问题</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="toggle"  />
+    <label for="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="flex justify-between">
+      <a role="button" class="">Redis</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="">Redis集群搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/" class="">Redis基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="">redis面试总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8be9c2251abd1fe110e3c1520cac6177" class="toggle"  />
+    <label for="section-8be9c2251abd1fe110e3c1520cac6177" class="flex justify-between">
+      <a role="button" class="">SQLite</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/" class="">Sqlite</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/" class="">Xorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ad390db13e5fa9e14f921f4e4f77900e" class="toggle"  />
+    <label for="section-ad390db13e5fa9e14f921f4e4f77900e" class="flex justify-between">
+      <a role="button" class="">C/C&#43;&#43;</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/cc&#43;&#43;/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>区块链</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle" checked />
+    <label for="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="flex justify-between">
+      <a role="button" class="">Fabric</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">fabric相关机制与原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/" class="">智能合约</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/" class="">fabric-sdk-go详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/" class="">fabric-ca详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle"  />
+    <label for="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="flex justify-between">
+      <a role="button" class="">环境测试</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/" class="">fabric网络中的报错（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/" class="">fabric网络中的报错（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">fabric环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/" class="">solo节点测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/" class="">fabric多机搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/" class="">部署tape测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/" class="">手动生成ca证书搭建fabric网络</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/" class="">centos安装fabric1.2</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-25aef1d59a561fcefcaecb043ef8afd2" class="toggle"  />
+    <label for="section-25aef1d59a561fcefcaecb043ef8afd2" class="flex justify-between">
+      <a role="button" class="">配置文件</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/" class="">cryptogen生成的证书详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">docker-compose.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">configtx.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">crypto-config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/" class="">升级链码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/" class="active">区块链网络添加组织</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/" class="">fabric浏览器搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/" class="">如何在已有组织中增加节点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/" class="">Fabric1.4多通道实验</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b07621083aa30b12de4c0333941e479f" class="toggle"  />
+    <label for="section-b07621083aa30b12de4c0333941e479f" class="flex justify-between">
+      <a role="button" class="">比特币</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">比特币相关机制与原理</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle"  />
+    <label for="section-ff5477999ef29208270c84e8b56b2758" class="flex justify-between">
+      <a role="button" class="">IPFS</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/" class="">go-ipfs-api</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" class="">ipfs-webui可视化工具搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/" class="">IPFS基本原理（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/" class="">IPFS私有网络搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-77a0a17b06e8d04cfb0fba9952941706" class="toggle"  />
+    <label for="section-77a0a17b06e8d04cfb0fba9952941706" class="flex justify-between">
+      <a role="button" class="">密码学</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" class="">区块链安全基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/" class="">椭圆曲线加密</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/" class="">密码学基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2e4d10b323fd668021dbd532575d8790" class="toggle"  />
+    <label for="section-2e4d10b323fd668021dbd532575d8790" class="flex justify-between">
+      <a role="button" class="">Docker</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/" class="">Docker基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/" class="">Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" class="">docker常用知识总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-70383d7f28a7ae4bf840a844eb61aa16" class="toggle"  />
+    <label for="section-70383d7f28a7ae4bf840a844eb61aa16" class="flex justify-between">
+      <a role="button" class="">共识算法</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">共识算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" class="">Raft共识算法</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>前端</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
+    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
+      <a role="button" class="">博客</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%9B%BE%E4%B9%A6/" class="">图书</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/" class="">工具库</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="https://gitee.com/chaincode"  target="_blank" rel="noopener">
+        Gitee
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>区块链网络添加组织</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#介绍configtxlator工具">介绍configtxlator工具</a></li>
+        <li><a href="#1环境配置">1、环境配置</a></li>
+        <li><a href="#2检索当前配置">2、检索当前配置</a></li>
+        <li><a href="#3组织注册">3、组织注册</a>
+          <ul>
+            <li><a href="#1cli容器中运行以下命令来检索当前配置的配置块">1、CLI容器中运行以下命令来检索当前配置的配置块</a></li>
+            <li><a href="#2将获得的二进制文件config_blockpb解码为文本json文件">2、将获得的二进制文件config_block.pb解码为文本json文件</a></li>
+            <li><a href="#3利用jq工具获取配置块json文件中的配置信息">3、利用jq工具获取配置块json文件中的配置信息</a></li>
+            <li><a href="#4创建新的配置文件">4、创建新的配置文件</a></li>
+            <li><a href="#5将原来的configjson和更新的配置文件update_configjson转换为二进制文件">5、将原来的config.json和更新的配置文件update_config.json转换为二进制文件</a></li>
+            <li><a href="#6计算更新对象">6、计算更新对象</a></li>
+            <li><a href="#7解码更新对象为json文件并将其重新封装">7、解码更新对象为json文件，并将其重新封装</a></li>
+            <li><a href="#8提交更新对象到通道中">8、提交更新对象到通道中</a></li>
+            <li><a href="#9检索新的配置块检验是否更新成功">9、检索新的配置块，检验是否更新成功</a></li>
+          </ul>
+        </li>
+        <li><a href="#4将组织节点添加到通道中">4、将组织节点添加到通道中</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h2 id="介绍configtxlator工具">
+  介绍configtxlator工具
+  <a class="anchor" href="#%e4%bb%8b%e7%bb%8dconfigtxlator%e5%b7%a5%e5%85%b7">#</a>
+</h2>
+<p><strong>configtxlator工具</strong>提供了一个真正的无状态REST API，独立于SDK，以简化Hyperledger Fabric区块链网络中的配置任务。该工具可以在不同的等效数据表示/格式之间轻松转换。例如，在一种工具操作模式下，该工具在二进制protobuf格式之间执行转换为人类可读的JSON文本格式，反之亦然。此外，该工具可以根据两组不同配置事务之间的差异计算配置更新。</p>
+<h2 id="1环境配置">
+  1、环境配置
+  <a class="anchor" href="#1%e7%8e%af%e5%a2%83%e9%85%8d%e7%bd%ae">#</a>
+</h2>
+<p>运行官方测试网络，确保它正常运行，详情请见<a href="https://chaincode.gitee.io/docs/%e5%8c%ba%e5%9d%97%e9%93%be/fabric/%e7%8e%af%e5%a2%83%e6%b5%8b%e8%af%95/2021-03-24-fabric%e7%8e%af%e5%a2%83%e6%90%ad%e5%bb%ba/">fabric环境搭建</a>后面测试部分。</p>
+<p>进入CLI容器，并使用容器内的以下命令检查对等版本：</p>
+<pre tabindex="0"><code>docker exec -it cli /bin/bash 
+peer version
+</code></pre><p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208032242790.png" alt="" /></p>
+<p>运行以下命令，确保JQ工具已在CLI容器中安装并正常工作：</p>
+<pre tabindex="0"><code>jq --version
+jq
+</code></pre><p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208032242938.png" alt="" /></p>
+<p>运行以下命令，确保configtxlator工具可用，验证工具版本，在后台启动工具，并验证工具在后台、CLI容器内正确运行</p>
+<pre tabindex="0"><code>configtxlator version
+</code></pre><p>后台启动configtxlator并查看网络状态     （两行一起复制粘贴进去）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>configtxlator start &amp;
+</span></span><span style="display:flex;"><span>netstat -ap
+</span></span></code></pre></div><p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208032242760.png" alt="" /></p>
+<h2 id="2检索当前配置">
+  2、检索当前配置
+  <a class="anchor" href="#2%e6%a3%80%e7%b4%a2%e5%bd%93%e5%89%8d%e9%85%8d%e7%bd%ae">#</a>
+</h2>
+<p>通过在CLI容器中运行以下命令来设置和验证以下环境变量：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>export CHANNEL_NAME<span style="color:#f92672">=</span>mychannel
+</span></span><span style="display:flex;"><span>export ORDERER_CA<span style="color:#f92672">=</span>/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+</span></span></code></pre></div><p>生成第三个组织的证书文件及配置文件</p>
+<p><font color='red'>文章路径主要看你test-network中脚本文件的路径做出修改，根据实际情况改</font></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#生成证书文件   另开一个命令行进入test-network/addOrg3</span>
+</span></span><span style="display:flex;"><span>cryptogen generate --config<span style="color:#f92672">=</span>org3-crypto.yaml --output<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;../organizations&#34;</span> <span style="color:#75715e">#指定组织3的证书配置文件</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#生成json格式的配置文件</span>
+</span></span><span style="display:flex;"><span>configtxgen -printOrg Org3MSP &gt; ../organizations/peerOrganizations/org3.example.com/org3.json
+</span></span><span style="display:flex;"><span>configtxgen -printOrg Org3MSP&gt;./channel-artifacts/org3.json
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#生成的配置文件需要放到cli中使用</span>
+</span></span></code></pre></div><p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208032242000.png" alt="" /></p>
+<h2 id="3组织注册">
+  3、组织注册
+  <a class="anchor" href="#3%e7%bb%84%e7%bb%87%e6%b3%a8%e5%86%8c">#</a>
+</h2>
+<h3 id="1cli容器中运行以下命令来检索当前配置的配置块">
+  1、CLI容器中运行以下命令来检索当前配置的配置块
+  <a class="anchor" href="#1cli%e5%ae%b9%e5%99%a8%e4%b8%ad%e8%bf%90%e8%a1%8c%e4%bb%a5%e4%b8%8b%e5%91%bd%e4%bb%a4%e6%9d%a5%e6%a3%80%e7%b4%a2%e5%bd%93%e5%89%8d%e9%85%8d%e7%bd%ae%e7%9a%84%e9%85%8d%e7%bd%ae%e5%9d%97">#</a>
+</h3>
+<pre tabindex="0"><code>peer channel fetch config config_block.pb -o orderer.example.com:7050 -c $CHANNEL_NAME --tls --cafile $ORDERER_CA
+</code></pre><blockquote>
+<p>报错：</p>
+<p>2022-03-25 08:11:20.391 UTC [channelCmd] InitCmdFactory -&gt; INFO 001 Endorser and orderer connections initialized
+2022-03-25 08:11:20.466 UTC [cli.common] readBlock -&gt; INFO 002 Expect block, but got status: &amp;{FORBIDDEN}
+Error: can&rsquo;t read the block: &amp;{FORBIDDEN}</p>
+<p>解决办法：</p>
+<p>将cli从组织二 切换到组织一  启动官方项目的时候 切换了组织 ，换回来。</p>
+</blockquote>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208032242767.png" alt="" /></p>
+<h3 id="2将获得的二进制文件config_blockpb解码为文本json文件">
+  2、将获得的二进制文件config_block.pb解码为文本json文件
+  <a class="anchor" href="#2%e5%b0%86%e8%8e%b7%e5%be%97%e7%9a%84%e4%ba%8c%e8%bf%9b%e5%88%b6%e6%96%87%e4%bb%b6config_blockpb%e8%a7%a3%e7%a0%81%e4%b8%ba%e6%96%87%e6%9c%acjson%e6%96%87%e4%bb%b6">#</a>
+</h3>
+<pre tabindex="0"><code>configtxlator proto_decode --input config_block.pb --type common.Block &gt; config_block.json
+</code></pre><h3 id="3利用jq工具获取配置块json文件中的配置信息">
+  3、利用jq工具获取配置块json文件中的配置信息
+  <a class="anchor" href="#3%e5%88%a9%e7%94%a8jq%e5%b7%a5%e5%85%b7%e8%8e%b7%e5%8f%96%e9%85%8d%e7%bd%ae%e5%9d%97json%e6%96%87%e4%bb%b6%e4%b8%ad%e7%9a%84%e9%85%8d%e7%bd%ae%e4%bf%a1%e6%81%af">#</a>
+</h3>
+<pre tabindex="0"><code>jq  .data.data[0].payload.data.config config_block.json &gt; config.json
+</code></pre><h3 id="4创建新的配置文件">
+  4、创建新的配置文件
+  <a class="anchor" href="#4%e5%88%9b%e5%bb%ba%e6%96%b0%e7%9a%84%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6">#</a>
+</h3>
+<pre tabindex="0"><code>jq -s &#39;.[0] * {&#34;channel_group&#34;:{&#34;groups&#34;:{&#34;Application&#34;:{&#34;groups&#34;: {&#34;Org3MSP&#34;:.[1]}}}}}&#39; config.json ./organizations/peerOrganizations/org3.example.com/org3.json &gt; updated_config.json
+</code></pre><p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208032243764.png" alt="" /></p>
+<h3 id="5将原来的configjson和更新的配置文件update_configjson转换为二进制文件">
+  5、将原来的config.json和更新的配置文件update_config.json转换为二进制文件
+  <a class="anchor" href="#5%e5%b0%86%e5%8e%9f%e6%9d%a5%e7%9a%84configjson%e5%92%8c%e6%9b%b4%e6%96%b0%e7%9a%84%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6update_configjson%e8%bd%ac%e6%8d%a2%e4%b8%ba%e4%ba%8c%e8%bf%9b%e5%88%b6%e6%96%87%e4%bb%b6">#</a>
+</h3>
+<pre tabindex="0"><code>configtxlator proto_encode --input config.json --type common.Config --output config.pb
+configtxlator proto_encode --input updated_config.json --type common.Config --output updated_config.pb
+</code></pre><p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208032243250.png" alt="" /></p>
+<h3 id="6计算更新对象">
+  6、计算更新对象
+  <a class="anchor" href="#6%e8%ae%a1%e7%ae%97%e6%9b%b4%e6%96%b0%e5%af%b9%e8%b1%a1">#</a>
+</h3>
+<pre tabindex="0"><code>configtxlator compute_update --channel_id $CHANNEL_NAME --original config.pb --updated updated_config.pb --output config_update.pb
+</code></pre><h3 id="7解码更新对象为json文件并将其重新封装">
+  7、解码更新对象为json文件，并将其重新封装
+  <a class="anchor" href="#7%e8%a7%a3%e7%a0%81%e6%9b%b4%e6%96%b0%e5%af%b9%e8%b1%a1%e4%b8%bajson%e6%96%87%e4%bb%b6%e5%b9%b6%e5%b0%86%e5%85%b6%e9%87%8d%e6%96%b0%e5%b0%81%e8%a3%85">#</a>
+</h3>
+<pre tabindex="0"><code>#解码更新对象
+configtxlator proto_decode --input config_update.pb --type common.ConfigUpdate | jq . &gt; config_update.json
+#将更新对象重新封装
+ echo &#39;{&#34;payload&#34;:{&#34;header&#34;:{&#34;channel_header&#34;:{&#34;channel_id&#34;:&#34;mychannel&#34;,&#34;type&#34;:2}},&#34;data&#34;:{&#34;config_update&#34;:&#39;$(cat config_update.json)&#39;}}}&#39; |jq .&gt; config_update_as_envelope.json
+ #将重新封装的更新对象编码为二进制文件
+ configtxlator proto_encode --input config_update_as_envelope.json --type common.Envelope --output config_update_as_envelope.pb
+</code></pre><p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208032243812.png" alt="" /></p>
+<h3 id="8提交更新对象到通道中">
+  8、提交更新对象到通道中
+  <a class="anchor" href="#8%e6%8f%90%e4%ba%a4%e6%9b%b4%e6%96%b0%e5%af%b9%e8%b1%a1%e5%88%b0%e9%80%9a%e9%81%93%e4%b8%ad">#</a>
+</h3>
+<pre tabindex="0"><code>#配置org1环境
+CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.key
+CORE_PEER_LOCALMSPID=Org1MSP
+CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.crt
+CORE_PEER_TLS_ENABLED=true
+CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+#通过org1签名更新事务
+peer channel signconfigtx -f config_update_as_envelope.pb
+</code></pre><p>!<img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208032243819.png" alt="" /></p>
+<pre tabindex="0"><code>#配置org2环境
+CORE_PEER_LOCALMSPID=Org2MSP
+CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+CORE_PEER_ADDRESS=peer0.org2.example.com:9051
+#通过org2提交更新事务
+peer channel update -f config_update_as_envelope.pb -c $CHANNEL_NAME -o orderer.example.com:7050 --tls --cafile $ORDERER_CA
+</code></pre><p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208032244946.png" alt="" /></p>
+<h3 id="9检索新的配置块检验是否更新成功">
+  9、检索新的配置块，检验是否更新成功
+  <a class="anchor" href="#9%e6%a3%80%e7%b4%a2%e6%96%b0%e7%9a%84%e9%85%8d%e7%bd%ae%e5%9d%97%e6%a3%80%e9%aa%8c%e6%98%af%e5%90%a6%e6%9b%b4%e6%96%b0%e6%88%90%e5%8a%9f">#</a>
+</h3>
+<pre tabindex="0"><code>peer channel fetch config config_block_Org3MSP.pb -o orderer.example.com:7050 -c $CHANNEL_NAME --tls --cafile $ORDERER_CA
+
+configtxlator proto_decode --input config_block_Org3MSP.pb --type common.Block &gt; config_block_Org3MSP.json
+
+grep Org3MSP config_block_Org3MSP.json
+</code></pre><p>!<img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208032244722.png" alt="" /></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208032244077.png" alt="" /></p>
+<h2 id="4将组织节点添加到通道中">
+  4、将组织节点添加到通道中
+  <a class="anchor" href="#4%e5%b0%86%e7%bb%84%e7%bb%87%e8%8a%82%e7%82%b9%e6%b7%bb%e5%8a%a0%e5%88%b0%e9%80%9a%e9%81%93%e4%b8%ad">#</a>
+</h2>
+<p><font color='red'>主要参照<a href="https://chaincode.gitee.io/chaincode/2021/04/17/%e5%a6%82%e4%bd%95%e5%9c%a8%e5%b7%b2%e6%9c%89%e7%bb%84%e7%bb%87%e4%b8%ad%e5%a2%9e%e5%8a%a0%e8%8a%82%e7%82%b9/">如何在已有组织中怎加节点</a>第一部分，这里就不详细做出叙述了</font></p>
+<pre tabindex="0"><code>docker-compose -f docker/docker-compose-org3.yaml up -d
+</code></pre><p><font color='red'>在test-network/addOrg3里面有脚本，也有配置文件，自己改路径 不然会报错。</font></p>
+<pre tabindex="0"><code>export CORE_PEER_TLS_ENABLED=true
+export CORE_PEER_LOCALMSPID=&#34;Org3MSP&#34;
+export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org3.example.com/users/Admin@org3.example.com/msp
+export CORE_PEER_ADDRESS=localhost:11051
+</code></pre><pre tabindex="0"><code>export CHANNEL_NAME=mychannel
+export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+</code></pre><pre tabindex="0"><code>peer channel fetch oldest mychannel.block -o orderer.example.com:7050 -c $CHANNEL_NAME --tls --cafile $ORDERER_CA
+</code></pre><pre tabindex="0"><code>peer lifecycle chaincode install basic.tar.gz
+</code></pre><p>查询</p>
+<pre tabindex="0"><code>peer chaincode query -C mychannel -n basic -c &#39;{&#34;Args&#34;:[&#34;ReadAsset&#34;,&#34;asset6&#34;]}&#39;
+</code></pre><p>测试完毕，关闭网络。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo ./network.sh down
+</span></span></code></pre></div></article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#介绍configtxlator工具">介绍configtxlator工具</a></li>
+        <li><a href="#1环境配置">1、环境配置</a></li>
+        <li><a href="#2检索当前配置">2、检索当前配置</a></li>
+        <li><a href="#3组织注册">3、组织注册</a>
+          <ul>
+            <li><a href="#1cli容器中运行以下命令来检索当前配置的配置块">1、CLI容器中运行以下命令来检索当前配置的配置块</a></li>
+            <li><a href="#2将获得的二进制文件config_blockpb解码为文本json文件">2、将获得的二进制文件config_block.pb解码为文本json文件</a></li>
+            <li><a href="#3利用jq工具获取配置块json文件中的配置信息">3、利用jq工具获取配置块json文件中的配置信息</a></li>
+            <li><a href="#4创建新的配置文件">4、创建新的配置文件</a></li>
+            <li><a href="#5将原来的configjson和更新的配置文件update_configjson转换为二进制文件">5、将原来的config.json和更新的配置文件update_config.json转换为二进制文件</a></li>
+            <li><a href="#6计算更新对象">6、计算更新对象</a></li>
+            <li><a href="#7解码更新对象为json文件并将其重新封装">7、解码更新对象为json文件，并将其重新封装</a></li>
+            <li><a href="#8提交更新对象到通道中">8、提交更新对象到通道中</a></li>
+            <li><a href="#9检索新的配置块检验是否更新成功">9、检索新的配置块，检验是否更新成功</a></li>
+          </ul>
+        </li>
+        <li><a href="#4将组织节点添加到通道中">4、将组织节点添加到通道中</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

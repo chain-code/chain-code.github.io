@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>计算机基础 on Soulmate</title>
+    <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/</link>
+    <description>Recent content in 计算机基础 on Soulmate</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 02 Nov 2022 20:37:13 +0800</lastBuildDate><atom:link href="https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>操作系统基础</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Sun, 07 Aug 2022 12:20:19 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/</guid>
+      <description>操作系统 # 基础 # 什么是操作系统？ # 操作系统（Operating System，简称OS）是管理计算机软件与硬件资源的程序。 本质上是一个运行在计算机上的软件程序。 操作系统的存在屏蔽了硬件层的复杂性。 操作系统的内核（Kernel）是操作系统的核心部分，它负责系统的内存管理，硬件设备的管理，文件系统的管理以及应用程序的管理。 什么是系统调用？ # 根据进程访问资源的特点，我们可以把进程在系统上的运行分为两个级别：
+1、用户态：用户态运行的进程可以直接读取用户程序的数据。
+2、系统态：系统态运行的进程或程序几乎可以访问计算机的任何资源，不受限制。
+我们运行的程序基本都是运行在用户态，凡是与系统态级别的资源有关的操作(如文件管理、进程控制、内存管理等)，都必须通过系统调用的方式向操作系统提出服务请求，并由操作系统代为完成。
+这些系统调用按功能大致可分为如下几类：
+设备管理。完成设备的请求或释放，以及设备启动等功能。 文件管理。完成文件的读、写、创建及删除等功能。 进程控制。完成进程的创建、撤销、阻塞及唤醒等功能。 进程通信。完成进程之间的消息传递或信号传递等功能。 内存管理。完成内存的分配、回收以及获取作业占用内存区大小及地址等功能。 简单说下你对并发和并行的理解？ # 并发
+在一个时间段中多个程序都启动运行在同一个处理机中
+并行
+假设目前A，B两个进程，两个进程分别由不同的 CPU 管理执行，两个进程不抢占 CPU 资源且可以同时运行，这叫做并行。
+同步、异步、阻塞、非阻塞的概念 # 同步：当一个同步调用发出后，调用者要一直等待返回结果。通知后，才能进行后续的执行。
+异步：当一个异步过程调用发出后，调用者不能立刻返回结果。实际处理这个调用的部件在完成后，通过状态，通知和回调来通知调用者。
+阻塞：是指调用结果返回前，当前线程会被挂起，即阻塞。
+非阻塞：是指调用结果没返回，也不会阻塞当前线程。
+形象比喻：
+小Q去钓鱼，抛完线后就傻傻的看着有没有动静，有则拉杆(同步阻塞) 小Q去钓鱼，拿鱼网捞一下，有没有鱼立即知道，不用等，直接就捞(同步非阻塞) 小Q去钓鱼，这个鱼缸比较牛皮，扔了后自己就打王者荣耀去了，因为鱼上钩了这个鱼缸带的报警器会通知我。这样实现异步(异步非阻塞） 异常的类型 # 故障 终止 自陷 缓存 # 为了缓解数据库的压力，往往在数据库前面增加一个缓存：
+缓存穿透 # 在缓存中查不到key，只能去数据库查询；当有大量请求直接穿透了缓存打到数据库，就是缓存穿透。
+解决
+系统写好参数校验 缓存空值，过期时间短一些 布隆过滤器 缓存雪崩 # 同一时间大规模key同时失效，大量的请求直接打在数据库上面，导致数据库压力巨大，如果在高并发的情况下，可能瞬间会导致数据库宕机。
+原因
+Redis宕机 大规模key使用了相同的过期时间 解决
+原有实效时间加随机值 熔断机制 数据库容灾，分库分表、读写分离 防止Redis宕机：Redis集群 缓存击穿 # 大并发集中对一个热点的key进行访问，突然这个key实效，导致大并发全部打在数据库上，导致数据库压力剧增。</description>
+    </item>
+    
+    <item>
+      <title>Vim编程常用快捷键</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</guid>
+      <description> 常用快捷键 # 插入 # 在光标后插入：a 在光标前插入：i 在光标下方新开一行插入：o (小写) 光标上下左右移动 # 左移：h 退格 //退格可以左移动到上一行 右移：l 空格 //空格可以右移到下一行 推荐空格 上移：k 下移：j 上下移动行 # 下移一行到第一个非空白字符串：+ enter //推荐enter 上移一行到第一个非空白字符串：- 快速上下移动 # 移动到文档末尾：G 移动到文档开头：gg 向下移动一段：} //代码中的空行 也算一段的隔离标识 向上移动一段：{ 向下移动一部分：[] //代码中就是一个函数一个函数的移动 比较实用 向上移动一部分：][ 单词左右移动 # 向左移动一个单词：w 向右移动一个单词：b 移动到当前行开头：0 （零） 移动到当前行末尾：$ 移动到当前单词末尾：e 选择文本 # 进入逐字可视模式：v 退出可视模式：Esc 删除 # 删除该行： dd 删除该单词：dw 复制粘贴 # 复制：y 剪切：d 和删除类似 粘贴：p 复制当前行：yy 剪切当前行：dd 撤销 # 撤销最后操作：u </description>
+    </item>
+    
+    <item>
+      <title>代码注释</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/</guid>
+      <description>/***　*　瓦瓦　十　*　十齱龠己　亅瓦車己　*　乙龍龠毋日丶　丶乙己毋毋丶　*　十龠馬鬼車瓦　己十瓦毋毋　*　鬼馬龠馬龠十　己己毋車毋瓦　*　毋龠龠龍龠鬼乙丶丶乙車乙毋鬼車己　*　乙龠龍龍鬼龍瓦　十瓦毋乙瓦龠瓦亅　*　馬齱龍馬鬼十丶日己己己毋車乙丶　*　己齱馬鬼車十十毋日乙己己乙乙　*　車馬齱齱日乙毋瓦己乙瓦日亅　*　亅車齺龖瓦乙車龖龍乙乙十　*　日龠龠十亅車龍毋十十　*　日毋己亅　己己十亅亅　*　丶己十十乙　丶丶丶丶丶　*　亅己十龍龖瓦　丶　丶　乙十　*　亅己十龠龖毋　丶丶　丶己鬼鬼瓦亅　*　十日十十日亅丶亅丶　丶十日毋鬼馬馬車乙　*　十日乙十亅亅亅丶　十乙己毋鬼鬼鬼龍齺馬乙　*　丶瓦己乙十十亅丶亅乙乙乙己毋鬼鬼鬼龍齱齺齺鬼十　*　乙乙十十十亅乙瓦瓦己日瓦毋鬼鬼龠齱齱龍龍齱齱毋丶　*　亅十十十十乙瓦車毋瓦瓦日車馬龠龍龍龍龍龍龠龠龠馬亅 *　十十十十己毋車瓦瓦瓦瓦鬼馬龠龍龠龠龍龠龠龠馬龠車 *　亅十十日毋瓦日日瓦鬼鬼鬼龠龠馬馬龠龍龍龠馬馬車 *　亅亅亅乙瓦瓦毋車車車馬龍龠鬼鬼馬龠龍龍龠馬馬鬼 *　丶丶乙亅亅乙車鬼鬼鬼毋車龍龍龠鬼馬馬龠龍齱齱龍馬鬼 *　亅己十十己十日鬼鬼車瓦毋龠龍龠馬馬龠龠龠齱齺齺齱龠鬼 *　亅乙乙乙十車馬車毋馬齱齱龍龠龠龠馬龠龍齱龍龠龠鬼瓦 *　丶毋龠鬼車瓦車馬龠龍龠龠龍齱齱龠馬馬鬼毋日 *　十乙己日十　丶己鬼龍齱齺齱龍馬馬馬車毋己 *　丶十己乙亅丶　亅瓦馬龠龍龠龠馬毋瓦乙 *　丶十十乙亅十　亅己瓦車馬龠鬼車瓦乙 *　丶十乙十十丶　丶丶亅十瓦鬼車瓦己 *　丶亅亅丶　亅日瓦日 *　丶 */ /*** * .</description>
+    </item>
+    
+    <item>
+      <title>配置 Kylin V10</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E9%85%8D%E7%BD%AEkylinv10/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E9%85%8D%E7%BD%AEkylinv10/</guid>
+      <description>配置KylinV10 # 设置“root”登录密码 # sudo su - passwd # 设置登录密码 允许“root”远程登录 # sudo vim /etc/ssh/sshd_config # ↓↓↓↓修改的内容↓↓↓↓ PermitRootLogin yes # ↑↑↑↑修改的内容↑↑↑↑ sudo systemctl restart sshd 允许通过图像界面登录到“root” # sudo vim /usr/share/lightdm/lightdm.conf.d/95-ukui-greeter.conf 95-ukui-greeter.conf
+greeter-session=ukui-greeter user-session=ukui greeter-setup-script=/usr/lib/ukui-greeter/ukui-greeter-nm-start.sh # ↓↓↓↓追加的内容↓↓↓↓ allow-guest=false greeter-show-manual-login=true # ↑↑↑↑追加的内容↑↑↑↑ 开机自动登录到“root” # sudo vim /etc/lightdm/lightdm.conf lightdm.conf
+[SeatDefaults] autologin-guest=false # ↓↓↓↓修改的内容↓↓↓↓ autologin-user=root # ↑↑↑↑修改的内容↑↑↑↑ autologin-user-timeout=0 关闭“麒麟安全授权认证” # sudo vim /etc/default/grub grub
+# ... GRUB_DEFAULT=0 GRUB_TIMEOUT=5 GRUB_DISTRIBUTOR=`lsb_release -i -s 2&amp;gt; /dev/null || echo Debian` GRUB_DISTRIBUTOR_RELEASE=`lsb_release -d -s | awk -F&amp;#34; &amp;#34; &amp;#39;{print $2 &amp;#34; &amp;#34; $3}&amp;#39; 2&amp;gt; /dev/null || echo &amp;#34;&amp;#34;` GRUB_CMDLINE_LINUX_DEFAULT=&amp;#34;quiet splash&amp;#34; GRUB_CMDLINE_LINUX=&amp;#34;&amp;#34; # ↓↓↓↓修改的内容↓↓↓↓ # GRUB_CMDLINE_LINUX_SECURITY=&amp;#34;audit=0 security=kysec&amp;#34; GRUB_CMDLINE_LINUX_SECURITY=&amp;#34;audit=0 security=&amp;#34; # ↑↑↑↑修改的内容↑↑↑↑ # .</description>
+    </item>
+    
+    <item>
+      <title>计算机网络基础</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Fri, 16 Sep 2022 10:03:35 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/</guid>
+      <description>BS架构和CS架构 # CS（Client/Server）：客户端&amp;mdash;-服务器结构。CS结构在技术上很成熟，它的主要特点是交互性强、具有安全的存取模式、网络通信量低、相应速度快、利于处理大量数据。因为客户端要负责绝大多数的业务逻辑和UI展示，又称为胖客户端。它充分利用两端硬件，将任务分配到Client和Server两端，降低了系统的通讯开销。
+CS架构是一种典型的两层架构，其客户端包含一个或多个在用户电脑上运行的程序，而服务端游两种，一种是数据库服务器端，客户端通过数据库连接访问服务器端的数据；另一种是Socket服务器端，服务器端的程序通过Socket与客户端的程序通信。
+BS（Browser/Server）：浏览器&amp;mdash;-服务器结构，是目前应用系统的发展方向。BS是伴随着Internet技术的兴起，对CS架构的改进，为了区别于传统的CS 模式，特意称为BS模式。在这种结构下，通过浏览器来进入工作界面，极少部分事务逻辑在前端（Browser）实现，主要事务逻辑在服务器端（Server）实现，形成三层结构。这样使得客户端电脑负荷大大简化（因此被称为瘦客户端），减轻了系统维护、升级的支出成本，降低了用户的总体成本（TCO）。 BS的主要特点是分布性强、维护方便、开发简单且共享性强、总体拥有成本低。但存在数据安全性问题、对服务器要求过高、数据传输速度慢、软件的个性化特点明显降低，难以实现传统模式下的特殊功能要求。它是瘦客户端，对大量的数据输入以及报表的应答等都需要通过浏览器与服务器进行交互，通信开销大，而且对于实现复杂的应用构造有较大的困难。
+小结：CS响应速度快，安全性强，一般应用于局域网中，但是开发维护成本高；BS可以实现跨平台，客户端零维护，但是个性化能力低，响应速度较慢。所以有些单位日常办公应用BS，在实际生产中使用CS结构。
+HTTP # HTTP（HyperText Transfer Protocol）是超文本传输协议
+HTT报文结构 # 请求行 # 请求行的格式为：Method Request-URI HTTP-version CRLF
+method为大写，有以下几种：GET、POST、HEAD、OPTIONS、PUT、DELETE
+Request-URI是一个统一资源标识符
+HTTP-version为请求的HTTP的协议版本
+请求头 # 请求头的格式为键值对。一般常见的请求头如下：
+User-Agent:PostmanRuntime/7.26.8 表示产生请求的客户端程序
+Accept:/ 表示可接受的响应的类型为全部类型
+Accept-Language:zh 表示可接受的响应的语言为中文
+Accept-Encoding:gzip 表示客户端请求的压缩方式
+Cookie:value 值由登陆之后服务端下发
+token:value 值由登陆之后服务端下发
+请求正文 # 一般为空
+HTTP五大类状态码 # 1xx 提示信息，表示目前协议处理的中间状态，还需要后续的操作
+2xx 成功，报文已经收到并被正确处理
+3xx 重定向，资源位置发生变动，需要客户端重新发送请求
+4xx 客户端错误，请求报文有误，服务器无法处理
+5xx 服务器错误，服务器在处理请求时内部发生了错误
+HTTP的特性 # 1、简单，易于理解
+2、灵活和易于扩展
+​	HTTP协议里的各类请求方法、URI/UPL、状态码、头字段等每个组成要求都没有被固定死，都允许开发人员自定义和扩充。
+​	同时，HTTP由于是工作在应用层（OSI第七层)，则它下层可以随意变化。
+3、应用广泛和跨平台
+缺点
+无状态双刃剑
+无状态的好处：因为服务器不回去记忆HTTP的状态，所以不需要额外的资源来记录状态信息，这能减轻服务器的负担，能够把更多的CPU和内存用来对外提供服务。
+无状态的坏处：既然服务器没有记忆能力，它在完成有关联性的操作时会非常麻烦。
+例如登录-&amp;gt;添加购物车-&amp;gt;下单-&amp;gt;结算-&amp;gt;支付，这系列操作都要知道用户的身份才行。但服务器不知道这些请求是有关联的，每次都要问一遍身份信息。
+这样每操作一次，都要验证信息，这样的购物体验还能愉快吗？别问，问就是酸爽！</description>
+    </item>
+    
+    <item>
+      <title>数据库基础</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Fri, 16 Sep 2022 10:04:24 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/</guid>
+      <description>数据库 # 索引 # 索引是什么，有什么作用，有何优缺点？ # 索引是帮助Mysql高效获取数据的一种数据结构，通常用B树，B+树实现（Mysql不支持hash）
+数据库索引，hash索引与B+树索引的适用场景，为什么用B+树索引 # B+树是一个平衡的多叉树，从根结点到每个叶子结点的高度差不超过1，而且同层级的结点间有指针相互连接。
+在B+树上的常规检索，从根结点到叶子结点的搜索效率基本相当，不会出现大幅的波动，而且基于索引的顺序扫描时，也可以利用双指针快速左右移动，效率非常高。因此，B+树索引被广泛应用于数据库、文件系统等场景。
+Hash索引，就是采用一定的Hash算法，把键值换算成新的Hash值，检索时不需要类似B+树那样从根结点到叶子结点逐级查找，只需要一次Hash算法即可立即定位到相应的位置，速度非常快。
+对比
+如果是等值查询，那么Hash索引明显有绝对优势，因为只需要经过一次算法即可找到相应的键值。前提是键值唯一。 如果是范围查询检索，这时候Hash索引就毫无用武之地了。 同理，Hash索引也无法利用索引完成排序，以及Like这样的部分模糊查询，这种模糊查询本质上也是范围查询。 Hash索引不支持复合索引，对于复合索引来说，Hash索引再计算Hash值的时候是将索引键合并后再一起计算Hash值，不会对每个索引单独计算Hash值。因此，如果用到复合索引的一个或者几个索引时，索引会失效。 B+树索引的关键字检索效率比较平均，不像B树那样波动幅度大，在有大量重复键的情况下，Hash索引的效率也是极低的，因为存在哈希冲突问题。 应用场景
+B+树索引结构适用于绝大多数场景 如果数据离散型高、基数大，且为等值查询的时候，Hash索引特别有优势 B 树与 B+ 树的对比
+在单行查询的时候，B+ 树会自顶向下逐层查找结点，最终找到匹配的叶子结点。这看起来和 B 树差不多，但其实有两点不同。首先，B+ 树的中间结点没有具体数据，所以同样大小的磁盘页可以容纳更多的结点元素，这就意味着，数据量相同的情况下，B+ 树的结构比 B 树更加 “矮胖”，因此查询时 IO 次数也更少。其次，B+ 树的查询必须最终查找到叶子结点，而 B 树只要找到匹配元素即可，无论匹配元素处于中间结点还是叶子结点。因此，B 树的查找性能并不稳定（最好情况是只查根结点，最坏情况是查到叶子结点）。而 B+ 树的每一次查找都是稳定的
+我们再来看看范围查询。B 树做范围查询只能依靠繁琐的中序遍历，而 B+ 树只需要在链表上做遍历即可：即先自顶向下找到范围的下限，再通过链表指针遍历到目标元素
+除了查询，还有插入和删除操作，因为 B+ 树的叶子结点包含所有元素，并且以有序的链表结构存储，这样大大提高了增删结点的效率
+综上，B+ 树相比 B 树的优势：
+磁盘 IO 次数更少 查询性能稳定 范围查询简便 增删结点时，效率更高
+主键与非主键和索引的关系 # 主键索引指的就是在主键上做索引，而非主键索引也就是在非主键上加索引。主键索引和非主键索引是有区别的，主键索引存放的值是整行字段的数据，而非主键索引上存放的值不是整行字段的数据，而存放主键字段的值。
+因此在使用主键索引查询的时候，直接就可以获得想要的数据，而用非主键索引则会先查询到主键，之后根据主键查询到具体的信息。
+非主键索引又称为二级索引，主键索引又称为聚簇索引。
+聚簇索引定义：
+索引和数据是放在一块的（一个文件存储，主键索引的B+树的叶子节点中存放了索引值和数据行所有字段） 索引的顺序和数据的物理存储一致（因为字段也在B+树的叶子节点中，因此索引按序则整个数据行也是按序的） 非聚簇索引定义： 索引和数据是分开存放的（两个文件存储，索引的B+树的叶子节点中只存放了索引值和指向对应数据行的物理地址） 索引的顺序和数据的物理存储不一致（B+树中的索引值是按序的，但指针中的对应数据行的物理地址并不是按序的） 记住一个结论：</description>
+    </item>
+    
+    <item>
+      <title>算法基础</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Wed, 02 Nov 2022 20:37:13 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/</guid>
+      <description> AVL树 # 红黑树 # </description>
+    </item>
+    
+    <item>
+      <title>Linux基础</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/linux%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Thu, 22 Sep 2022 14:56:19 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/linux%E5%9F%BA%E7%A1%80/</guid>
+      <description>Unix/Linux操作系统介绍 # Linux和Unix的联系 # UNIX系统是工作站上最常用的操作系统，它是一个多用户、多任务的实时操作系统，允许多人同时访问计算机， 并同时运行多个任务。UNIX系统具有稳定、高效、安全、方便、功能强大等诸多优点，自20世纪70年代开始便运行在许多大型和小型计算机上。
+UNIX虽然是一个安全、稳定且功能强大的操作系统，但它也一直是一种大型的而且对运行平台要求很高的操作系统，只能在工作站或小型机上才能发挥全部功能，并且价格昂贵，对普通用户来说是可望而不可及的，这为后来Linux的崛起提供了机会，Linux是一个类UNIX操作系统。
+Linux是免费的、不受版权制约、与UNIX兼容的操作系统。
+Linux在x86架构上实现了UNIX系统的全部特性，具有多用户多任务的能力，同时保持了高效性和稳定性，Linux具有如下的优秀的特点：
+开放性； 完全免费； 多用户，多任务； 设备独立性； 丰富的网络功能； 可靠的系统安全性； Unix/Linux开发应用领域 # Unix/Linux服务器
+嵌入式Linux系统
+桌面应用
+电子政务
+文件系统 # 目录和路径 # 目录 # 目录是一组相关文件的集合。
+一个目录下面除了可以存放文件之外还可以存放其他目录，即可包含子目录。
+在确定文件、目录位置时，DOS和Unix/Linux都采用“路径名+文件名”的方式。路径反映的是目录与目录之间的关系。
+路径 # Unix/Linux路径由到达定位文件的目录组成。在Unix/Linux系统中组成路径的目录分割符为斜杠“/”，而DOS则用反斜杠“\”来分割各个目录。
+路径分为绝对路径和相对路径：
+绝对路径 # 绝对路径是从目录树的树根“/”目录开始往下直至到达文件所经过的所有节点目录。
+下级目录接在上级目录后面用“/”隔开。
+注意：绝对路径都是从“/”开始的，所以第一个字符一定是“/”。
+相对路径 # 相对路径是指目标目录相对于当前目录的位置。
+如果不在当前目录下，则需要使用两个特殊目录&amp;quot;.&amp;ldquo;和&amp;rdquo;..&amp;ldquo;了。目录“.”指向当前目录，而目录“..”。
+Linux目录结构 # 和Windows操作系统类似，所有Unix/Linux的数据都是由文件系统按照树型目录结构管理的。而且Unix/Linux操作系统同样要区分文件的类型，判断文件的存取属性和可执行属性。
+Unix/Linux也采用了树状结构的文件系统，它由目录和目录下的文件一起构成。但Unix/Linux文件系统不使用驱动器这个概念，而是使用单一的根目录结构，所有的分区都挂载到单一的“/”目录上，其结构示意图如图所示：
+无论何种版本的 Linux 发行版，桌面、应用是 Linux 的外衣，文件组织、目录结构才是Linux的内心。
+结构 # /：根目录，一般根目录下只存放目录，在Linux下有且只有一个根目录。所有的东西都是从这里开始。当你在终端里输入“/home”，你其实是在告诉电脑，先从/（根目录）开始，再进入到home目录。
+/bin: /usr/bin: 可执行二进制文件的目录，如常用的命令ls、tar、mv、cat等。
+/root：系统管理员root的家目录（宿主目录）。
+/etc：系统配置文件存放的目录，不建议在此目录下存放可执行文件，重要的配置文件有 /etc/inittab、/etc/fstab、/etc/init.d、/etc/X11、/etc/sysconfig、/etc/xinetd.d。
+/home：系统默认的用户家目录，新增用户账号时，用户的家目录都存放在此目录下，~表示当前用户的家目录，~edu 表示用户 edu 的家目录。
+/usr：应用程序存放目录，/usr/bin 存放应用程序，/usr/share 存放共享数据，/usr/lib 存放不能直接运行的，却是许多程序运行所必需的一些函数库文件。/usr/local: 存放软件升级包。/usr/share/doc: 系统说明文件存放目录。/usr/share/man: 程序说明文件存放目录。/usr/include:存放头文件。</description>
+    </item>
+    
+    <item>
+      <title>Git基础</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/git%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Fri, 02 Sep 2022 22:11:34 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/git%E5%9F%BA%E7%A1%80/</guid>
+      <description>简介 # git是目前世界上最先进的分布式版本控制系统。
+git的两大特点 # 版本控制：可以解决多人同时开发的代码问题，也可以解决找回历史代码的问题。
+分布式：Git是分布式版本控制系统，同一个Git仓库，可以分布到不同的机器上。首先找一台电脑充当服务器的角色，每天24小时开机，其他每个人都从这个“服务器”仓库克隆一份到自己的电脑上，并且各自把各自的提交推送到服务器仓库里，也从服务器仓库中拉取别人的提交。可以自己搭建这台服务器，也可以使用GitHub网站。
+安装与配置 # brew install git 创建一个版本库 # 新建一个目录git_test，在git_test目录下创建一个版本库，命令如下：
+git init 可以看到在git_test目录下创建了一个.git隐藏目录，这就是版本库目录。
+版本创建与回退 # 使用 # 在git_test目录下创建一个文件code.txt，编辑内容如下：
+使用如下两条命令可以创建一个版本：
+git add code.txt git commit –m &amp;#39;版本1&amp;#39; 添加身份标识（git不做检查）
+git config --global user.email &amp;#34;you@example.com&amp;#34; git config --global user.name &amp;#34;Your Name&amp;#34; 然后再执行git commit -m ‘版本一’
+使用如下命令可以查看版本记录：
+git log 继续编辑code.txt，在里面增加一行。
+使用如下命令再创建一个版本并查看版本记录：
+现在若想回到某一个版本，可以使用如下命令：
+git reset --hard HEAD^ 其中HEAD表示当前最新版本，HEAD^表示当前版本的前一个版本,HEAD^^表示当前版本的前前个版本，也可以使用HEAD~1表示当前版本的前一个版本,HEAD~100表示当前版本的前100版本。
+现在若觉得想回到版本1，可以使用如下命令：
+执行命令后使用git log查看版本记录，发现现在只能看到版本1的记录，cat code.txt查看文件内容，现在只有一行，也就是第一个版本中code.txt的内容。
+假如我们现在又想回到版本2，这个时候怎么办？
+可以使用如下命令：
+git reset --hard 版本号 从上面可以看到版本2的版本号为：</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,3545 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="前言 # func main(){ name:=&#34;张三&#34; fmt.printf(&#34;%d&#34;,len(name)) } 6 每个汉字3个字符 逃逸分析 # Go语言中，调用new函数得到的内存不一定在堆上，还有可能在栈上。这是因为在Go语言中，堆和栈的区别被“模糊化”了，当然这一切都是Go编译器在后台完成的。
+一个变量是在堆上分配，还是在栈上分配，是经过编译器的逃逸分析之后得出的“结论”。
+Go语言里就是指编译器的逃逸分析：它是编译器执行静态代码分析后，对内存管理进行的优化和简化。
+在编译原理中，分析指针动态范围的方法被称为逃逸分析。通俗来讲，当一个对象的指针被多个方法或线程引用时，则称这个指针发生了逃逸。逃逸分析决定一个变量是分配在堆上还是分配在栈上。
+作用 # 逃逸分析把变量合理地分配到它该去的地方，“找准自己的位置”。即使是用new函数申请到的内存，如果编译器发现这块内存在退出函数后就没有使用了，那就分配到栈上，毕竟栈上的内存分配比堆上块很多；反之，即使表面上只是一个普通的变量，但是经过编译器的逃逸分析后发现，在函数之外还有其他的地方在引用，那就分配到堆上。真正做到了按需分配。
+如果变量都分配到堆上，堆不像栈可以自动清理。就会引起Go频繁的进行垃圾回收，而垃圾回收会占用比较大的系统开销。
+堆和栈相比，堆适合不可预知大小的的内存分配。但是为此付出的代价是分配速度较慢，而且会形成内存碎片；栈内存分配则会非常快。栈分配内存只需要通过PUSH指令，并且会被自动释放；而堆分配内存首先需要去找一个大小合适的内存块，之后要通过垃圾回收才能释放。
+通过逃逸分析，可以尽量把哪些不需要分配到堆上的变量直接分配到栈上，堆上的压力变小了，会减轻堆内存分配开销，同时也会减轻垃圾回收的压力，提高程序运行速度。
+原则 # Go语言逃逸分析最基本的原则是：如果一个函数返回对一个变量的引用，那么这个变量就会发生逃逸。
+Go中的变量只有在编译器可以证明在函数返回后不再被引用的，才分配到栈上，其他情况都分配到堆上。
+编译器会根据变量是否被外部引用来决定是否逃逸：
+如果变量在函数外部没有引用，则优先放到栈上。 如果变量在函数外部存在引用，则必定放到堆上。 针对第一条，放到堆上的情形：定义了一个很大的数组，需要申请的内存过大，超过了栈的存储能力。
+判断 # Go提供了相关的命令，可以查看变量是否发生逃逸。
+go build -gcflags &#39;-m -l&#39; main.go 其中-gcflags参数用于启动编译器支持的额外标志。例如，-m用于输出编译器的优化细节（包括使用逃逸分析这种优化），相反可以使用-N来关闭编译器优化；而-l则用于禁用foo函数的内联优化，防止逃逸被编译器通过内联彻底抹除。
+GO与C/C&#43;&#43;中的堆和栈是同一个概念吗 # 不是
+C/C&#43;&#43;中提及的“程序堆栈”本质上是操作系统层级的概念，它通过C/C&#43;&#43;语言的编译器和所在的系统环境来共同决定。在程序启动时，操纵系统会自动维护一个所启动程序消耗内存的地址空间，并自动将这个空间从逻辑上划分为堆内存空间和栈内存空间。这时，“栈”的概念是指程序运行时自动获得的一小块内存，而后续的函数调用所消耗的栈大小，会在编译期间有编译器决定，用于保存局部变量或者保存函数调用栈。如果在C/C&#43;&#43;中声明一个局部变量，则会执行逻辑上的压栈操作，在栈中记录局部变量。而当局部变量离开作用域之后，所谓的自动释放本质上是该位置的内存在下一次函数调用压栈过程中，可以被无条件的覆盖；对于堆而言，每当程序通过系统调用向操作系统申请内存时，会将所需的空间从维护的堆内存地址空间中分配出去，而在归还时则会将归还的内存合并到所维护的地址空间中。
+Go程序也是运行在操作系统上的程序，自然同样拥有前面提到的堆和栈的概念。但区别在于传统意义上的“栈”被Go语言的运行时全部消耗了，用于维护运行时各个组件之间的协调，例如调度器、垃圾回收、系统调用等。而对于用户态的Go代码而言，他们所消耗的“堆和栈”，其实只是Go运行时通过管理向操作系统申请的堆内存，构造的逻辑上的“堆和栈”，它们的本质都是从操作系统申请而来的堆内存。
+延迟语句 # 延迟语句defer，能把资源的释放语句与申请语句放到距离相近的位置，从而减少资源泄露的发生。
+defer是Go语言提供的一种用于注册延迟调用的机制：让函数或语句可以在当前函数执行完毕后（包括通过return正常结束或者Panic导致的异常结束）执行。通常用于一些成对操作的场景：打开连接/关闭连接、加锁/释放锁、打开文件/关闭文件等。
+defer会有短暂延迟，对时间要求特别高的程序，可以避免使用它。
+defer的执行顺序 # defer语句并不会马上执行，而是会进入一个栈，函数return前，会按先进后出的顺序执行。先进后出的原因是后面定义的函数可能会依赖前面的资源，自然要先执行；否则，如果前面的先执行了，那后面的函数依赖就没有了，因而可能会出错。
+在defer函数定义时，对外部变量的引用有两种方式：函数参数、闭包引用。前者在defer定义时就把值传递给defer，并且被cache起来；后者则会在defer函数真正调用时根据整个上下文确定参数当前的值。
+func main(){ var whatever [3]struct{} for i:=range whatever{ defer func(){ fmt.Println(i) }() } } 2 2 2 defer 后面跟的是一个闭包，i是“引用”类型的变量，for循环结束后i的值为2，因此后面打印了3个2.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="Go高阶-语言基础" />
+<meta property="og:description" content="前言 # func main(){ name:=&#34;张三&#34; fmt.printf(&#34;%d&#34;,len(name)) } 6 每个汉字3个字符 逃逸分析 # Go语言中，调用new函数得到的内存不一定在堆上，还有可能在栈上。这是因为在Go语言中，堆和栈的区别被“模糊化”了，当然这一切都是Go编译器在后台完成的。
+一个变量是在堆上分配，还是在栈上分配，是经过编译器的逃逸分析之后得出的“结论”。
+Go语言里就是指编译器的逃逸分析：它是编译器执行静态代码分析后，对内存管理进行的优化和简化。
+在编译原理中，分析指针动态范围的方法被称为逃逸分析。通俗来讲，当一个对象的指针被多个方法或线程引用时，则称这个指针发生了逃逸。逃逸分析决定一个变量是分配在堆上还是分配在栈上。
+作用 # 逃逸分析把变量合理地分配到它该去的地方，“找准自己的位置”。即使是用new函数申请到的内存，如果编译器发现这块内存在退出函数后就没有使用了，那就分配到栈上，毕竟栈上的内存分配比堆上块很多；反之，即使表面上只是一个普通的变量，但是经过编译器的逃逸分析后发现，在函数之外还有其他的地方在引用，那就分配到堆上。真正做到了按需分配。
+如果变量都分配到堆上，堆不像栈可以自动清理。就会引起Go频繁的进行垃圾回收，而垃圾回收会占用比较大的系统开销。
+堆和栈相比，堆适合不可预知大小的的内存分配。但是为此付出的代价是分配速度较慢，而且会形成内存碎片；栈内存分配则会非常快。栈分配内存只需要通过PUSH指令，并且会被自动释放；而堆分配内存首先需要去找一个大小合适的内存块，之后要通过垃圾回收才能释放。
+通过逃逸分析，可以尽量把哪些不需要分配到堆上的变量直接分配到栈上，堆上的压力变小了，会减轻堆内存分配开销，同时也会减轻垃圾回收的压力，提高程序运行速度。
+原则 # Go语言逃逸分析最基本的原则是：如果一个函数返回对一个变量的引用，那么这个变量就会发生逃逸。
+Go中的变量只有在编译器可以证明在函数返回后不再被引用的，才分配到栈上，其他情况都分配到堆上。
+编译器会根据变量是否被外部引用来决定是否逃逸：
+如果变量在函数外部没有引用，则优先放到栈上。 如果变量在函数外部存在引用，则必定放到堆上。 针对第一条，放到堆上的情形：定义了一个很大的数组，需要申请的内存过大，超过了栈的存储能力。
+判断 # Go提供了相关的命令，可以查看变量是否发生逃逸。
+go build -gcflags &#39;-m -l&#39; main.go 其中-gcflags参数用于启动编译器支持的额外标志。例如，-m用于输出编译器的优化细节（包括使用逃逸分析这种优化），相反可以使用-N来关闭编译器优化；而-l则用于禁用foo函数的内联优化，防止逃逸被编译器通过内联彻底抹除。
+GO与C/C&#43;&#43;中的堆和栈是同一个概念吗 # 不是
+C/C&#43;&#43;中提及的“程序堆栈”本质上是操作系统层级的概念，它通过C/C&#43;&#43;语言的编译器和所在的系统环境来共同决定。在程序启动时，操纵系统会自动维护一个所启动程序消耗内存的地址空间，并自动将这个空间从逻辑上划分为堆内存空间和栈内存空间。这时，“栈”的概念是指程序运行时自动获得的一小块内存，而后续的函数调用所消耗的栈大小，会在编译期间有编译器决定，用于保存局部变量或者保存函数调用栈。如果在C/C&#43;&#43;中声明一个局部变量，则会执行逻辑上的压栈操作，在栈中记录局部变量。而当局部变量离开作用域之后，所谓的自动释放本质上是该位置的内存在下一次函数调用压栈过程中，可以被无条件的覆盖；对于堆而言，每当程序通过系统调用向操作系统申请内存时，会将所需的空间从维护的堆内存地址空间中分配出去，而在归还时则会将归还的内存合并到所维护的地址空间中。
+Go程序也是运行在操作系统上的程序，自然同样拥有前面提到的堆和栈的概念。但区别在于传统意义上的“栈”被Go语言的运行时全部消耗了，用于维护运行时各个组件之间的协调，例如调度器、垃圾回收、系统调用等。而对于用户态的Go代码而言，他们所消耗的“堆和栈”，其实只是Go运行时通过管理向操作系统申请的堆内存，构造的逻辑上的“堆和栈”，它们的本质都是从操作系统申请而来的堆内存。
+延迟语句 # 延迟语句defer，能把资源的释放语句与申请语句放到距离相近的位置，从而减少资源泄露的发生。
+defer是Go语言提供的一种用于注册延迟调用的机制：让函数或语句可以在当前函数执行完毕后（包括通过return正常结束或者Panic导致的异常结束）执行。通常用于一些成对操作的场景：打开连接/关闭连接、加锁/释放锁、打开文件/关闭文件等。
+defer会有短暂延迟，对时间要求特别高的程序，可以避免使用它。
+defer的执行顺序 # defer语句并不会马上执行，而是会进入一个栈，函数return前，会按先进后出的顺序执行。先进后出的原因是后面定义的函数可能会依赖前面的资源，自然要先执行；否则，如果前面的先执行了，那后面的函数依赖就没有了，因而可能会出错。
+在defer函数定义时，对外部变量的引用有两种方式：函数参数、闭包引用。前者在defer定义时就把值传递给defer，并且被cache起来；后者则会在defer函数真正调用时根据整个上下文确定参数当前的值。
+func main(){ var whatever [3]struct{} for i:=range whatever{ defer func(){ fmt.Println(i) }() } } 2 2 2 defer 后面跟的是一个闭包，i是“引用”类型的变量，for循环结束后i的值为2，因此后面打印了3个2." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" /><meta property="article:section" content="docs" />
+<meta property="article:published_time" content="2022-09-07T15:43:23+08:00" />
+<meta property="article:modified_time" content="2022-09-07T15:43:23+08:00" />
+<title>Go高阶-语言基础 | Soulmate</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" >
+<link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.5623389946cf2cb816d7e28b27d101617d469cca326a6a0a0bf362549d6ba433.js" integrity="sha256-ViM4mUbPLLgW1&#43;KLJ9EBYX1GnMoyamoKC/NiVJ1rpDM=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo.png" alt="Logo" /><span>Soulmate</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-074eed0fb8c6f9d99dfeff898388792f" class="toggle"  />
+    <label for="section-074eed0fb8c6f9d99dfeff898388792f" class="flex justify-between">
+      <a role="button" class="">计算机基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="">Vim编程常用快捷键</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E9%85%8D%E7%BD%AEkylinv10/" class="">配置 Kylin V10</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="">计算机网络基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/linux%E5%9F%BA%E7%A1%80/" class="">Linux基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/git%E5%9F%BA%E7%A1%80/" class="">Git基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Golang</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-670eda717a06f31447c52422ec93a159" class="toggle"  />
+    <label for="section-670eda717a06f31447c52422ec93a159" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/" class="">go语言基础（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/cgo/" class="">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/flag/" class="">Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/grpc/" class="">Grpc</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/" class="">ProtoBuf</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">常用业务代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/" class="">go语言基础（三）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/" class="">go语言底层基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/" class="">benchmark测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/" class="">Goland常用技巧</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle" checked />
+    <label for="section-c453881a62c640f6a4cceec99c02477e" class="flex justify-between">
+      <a role="button" class="">高阶</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" class="active">Go高阶-语言基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f235e88e751d2cb18d527c1784763605" class="toggle"  />
+    <label for="section-f235e88e751d2cb18d527c1784763605" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/atomic/" class="">Atomic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/os/" class="">Os</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strconv/" class="">Strconv</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sort/" class="">Sort</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strings/" class="">Strings</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/reflect/" class="">Reflect</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/time/" class="">Time</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sync/" class="">Sync</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ee53da12118bfd3e9b35f3e9494ab55b" class="toggle"  />
+    <label for="section-ee53da12118bfd3e9b35f3e9494ab55b" class="flex justify-between">
+      <a role="button" class="">LeetCode</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/" class="">golang力扣刷题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/" class="">golang力扣刷题（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/%E5%BF%85%E5%88%B7top101/" class="">必刷top101</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" class="">LeetCode算法总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>数据库</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle"  />
+    <label for="section-94f26238d1ca3b5bcd40eadc7a88d726" class="flex justify-between">
+      <a role="button" class="">MySql</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" class="">MySql基础总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="">Mac连接数据库所遇到的问题</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="toggle"  />
+    <label for="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="flex justify-between">
+      <a role="button" class="">Redis</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="">Redis集群搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/" class="">Redis基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="">redis面试总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8be9c2251abd1fe110e3c1520cac6177" class="toggle"  />
+    <label for="section-8be9c2251abd1fe110e3c1520cac6177" class="flex justify-between">
+      <a role="button" class="">SQLite</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/" class="">Sqlite</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/" class="">Xorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ad390db13e5fa9e14f921f4e4f77900e" class="toggle"  />
+    <label for="section-ad390db13e5fa9e14f921f4e4f77900e" class="flex justify-between">
+      <a role="button" class="">C/C&#43;&#43;</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/cc&#43;&#43;/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>区块链</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle"  />
+    <label for="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="flex justify-between">
+      <a role="button" class="">Fabric</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">fabric相关机制与原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/" class="">智能合约</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/" class="">fabric-sdk-go详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/" class="">fabric-ca详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle"  />
+    <label for="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="flex justify-between">
+      <a role="button" class="">环境测试</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/" class="">fabric网络中的报错（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/" class="">fabric网络中的报错（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">fabric环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/" class="">solo节点测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/" class="">fabric多机搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/" class="">部署tape测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/" class="">手动生成ca证书搭建fabric网络</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/" class="">centos安装fabric1.2</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-25aef1d59a561fcefcaecb043ef8afd2" class="toggle"  />
+    <label for="section-25aef1d59a561fcefcaecb043ef8afd2" class="flex justify-between">
+      <a role="button" class="">配置文件</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/" class="">cryptogen生成的证书详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">docker-compose.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">configtx.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">crypto-config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/" class="">升级链码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/" class="">区块链网络添加组织</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/" class="">fabric浏览器搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/" class="">如何在已有组织中增加节点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/" class="">Fabric1.4多通道实验</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b07621083aa30b12de4c0333941e479f" class="toggle"  />
+    <label for="section-b07621083aa30b12de4c0333941e479f" class="flex justify-between">
+      <a role="button" class="">比特币</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">比特币相关机制与原理</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle"  />
+    <label for="section-ff5477999ef29208270c84e8b56b2758" class="flex justify-between">
+      <a role="button" class="">IPFS</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/" class="">go-ipfs-api</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" class="">ipfs-webui可视化工具搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/" class="">IPFS基本原理（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/" class="">IPFS私有网络搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-77a0a17b06e8d04cfb0fba9952941706" class="toggle"  />
+    <label for="section-77a0a17b06e8d04cfb0fba9952941706" class="flex justify-between">
+      <a role="button" class="">密码学</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" class="">区块链安全基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/" class="">椭圆曲线加密</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/" class="">密码学基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2e4d10b323fd668021dbd532575d8790" class="toggle"  />
+    <label for="section-2e4d10b323fd668021dbd532575d8790" class="flex justify-between">
+      <a role="button" class="">Docker</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/" class="">Docker基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/" class="">Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" class="">docker常用知识总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-70383d7f28a7ae4bf840a844eb61aa16" class="toggle"  />
+    <label for="section-70383d7f28a7ae4bf840a844eb61aa16" class="flex justify-between">
+      <a role="button" class="">共识算法</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">共识算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" class="">Raft共识算法</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>前端</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
+    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
+      <a role="button" class="">博客</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%9B%BE%E4%B9%A6/" class="">图书</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/" class="">工具库</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="https://gitee.com/chaincode"  target="_blank" rel="noopener">
+        Gitee
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Go高阶-语言基础</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#前言">前言</a></li>
+      </ul>
+    </li>
+    <li><a href="#逃逸分析">逃逸分析</a>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#作用">作用</a></li>
+            <li><a href="#原则">原则</a></li>
+            <li><a href="#判断">判断</a></li>
+            <li><a href="#go与cc中的堆和栈是同一个概念吗">GO与C/C++中的堆和栈是同一个概念吗</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#延迟语句">延迟语句</a>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#defer的执行顺序">defer的执行顺序</a></li>
+            <li><a href="#拆解延迟语句">拆解延迟语句</a></li>
+            <li><a href="#闭包">闭包</a></li>
+            <li><a href="#延迟语句如何配合恢复语句">延迟语句如何配合恢复语句</a></li>
+            <li><a href="#为什么无法从父goroutine恢复子goroutine的panic">为什么无法从父goroutine恢复子goroutine的Panic</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#数据容器">数据容器</a>
+      <ul>
+        <li><a href="#数组与切片">数组与切片</a>
+          <ul>
+            <li><a href="#异同">异同</a></li>
+            <li><a href="#切片截取">切片截取</a></li>
+            <li><a href="#切片扩容">切片扩容</a></li>
+            <li><a href="#切片作为函数参数会被改变吗">切片作为函数参数会被改变吗</a></li>
+            <li><a href="#make和new的区别">make和new的区别</a></li>
+          </ul>
+        </li>
+        <li><a href="#map">map</a>
+          <ul>
+            <li><a href="#map的底层原理">map的底层原理</a></li>
+            <li><a href="#map中的key为什么是无序的">map中的key为什么是无序的</a></li>
+            <li><a href="#map是线程安全的吗">map是线程安全的吗</a></li>
+            <li><a href="#float类型可以作为map的key吗">float类型可以作为map的key吗</a></li>
+            <li><a href="#map如何实现两种get操作">map如何实现两种get操作</a></li>
+            <li><a href="#如何比较两个map是否相等">如何比较两个map是否相等</a></li>
+            <li><a href="#可以对map的元素取地址吗">可以对map的元素取地址吗</a></li>
+            <li><a href="#可以边遍历边删除吗">可以边遍历边删除吗</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#channel">channel</a>
+      <ul>
+        <li><a href="#通道有哪些应用">通道有哪些应用</a>
+          <ul>
+            <li><a href="#停止信号">停止信号</a></li>
+            <li><a href="#定时任务">定时任务</a></li>
+            <li><a href="#解耦生产方和消费方">解耦生产方和消费方</a></li>
+            <li><a href="#控制并发数">控制并发数</a></li>
+          </ul>
+        </li>
+        <li><a href="#channel底层结构">channel底层结构</a>
+          <ul>
+            <li><a href="#接收过程">接收过程</a></li>
+            <li><a href="#发送过程">发送过程</a></li>
+            <li><a href="#收发数据的本质">收发数据的本质</a></li>
+          </ul>
+        </li>
+        <li><a href="#相关问题">相关问题</a>
+          <ul>
+            <li><a href="#通道关闭过程发生了什么">通道关闭过程发生了什么？</a></li>
+            <li><a href="#从一个关闭的通道里仍然能读出数据吗">从一个关闭的通道里仍然能读出数据吗？</a></li>
+            <li><a href="#如何优雅的关闭通道">如何优雅的关闭通道？</a></li>
+            <li><a href="#关于通道的happened-before有哪些">关于通道的happened-before有哪些？</a></li>
+            <li><a href="#通道在什么情况下会引起资源泄漏">通道在什么情况下会引起资源泄漏？</a></li>
+            <li><a href="#通道操作的情况总结">通道操作的情况总结</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#接口">接口</a>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#go与鸭子类型的关系">Go与“鸭子类型”的关系</a></li>
+          </ul>
+        </li>
+        <li><a href="#值接收者和指针接收者的区别">值接收者和指针接收者的区别</a>
+          <ul>
+            <li><a href="#方法">方法</a></li>
+            <li><a href="#值接收者和指针接收者">值接收者和指针接收者</a></li>
+            <li><a href="#两者分别在何时使用">两者分别在何时使用</a></li>
+          </ul>
+        </li>
+        <li><a href="#相关问题-1">相关问题</a>
+          <ul>
+            <li><a href="#iface和eface的区别">iface和eface的区别</a></li>
+            <li><a href="#如何用interface实现多态">如何用interface实现多态</a></li>
+            <li><a href="#接口的动态类型和动态值">接口的动态类型和动态值</a></li>
+            <li><a href="#接口的转换原理">接口的转换原理</a></li>
+            <li><a href="#类型转换和断言的区别">类型转换和断言的区别</a></li>
+            <li><a href="#如何让编译器自动检测类型是否实现了接口">如何让编译器自动检测类型是否实现了接口</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h2 id="前言">
+  前言
+  <a class="anchor" href="#%e5%89%8d%e8%a8%80">#</a>
+</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">name</span><span style="color:#f92672">:=</span><span style="color:#e6db74">&#34;张三&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;%d&#34;</span>,len(<span style="color:#a6e22e">name</span>))
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">6</span> <span style="color:#a6e22e">每个汉字3个字符</span>
+</span></span></code></pre></div><h1 id="逃逸分析">
+  逃逸分析
+  <a class="anchor" href="#%e9%80%83%e9%80%b8%e5%88%86%e6%9e%90">#</a>
+</h1>
+<p>Go语言中，调用new函数得到的内存不一定在堆上，还有可能在栈上。这是因为在Go语言中，堆和栈的区别被“模糊化”了，当然这一切都是Go编译器在后台完成的。</p>
+<p>一个变量是在堆上分配，还是在栈上分配，是经过编译器的逃逸分析之后得出的“结论”。</p>
+<p>Go语言里就是指编译器的逃逸分析：<strong>它是编译器执行静态代码分析后，对内存管理进行的优化和简化。</strong></p>
+<p>在编译原理中，<strong>分析指针动态范围的方法被称为逃逸分析</strong>。<font  color='red'>通俗来讲，当一个对象的指针被多个方法或线程引用时，则称这个指针发生了逃逸。</font><strong>逃逸分析决定一个变量是分配在堆上还是分配在栈上</strong>。</p>
+<h3 id="作用">
+  作用
+  <a class="anchor" href="#%e4%bd%9c%e7%94%a8">#</a>
+</h3>
+<p><font  color='red'>逃逸分析把变量合理地分配到它该去的地方，“找准自己的位置”。即使是用new函数申请到的内存，如果编译器发现这块内存在退出函数后就没有使用了，那就分配到栈上，毕竟栈上的内存分配比堆上块很多；反之，即使表面上只是一个普通的变量，但是经过编译器的逃逸分析后发现，在函数之外还有其他的地方在引用，那就分配到堆上。</font>真正做到了按需分配。</p>
+<p><u>如果变量都分配到堆上，堆不像栈可以自动清理。就会引起Go频繁的进行垃圾回收，而垃圾回收会占用比较大的系统开销。</u></p>
+<p><strong>堆和栈相比，堆适合不可预知大小的的内存分配</strong>。<u>但是为此付出的代价是分配速度较慢，而且会形成内存碎片；栈内存分配则会非常快。栈分配内存只需要通过PUSH指令，并且会被自动释放；而堆分配内存首先需要去找一个大小合适的内存块，之后要通过垃圾回收才能释放。</u></p>
+<p><strong><font  color='red'>通过逃逸分析，可以尽量把哪些不需要分配到堆上的变量直接分配到栈上，堆上的压力变小了，会减轻堆内存分配开销，同时也会减轻垃圾回收的压力，提高程序运行速度。</font></strong></p>
+<h3 id="原则">
+  原则
+  <a class="anchor" href="#%e5%8e%9f%e5%88%99">#</a>
+</h3>
+<p>Go语言逃逸分析最基本的原则是：<font color="red">如果一个函数返回对一个变量的引用，那么这个变量就会发生逃逸。</font></p>
+<p>Go中的变量只有在编译器可以证明在函数返回后不再被引用的，才分配到栈上，其他情况都分配到堆上。</p>
+<p>编译器会根据变量是否被外部引用来决定是否逃逸：</p>
+<ul>
+<li>如果变量在函数外部<strong>没有引用</strong>，则<strong>优先</strong>放到栈上。</li>
+<li>如果变量在函数外部<strong>存在引用</strong>，则<strong>必定</strong>放到堆上。</li>
+</ul>
+<p>针对第一条，放到堆上的情形：定义了一个很大的数组，需要申请的内存过大，超过了栈的存储能力。</p>
+<h3 id="判断">
+  判断
+  <a class="anchor" href="#%e5%88%a4%e6%96%ad">#</a>
+</h3>
+<p>Go提供了相关的命令，可以查看变量是否发生逃逸。</p>
+<pre tabindex="0"><code>go build -gcflags &#39;-m -l&#39; main.go
+</code></pre><p>其中-gcflags参数用于启动编译器支持的额外标志。例如，-m用于输出编译器的优化细节（包括使用逃逸分析这种优化），相反可以使用-N来关闭编译器优化；而-l则用于禁用foo函数的内联优化，防止逃逸被编译器通过内联彻底抹除。</p>
+<h3 id="go与cc中的堆和栈是同一个概念吗">
+  GO与C/C++中的堆和栈是同一个概念吗
+  <a class="anchor" href="#go%e4%b8%8ecc%e4%b8%ad%e7%9a%84%e5%a0%86%e5%92%8c%e6%a0%88%e6%98%af%e5%90%8c%e4%b8%80%e4%b8%aa%e6%a6%82%e5%bf%b5%e5%90%97">#</a>
+</h3>
+<p>不是</p>
+<p>C/C++中提及的“程序堆栈”本质上是操作系统层级的概念，它通过C/C++语言的编译器和所在的系统环境来共同决定。在程序启动时，操纵系统会自动维护一个所启动程序消耗内存的地址空间，并自动将这个空间从逻辑上划分为堆内存空间和栈内存空间。这时，“栈”的概念是指程序运行时自动获得的一小块内存，而后续的函数调用所消耗的栈大小，会在编译期间有编译器决定，用于保存局部变量或者保存函数调用栈。如果在C/C++中声明一个局部变量，则会执行逻辑上的压栈操作，在栈中记录局部变量。而当局部变量离开作用域之后，所谓的自动释放本质上是该位置的内存在下一次函数调用压栈过程中，可以被无条件的覆盖；对于堆而言，每当程序通过系统调用向操作系统申请内存时，会将所需的空间从维护的堆内存地址空间中分配出去，而在归还时则会将归还的内存合并到所维护的地址空间中。</p>
+<p>Go程序也是运行在操作系统上的程序，自然同样拥有前面提到的堆和栈的概念。但区别在于传统意义上的“栈”被Go语言的运行时全部消耗了，用于维护运行时各个组件之间的协调，例如调度器、垃圾回收、系统调用等。<font  color='red'>而对于用户态的Go代码而言，他们所消耗的“堆和栈”，其实只是Go运行时通过管理向操作系统申请的堆内存，构造的逻辑上的“堆和栈”，它们的本质都是从操作系统申请而来的堆内存。</font></p>
+<h1 id="延迟语句">
+  延迟语句
+  <a class="anchor" href="#%e5%bb%b6%e8%bf%9f%e8%af%ad%e5%8f%a5">#</a>
+</h1>
+<p>延迟语句defer，能把资源的释放语句与申请语句放到距离相近的位置，从而减少资源泄露的发生。</p>
+<p>defer是Go语言提供的一种用于注册延迟调用的机制：让函数或语句可以在当前函数执行完毕后（包括通过return正常结束或者Panic导致的异常结束）执行。通常用于一些成对操作的场景：<font  color='red'>打开连接/关闭连接、加锁/释放锁、打开文件/关闭文件等。</font></p>
+<p><strong>defer会有短暂延迟，对时间要求特别高的程序，可以避免使用它。</strong></p>
+<h3 id="defer的执行顺序">
+  defer的执行顺序
+  <a class="anchor" href="#defer%e7%9a%84%e6%89%a7%e8%a1%8c%e9%a1%ba%e5%ba%8f">#</a>
+</h3>
+<p>defer语句并不会马上执行，而是会进入一个栈，函数return前，会按先进后出的顺序执行。<strong>先进后出的原因</strong><u>是后面定义的函数可能会依赖前面的资源，自然要先执行；否则，如果前面的先执行了，那后面的函数依赖就没有了，因而可能会出错。</u></p>
+<p>在defer函数定义时，对外部变量的引用有两种方式：<strong>函数参数</strong>、<strong>闭包引用</strong>。前者在defer定义时就把值传递给defer，并且被cache起来；后者则会在defer函数真正调用时根据整个上下文确定参数当前的值。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">whatever</span> [<span style="color:#ae81ff">3</span>]<span style="color:#66d9ef">struct</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#66d9ef">range</span> <span style="color:#a6e22e">whatever</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>		}()
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>2
+2
+2
+defer 后面跟的是一个闭包，i是“引用”类型的变量，for循环结束后i的值为2，因此后面打印了3个2.
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">number</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">n</span> <span style="color:#a6e22e">number</span>)print(){<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">n</span>)}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">n</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">number</span>)<span style="color:#a6e22e">pprint</span>(){<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">n</span>)}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">n</span> <span style="color:#a6e22e">number</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">n</span>.print()             <span style="color:#75715e">//刚开始n=0,已经传入了0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">pprint</span>()            <span style="color:#75715e">//引用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){<span style="color:#a6e22e">n</span>.print()}()   <span style="color:#75715e">//闭包引用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){<span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">pprint</span>()}()  <span style="color:#75715e">//闭包引用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">n</span>=<span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>3
+3
+3
+0
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;befer return&#34;</span>)
+</span></span><span style="display:flex;"><span>  }()
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#66d9ef">true</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;during retrun&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span>    <span style="color:#75715e">//这里return了，后面的defer函数没有注册  不执行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;after return&#34;</span>)
+</span></span><span style="display:flex;"><span>  }()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>during return
+befer return
+</code></pre><p>在某些情况下，会故意用到defer的“先求值，再延迟调用”的性质，像这样的场景：在一个函数里，需要打开两个文件进行合并操作，合并完成后，在函数结束前关闭打开的文件句柄。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">mergeFile</span>()<span style="color:#66d9ef">error</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//打开文件1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">f</span>,<span style="color:#a6e22e">_</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#e6db74">&#34;file1.txt&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">f</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">f</span> <span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">Closer</span>){   <span style="color:#75715e">//定义时，参数已经复制
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">f</span>.<span style="color:#a6e22e">Closer</span>();<span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;defer close file1.txt err %v\n&#34;</span>,<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }(<span style="color:#a6e22e">f</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//打开文件2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">f</span>,<span style="color:#a6e22e">_</span>=<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#e6db74">&#34;file2.txt&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">f</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">f</span> <span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">Closer</span>){    <span style="color:#75715e">// 定义时，参数已经复制
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">f</span>.<span style="color:#a6e22e">Close</span>();<span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{    <span style="color:#75715e">//关闭的就是正确的文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;defer close file2.txt err %v\n&#34;</span>,<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }(<span style="color:#a6e22e">f</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>在调用close（）函数时，要注意一点：<strong>先判断调用主体是否为空，否则可能会解引用了一个空指针，进而Panic。</strong></p>
+<h3 id="拆解延迟语句">
+  拆解延迟语句
+  <a class="anchor" href="#%e6%8b%86%e8%a7%a3%e5%bb%b6%e8%bf%9f%e8%af%ad%e5%8f%a5">#</a>
+</h3>
+<pre tabindex="0"><code>return xxx
+</code></pre><p>上面这条语句经过编译之后，实际上生成了3条指令：</p>
+<ol>
+<li>返回值=xxx</li>
+<li>调用defer函数</li>
+<li>空的return</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">f</span>() (<span style="color:#a6e22e">r</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">r</span> <span style="color:#66d9ef">int</span>) {<span style="color:#75715e">//1.先赋值，r=1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">r</span> = <span style="color:#a6e22e">r</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">5</span>        <span style="color:#75715e">//2.这里改的r是之前传进去的r，不会改变返回的那个r
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}(<span style="color:#a6e22e">r</span>)  <span style="color:#75715e">//改变的是传值进去的r，是形参的一个复制值，不会影响实参r。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>  <span style="color:#75715e">//3.空的return
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><pre tabindex="0"><code>1
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">f</span>() (<span style="color:#a6e22e">r</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">t</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">5</span> <span style="color:#75715e">//1.赋值，r=5
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>() { <span style="color:#75715e">//2.defer被插入到赋值与返回之间执行，这个例子中返回值r没有被修改过
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">t</span> = <span style="color:#a6e22e">t</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">t</span>  <span style="color:#75715e">//3.最后执行空的return指令
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><pre tabindex="0"><code>5
+</code></pre><h3 id="闭包">
+  闭包
+  <a class="anchor" href="#%e9%97%ad%e5%8c%85">#</a>
+</h3>
+<p><strong>闭包是由函数及其相关引用环境组合而成的实体，即：闭包=函数+引用环境。</strong></p>
+<p>匿名函数不能独立存在，但可以直接调用或者赋值于某个变量。匿名函数也被称为闭包，一个闭包继承了函数声明时的作用域。<strong><u>在Go语言中，所有的匿名函数都是闭包。</u></strong></p>
+<blockquote>
+<p>可以把闭包看成是一个类，一个闭包函数调用就是实例化一个类。闭包在运行时可以有很多个实例，它会将同一个作用域里的变量和常量捕获下来，无论闭包在什么地方被调用（实例化）时，都可以使用这些变量和常量。</p>
+<p>闭包捕获的变量和常量时引用传递，不是值传递。</p>
+</blockquote>
+<h3 id="延迟语句如何配合恢复语句">
+  延迟语句如何配合恢复语句
+  <a class="anchor" href="#%e5%bb%b6%e8%bf%9f%e8%af%ad%e5%8f%a5%e5%a6%82%e4%bd%95%e9%85%8d%e5%90%88%e6%81%a2%e5%a4%8d%e8%af%ad%e5%8f%a5">#</a>
+</h3>
+<blockquote>
+<p>Go函数总是会返回一个error，留给调用者处理；而如果是致命的错误，比如程序执行初始化的时候出问题，最好直接Panic掉，避免上线运行后出更大的问题。</p>
+<p>有些时候，需要从异常中恢复。<u>比如服务器程序遇到严重问题，防止客户端一直等待等</u>；并且单个请求导致的Panic，也不影响整个服务器程序的运行。</p>
+<p>Panic会停掉当前正在执行的程序，而不只是当前的线程。在这之前，它会有序地执行完当前线程defer列表里的语句，其他协程里定义的defer语句不做保证。<strong>所以在defer里定义一个recover语句，防止程序直接挂掉。</strong></p>
+</blockquote>
+<p><strong>注意：recover（）函数只在defer的函数中直接调用才有效。</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;defer main&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">user</span>=<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Getenv</span>(<span style="color:#e6db74">&#34;USER_&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;defer caller&#34;</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">:=</span>recover();<span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;recover success .err&#34;</span>,<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;defer here&#34;</span>)
+</span></span><span style="display:flex;"><span>      }()
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">user</span><span style="color:#f92672">==</span><span style="color:#e6db74">&#34;&#34;</span>{
+</span></span><span style="display:flex;"><span>        panic(<span style="color:#e6db74">&#34;should se user env.&#34;</span>)
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">//此处不会执行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;after panic&#34;</span>)
+</span></span><span style="display:flex;"><span>    }()
+</span></span><span style="display:flex;"><span>  }()
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">100</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;end of main function&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>defer here
+defer caller
+recover success.err: should set user env.
+end of main function
+defer main
+</code></pre><p>代码中的Panic最终会被recover捕获到。这样的处理方式在一个http server的主流程常常会被用到。一次偶然的请求可能会触发某个bug，这时用recover捕获Panic，稳住主流程，不影响其他请求。</p>
+<h4 id="recover函数调用位置">
+  recover（）函数调用位置
+  <a class="anchor" href="#recover%e5%87%bd%e6%95%b0%e8%b0%83%e7%94%a8%e4%bd%8d%e7%bd%ae">#</a>
+</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">f</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">painc</span>(<span style="color:#ae81ff">404</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">f</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">e</span><span style="color:#f92672">:=</span>recover();<span style="color:#a6e22e">e</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;recover&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//能调用，在defer的函数中调用，生效
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  recover()
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">painc</span>(<span style="color:#ae81ff">404</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//不能，直接调用recover，返回nil
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">defer</span> recover()
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">painc</span>(<span style="color:#ae81ff">404</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//不能，要在defer函数里调用recover
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">e</span><span style="color:#f92672">:=</span>recover();<span style="color:#a6e22e">e</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;recover&#34;</span>)
+</span></span><span style="display:flex;"><span>  	}
+</span></span><span style="display:flex;"><span>  }()
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">painc</span>(<span style="color:#ae81ff">404</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//能，在defer的函数中调用，生效
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>    recover()
+</span></span><span style="display:flex;"><span>  }()
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">painc</span>(<span style="color:#ae81ff">404</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//能，在defer的函数中调用，生效
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>  	<span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>    	recover()
+</span></span><span style="display:flex;"><span>  	}()
+</span></span><span style="display:flex;"><span>  }()
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">painc</span>(<span style="color:#ae81ff">404</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//不能，多重defer嵌套
+</span></span></span></code></pre></div><h3 id="为什么无法从父goroutine恢复子goroutine的panic">
+  为什么无法从父goroutine恢复子goroutine的Panic
+  <a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e6%97%a0%e6%b3%95%e4%bb%8e%e7%88%b6goroutine%e6%81%a2%e5%a4%8d%e5%ad%90goroutine%e7%9a%84panic">#</a>
+</h3>
+<p>即为什么无法recover其他goroutine里产生的Panic？？？</p>
+<p><font color='red'><strong>因为goroutine被设计为一个独立的代码执行单元，拥有自己的执行栈，不与其他goroutine共享任何数据。这意味着，无法让goroutine拥有返回值、也无法让goroutine拥有自身的ID编号等。</strong></font><font color='green'>若需要与其他goroutine产生交互，要么可以使用channel的方式与其他goroutine进行通信，要么通过共享内存同步方式对共享的内存添加读写锁。</font></p>
+<p>如果希望有一个全局的恐慌捕获中心，那么可以通过创建一个恐慌通知channel，并在产生恐慌时，通过recover字段将其恢复，并将发生的错误通过channel通知给这个全局的恐慌通知器：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">notifier</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">interface</span>{}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">startGlobalPanicCapturing</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">notifier</span>=make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">interface</span>{})
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>{
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">select</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">r</span><span style="color:#f92672">:=&lt;-</span><span style="color:#a6e22e">notifier</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">r</span>)
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">startGlobalPanicCapturing</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//产生恐慌，但该恐慌会被捕获
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">Go</span>(<span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">a</span><span style="color:#f92672">:=</span>make([]<span style="color:#66d9ef">int</span>,<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>    println(<span style="color:#a6e22e">a</span>[<span style="color:#ae81ff">1</span>])
+</span></span><span style="display:flex;"><span>  })
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//Go是一个恐慌安全的goroutine
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Go</span>(<span style="color:#a6e22e">f</span> <span style="color:#66d9ef">func</span>()){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>(){
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span>recover();<span style="color:#a6e22e">r</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">notifier</span><span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">r</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }()
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">f</span>()
+</span></span><span style="display:flex;"><span>  }()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>上面的func Go（f func())本质上是对go关键字进行了一层封装，确保在执行并发单元前插入一个defer，从而保证恢复一些可恢复的错误。</p>
+<p>这个方案并不完美，原因是如果函数f内部不在使用Go函数来创建goroutine，而且含有继续产生必然恐慌的代码，那么仍然会出现不可恢复的情况。或者还有一些不可恢复的运行时恐慌（例如并发读写map),如果这类恐慌一旦发生，那么任何补救都是徒劳的。</p>
+<h1 id="数据容器">
+  数据容器
+  <a class="anchor" href="#%e6%95%b0%e6%8d%ae%e5%ae%b9%e5%99%a8">#</a>
+</h1>
+<h2 id="数组与切片">
+  数组与切片
+  <a class="anchor" href="#%e6%95%b0%e7%bb%84%e4%b8%8e%e5%88%87%e7%89%87">#</a>
+</h2>
+<h3 id="异同">
+  异同
+  <a class="anchor" href="#%e5%bc%82%e5%90%8c">#</a>
+</h3>
+<p>Go推荐使用slice而不是数组</p>
+<p>Go语言中，切片是对数组的封装，数组固定长度，不能更改，切片可以动态扩容，且切片的类型和长度无关。</p>
+<p>数组长度不一致，不属于同一类型，无法进行比较。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">slice</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">array</span> <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>  <span style="color:#75715e">//元素指针
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">len</span> <span style="color:#66d9ef">int</span>          <span style="color:#75715e">//长度
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">cap</span> <span style="color:#66d9ef">int</span>         <span style="color:#75715e">//容量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>底层数组可以被多个切片同时指向，因此对一个切片的元素进行操作有可能会影响到其他切片。</p>
+<h3 id="切片截取">
+  切片截取
+  <a class="anchor" href="#%e5%88%87%e7%89%87%e6%88%aa%e5%8f%96">#</a>
+</h3>
+<p>基于已有slice创建新slice对象，被称为replace，共用底层数组。如果因为执行append操作使得新slice或老slice底层数组扩容，移动到了新的位置，两者就不会相互影响了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){<span style="color:#75715e">//想想为什么
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">slice</span><span style="color:#f92672">:=</span>[]<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">6</span>,<span style="color:#ae81ff">7</span>,<span style="color:#ae81ff">8</span>,<span style="color:#ae81ff">9</span>} <span style="color:#75715e">//容量10
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">s1</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">slice</span>[<span style="color:#ae81ff">2</span>:<span style="color:#ae81ff">5</span>] <span style="color:#75715e">//[2,3,4]len=3  cap=8  后面的还在，
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">s2</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">s1</span>[<span style="color:#ae81ff">2</span>:<span style="color:#ae81ff">6</span>:<span style="color:#ae81ff">7</span>] <span style="color:#75715e">//[low,high,max]要求max&gt;=high&gt;=low   high和max必须在老slice的容量cap范围内
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#75715e">//[4] len=4 cap=5
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">s2</span>=append(<span style="color:#a6e22e">s2</span>,<span style="color:#ae81ff">100</span>) <span style="color:#75715e">//第一次追加，容量够用，会修改原始数组对应位置的元素。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">s2</span>=append(<span style="color:#a6e22e">s2</span>,<span style="color:#ae81ff">200</span>) <span style="color:#75715e">//第二次追加，容量不够，另起炉灶，将原来元素复制到新位置，扩大容量，故不再变化。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">s1</span>[<span style="color:#ae81ff">2</span>]=<span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s1</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s2</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">slice</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>[2 3 20]
+[4 5 6 7 100 200]
+[0 1 2 3 20 5 6 7 100 9]
+</code></pre><h3 id="切片扩容">
+  切片扩容
+  <a class="anchor" href="#%e5%88%87%e7%89%87%e6%89%a9%e5%ae%b9">#</a>
+</h3>
+<p>一般都是在向切片追加元素之后，由于容量不足，才会引起扩容。调用append函数</p>
+<pre tabindex="0"><code>func append(slice []Type,elems...Type)[]Type
+</code></pre><p>Append函数的参数长度可变，因此可以追加多个值到slice中，还可以在切片后面追加&quot;&hellip;&ldquo;符号直接传入slice，即追加切片里所有的元素。</p>
+<p>实际上是往底层数组相应的位置放置要追加的元素。但底层数组的长度是固定的，如果超出容量，slice会迁移到新的位置，并且底层数组的长度也会增加。</p>
+<p>同时，为了应对未来可能再次发生append操作，新的底层数组的长度，也就是新slice的容量需要预留一定的buffer。否则，每次添加元素的时候，都会发生迁移，成本太高。</p>
+<blockquote>
+<ul>
+<li>当原slice容量小于1024时，新slice容量变为原来的2倍   //也是不准确，大概是</li>
+<li>当原slice容量大于1024时，新slice容量变为原来的1.25倍，但由于Go进行了内存对齐，新slice的容量要大于等于老slice容量的2倍或1.25倍。</li>
+</ul>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){ <span style="color:#75715e">//想想为什么
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">s</span><span style="color:#f92672">:=</span>[]<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">5</span>} <span style="color:#75715e">//cap=1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">s</span>=append(<span style="color:#a6e22e">s</span>,<span style="color:#ae81ff">7</span>) <span style="color:#75715e">//扩容 cap=2  [5 7]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">s</span>=append(<span style="color:#a6e22e">s</span>,<span style="color:#ae81ff">9</span>) <span style="color:#75715e">//扩容 cap=4   [5 7 9]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">x</span><span style="color:#f92672">:=</span>append(<span style="color:#a6e22e">s</span>,<span style="color:#ae81ff">11</span>)  <span style="color:#75715e">//没有扩容  cap=4 [5 7 9 11]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">y</span><span style="color:#f92672">:=</span>append(<span style="color:#a6e22e">s</span>,<span style="color:#ae81ff">12</span>)  <span style="color:#75715e">//没有扩容  cap=4 [5 7 9 12] 然后底层被改了 都变成12了
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s</span>,<span style="color:#a6e22e">x</span>,<span style="color:#a6e22e">y</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>[5 7 9] [5 7 9 12] [5 7 9 12]
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">s</span><span style="color:#f92672">:=</span>[]<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">s</span>=append(<span style="color:#a6e22e">s</span>,<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">6</span>)   <span style="color:#75715e">//len=5 cap=6 而不是8  注意一下就行， 大于等于2倍或1.25倍
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><h3 id="切片作为函数参数会被改变吗">
+  切片作为函数参数会被改变吗
+  <a class="anchor" href="#%e5%88%87%e7%89%87%e4%bd%9c%e4%b8%ba%e5%87%bd%e6%95%b0%e5%8f%82%e6%95%b0%e4%bc%9a%e8%a2%ab%e6%94%b9%e5%8f%98%e5%90%97">#</a>
+</h3>
+<p>当slice作为函数参数时，就是一个普通的结构体。若直接传slice，在调用者看来，实参slice并不会被函数中对形参的操作而改变，实参是形参的复制；若传的是slice指针，则会影响实参。</p>
+<p>不论传的是slice还是slice指针，如果改变了slice底层数组的数据，都会反映到实参slice到底层数据。因为底层数组在slice结构体里是一个指针。</p>
+<p><font color="red">Go语言中的函数参数传递，只有值传递，没有引用传递。</font></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">s</span><span style="color:#f92672">:=</span>[]<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>}
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">f</span>(<span style="color:#a6e22e">s</span>)     <span style="color:#75715e">//向f传递了一个slice副本，s是main函数中s的一个复制
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">f</span>(<span style="color:#a6e22e">s</span> []<span style="color:#66d9ef">int</span>){
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//i 只是一个副本，不能改变s中元素的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">//for _,i:=range s{
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">//	i++
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">//}
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#66d9ef">range</span> <span style="color:#a6e22e">s</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">s</span>[<span style="color:#a6e22e">i</span>]<span style="color:#f92672">+=</span><span style="color:#ae81ff">1</span>    <span style="color:#75715e">//这里改变了 将返回的新slice赋值到原始slice中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>[2 2 2]
+</code></pre><p>要想改变外层slice结构体，只有将返回的新slice赋值到原始slice中，或者向函数传递一个指向slice到指针。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">myAppend</span>(<span style="color:#a6e22e">s</span> []<span style="color:#66d9ef">int</span>)[]<span style="color:#66d9ef">int</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//这里s结构体虽然改变了，但并不会改变外层函数的s结构体  因为它是值传递
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">s</span>=append(<span style="color:#a6e22e">s</span>,<span style="color:#ae81ff">100</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">s</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">myAppendPtr</span>(<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span>[]<span style="color:#66d9ef">int</span>){
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//会改变外层s结构体本身
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#f92672">*</span><span style="color:#a6e22e">s</span>=append(<span style="color:#f92672">*</span><span style="color:#a6e22e">s</span>,<span style="color:#ae81ff">100</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> 
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">s</span><span style="color:#f92672">:=</span>[]<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">newS</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">myAppend</span>(<span style="color:#a6e22e">s</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">newS</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">s</span>=<span style="color:#a6e22e">newS</span>   <span style="color:#75715e">//新切片赋值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">myAppendPtr</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">s</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>[1 1 1]
+[1 1 1 100]
+[1 1 1 100 100]
+</code></pre><h3 id="make和new的区别">
+  make和new的区别
+  <a class="anchor" href="#make%e5%92%8cnew%e7%9a%84%e5%8c%ba%e5%88%ab">#</a>
+</h3>
+<p>make和new是Go语言内置的用来分配内存的函数。make用于slice,map,channel等引用类型；new适用于int型、数组、结构体等值类型。</p>
+<p><font color="red">make返回一个值，new返回一个指针。</font></p>
+<p>使用上，make返回初始化之后的类型的引用，new会为类型的新值分配已置零的内存空间，并返回指针。</p>
+<p><font color="red">Slice未初始化并没有分配内存时，可以用append函数插入</font></p>
+<p><strong>make函数用来初始化slice、map、以及channel；而一个slice、map、以及channel必须先被初始化才能使用</strong></p>
+<pre tabindex="0"><code>// 定义未初始化的map, nil map不能赋值
+var m1 map[int]string
+// m1 = make(map[int]string, 0) // 初始化
+ 
+// 通过字面量形式定义并初始化为空map
+var m2 = map[int]string{}
+ 
+// 通过make函数定义并初始化为空map
+var m3 = make(map[int]string, 0)
+</code></pre><h2 id="map">
+  map
+  <a class="anchor" href="#map">#</a>
+</h2>
+<p>map它是一个组&lt;key,value&gt;对组成的抽象数据结构，并且同一个key只会出现一次。</p>
+<p>map的设计也被称为“The dictionary problem&rdquo;，它的任务是设计一种数据结构用来维护一个集合的数据，并且可以同时对集合进行增删查改的操作。最主要的数据结构有两种：<strong>哈希查找表（Hash table）</strong>（Go采用的）、<strong>搜索树（Search tree）</strong>。</p>
+<blockquote>
+<p>哈希查找表用一个哈希函数将key分配到不同的bucket（桶，类似于数组中的不同索引）。于是，开销主要在哈希函数的计算以及数组的常数访问时间。在很多场景下，哈希查找表的性能很高。</p>
+<p>哈希查找表解决碰撞问题，不同的key被哈希到了同一个bucket。</p>
+<ul>
+<li><u>链表法  （GO使用的）</u></li>
+</ul>
+<p>将一个bucket实现成一个链表，落在同一个bucket中的key都会插入这个链表。</p>
+<ul>
+<li>开放地址法</li>
+</ul>
+<p>在碰撞之后，根据一定的规律，在bucket的后面挑选空位，用来放置新的key。</p>
+<p>搜索树一般采用自平衡搜索树，包括<a href="">AVL树</a>、<a href="">红黑树</a>等。</p>
+<p>自平衡搜索树法的最差搜索效率是O(logN)，而哈希表是O(N)。当然，哈希查找表的平均查找效率是O(1),如果哈希函数设计的好，最坏的情况基本不会出现。还有一点，遍历自平衡搜索树，返回的key序列，一般会按照从小到大的顺序，而哈希查找表则是乱序的。</p>
+</blockquote>
+<h3 id="map的底层原理">
+  map的底层原理
+  <a class="anchor" href="#map%e7%9a%84%e5%ba%95%e5%b1%82%e5%8e%9f%e7%90%86">#</a>
+</h3>
+<h4 id="map内存模型">
+  map内存模型
+  <a class="anchor" href="#map%e5%86%85%e5%ad%98%e6%a8%a1%e5%9e%8b">#</a>
+</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">hmap</span> <span style="color:#66d9ef">struct</span> {<span style="color:#75715e">// A header for a Go map.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">count</span>     <span style="color:#66d9ef">int</span>  <span style="color:#75715e">// 代表哈希表中的元素个数，调用len(map)时，返回的就是该字段值。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">flags</span>     <span style="color:#66d9ef">uint8</span>  <span style="color:#75715e">// 状态标志（是否处于正在写入的状态等）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">B</span>         <span style="color:#66d9ef">uint8</span>  <span style="color:#75715e">//buckets（桶）的对数 如果B=5，则buckets数组的长度 = 2^B=32，意味着有32个桶
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">noverflow</span> <span style="color:#66d9ef">uint16</span> <span style="color:#75715e">// 溢出桶的数量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">hash0</span>     <span style="color:#66d9ef">uint32</span> <span style="color:#75715e">// 生成hash的随机数种子 计算key的哈希的时候会传入哈希函数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">buckets</span>    <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span> <span style="color:#75715e">// 指向buckets数组的指针，数组大小为2^B，如果元素个数为0，它为nil。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">oldbuckets</span> <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span> <span style="color:#75715e">// 如果发生扩容，oldbuckets是指向老的buckets数组的指针，老的buckets数组大小是新的buckets的1/2;非扩容状态下，它为nil。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">nevacuate</span>  <span style="color:#66d9ef">uintptr</span>        <span style="color:#75715e">// 表示扩容进度，小于此地址的buckets代表已搬迁完成。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">extra</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">mapextra</span> <span style="color:#75715e">// 存储溢出桶，这个字段是为了优化GC扫描而设计的，下面详细介绍
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>B是buckets数组的长度的对数，即buckets数组的长度为2^B，bucket里面存储了key和value，buckets是一个指针，指向一个结构体。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208051617512.png" alt="" /></p>
+<p><code>bmap</code> 就是我们常说的“桶”，一个桶里面会<strong>最多装 8 个&lt; key,value&gt;对</strong>，这些 key 之所以会落入同一个桶，是因为它们经过哈希计算后，哈希结果的<strong>最后B个bit位是相同的</strong>（哈希值并不是完全相等，是后面几位相同）。在桶内，又会根据key计算出来的hash值的<strong>高8位</strong>来决定key到底落入桶内的那个槽位。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">bmap</span> <span style="color:#66d9ef">struct</span> { <span style="color:#75715e">// A bucket for a Go map.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">tophash</span> [<span style="color:#a6e22e">bucketCnt</span>]<span style="color:#66d9ef">uint8</span>        
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// len为8的数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 用来快速定位key是否在这个bmap中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 一个桶最多8个槽位，如果key所在的tophash值在tophash中，则代表该key在这个桶中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>上面bmap结构是静态结构，在编译过程中<code>runtime.bmap</code>会拓展成以下结构体：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">bmap</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">tophash</span> [<span style="color:#ae81ff">8</span>]<span style="color:#66d9ef">uint8</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">keys</span> [<span style="color:#ae81ff">8</span>]<span style="color:#a6e22e">keytype</span> <span style="color:#75715e">// keytype 由编译器编译时候确定
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">values</span> [<span style="color:#ae81ff">8</span>]<span style="color:#a6e22e">elemtype</span> <span style="color:#75715e">// elemtype 由编译器编译时候确定
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">overflow</span> <span style="color:#66d9ef">uintptr</span> <span style="color:#75715e">// overflow指向下一个bmap，overflow是uintptr而不是*bmap类型，保证bmap完全不含指针，是为了减少gc，溢出桶存储到extra字段中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p><font color='red'>注意到 key 和 value 是各自放在一起的，并不是 <code>key/value/key/value/...</code> 这样的形式，当key和value类型不一样的时候，key和value占用字节大小不一样，使用key/value这种形式可能会因为内存对齐导致内存空间浪费，所以Go采用key和value分开存储的设计，更节省内存空间。</font></p>
+<p>每个bucket设计成最对只能放8个key-value对，如果有第9个key-value落入当前bucket，需要重新构建一个bucket，并且通过overflow指针连接起来。这就是所谓的链表法。</p>
+<p><strong>mapextra结构体</strong></p>
+<p>当map的key和value都不是指针类型时候，并且size都小于128字节的情况下，会把bmap标记为不含指针，那么gc时候就不用扫描bmap，提升效率。但bmap指向溢出桶的字段overflow是指针类型，为了防止这些overflow桶被gc掉，所以需要mapextra.overflow将它保存起来。如果bmap的overflow是*bmap类型，那么gc扫描的是一个个拉链表，效率明显不如直接扫描一段内存(hmap.mapextra.overflow)。</p>
+<p>当key/value都不含指针的情况下，启用overflow和oldoverflow字段。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">mapextra</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">overflow</span>    <span style="color:#f92672">*</span>[]<span style="color:#f92672">*</span><span style="color:#a6e22e">bmap</span> <span style="color:#75715e">// overflow 包含的是 hmap.buckets 的 overflow 的 buckets
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">oldoverflow</span> <span style="color:#f92672">*</span>[]<span style="color:#f92672">*</span><span style="color:#a6e22e">bma</span> <span style="color:#75715e">// oldoverflow 包含扩容时 hmap.oldbuckets 的 overflow 的 bucket
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">nextOverflow</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">bmap</span>  <span style="color:#75715e">// 指向空闲的 overflow bucket 的指针
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><h4 id="创建map">
+  创建map
+  <a class="anchor" href="#%e5%88%9b%e5%bb%bamap">#</a>
+</h4>
+<p>创建map的底层掉用的是makemap函数，主要做的工作是初始化hmap结构体的各种字段，例如计算B的大小，设置哈希种子hash0等。</p>
+<p><strong>slice和map分别作为函数参数时有什么区别？</strong></p>
+<p>makemap函数返回的结果是*hmap，是一个指针，而makeslice函数返回的则是slice结构体，结构体内部包含底层数组的指针。</p>
+<p>makemap和makeslice返回值的区别，使得当map和slice作为函数参数时，在函数内部对map的操作会影响map结构体；而对slice操作却不会（注意，这里的不变指的是slice结构体自身，而不是slice底层数组的元素可能会被改变）。</p>
+<p><strong>主要原因</strong>：前者是指针（*hmap），后者是结构体（slice）。Go语言中的函数传参都是值传递，在函数内部，参数会被复制到本地。*hmap指针复制完成后，仍然指向同一个map，因此函数内部对map的操作会影响实参。而slice被复制后，成为一个新slice，对它进行的操作不会影响到实参。</p>
+<h4 id="哈希函数">
+  哈希函数
+  <a class="anchor" href="#%e5%93%88%e5%b8%8c%e5%87%bd%e6%95%b0">#</a>
+</h4>
+<p>在程序启动时，Go会检测CPU是否支持aes，如果支持则使用aes hash，如果不支持，则使用memhash。</p>
+<p>在map应用场景中，hash函数用于查找功能。</p>
+<h4 id="key定位过程">
+  key定位过程
+  <a class="anchor" href="#key%e5%ae%9a%e4%bd%8d%e8%bf%87%e7%a8%8b">#</a>
+</h4>
+<p>Key经过哈希计算后得到哈希值，共有64个bit位，但<strong>计算它到底要落在那个bucket时，只会用到最后B个bit位。</strong></p>
+<p>先用B=5，则bucket的总数是2^5=32。用最后5个bit位，找到6号桶。再取哈希值的高8位，找到此key在bucket中的槽位。最开始因为桶内还没有key，在遍历完bucket中的所有槽位，包括overflow的槽位，找不到相同的key，因此会被放到第一个槽位。</p>
+<p>因为根据后B个bit位决定key落入的bucket编号，也就是桶编号，因此肯定会存在哈希冲突。当两个不同的key落在同一个桶中，也就是发生了哈希冲突。冲突解决的手段就是用链表法：在bucket中，从前往后找到第一个空位，放入新加入的有冲突的key。之后，在找某个key时，先找到对应的桶，再去遍历bucket中所有的key。</p>
+<p><strong>具体定位过程：</strong></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202211031451269.JPG" alt="" /></p>
+<p>假定B=5，则bucket的总数是2^5=32。首先计算出待查找key的哈希，使用低5位00110，找到对应的bucket，也就是6号bucket。<font color='red'>使用哈希值的高8位10010111，对应151，在6号bucket中寻找tophash值（HOBhash)为151的key,找到二号槽位就结束了</font>，如果没找到，并且overflow不为空，则去overflow指向的bucket中找。</p>
+<h4 id="map的赋值过程">
+  map的赋值过程
+  <a class="anchor" href="#map%e7%9a%84%e8%b5%8b%e5%80%bc%e8%bf%87%e7%a8%8b">#</a>
+</h4>
+<p>向map插入或修改key，调用的是mapassign函数。</p>
+<blockquote>
+<p><strong>流程：</strong></p>
+<p>对key计算hash值，根据hash值按照之前的流程，找到要赋值的位置（可能是插入新key，也可能是更新老key），在相应的位置进行赋值操作。</p>
+<p>mapassign函数首先会检查map的标志位flags。如果flags的写标志位被置成1了，说明有其他协程正在执行“写“操作，由于assign本身也是写操作，因此产生了并发写，直接使程序Panic。</p>
+<p>map的扩容是渐进式的。<font  color='red'>如果map处在扩容的过程中，那么定位key到了某个bucket后，需要确保这个bucket对应的老bucket已经完成了迁移过程。即老bucket里的key都要迁移到新bucket中来（老bucket中的key会被分散到2个新bucket），才能在新的bucket中进行插入或者更新操作。</font></p>
+<p>只有在完成迁移操作之后，才能安全的在新bucket里定位key要安置的地址，再进行之后的赋值操作。</p>
+<p>现在到了定位key应该放置的位置了：准备两个指针，一个（inserti）指向key的hash值在tophash数组所处的位置，另一个（insertk）指向cell的位置（也就是key最终放置的地址）。当然，对应value的位置就很容易计算出来：在tophash数组中的索引位置决定了key在整个bucket中的位置（共8个key），而value的位置需要跨过8个key的长度。</p>
+<p>在循环过程中，inserti和insetk分别指向第一个空的topash、第一个空闲的cell。如果之后在map没有找到key的存在，也就是说map中没有此key，这意味着插入新key，而不是更新原有的key。那最终key的安置地址就是第一次发现的空闲的cell。</p>
+<p>如果这个bucket的8个key都放满了，在跳出循环后，会发现inserti和insertk都为空，这时需要在bucket后面挂上overflow bucket。当然，也有可能是在overflow buxket后面再挂上一个overflow bucket。这就说明，有太多key 被哈希到了此bucket。在这种情况下，正式放置key之前，还要检查map的状态，看它是否需要扩容，如果满足扩容的条件，就主动触发一次扩容操作。</p>
+<p>扩容完成后，之前的查找定位key的过程，还得重新再走一次。因为扩容之后，key的分布发生了变化。</p>
+<p>最后，会更新map相关的值，如果是插入新key，map的元素数量字段count值会+1，并且会将hashWriting写标志位清零。</p>
+</blockquote>
+<h4 id="map的删除过程">
+  map的删除过程
+  <a class="anchor" href="#map%e7%9a%84%e5%88%a0%e9%99%a4%e8%bf%87%e7%a8%8b">#</a>
+</h4>
+<p>删除操作低成的执行函数是mapdelete;</p>
+<blockquote>
+<p>它会首先检查h.flags标志，如果发现写标志位是1，直接Panic，因为这表明有其他协程同时在进行写操作。大致逻辑如下：</p>
+<ul>
+<li>检测是否存在并发写操作。</li>
+<li>计算key的哈希，找到落入的bucket。</li>
+<li>设置写标志位。</li>
+<li>检查此map是否正在扩容的过程中，如果是则直接触发一次搬迁操作。</li>
+<li>两层循环，核心是找到key的具体位置。寻找过程都是类似的，在bucket中挨个cell寻找。</li>
+<li>找到对应位置后，对key或者value进行清零操作。</li>
+<li>将count值-1，将对应位置的tophash值置成emptyOne。</li>
+<li>最后检测此槽位后面是否为空，若是将tophash改为emptyRest。</li>
+<li>若前一步成功，将此cell之前的tophash值为emptyOne的槽位都置为emptyRest。</li>
+</ul>
+</blockquote>
+<h4 id="map的扩容过程">
+  map的扩容过程
+  <a class="anchor" href="#map%e7%9a%84%e6%89%a9%e5%ae%b9%e8%bf%87%e7%a8%8b">#</a>
+</h4>
+<p>Go语言中一个bucket装载8个key，所以在定位到某个bucket后，还需要再定位到具体的槽位cell，这实际上又是时间换空间。</p>
+<p>当然，这样做，要有一个度，不然所有的key都落在了同一个bucket里，直接退化成了链表，各种操作的效率直接降为O(n)，也是不行的。</p>
+<p>**装载因子：**衡量前面所说的情况。</p>
+<pre tabindex="0"><code>loadFactor:=count/(2^B)
+count:元素个数，2^B总的bucket数量
+</code></pre><p>在向map插入新key时，会进行条件检测，符合下面两个条件，就会触发扩容：</p>
+<ul>
+<li>装载因子超过阙值（源码里定义的阙值是6.5）</li>
+<li>overflow的bucket数量过多：当B&lt;15，也就是bucket总数2^B小于2^15时，overflow的bucket数量超过2^B；当B&gt;=15,也就是bucket总数2^B大于等于2^15，overflow的bucket数量超过2^15。</li>
+</ul>
+<blockquote>
+<p><strong>第一点：</strong></p>
+<p>当B=2，则bucket的总数为2^2=4，四个桶装满有4*8个元素，故正常情况下装满装载因子是8 ，当为6.5时证明快要装满了，则扩容。</p>
+<p><strong>第二点：</strong></p>
+<p>是对第一点的补充，当bucket数量多（真实分配的bucket数量多，包括大量的overflow bucket），但是装载因子却很低。</p>
+<p>当B为3  则overflow的bucket超过 2^3=8 ，则扩容</p>
+<p>当B为19  则overflow的buxket数量超过  2^15，则扩容</p>
+</blockquote>
+<p><strong>扩容策略</strong></p>
+<blockquote>
+<p><strong>条件一：</strong></p>
+<p>元素太多，但是bucket数量太少。扩容后新buckets时原来的一倍。</p>
+<p>方法：将B+1，bucket总数（2^B）直接变为原来的2倍。出现新老bucket。注意，这时候元素都在老bucket中，还没迁移到新bucket来。而且，新bucket只是最大数量变为原来最大数量(2^B)的2倍（2^B*2)。</p>
+<p>搬迁要重新计算key的哈希，才能决定它到底落在那个bucket。例如原来B=5，计算出key哈希后，只用看它低5位，就能决定它落在那个bucket。扩容后，B变成了6，因此需要多看一位，哈希值的低6位决定key落在那个bucket。这称为map rehash。</p>
+<p><strong>条件二：</strong></p>
+<p>元素不多，但overflow bucket数特别多，说明很多bucket没有装满。扩容后，新的buckets数量和之前相等。</p>
+<p>方法：开辟新的bucket空间，将老bucket中的元素移动到新bucket，是的同一个bucket中的key排列的更紧密。</p>
+<p>由于map扩容需要将原有的key/value重新搬迁 到新的内存地址，如果有大量的key/value需要搬迁，会非常影响性能。因此Go map的扩容采取了一种“渐进式”的方式，原有的key不会一次性搬迁完毕，每次最多只会2个bucket。</p>
+<p>实际上，hashGrow()函数并没有真正进行搬迁，它只是分配好新的buckets，并将buckets加载到oldbuckets字段上。真正搬迁buckets的动作是在growWork（）函数中，而调用growWork（）函数的动作是在mapassign和mapdelete函数中。也就是在插入、修改、删除key的时候，都会先检查oldbuckets是否搬迁完毕，具体来说就是检查oldbuckets是否为nil，再尝试进行搬迁buckets的工作。</p>
+<blockquote>
+<p>hashGrow函数的主要工作时申请到了新的bucket空间，把相关标志位都进行了处理。</p>
+</blockquote>
+<p>从老的buckets搬迁到新的buckets，由于buckets 数量不变，因此可以按序号来搬，比如key在原来0号buckets，到新地方后，仍然放到0号buckets。</p>
+</blockquote>
+<h4 id="map的遍历过程">
+  map的遍历过程
+  <a class="anchor" href="#map%e7%9a%84%e9%81%8d%e5%8e%86%e8%bf%87%e7%a8%8b">#</a>
+</h4>
+<p>map扩容过程不是一个原子的操作，它每次最多只能搬运2个bucket，所以如果触发了扩容操作，那么很长时间里，map的状态都是处于一个中间态：有些bucket已经搬迁到“新家”，而有些bucket还待在“老家”。</p>
+<p><strong>过程：</strong></p>
+<p>先是调用mapiterinit函数初始化迭代器，然后循环调用mapiternext函数进行map遍历。mapiterinit（）就是对hitter结构体里的字段进行初始化赋值操作。</p>
+<p><font color='red'>map 的遍历顺序是无序的</font></p>
+<p>假设B=1，则有两个桶，0和1 ，0号桶搬迁后裂变为2个桶，分别是新0号和新2号。1号桶裂变后成为新1号和新4号。</p>
+<h3 id="map中的key为什么是无序的">
+  map中的key为什么是无序的
+  <a class="anchor" href="#map%e4%b8%ad%e7%9a%84key%e4%b8%ba%e4%bb%80%e4%b9%88%e6%98%af%e6%97%a0%e5%ba%8f%e7%9a%84">#</a>
+</h3>
+<p>在Go语言的实现中，当遍历map时，并不是固定地从0号bucket开始遍历，而是每次都从一个随机号bucket开始，并且从这bucket的一个随机号的cell开始遍历。这样，即使是一个写死的map，仅仅只是遍历它，也不太可能会返回一个固定序号的key/value对。</p>
+<h3 id="map是线程安全的吗">
+  map是线程安全的吗
+  <a class="anchor" href="#map%e6%98%af%e7%ba%bf%e7%a8%8b%e5%ae%89%e5%85%a8%e7%9a%84%e5%90%97">#</a>
+</h3>
+<p><font color='red'>map不是线程安全的，不支持并发</font>  注意sync包里面的map</p>
+<p>在查找、赋值、遍历、删除的过程中都会检测写标志，一旦发现写标志置位（=1），则直接Panic。赋值和删除函数在检测完写标志是复位状态（=0）之后，先将写标志位置位（置为1），才会进行之后的操作。</p>
+<h3 id="float类型可以作为map的key吗">
+  float类型可以作为map的key吗
+  <a class="anchor" href="#float%e7%b1%bb%e5%9e%8b%e5%8f%af%e4%bb%a5%e4%bd%9c%e4%b8%bamap%e7%9a%84key%e5%90%97">#</a>
+</h3>
+<p>Go语言中，只要是可以比较对类型都可以作为key。除了slice、map、functions这几种类型，其他的都可以作为map的key。具体包括：布尔值、数字、字符串、指针、通道、接口类型、结构体、只包含上述类型的数组。这些类型的共同特征是支持==和！=操作符。</p>
+<p>任何类型都可以作为value，包括map类型。</p>
+<h3 id="map如何实现两种get操作">
+  map如何实现两种get操作
+  <a class="anchor" href="#map%e5%a6%82%e4%bd%95%e5%ae%9e%e7%8e%b0%e4%b8%a4%e7%a7%8dget%e6%93%8d%e4%bd%9c">#</a>
+</h3>
+<p>Go语言中，读取map有两种语法：带comma和不带comma。当要查询的key不在map里，带comma的用法会返回一个bool型变量提示key是否在map中；而不带comma的语句则会只返回一个key类型的零值。如果key是int型就会返回0，如果key是string类型，则会返回空字符串。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ageMap</span><span style="color:#f92672">:=</span>make(<span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#66d9ef">int</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ageMap</span>[<span style="color:#e6db74">&#34;qcrao&#34;</span>]=<span style="color:#ae81ff">18</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//不带comma用法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">age1</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">ageMap</span>[<span style="color:#e6db74">&#34;stefno&#34;</span>]
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">age1</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//带comma用法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">age2</span>,<span style="color:#a6e22e">ok</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">ageMap</span>[<span style="color:#e6db74">&#34;stefno&#34;</span>]
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">age2</span>,<span style="color:#a6e22e">ok</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>0
+0 false
+</code></pre><h3 id="如何比较两个map是否相等">
+  如何比较两个map是否相等
+  <a class="anchor" href="#%e5%a6%82%e4%bd%95%e6%af%94%e8%be%83%e4%b8%a4%e4%b8%aamap%e6%98%af%e5%90%a6%e7%9b%b8%e7%ad%89">#</a>
+</h3>
+<p>直接使用map1==map2是错误的，这种写法只能比较map是否为nil</p>
+<p>只能通过遍历map的每一个元素，比较元素是否都是深度相等的。</p>
+<p>两个map深度相等的条件如下：</p>
+<ul>
+<li>都为nil</li>
+<li>非空、长度相等，指向同一个map实体对象。</li>
+<li>相应的key指向的value“深度”相等。</li>
+</ul>
+<p>三个条件是或的关系，满足任何一个条即认为两个map深度相等。</p>
+<h3 id="可以对map的元素取地址吗">
+  可以对map的元素取地址吗
+  <a class="anchor" href="#%e5%8f%af%e4%bb%a5%e5%af%b9map%e7%9a%84%e5%85%83%e7%b4%a0%e5%8f%96%e5%9c%b0%e5%9d%80%e5%90%97">#</a>
+</h3>
+<p><strong>不能对map的元素取地址</strong>，即使用unsafe.Pointer等获取到了key或value的地址，也不能长期持有，因为一旦发生扩容，key和value的位置就会改变，之前保存的地址就失效了。</p>
+<h3 id="可以边遍历边删除吗">
+  可以边遍历边删除吗
+  <a class="anchor" href="#%e5%8f%af%e4%bb%a5%e8%be%b9%e9%81%8d%e5%8e%86%e8%be%b9%e5%88%a0%e9%99%a4%e5%90%97">#</a>
+</h3>
+<p>map不是线程安全的数据结构，<strong>多个线程</strong>同时读写同一个map是未定义的行为，如果被检测到，会直接Panic。</p>
+<p>如果在同一个协程内边遍历边删除，并不会检测到同时读写，理论上是可以这样做的。</p>
+<h1 id="channel">
+  channel
+  <a class="anchor" href="#channel">#</a>
+</h1>
+<p>channel是线程安全的</p>
+<h2 id="通道有哪些应用">
+  通道有哪些应用
+  <a class="anchor" href="#%e9%80%9a%e9%81%93%e6%9c%89%e5%93%aa%e4%ba%9b%e5%ba%94%e7%94%a8">#</a>
+</h2>
+<p>通过与select、cancel、timer等结合，能实现各种各样的功能。</p>
+<h3 id="停止信号">
+  停止信号
+  <a class="anchor" href="#%e5%81%9c%e6%ad%a2%e4%bf%a1%e5%8f%b7">#</a>
+</h3>
+<p>channel用于停止信号的场景很多，通常是通过关闭某个channel或者向channel发送一个元素，使得接收channel的那一方获知道此信息，进而做一些其他的操作，如停止某个循环等。</p>
+<h3 id="定时任务">
+  定时任务
+  <a class="anchor" href="#%e5%ae%9a%e6%97%b6%e4%bb%bb%e5%8a%a1">#</a>
+</h3>
+<p>与计时器结合，一般有两种做法：实现超时控制、实现定期执行某个任务。</p>
+<p><strong>超时控制</strong></p>
+<p>有时候，需要执行某项操作，但又不想耗费太长时间，上一个定时器就可以搞定。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">select</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span><span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">After</span>(<span style="color:#ae81ff">100</span><span style="color:#f92672">*</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Millisecond</span>):
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span><span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">stopc</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>等待100ms后，如果s.stopc还么有读出数据或者关闭，就直接结束。</p>
+<p><strong>定时执行某个任务</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">worker</span>(){
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ticker</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Tick</span>(<span style="color:#ae81ff">1</span><span style="color:#f92672">*</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">select</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">case</span><span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ticker</span>:
+</span></span><span style="display:flex;"><span>				<span style="color:#75715e">//执行定时任务
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;执行1s定时任务&#34;</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>和定时任务相关的两个例子虽然主要依赖于timer/ticker的作用，但收到定时消息的途径仍然是channel。</p>
+<h3 id="解耦生产方和消费方">
+  解耦生产方和消费方
+  <a class="anchor" href="#%e8%a7%a3%e8%80%a6%e7%94%9f%e4%ba%a7%e6%96%b9%e5%92%8c%e6%b6%88%e8%b4%b9%e6%96%b9">#</a>
+</h3>
+<p>服务启动时，启动N个worker，作为工作协程池，这些协程工作在一个for{}无限循环里，从某个channel消费工作任务并执行。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">tackCh</span><span style="color:#f92672">:=</span>make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>,<span style="color:#ae81ff">100</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">worker</span>(<span style="color:#a6e22e">taskCh</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//阻塞任务
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">0</span>;<span style="color:#a6e22e">i</span>&lt;<span style="color:#ae81ff">100</span>;<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">taskCh</span><span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">i</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//等待1小时
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">select</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">case</span><span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">After</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Hour</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">worker</span>(<span style="color:#a6e22e">tashCh</span><span style="color:#f92672">&lt;-</span><span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>){
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">N</span>=<span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">0</span>;<span style="color:#a6e22e">i</span>&lt;<span style="color:#a6e22e">N</span>;<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">id</span> <span style="color:#66d9ef">int</span>){
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">for</span>{
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">task</span><span style="color:#f92672">:=&lt;-</span><span style="color:#a6e22e">taskCh</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;finish task:%d by worker %d\n&#34;</span>,<span style="color:#a6e22e">task</span>,<span style="color:#a6e22e">id</span>)
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}(<span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>作为消费方的5个工作协程不断地从工作队列里取任务，生产方只管往channel发送任务即可，解耦了生产方和消费方。</p>
+<p>程序输出：</p>
+<pre tabindex="0"><code>finsh task:1 by worker 4
+finsh task:2 by worker 2
+finsh task:4 by worker 3
+finsh task:3 by worker 1
+finsh task:0 by worker 0
+finsh task:6 by worker 0
+finsh task:8 by worker 3
+finsh task:9 by worker 1
+finsh task:7 by worker 4
+finsh task:5 by worker 2
+finsh task:1 by worker 4
+finsh task:1 by worker 4
+finsh task:1 by worker 4
+finsh task:1 by worker 4
+</code></pre><h3 id="控制并发数">
+  控制并发数
+  <a class="anchor" href="#%e6%8e%a7%e5%88%b6%e5%b9%b6%e5%8f%91%e6%95%b0">#</a>
+</h3>
+<p>有时需要定时执行几百个任务，例如每天定时按城市来执行一些离线计算的任务。但是并发数又不能太高，因为任务执行过程会依赖第三方的一些资源，对请求的速率有限制。这时就可以通过channel来控制并发数；</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">token</span> =make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>,<span style="color:#ae81ff">3</span>) 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//....
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>,<span style="color:#a6e22e">w</span><span style="color:#f92672">:=</span><span style="color:#66d9ef">range</span> <span style="color:#a6e22e">work</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>(){   <span style="color:#75715e">//以并发的方式调用匿名函数func
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#a6e22e">token</span><span style="color:#f92672">&lt;-</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">w</span>()
+</span></span><span style="display:flex;"><span>			<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">token</span>
+</span></span><span style="display:flex;"><span>		}()
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>构建缓冲型的channel，容量为3.接着遍历任务列表，每个任务启动一个goroutine去完成任务。真正执行任务、访问第三方动作在w()中完成，在执行w()之前，先要从token中拿“许可证”，拿到许可证之后，才能执行w（）。并且执行完任务后，要将“许可证”归还，这样就可以控制同时运行的goroutine数目。</p>
+<p>这里，token&lt;-1放在func内部而不是外部，原因是：</p>
+<p>如果放在外层，就是控制系统goroutine的数量，可能会阻塞for循环，影响业务逻辑。而token其实和逻辑无关，只是性能调优，放在内层和外层的语义不太一样。</p>
+<p>还有一点要注意的是，如果w()发生Panic，那“许可证”可能就还不回去了，这可以使用defer来保证。</p>
+<h2 id="channel底层结构">
+  channel底层结构
+  <a class="anchor" href="#channel%e5%ba%95%e5%b1%82%e7%bb%93%e6%9e%84">#</a>
+</h2>
+<pre tabindex="0"><code>type hchan struct {
+    qcount   uint           // channel中的元素个数
+    dataqsiz uint           // channel中循环队列的长度
+    buf      unsafe.Pointer // channel缓冲区数据指针
+    elemsize uint16            // buffer中每个元素的大小
+    closed   uint32            // channel是否已经关闭，0未关闭
+    elemtype *_type // channel中的元素的类型
+    sendx    uint   // channel发送操作处理到的位置
+    recvx    uint   // channel接收操作处理到的位置
+    recvq    waitq  // 等待接收的sudog（sudog为封装了goroutine和数据的结构）队列由于缓冲区空间不足而阻塞的Goroutine列表
+    sendq    waitq  // 等待发送的sudogo队列，由于缓冲区空间不足而阻塞的Goroutine列表
+    lock mutex   // 一个轻量级锁
+}
+</code></pre><p>因为channel免不了支持协程间并发访问，所以<u>要有一个锁（lock）来保护整个channel数据结构</u>。<font color='red'>对于有缓冲区channel来讲，需要知道缓冲区在哪里（buf），已经存储量多少个元素（qcount），最多存储多少个元素（dataqsize），每个元素占多大空间（elemsize)，所以实际上缓冲区就是一个数组。</font><font color='green'>因为Golang运行时中，内存复制，垃圾回收等机制，依赖数据的类型信息，所以hchan<strong>这里还要有一个指针，指向元素类型的类型元数据</strong>。此外，channel支持交替的读(接收)，写(发送)。需要分别记录读，写 下标的位置，当读和写不能立即完成时，需要能够让当前协程在channel上等待，待到条件满足时，要能够立即唤醒等待的协程，所以要有两个等待队列，分别针对读和写。此外，channel能够close，所以还要记录它的关闭状态，</font>综上所述，channel底层就长这样。</p>
+<p>我们通过make创建一个缓冲区大小为5，元素类型为int的channel。<font color='red'>ch是存在于函数栈帧上的一个指针，指向堆上的hchan数据结构。</font></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071038344.png" alt="" /></p>
+<p><strong>创建channel：</strong></p>
+<p>channel有两个方向：发送和接收。理论上来说，可以创建一个只发送或只接收的通道，通过作为函数参数，只发送或只接收可以保证函数内部对channel的操作是“安全”的。</p>
+<pre tabindex="0"><code>ch := make(chan int,3) //有缓冲通道
+ch := make(chan int)   //无缓冲通道
+</code></pre><ul>
+<li>创建channel<u>实际上就是在内存中实例化了一个hchan结构体，并返回一个chan指针</u></li>
+<li>channel在函数间传递都是使用的这个指针，这就是为什么函数传递中无需使用channel的指针，直接使用channel就可以了，因为<strong>channel本身就是一个指针</strong></li>
+</ul>
+<h3 id="接收过程">
+  接收过程
+  <a class="anchor" href="#%e6%8e%a5%e6%94%b6%e8%bf%87%e7%a8%8b">#</a>
+</h3>
+<p>接收操作有两种写法，一种带“OK”，反应channel是否关闭；一种不带“OK”，当接收到相应类型的零值时无法知道是真实的发送者发送过来的值，还是channel被关闭后，channel返回给接受者的默认类型的零值。</p>
+<pre tabindex="0"><code>func chanrecv1(c *hchan,elem unsafe.Pointer){
+	chanrecv(c,elem,true)
+}
+func chanrecv2(c *hchan,elem unsafe.Pointer)(received bool){
+	_,received=chanrecv(c,elem,true)
+	return
+}
+</code></pre><p>函数chanrev1处理不带“OK”的情形，chanrev2则通过返回“received&quot;这个字段来得知channel是否被关闭。接收值则比较特殊，会被“放到”参数elem所指向的地址，如果代码里忽略了接收值，这里的elem传的实惨为nil。</p>
+<ul>
+<li>如果channel是一个空值（nil），在非阻塞模式下，会直接返回。在阻塞模式下，会调用gopark函数挂起goroutine，这个会一直阻塞下去。因为在channel是nil的情况下，要想不阻塞，只有关闭它，但关闭一个nil的channel会产生Panic，所以goroutine没有机会被唤醒。</li>
+<li>在非阻塞模式下，不用获取锁，快速检测到失败并且返回。</li>
+</ul>
+<p>接下来，我们继续使用ch，初始状态下，ch的缓冲区为空，读、写下标都指向下标0的位置，等待队列也都为空。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071042820.png" alt="" /></p>
+<p>然后一个协程g1向ch中发送数据，因为没有协程在等待接收数据，所以元素都被存到缓冲区中，sendx从0开始向后挪，</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071049144.png" alt="" /></p>
+<p>第5个元素会放到下标为4的位置，然后sendx重新回到0，此时缓冲区已经没有空闲位置了。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071049098.png" alt="" /></p>
+<p>所以接下来发送的第6个元素无处可放，g1会进到ch的发送等待队列中。这是一个sudog类型的链表，里面会记录哪个协程在等待，等待哪个channel，等待发送的数据在哪里，等等消息。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071052730.png" alt="" /></p>
+<p>接下来协程g2从ch接收一个元素，recv指向下个位置，第0个位置就空出来了，</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071053477.png" alt="" /></p>
+<p>所以会唤醒sendq中的g1，将elem指向的数据发送给ch，然后缓冲区再次满了，sendq队列为空。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071055409.png" alt="" /></p>
+<p>在这一过程中，可以看到sendx和recvx，都会从0到4再到0，所以channel的缓冲区，被称为&quot;环形&quot;缓冲区。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071056770.png" alt="" /></p>
+<p>如果像这样给channel发送数据，只有在缓冲区还有空闲位置，或者有协程在等着接收数据的时候，才不会发送阻塞。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071057477.png" alt="" /></p>
+<p><font color='red'>碰到ch为nil，或者ch没有缓冲区，而且也没有协程等着接收数据，又或者，ch有缓冲区但缓冲区已用尽的情况，都会发生阻塞 </font></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071057640.png" alt="" /></p>
+<p><strong>解决发送阻塞</strong></p>
+<p>那如果不想阻塞的话，就可以使用select，使用select这种写法时，如果检测到ch可以发送数据，就会执行<u>case</u>分支；如果会阻塞，就会执行<u>default</u>分支了。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071059740.png" alt="" /></p>
+<p><strong>接收阻塞</strong></p>
+<p>这是发送数据的写法，接收数据的写法要更多一点。第一种写法会将结果丢弃，第二种写法将结果赋给变量v，第三种是comma ok风格的写法，ok为false时表示ch已关闭，此时v是channel元素类型的零值。这几种写法都允许发生阻塞，<font color='red'>只有在缓冲区中有数据，或者有协程等待发送数据时 ，才不会阻塞</font>。如果ch为nil，或者ch无缓冲而且没有协程等着发送数据，又或者ch有缓冲但缓冲区无数据时，都会发生阻塞。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071102928.png" alt="" /></p>
+<p><strong>解决接收阻塞</strong></p>
+<p>如果无论如何都不想阻塞，同样可以采用非阻塞式写法，这样在检测到ch的recv操作不会阻塞时，就会执行case分支，如果会阻塞，就会执行default分支。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071103053.png" alt="" /></p>
+<p><strong>多路select</strong></p>
+<p>上面的selec只是针对的单个channel的操作；
+多路select指的是存在两个或者更多的case分支，每个分支可以是一个channel的send或recv操作。例如一个协程通过多路select等待ch1和ch2。这里的default分支是可选的。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071105892.png" alt="" /></p>
+<p>我们暂且把这个协程记为g1，多路select会被编译器转换为runtime.selectgo函数调用。
+第一个参数cas0指向一个数组，数组里装的是select中所有的case分支，顺序是send在前，recv在后。
+第二个参数order0指向一个uint16类型的数组，数组大小等于case分支的两倍。实际上被用作两个数组，第一个数组用来对所有channel的轮询进行乱序，第二个数组用来对所有channel的加锁操作进行排序。轮询需要乱序才能保障公平性，而按照固定算法确定加锁顺序才能避免死锁。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071106464.png" alt="" /></p>
+<p>第三个参数pc0和race检测相关，我们暂时不关心。
+第四、五个参数nsends和nrecvs分别表示所有case中执行send和recv操作的分支分别有多少个。
+第六个参数block表示多路select是否要阻塞等待，对应到代码中，就是有default分支的不会阻塞，没有的会阻塞。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071107550.png" alt="" /></p>
+<p>再来看第一个返回值，它代表最终哪个case分支被执行了，对应到参数cas0数组的下标。但是如果进到default分支则对应-1。第二个返回值用于在执行recv操作的case分支时，表明是实际接收到了一个值，还是因channel关闭而得到了零值。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071108149.png" alt="" /></p>
+<p>多路select需要进行轮询来确定哪个case分支可操作了，但是轮询前要先加锁，所以selectgo函数执行时，会先按照有序的加锁顺序，对所有channel加锁，然后按照乱序的轮询顺序检查所有channel的等待队列和缓冲区。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071108869.png" alt="" /></p>
+<p>假如检查到ch1时，发现有数据可读，那就直接拷贝数据，进入对应分支。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071109503.png" alt="" /></p>
+<p>假如所有channel都不可操作，就把当前协程添加到所有channel的sendq或recvq中。对应到本例中，g1会被添加到ch1的recvq，以及ch2的sendq中。之后g1会挂起，并解锁所有的channel的锁。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071109589.png" alt="" /></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071110092.png" alt="" /></p>
+<p>假如接下来ch1有数据可读了，g1就会被唤醒，完成对应分支的操作。</p>
+<p>完成对应分支的操作后，会再次按照加锁顺序对所有channel加锁，然后从所有sendq或recvq中将自己移除，最后全部解锁，然后返回。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071111252.png" alt="" /></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208071111771.png" alt="" /></p>
+<h3 id="发送过程">
+  发送过程
+  <a class="anchor" href="#%e5%8f%91%e9%80%81%e8%bf%87%e7%a8%8b">#</a>
+</h3>
+<h3 id="收发数据的本质">
+  收发数据的本质
+  <a class="anchor" href="#%e6%94%b6%e5%8f%91%e6%95%b0%e6%8d%ae%e7%9a%84%e6%9c%ac%e8%b4%a8">#</a>
+</h3>
+<p>channel的发送和接收操作本质上都是“<strong>值的复制</strong>”。</p>
+<h2 id="相关问题">
+  相关问题
+  <a class="anchor" href="#%e7%9b%b8%e5%85%b3%e9%97%ae%e9%a2%98">#</a>
+</h2>
+<h3 id="通道关闭过程发生了什么">
+  通道关闭过程发生了什么？
+  <a class="anchor" href="#%e9%80%9a%e9%81%93%e5%85%b3%e9%97%ad%e8%bf%87%e7%a8%8b%e5%8f%91%e7%94%9f%e4%ba%86%e4%bb%80%e4%b9%88">#</a>
+</h3>
+<p>关闭某个channel，需要调用closechan执行函数。</p>
+<p>对于一个channel，recvq和sendq中分别保存了阻塞的发送者和接受者。关闭channel后，对于等待接收者而言，会收到一个相应类型的零值；对于等待发送者而言，会直接Panic。所以，在不清楚channel还有没有接受者的情况下，不能贸然关闭它。</p>
+<p>函数closechan（）先上了一把大锁，接着把所有挂在这个channel上的sender和receiver全都连成一个sudo链表，再解锁。最后，再将所有的sudog全部唤醒。唤醒之后，sender会继续执行chansend函数里goparkunlock函数之后的代码，很不幸，检测到channel已经关闭，发生Panic。而receiver则比较幸运，在进行一些扫尾工作后，函数返回。这里，selected返回true，而返回值received则要根据channel是否关闭，返回不同的值。如果channel关闭，received的值为false，否则为true。</p>
+<h3 id="从一个关闭的通道里仍然能读出数据吗">
+  从一个关闭的通道里仍然能读出数据吗？
+  <a class="anchor" href="#%e4%bb%8e%e4%b8%80%e4%b8%aa%e5%85%b3%e9%97%ad%e7%9a%84%e9%80%9a%e9%81%93%e9%87%8c%e4%bb%8d%e7%84%b6%e8%83%bd%e8%af%bb%e5%87%ba%e6%95%b0%e6%8d%ae%e5%90%97">#</a>
+</h3>
+<p>从一个有缓冲的channel里读数据，当channel被关闭，依然能读出有效值，只有当返回的OK为false时，读出的数据是无效的。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ch</span><span style="color:#f92672">:=</span>make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>,<span style="color:#ae81ff">5</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ch</span><span style="color:#f92672">&lt;-</span><span style="color:#ae81ff">18</span>
+</span></span><span style="display:flex;"><span>	close(<span style="color:#a6e22e">ch</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">x</span>,<span style="color:#a6e22e">ok</span><span style="color:#f92672">:=&lt;-</span><span style="color:#a6e22e">ch</span>  <span style="color:#75715e">//OK=true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ok</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;received:&#34;</span>,<span style="color:#a6e22e">x</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">x</span>,<span style="color:#a6e22e">ok</span>=<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ch</span>  <span style="color:#75715e">//ok=false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">ok</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.println(<span style="color:#e6db74">&#34;channel closed,data invalid&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>received:18
+channel closed,data invalid
+</code></pre><h3 id="如何优雅的关闭通道">
+  如何优雅的关闭通道？
+  <a class="anchor" href="#%e5%a6%82%e4%bd%95%e4%bc%98%e9%9b%85%e7%9a%84%e5%85%b3%e9%97%ad%e9%80%9a%e9%81%93">#</a>
+</h3>
+<p>关于channel有几个使用不便的地方：</p>
+<ul>
+<li>在不改变channel自身状态的情况下，无法得知一个channel是否关闭。</li>
+<li>关闭一个closed channel会导致Panic。所以，如果关闭channel的一方在不知道channel是否处于关闭状态时就去贸然关闭channel是很危险的事情。</li>
+<li>向一个closed channel发送数据会导致Panic。所以，如果向channel发送数据的一方不知道channel是否处于关闭状态时就贸然向channel发送数据也是很危险的事情。</li>
+</ul>
+<p>**关闭channel的原则：**不要再receiver侧关闭channel，也不要在有多个sender时，关闭channel。不要关闭一个closed channel，也不要向一个closed channel发送数据。</p>
+<p>向channel发送数据就是sender，因此sender可以决定何时不发送数据，并且关闭channel。但是如果有多个sender，某个sender同样无法确定其他sender的情况，这时也不能贸然关闭channel。</p>
+<blockquote>
+<p>不那么优雅的关闭通道的方法：</p>
+<ul>
+<li>使用defer- recover机制，放心大胆的关闭channel或者向channel发送数据。即使发生了Panic，也有defer- recover兜底。</li>
+<li>使用sync.Once来保证只关闭一次。</li>
+</ul>
+<p>优雅的关闭channel，根据sender和receiver的个数，分下面几种情况：</p>
+<p>（1）一个sender，一个receiver。</p>
+<p>（2）一个sender，M个receiver。</p>
+<p>（3）N个sender，一个receiver。</p>
+<p>（4）N个sender，M个receiver。</p>
+<p>对于（1）（2）种情况，只有一个sender的情况下下，直接从sender端关闭就好了。</p>
+<p>对于（3）中情况，关闭channel的方法是：唯一的接收者通过关闭一个第三方充当信号的channel，来关闭channel。方案就是增加一个传递关闭信号的channel，receiver通过关闭信号channel下达关闭数据channel的指令。当senders监听到关闭信号后，停止发送数据。代码并没有明确的关闭channel。在Go语言中，对于一个channel，如果最终没有任何goroutine引用它，不管channel有没有关闭，最终都会被GC回收。所以在这种情况下，所谓优雅的关闭channel就是不关闭channel，让GC代劳。</p>
+<p>对于（4）种情况，关闭channel的方法是：通知中间人来关闭一个额外的信号channel，从而关闭channel。 增加一个中间人，M个receiver都向它发送关闭dataCh的“请求”，中间人收到第一个请求后，就会直接下达关闭dataCh的指令。通过关闭stopCh，这时就不会发生重复关闭的情况，因为stopCh的发送方只有中间人一个。另外，这里的N个sender也可以向中间人发送关闭dataCh的请求。</p>
+</blockquote>
+<h3 id="关于通道的happened-before有哪些">
+  关于通道的happened-before有哪些？
+  <a class="anchor" href="#%e5%85%b3%e4%ba%8e%e9%80%9a%e9%81%93%e7%9a%84happened-before%e6%9c%89%e5%93%aa%e4%ba%9b">#</a>
+</h3>
+<p>简单来说，如果事件a和事件b存在happened- before关系，即a-&gt;b，那么a,b完成后的结果一定要体现出这种关系。</p>
+<p>关于channel的发送（send）、发送完成（send finished）、接收（receive）、接收完成（receive finished）的happened- before的关系如下：</p>
+<ol>
+<li>第n个send一定happens- before第n个receive finished，无论是缓冲型还是非缓冲型的channel。</li>
+</ol>
+<p>我不知道这个能做什么 先不总结了 ，先这样。。。。。</p>
+<h3 id="通道在什么情况下会引起资源泄漏">
+  通道在什么情况下会引起资源泄漏？
+  <a class="anchor" href="#%e9%80%9a%e9%81%93%e5%9c%a8%e4%bb%80%e4%b9%88%e6%83%85%e5%86%b5%e4%b8%8b%e4%bc%9a%e5%bc%95%e8%b5%b7%e8%b5%84%e6%ba%90%e6%b3%84%e6%bc%8f">#</a>
+</h3>
+<p>泄漏的原因是goroutine操作channel后，处于发送或接收阻塞状态，而channel处于满或空的状态，一直得不到改变。如果没有goroutine引用，GC会对其进行回收操作，不会引起内存泄漏。</p>
+<h3 id="通道操作的情况总结">
+  通道操作的情况总结
+  <a class="anchor" href="#%e9%80%9a%e9%81%93%e6%93%8d%e4%bd%9c%e7%9a%84%e6%83%85%e5%86%b5%e6%80%bb%e7%bb%93">#</a>
+</h3>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>空channel</th>
+<th>已关闭channel</th>
+<th>活跃中的channel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>close(ch)</td>
+<td>panic</td>
+<td>panic</td>
+<td>成功关闭</td>
+</tr>
+<tr>
+<td>ch&lt;- v  写</td>
+<td>永远阻塞</td>
+<td>panic</td>
+<td>成功发送或阻塞</td>
+</tr>
+<tr>
+<td>v,ok = &lt;-ch  读</td>
+<td>永远阻塞</td>
+<td>不阻塞</td>
+<td>成功接收或阻塞</td>
+</tr>
+</tbody>
+</table>
+<p>发生Panic的情况有三种：向一个关闭的channel进行写操作，关闭一个nil的channel；关闭一个已经被关闭的channel。</p>
+<p>读、写一个nil channel都会被无限阻塞。</p>
+<h1 id="接口">
+  接口
+  <a class="anchor" href="#%e6%8e%a5%e5%8f%a3">#</a>
+</h1>
+<p>接口定义了一种规范，描述了类的行为和功能，而不做具体实现。Go采用“<strong>非侵入式</strong>”接口设计，不需要显示声明，只需要实现接口定义的函数，编译器就会自动识别。Go通过itab中的fun字段来实现接口变量调用是实体类型的函数。Go的itab中的fun字段是在运行期间自动生成的。</p>
+<h3 id="go与鸭子类型的关系">
+  Go与“鸭子类型”的关系
+  <a class="anchor" href="#go%e4%b8%8e%e9%b8%ad%e5%ad%90%e7%b1%bb%e5%9e%8b%e7%9a%84%e5%85%b3%e7%b3%bb">#</a>
+</h3>
+<p>Go语言作为一门静态语言，它通过接口的方式完美支持鸭子类型。</p>
+<p>静态语言在编译期间就能发现类型不匹配的错误，而动态语言，必须运行到那一行代码才会报错。</p>
+<p>Go语言不要求类型显示地声明实现了某个接口，只要实现了相关方法即可，因为编译器能够检测到。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">IGreeting</span> <span style="color:#66d9ef">interface</span>{  <span style="color:#75715e">//定义接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">sayHello</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">sayHello</span>(<span style="color:#a6e22e">i</span> <span style="color:#a6e22e">IGreeting</span>){ <span style="color:#75715e">//定义以此接口为参数的函数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">i</span>.<span style="color:#a6e22e">sayHello</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Go</span> <span style="color:#66d9ef">struct</span>{}  <span style="color:#75715e">//定义结构体
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">g</span> <span style="color:#a6e22e">Go</span>)<span style="color:#a6e22e">sayHello</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Hi,I am GO!&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">PHP</span> <span style="color:#66d9ef">struct</span>{}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">p</span> <span style="color:#a6e22e">PHP</span>)<span style="color:#a6e22e">sayHello</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Hi, I am PHP!&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">golang</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">Go</span>{}
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">php</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">PHP</span>{}
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">sayHello</span>(<span style="color:#a6e22e">golang</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">sayHEllo</span>(<span style="color:#a6e22e">php</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>Hi,I am GO!
+Hi,I am PHP!
+</code></pre><p>在main函数中，调用sayHello（）函数时，传入golang、php对象，它们并没有显式地声明实现IGreeting接口，知识实现了接口规定的sayHello()函数。</p>
+<h2 id="值接收者和指针接收者的区别">
+  值接收者和指针接收者的区别
+  <a class="anchor" href="#%e5%80%bc%e6%8e%a5%e6%94%b6%e8%80%85%e5%92%8c%e6%8c%87%e9%92%88%e6%8e%a5%e6%94%b6%e8%80%85%e7%9a%84%e5%8c%ba%e5%88%ab">#</a>
+</h2>
+<h3 id="方法">
+  方法
+  <a class="anchor" href="#%e6%96%b9%e6%b3%95">#</a>
+</h3>
+<p>方法能给用户自定义的类型添加新的行为，它和函数的区别在于方法有一个接收者，给一个函数添加一个接收者，它就变成了方法。<strong>接收者可以是值接收者，也可以是指针接收者。</strong></p>
+<p>在调用方法的时候，<u>不管方法的接收者是什么类型，该类型的值和指针都可以调用，不必严格符合接收者的类型</u>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Person</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">age</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#a6e22e">Person</span>)<span style="color:#a6e22e">howOld</span>()<span style="color:#66d9ef">int</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">age</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Person</span>)<span style="color:#a6e22e">growUp</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">age</span><span style="color:#f92672">+=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">qcrao</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">Person</span>{<span style="color:#a6e22e">age</span>:<span style="color:#ae81ff">18</span>} <span style="color:#75715e">//值类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">qcrao</span>.<span style="color:#a6e22e">howOld</span>()) <span style="color:#75715e">//调用接收者是值类型的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">qcrao</span>.<span style="color:#a6e22e">growUp</span>()<span style="color:#75715e">//调用接收者是指针类型的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">qcrao</span>.<span style="color:#a6e22e">howOld</span>())
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">stefo</span><span style="color:#f92672">:=&amp;</span><span style="color:#a6e22e">Person</span>{<span style="color:#a6e22e">age</span>:<span style="color:#ae81ff">100</span>} <span style="color:#75715e">//指针类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">stefo</span>.<span style="color:#a6e22e">howOld</span>())<span style="color:#75715e">//调用接收者是值类型的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">stefno</span>.<span style="color:#a6e22e">growUp</span>() <span style="color:#75715e">//调用接收者是指针类型的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">stefno</span>.<span style="color:#a6e22e">howOld</span>())
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>18
+19
+100
+101
+</code></pre><table>
+<thead>
+<tr>
+<th></th>
+<th>值接收者</th>
+<th>指针接收者</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>值类型调用者</td>
+<td>方法会使用调用者的一个副本，类似于“传值”</td>
+<td>使用值的引用来调用方法，上例中，qcrao.growUp()实际上是（&amp;qcrao).growUp()</td>
+</tr>
+<tr>
+<td>指针类型调用者</td>
+<td>指针被解引用为值，上例中，stefno.howOld()实际上是（*stefno).howOld()</td>
+<td>实际上也是传值，方法里的操作会影响到调用者，类似于指针传惨，复制了一份指针。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="值接收者和指针接收者">
+  值接收者和指针接收者
+  <a class="anchor" href="#%e5%80%bc%e6%8e%a5%e6%94%b6%e8%80%85%e5%92%8c%e6%8c%87%e9%92%88%e6%8e%a5%e6%94%b6%e8%80%85">#</a>
+</h3>
+<p><font color='red'>实现了接收者是值类型的方法，相当于自动实现了接收者是指针类型的方法；而实现了接收者是指针类型的方法，不会自动生成对应接收者是值类型的方法。</font></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">coder</span> <span style="color:#66d9ef">interface</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">code</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">debug</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Gopher</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">language</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">p</span> <span style="color:#a6e22e">Gopher</span>)<span style="color:#a6e22e">code</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;I am coding %s language\n&#34;</span>,<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">language</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Gopher</span>)<span style="color:#a6e22e">debug</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;I am debuging %s language\n&#34;</span>,<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">language</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">c</span> <span style="color:#a6e22e">coder</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Gopher</span>{<span style="color:#e6db74">&#34;Go&#34;</span>}  <span style="color:#75715e">//var c coer = Gopher{&#34;Go&#34;}  则会报错
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">code</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">debug</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>I am coding Go language
+I am debuging Go language
+</code></pre><p>接收者是指针类型的方法，很可能在方法中会对接收者的属性进行更改操作，从而影响接收者；而对于接收者是值类型的方法，在方法中不会对接收者本身产生影响。</p>
+<p>当实现了一个接收者是值类型的方法，就可以自动生成一个接收者对应指针类型的方法，因为两者都不会影响接收者；</p>
+<p><font color='red'>如果实现了接收者是值类型的方法，会隐含地也实现了接收者是指针类型的方法。</font></p>
+<h3 id="两者分别在何时使用">
+  两者分别在何时使用
+  <a class="anchor" href="#%e4%b8%a4%e8%80%85%e5%88%86%e5%88%ab%e5%9c%a8%e4%bd%95%e6%97%b6%e4%bd%bf%e7%94%a8">#</a>
+</h3>
+<p>如果方法的接收者是值类型，无论调用者是对象还是对象指针，修改的都是对象的副本，不影响调用者；如果方法的接收者是指针类型，则调用者修改的是指针指向的对象本身。</p>
+<p>使用指针作为方法的接收者的理由如下：</p>
+<ul>
+<li>方法能够修改接收者指向的值</li>
+<li>避免在每次调用方法时复制该值，在值的类型为大型结构体时，这样做会更加高效。</li>
+</ul>
+<h2 id="相关问题-1">
+  相关问题
+  <a class="anchor" href="#%e7%9b%b8%e5%85%b3%e9%97%ae%e9%a2%98-1">#</a>
+</h2>
+<h3 id="iface和eface的区别">
+  iface和eface的区别
+  <a class="anchor" href="#iface%e5%92%8ceface%e7%9a%84%e5%8c%ba%e5%88%ab">#</a>
+</h3>
+<p>类型iface和eface都是Go中描述接口的底层结构体，区别在于<strong>iface描述的接口包含方法</strong>，而<strong>eface则是不包含任何方法的空接口interface{}。</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">iface</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">tab</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">itab</span> <span style="color:#75715e">//指向一个itab实体，表示接口的类型以及赋给这个接口的实体类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">data</span> <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span> <span style="color:#75715e">//指向接口具体的值，一般是一个指向堆内存的指针
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">itab</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">inter</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">interfacetype</span>  <span style="color:#75715e">//接口类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">_type</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">_type</span> <span style="color:#75715e">//描述了实体的类型，包括内存对齐方式、大小等
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">link</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">itab</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">hash</span> <span style="color:#66d9ef">uint32</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">_</span>    [<span style="color:#ae81ff">4</span>]<span style="color:#66d9ef">byte</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fun</span>  [<span style="color:#ae81ff">1</span>]   <span style="color:#75715e">//放置和接口方法对应的具体数据类型的方法地址，实现接口调用方法的动态分派
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">interfacetype</span> <span style="color:#66d9ef">struct</span>{ 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">_type</span> <span style="color:#75715e">//描述Go语言中各种数据类型的结构体
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">pkgpath</span> <span style="color:#a6e22e">name</span> <span style="color:#75715e">//定义接口的包名
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">mhdr</span> []<span style="color:#a6e22e">imethod</span> <span style="color:#75715e">//接口所定义的函数列表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">eface</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">_type</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">_type</span>   <span style="color:#75715e">//表示空接口所承载地具体的实体类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">data</span> <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span> <span style="color:#75715e">//描述具体的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><h3 id="如何用interface实现多态">
+  如何用interface实现多态
+  <a class="anchor" href="#%e5%a6%82%e4%bd%95%e7%94%a8interface%e5%ae%9e%e7%8e%b0%e5%a4%9a%e6%80%81">#</a>
+</h3>
+<p>Go语言通过接口非常优雅地支持了面向对象的特性。</p>
+<p>多态是一种运行期的行为，它有以下几个特点：</p>
+<ul>
+<li>一种类型具有多种类型的能力</li>
+<li>允许不同的对象对同一消息作出灵活的反应</li>
+<li>以一种通用的方式对待使用的对象</li>
+<li>非动态语言必须通过继承和接口的方式来实现</li>
+</ul>
+<h3 id="接口的动态类型和动态值">
+  接口的动态类型和动态值
+  <a class="anchor" href="#%e6%8e%a5%e5%8f%a3%e7%9a%84%e5%8a%a8%e6%80%81%e7%b1%bb%e5%9e%8b%e5%92%8c%e5%8a%a8%e6%80%81%e5%80%bc">#</a>
+</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">iface</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">tab</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">itab</span> <span style="color:#75715e">//指向一个itab实体，表示接口的类型以及赋给这个接口的实体类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">data</span> <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span> <span style="color:#75715e">//指向接口具体的值，一般是一个指向堆内存的指针
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>data是数据指针，指向具体的数据，它们分别被称为动态类型和动态值，而<strong>接口值则包括动态类型和动态值。</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//当切仅当动态类型和动态值这两部分的值都为nil的情况下，接口值==nil为true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Coder</span> <span style="color:#66d9ef">interface</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">code</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Gopher</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">g</span> <span style="color:#a6e22e">Gopher</span>)<span style="color:#a6e22e">code</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%s is coding\n&#34;</span>,<span style="color:#a6e22e">g</span>.<span style="color:#a6e22e">name</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">c</span> <span style="color:#a6e22e">Coder</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">c</span><span style="color:#f92672">==</span><span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;c:%T,%v\n&#34;</span>,<span style="color:#a6e22e">c</span>,<span style="color:#a6e22e">c</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">g</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Gopher</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">g</span><span style="color:#f92672">==</span><span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">c</span>=<span style="color:#a6e22e">g</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">c</span><span style="color:#f92672">==</span><span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;c:%T,%v\n&#34;</span>,<span style="color:#a6e22e">c</span>,<span style="color:#a6e22e">c</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>true
+c:&lt;nil&gt;,&lt;nil&gt;
+true
+false
+c:*main.Gopher,&lt;nil&gt;  //动态类型为*main.Gopher 动态值为nil
+</code></pre><h3 id="接口的转换原理">
+  接口的转换原理
+  <a class="anchor" href="#%e6%8e%a5%e5%8f%a3%e7%9a%84%e8%bd%ac%e6%8d%a2%e5%8e%9f%e7%90%86">#</a>
+</h3>
+<p>iface包含接口的类型interfacetype和实体类型的类型_type，两者都是iface的字段itab的成员。也就是说生存一个itab同时需要<strong>接口的类型</strong>和<strong>实体的类型</strong>。</p>
+<pre tabindex="0"><code>&lt;interface 类型，实体类型&gt;-&gt;itab
+</code></pre><p><font color='red'>当判定一种类型是否满足某个接口时，Go将类型的方法集和接口所需的方法集进行匹配，如果类型的方法集完全包含接口的方法集，则可认为该类型实现了该接口。</font></p>
+<p>例如某类型有 m 个方法，某接口有 n 个方法，则很容易知道这种判定的时间复杂度为 O(mn)，Go 会对方法集的函数按照函数名的字典序进行排序，所以实际的时间复杂度为 O(m+n)。这里我们来探索将一个接口转换给另外一个接口背后的原理，当然，能转换的原因必然是类型兼容。
+直接来看一个例子：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">coder</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">code</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">run</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">runner</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">run</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Gopher</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">language</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">g</span> <span style="color:#a6e22e">Gopher</span>) <span style="color:#a6e22e">code</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">g</span> <span style="color:#a6e22e">Gopher</span>) <span style="color:#a6e22e">run</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">c</span> <span style="color:#a6e22e">coder</span> = <span style="color:#a6e22e">Gopher</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">r</span> <span style="color:#a6e22e">runner</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">r</span> = <span style="color:#a6e22e">c</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">c</span>, <span style="color:#a6e22e">r</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>简单解释下上述代码：定义了两个 interface: coder 和 runner。定义了一个实体类型 Gopher，类型 Gopher 实现了两个方法，分别是 run() 和 code()。main 函数里定义了一个接口变量 c，绑定了一个 Gopher 对象，之后将 c 赋值给另外一个接口变量 r 。赋值成功的原因是 c 中包含 run() 方法。这样，两个接口变量完成了转换。</p>
+<h3 id="类型转换和断言的区别">
+  类型转换和断言的区别
+  <a class="anchor" href="#%e7%b1%bb%e5%9e%8b%e8%bd%ac%e6%8d%a2%e5%92%8c%e6%96%ad%e8%a8%80%e7%9a%84%e5%8c%ba%e5%88%ab">#</a>
+</h3>
+<p>Go语言中不允许隐式类型转换，也就是说符号“=”两边，不允许出现类型不相同的变量。</p>
+<p>类型转换、类型断言本质都是把一个类型转换成另外一个类型，不同之处在于类型断言是对接口变量进行的操作。</p>
+<h4 id="断言">
+  断言
+  <a class="anchor" href="#%e6%96%ad%e8%a8%80">#</a>
+</h4>
+<p>因为空接口interface{}没有定义任何函数，因此Go中所有类型都实现了空接口。低昂一个函数的形参是interface{}，那么在函数中，需要对形参进行断言，从而得到它的真实类型。</p>
+<p>语法：</p>
+<pre tabindex="0"><code>&lt;目标类型的值&gt;,&lt;布尔参数&gt;:=&lt;表达式&gt;.(目标类型)//安全型类型断言
+&lt;目标类型的值&gt;:=&lt;表达式&gt;.(目标类型)  //非安全类型断言
+</code></pre><p>类型转换和类型断言有些相似，不同之处，在于类型断言是对接口进行的操作。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Student</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">Age</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i</span> <span style="color:#66d9ef">interface</span>{}=new(<span style="color:#a6e22e">Student</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">s</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">i</span>.(<span style="color:#a6e22e">Student</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>panic:interface conversion:interface{}is *main.Student,not main.Student
+</code></pre><p>因为i是*Student类型，并非Student类型，所以断言失败。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){  <span style="color:#75715e">//安全方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i</span> <span style="color:#66d9ef">interface</span>{}=new(<span style="color:#a6e22e">Student</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">s</span>,<span style="color:#a6e22e">ok</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">i</span>.(<span style="color:#a6e22e">Student</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ok</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>断言还有另外一种形式，就是用switch语句判断接口的类型，每一个case会被顺序地考虑。当命中一个case时，就会执行case中的语句，因此case语句的顺序是很重要的，因为可能会有多个case匹配的情况。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i</span> <span style="color:#66d9ef">interface</span>{} = new(<span style="color:#a6e22e">Student</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//var i interface{} = (*Student)(nil)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">//var i interface{}
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%p %v\n&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">judge</span>(<span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">judge</span>(<span style="color:#a6e22e">v</span> <span style="color:#66d9ef">interface</span>{}) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%p %v&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">v</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">v</span>.(<span style="color:#66d9ef">type</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#66d9ef">nil</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%p %v&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">v</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;nil type[%T]%v&#34;</span>, <span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">v</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">Student</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%p %v&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">v</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Student type[%T]%v&#34;</span>, <span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">v</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Student</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%p %v&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">v</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;*Student type[%T]%v&#34;</span>, <span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">v</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%p %v&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">v</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;unknow\n&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Student</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Age</span>  <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>在main函数里有三行不同的声明，按顺序每次运行一行，得到三组结果：</p>
+<pre tabindex="0"><code>//var i interface{} = new(Student)
+0x14000110210 &amp;{ 0}
+0x14000110230 &amp;{ 0}
+0x14000120020 &amp;{ 0}
+*Student type[*main.Student]&amp;{ 0}
+因为i是*Student类型，匹配第三个case。从打印的3个地址来看，这3处的变量实际上都是不一样的。在main函数里有一个局部变量i,调用函数时，实际上是复制了一份参数，因此函数里又有一个变量V,它是i的复制。断言之后，又生成了一份新的复制。所以最终打印的三个变量的地址都不一样。
+//var i interface{} = (*Student)(nil)
+0x14000110210 &lt;nil&gt;
+0x14000110220 &lt;nil&gt;
+0x14000120020 &lt;nil&gt;
+i在这里的动态类型是*Student，数据为nil，它的类型并不是nil，它与nil做比较的时候，得到的结果也是false.
+*Student type[*main.Student]&lt;nil&gt;
+
+//var i interface{}
+0x14000188050 &lt;nil&gt;
+0x14000188060 &lt;nil&gt;
+0x14000188070 &lt;nil&gt;
+nil type[&lt;nil&gt;]&lt;nil&gt;
+这里i才是nil类型
+</code></pre><p>代码v.(type)中，v只能是一个接口类型，如果是其他类型，例如int型，会编译不通过。</p>
+<p><font color='red'>函数fmt.Println的参数是interface。对于内置类型，函数内部会用穷举法，得出它的真实类型，然后转换为字符串打印。而对于自定义类型，首先确定该类型是否实现了Stirng()方法，如果实现了，则直接打印输出String（）方法的结果；否则，会通过反射来遍历对象的成员进行打印。</font></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Student</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Age</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">s</span>=<span style="color:#a6e22e">Student</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Name</span>:<span style="color:#e6db74">&#34;qcrao&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Age</span>:<span style="color:#ae81ff">18</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>{qcrao 18}
+</code></pre><p>因为Student结构体没有实现Sting()方法，所以fmt.Println会利用反射挨个打印成员变量；</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#a6e22e">Student</span>)<span style="color:#a6e22e">String</span>()<span style="color:#66d9ef">string</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;[Name:%s],[Age:%d]&#34;</span>,<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Name</span>,<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Age</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>[Name:qcrao],[Age:18]  //如果实现了String()方法，则结果如下
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Student</span>)<span style="color:#a6e22e">String</span>()<span style="color:#66d9ef">string</span>{   <span style="color:#75715e">//这种要用fmt.Println(&amp;s)来打印
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;[Name:%s],[Age:%d]&#34;</span>,<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Name</span>,<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Age</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>{qcrao 18}
+</code></pre><p><font color='red'>类型T只有接受者是T的方法：而类型*T拥有接受者是T和*T的方法。语法上T能直接调用*T的方法仅仅是通过Go语言的语法糖。</font></p>
+<h4 id="防止有关自定义string方法时无限递归">
+  防止有关自定义String（）方法时无限递归
+  <a class="anchor" href="#%e9%98%b2%e6%ad%a2%e6%9c%89%e5%85%b3%e8%87%aa%e5%ae%9a%e4%b9%89string%e6%96%b9%e6%b3%95%e6%97%b6%e6%97%a0%e9%99%90%e9%80%92%e5%bd%92">#</a>
+</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#a6e22e">Student</span>)<span style="color:#a6e22e">String</span>()<span style="color:#66d9ef">string</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%v&#34;</span>,<span style="color:#a6e22e">s</span>) <span style="color:#75715e">//格式化输出  导致递归调用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">s</span>=<span style="color:#a6e22e">Student</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Name</span>:<span style="color:#e6db74">&#34;qcrao&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Age</span>:<span style="color:#ae81ff">18</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;%v&#34;</span>,<span style="color:#a6e22e">s</span>) <span style="color:#75715e">//格式化输出，
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>直接运行，最后会导致栈溢出：</p>
+<pre tabindex="0"><code>fatal error:stack overflow
+</code></pre><p><strong>如果类型实现了String()方法，格式化输出时就会自动调用String（）方法。</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#a6e22e">Student</span>)<span style="color:#a6e22e">String</span>()<span style="color:#66d9ef">string</span>{ <span style="color:#75715e">//改进方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%v&#34;</span>,<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Name</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Itoa</span>(<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Age</span>)) 
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="switch用法">
+  switch用法
+  <a class="anchor" href="#switch%e7%94%a8%e6%b3%95">#</a>
+</h4>
+<p>于C/C++、java等不同的是，Go的switch语句从上到下进行匹配，仅执行第一个匹配成功的分支。因此Go不用在每个分支里都增加break语句。另外一个不同点在于，Go switch语句的case值不需要是常量，也不必是整数。</p>
+<p><strong>用法一：比较单个值和多个值</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Print</span>(<span style="color:#e6db74">&#34;Go runs on&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">os</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">runtime</span>.<span style="color:#a6e22e">GOOS</span>;<span style="color:#a6e22e">os</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;darwin&#34;</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;OS X.&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;linux&#34;</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Linux.&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#75715e">//freebsd,openbsd,
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    	<span style="color:#75715e">//plan9,windows...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%s.\n&#34;</span>,<span style="color:#a6e22e">os</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//直接在switch语句内声明os变量，使得os的作用范围仅在switch语句内。
+</span></span></span></code></pre></div><p><strong>用法二：每个分支单独设置比较条件</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">t</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">swtich</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Hour</span>()&lt;<span style="color:#ae81ff">12</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Good moring!&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Hour</span>()&lt;<span style="color:#ae81ff">17</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Good afternoon!&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Good evening!&#34;</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//直接在case语句中判断表达式的真假，并且只会执行第一个满足条件的case。
+</span></span></span></code></pre></div><p><strong>用法三：使用fallthrough关键字</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">t</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">switch</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Hour</span>()&lt;<span style="color:#ae81ff">12</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Good moring!&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fallthrough</span>              <span style="color:#75715e">//表示支持下一个分支
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Hour</span>()&lt;<span style="color:#ae81ff">17</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Good afternoon!&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Good evening!&#34;</span>)
+</span></span><span style="display:flex;"><span>  	}  
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">t</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">switch</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Hour</span>()&lt;<span style="color:#ae81ff">12</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Hour</span>()&lt;<span style="color:#ae81ff">15</span>: <span style="color:#75715e">//可以使用,分隔，合并成一个分支
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Good moring!&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fallthrough</span>              <span style="color:#75715e">//表示支持下一个分支
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Hour</span>()&lt;<span style="color:#ae81ff">17</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Good afternoon!&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>    	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Good evening!&#34;</span>)
+</span></span><span style="display:flex;"><span>  	}  
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="如何让编译器自动检测类型是否实现了接口">
+  如何让编译器自动检测类型是否实现了接口
+  <a class="anchor" href="#%e5%a6%82%e4%bd%95%e8%ae%a9%e7%bc%96%e8%af%91%e5%99%a8%e8%87%aa%e5%8a%a8%e6%a3%80%e6%b5%8b%e7%b1%bb%e5%9e%8b%e6%98%af%e5%90%a6%e5%ae%9e%e7%8e%b0%e4%ba%86%e6%8e%a5%e5%8f%a3">#</a>
+</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">myWriter</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*func (w myWriter)Write(p []byte)(n int,err error){
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  return
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">}*/</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//检查*myWriter类型是否实现了io.Writer接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">_io</span>.<span style="color:#a6e22e">Writer</span>=(<span style="color:#f92672">*</span><span style="color:#a6e22e">myWriter</span>)(<span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//检查myWriter类型是否实现了io.Writer接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">_io</span>.<span style="color:#a6e22e">Writer</span>=<span style="color:#a6e22e">myWriter</span>{}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#前言">前言</a></li>
+      </ul>
+    </li>
+    <li><a href="#逃逸分析">逃逸分析</a>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#作用">作用</a></li>
+            <li><a href="#原则">原则</a></li>
+            <li><a href="#判断">判断</a></li>
+            <li><a href="#go与cc中的堆和栈是同一个概念吗">GO与C/C++中的堆和栈是同一个概念吗</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#延迟语句">延迟语句</a>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#defer的执行顺序">defer的执行顺序</a></li>
+            <li><a href="#拆解延迟语句">拆解延迟语句</a></li>
+            <li><a href="#闭包">闭包</a></li>
+            <li><a href="#延迟语句如何配合恢复语句">延迟语句如何配合恢复语句</a></li>
+            <li><a href="#为什么无法从父goroutine恢复子goroutine的panic">为什么无法从父goroutine恢复子goroutine的Panic</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#数据容器">数据容器</a>
+      <ul>
+        <li><a href="#数组与切片">数组与切片</a>
+          <ul>
+            <li><a href="#异同">异同</a></li>
+            <li><a href="#切片截取">切片截取</a></li>
+            <li><a href="#切片扩容">切片扩容</a></li>
+            <li><a href="#切片作为函数参数会被改变吗">切片作为函数参数会被改变吗</a></li>
+            <li><a href="#make和new的区别">make和new的区别</a></li>
+          </ul>
+        </li>
+        <li><a href="#map">map</a>
+          <ul>
+            <li><a href="#map的底层原理">map的底层原理</a></li>
+            <li><a href="#map中的key为什么是无序的">map中的key为什么是无序的</a></li>
+            <li><a href="#map是线程安全的吗">map是线程安全的吗</a></li>
+            <li><a href="#float类型可以作为map的key吗">float类型可以作为map的key吗</a></li>
+            <li><a href="#map如何实现两种get操作">map如何实现两种get操作</a></li>
+            <li><a href="#如何比较两个map是否相等">如何比较两个map是否相等</a></li>
+            <li><a href="#可以对map的元素取地址吗">可以对map的元素取地址吗</a></li>
+            <li><a href="#可以边遍历边删除吗">可以边遍历边删除吗</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#channel">channel</a>
+      <ul>
+        <li><a href="#通道有哪些应用">通道有哪些应用</a>
+          <ul>
+            <li><a href="#停止信号">停止信号</a></li>
+            <li><a href="#定时任务">定时任务</a></li>
+            <li><a href="#解耦生产方和消费方">解耦生产方和消费方</a></li>
+            <li><a href="#控制并发数">控制并发数</a></li>
+          </ul>
+        </li>
+        <li><a href="#channel底层结构">channel底层结构</a>
+          <ul>
+            <li><a href="#接收过程">接收过程</a></li>
+            <li><a href="#发送过程">发送过程</a></li>
+            <li><a href="#收发数据的本质">收发数据的本质</a></li>
+          </ul>
+        </li>
+        <li><a href="#相关问题">相关问题</a>
+          <ul>
+            <li><a href="#通道关闭过程发生了什么">通道关闭过程发生了什么？</a></li>
+            <li><a href="#从一个关闭的通道里仍然能读出数据吗">从一个关闭的通道里仍然能读出数据吗？</a></li>
+            <li><a href="#如何优雅的关闭通道">如何优雅的关闭通道？</a></li>
+            <li><a href="#关于通道的happened-before有哪些">关于通道的happened-before有哪些？</a></li>
+            <li><a href="#通道在什么情况下会引起资源泄漏">通道在什么情况下会引起资源泄漏？</a></li>
+            <li><a href="#通道操作的情况总结">通道操作的情况总结</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#接口">接口</a>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#go与鸭子类型的关系">Go与“鸭子类型”的关系</a></li>
+          </ul>
+        </li>
+        <li><a href="#值接收者和指针接收者的区别">值接收者和指针接收者的区别</a>
+          <ul>
+            <li><a href="#方法">方法</a></li>
+            <li><a href="#值接收者和指针接收者">值接收者和指针接收者</a></li>
+            <li><a href="#两者分别在何时使用">两者分别在何时使用</a></li>
+          </ul>
+        </li>
+        <li><a href="#相关问题-1">相关问题</a>
+          <ul>
+            <li><a href="#iface和eface的区别">iface和eface的区别</a></li>
+            <li><a href="#如何用interface实现多态">如何用interface实现多态</a></li>
+            <li><a href="#接口的动态类型和动态值">接口的动态类型和动态值</a></li>
+            <li><a href="#接口的转换原理">接口的转换原理</a></li>
+            <li><a href="#类型转换和断言的区别">类型转换和断言的区别</a></li>
+            <li><a href="#如何让编译器自动检测类型是否实现了接口">如何让编译器自动检测类型是否实现了接口</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

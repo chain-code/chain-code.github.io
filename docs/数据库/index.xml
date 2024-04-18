@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>数据库 on Soulmate</title>
+    <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/</link>
+    <description>Recent content in 数据库 on Soulmate</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 30 Apr 2023 16:16:50 +0800</lastBuildDate><atom:link href="https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Xorm</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/</link>
+      <pubDate>Sun, 30 Apr 2023 16:16:50 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/</guid>
+      <description>https://lunny.gitbooks.io/xorm-manual-zh-cn/content/chapter-01/index.html
+https://xorm.io/docs/chapter-01/readme/
+创建Orm引擎 # 在xorm里面，可以同时存在多个Orm引擎，一个Orm引擎称为Engine，一个Engine一般只对应一个数据库。Engine通过调用xorm.NewEngine生成，如：
+import ( _ &amp;#34;github.com/go-sql-driver/mysql&amp;#34; &amp;#34;github.com/go-xorm/xorm&amp;#34; ) var engine *xorm.Engine func main() { var err error engine, err = xorm.NewEngine(&amp;#34;mysql&amp;#34;, &amp;#34;root:[email protected]/test?charset=utf8&amp;#34;) } or
+import ( _ &amp;#34;github.com/mattn/go-sqlite3&amp;#34; &amp;#34;github.com/go-xorm/xorm&amp;#34; ) var engine *xorm.Engine func main() { var err error engine, err = xorm.NewEngine(&amp;#34;sqlite3&amp;#34;, &amp;#34;./test.db&amp;#34;)//数据库文件路径 } 一般情况下如果只操作一个数据库，只需要创建一个engine即可。engine是GoRutine安全的。
+创建完成engine之后，并没有立即连接数据库，此时可以通过engine.Ping()来进行数据库的连接测试是否可以连接到数据库。另外对于某些数据库有连接超时设置的，可以通过起一个定期Ping的Go程来保持连接鲜活。
+对于有大量数据并且需要分区的应用，也可以根据规则来创建多个Engine，比如：
+var err error for i:=0;i&amp;lt;5;i++ { engines[i], err = xorm.NewEngine(&amp;#34;sqlite3&amp;#34;, fmt.Sprintf(&amp;#34;./test%d.db&amp;#34;, i)) } engine可以通过engine.Close来手动关闭，但是一般情况下可以不用关闭，在程序退出时会自动关闭。
+NewEngine传入的参数和sql.Open传入的参数完全相同，因此，在使用某个驱动前，请查看此驱动中关于传入参数的说明文档。以下为各个驱动的连接符对应的文档链接：
+sqlite3 mysql dsn mymysql postgres 在engine创建完成后可以进行一些设置，如：</description>
+    </item>
+    
+    <item>
+      <title>Gorm</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/</link>
+      <pubDate>Tue, 24 May 2022 15:47:27 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/</guid>
+      <description>字段标签 # 标签是声明模型时可选的标记，标记不区分大小写，GORM 支持以下标记：
+声明model时，tag是可选的，GORM支持以下tag：tag名大小写不敏感，但建议使用camelcase风格
+标签名 说明 column 指定列名 type 列数据类型，推荐使用兼容性好的通用类型，例如：所有数据库都支持bool、int、uint、float、string、time、bytes并且可以和其他标签一起使用，例如：not null、size、autoIncrement&amp;hellip;像varbinary（8）这样指定数据库数据类型也是支持的。在使用指定数据库数据类型时，它需要是完整的数据库数据类型，如：MEDIUMINT、UNSIGNED、not、NULL、AUTO、INSTREMENT size 指定列大小，例如：size: 256 primaryKey 指定列为主键 unique 指定列为唯一 default 指定列的默认值 precision 指定列的精度 scale 指定列大小 not null 不能为空 autolncrement 指定列为自动增长 embedded 嵌套字段 embeddedPrefix 嵌入字段的列名前缀 autoCreateTime 创建时追踪当前时间，对于int字段，它会追踪时间戳秒数，您可以使用nano/milli来追踪纳秒、毫秒时间戳，例如autoCreateTime:nano autoUpdateTime 创建/更新时追踪当前时间，对于int字段，它会追踪时间戳秒数，您可以使用nano/milli来追踪纳秒、毫秒时间戳，例如：autoupdateTime:milli index 根据参数创建索引1，多个字段使用相同的名称则创建复合索引，查看索引获取详情 uniqueindex 与index相同，但创建的是唯一索引 check 创建检查约束，例如check:age＞13查看约束获取详情 &amp;lt;- 设置字段写入的权限，&amp;lt;-:create只创建、&amp;lt;-:update只更新、&amp;lt;-:false无写入权限、「&amp;lt;-创建和更新权限 -&amp;gt; 设置字段读的权限，-&amp;gt;:false无读权限 - 忽略该字段，-无读写权限 gorm使用中遇到的坑点 # 3、Count方法不适合放在raw方法后面，否则将会出错
+count:=0 db.Raw(sql).Count(&amp;amp;count) 正确用法
+db.Model(&amp;amp;User{}).Where(&amp;#34;name = ?&amp;#34;, &amp;#34;jinzhu&amp;#34;).Count(&amp;amp;count) //正确用法 result := engine.Raw(querySQL, args...).Find(resultData) if result.Error != nil { err = fmt.</description>
+    </item>
+    
+  </channel>
+</rss>

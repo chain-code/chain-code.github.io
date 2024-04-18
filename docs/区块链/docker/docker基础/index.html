@@ -1,0 +1,2851 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Docker简介 # Docker是一个开源的容器引擎，它基于LCX容器技术，使用Go语言开发。
+源代码托管在Github上，并遵从Apache2.0协议。
+Docker采用C/S架构，其可以轻松的为任何应用创建一个轻量级的、可移植的、自给自足的容器。
+Docker就是一种快速解决生产问题的一种技术手段,开发，运行和部署应用程序的开放管理平台。
+Docker提供了在一个完全隔离的环境中打包和运行应用程序的能力，这个隔离的环境被称为容器。 由于容器的隔离性和安全性，因此可以在一个主机(宿主机)上同时运行多个相互隔离的容器，互不干预。
+Docker主要解决的问题:
+保证程序运行环境的一致性; 降低配置开发环境、生产环境的复杂度和成本; 实现程序的快速部署和分发。
+架构与结构 # 架构图 # Docker是采用了(c/s)架构模式的应用程序
+Client dockerCLI :客户端docker命令行
+REST API : 一套介于客户端与服务端的之间进行通信并指示其执行的接口
+Server docker daemon:服务端dacker守护进程等待客户端发送命令来执行
+Docker的四大核心技术
+IMAGE-镜像 CONTAINER-容器 DATA VOLUMES-数据卷 NETWORK-网络 结构图 # Docker客户端(Docker Client) # Docker客户端(Docker Client)是用户与Docker进行交互的最主要方式。当在终端输入docker命令时，对应的就会 在服务端产生对应的作用，并把结果返回给客户端。Docker Client除了连接本地服务端，通过更改或指定 DOCKER_HOST连接远程服务端。
+Docker服务端(Docker Server) # Docker Daemon其实就是Docker 的服务端。它负责监听Docker API请求(如Docker Client)并管理Docker对象(Docker Objects)，如镜像、容器、网络、数据卷等
+Docker Registries # 俗称Docker仓库，专门用于存储镜像的云服务环境.
+Docker Hub就是一个公有的存放镜像的地方，类似Github存储代码文件。同样的也可以类似Github那样搭建私有 的仓库。
+Docker 对象(Docker Objects) # 镜像:一个Docker的可执行文件，其中包括运行应用程序所需的所有代码内容、依赖库、环境变量和配置文件等。 容器:镜像被运行起来后的实例。 网络:外部或者容器间如何互相访问的网络方式，如host模式、bridge模式。 数据卷:容器与宿主机之间、容器与容器之间共享存储方式，类似虚拟机与主机之间的共享文件目录。
+docker特点 # 三大理念: # 构建:龙珠里的胶囊，将你需要的场景构建好，装在一个小胶囊里">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="Docker基础" />
+<meta property="og:description" content="Docker简介 # Docker是一个开源的容器引擎，它基于LCX容器技术，使用Go语言开发。
+源代码托管在Github上，并遵从Apache2.0协议。
+Docker采用C/S架构，其可以轻松的为任何应用创建一个轻量级的、可移植的、自给自足的容器。
+Docker就是一种快速解决生产问题的一种技术手段,开发，运行和部署应用程序的开放管理平台。
+Docker提供了在一个完全隔离的环境中打包和运行应用程序的能力，这个隔离的环境被称为容器。 由于容器的隔离性和安全性，因此可以在一个主机(宿主机)上同时运行多个相互隔离的容器，互不干预。
+Docker主要解决的问题:
+保证程序运行环境的一致性; 降低配置开发环境、生产环境的复杂度和成本; 实现程序的快速部署和分发。
+架构与结构 # 架构图 # Docker是采用了(c/s)架构模式的应用程序
+Client dockerCLI :客户端docker命令行
+REST API : 一套介于客户端与服务端的之间进行通信并指示其执行的接口
+Server docker daemon:服务端dacker守护进程等待客户端发送命令来执行
+Docker的四大核心技术
+IMAGE-镜像 CONTAINER-容器 DATA VOLUMES-数据卷 NETWORK-网络 结构图 # Docker客户端(Docker Client) # Docker客户端(Docker Client)是用户与Docker进行交互的最主要方式。当在终端输入docker命令时，对应的就会 在服务端产生对应的作用，并把结果返回给客户端。Docker Client除了连接本地服务端，通过更改或指定 DOCKER_HOST连接远程服务端。
+Docker服务端(Docker Server) # Docker Daemon其实就是Docker 的服务端。它负责监听Docker API请求(如Docker Client)并管理Docker对象(Docker Objects)，如镜像、容器、网络、数据卷等
+Docker Registries # 俗称Docker仓库，专门用于存储镜像的云服务环境.
+Docker Hub就是一个公有的存放镜像的地方，类似Github存储代码文件。同样的也可以类似Github那样搭建私有 的仓库。
+Docker 对象(Docker Objects) # 镜像:一个Docker的可执行文件，其中包括运行应用程序所需的所有代码内容、依赖库、环境变量和配置文件等。 容器:镜像被运行起来后的实例。 网络:外部或者容器间如何互相访问的网络方式，如host模式、bridge模式。 数据卷:容器与宿主机之间、容器与容器之间共享存储方式，类似虚拟机与主机之间的共享文件目录。
+docker特点 # 三大理念: # 构建:龙珠里的胶囊，将你需要的场景构建好，装在一个小胶囊里" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/" /><meta property="article:section" content="docs" />
+<meta property="article:published_time" content="2022-09-19T21:02:07+08:00" />
+<meta property="article:modified_time" content="2022-09-19T21:02:07+08:00" />
+<title>Docker基础 | Soulmate</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" >
+<link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.5623389946cf2cb816d7e28b27d101617d469cca326a6a0a0bf362549d6ba433.js" integrity="sha256-ViM4mUbPLLgW1&#43;KLJ9EBYX1GnMoyamoKC/NiVJ1rpDM=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo.png" alt="Logo" /><span>Soulmate</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-074eed0fb8c6f9d99dfeff898388792f" class="toggle"  />
+    <label for="section-074eed0fb8c6f9d99dfeff898388792f" class="flex justify-between">
+      <a role="button" class="">计算机基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="">Vim编程常用快捷键</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E9%85%8D%E7%BD%AEkylinv10/" class="">配置 Kylin V10</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="">计算机网络基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/linux%E5%9F%BA%E7%A1%80/" class="">Linux基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/git%E5%9F%BA%E7%A1%80/" class="">Git基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Golang</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-670eda717a06f31447c52422ec93a159" class="toggle"  />
+    <label for="section-670eda717a06f31447c52422ec93a159" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/" class="">go语言基础（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/cgo/" class="">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/flag/" class="">Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/grpc/" class="">Grpc</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/" class="">ProtoBuf</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">常用业务代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/" class="">go语言基础（三）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/" class="">go语言底层基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/" class="">benchmark测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/" class="">Goland常用技巧</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle"  />
+    <label for="section-c453881a62c640f6a4cceec99c02477e" class="flex justify-between">
+      <a role="button" class="">高阶</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" class="">Go高阶-语言基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f235e88e751d2cb18d527c1784763605" class="toggle"  />
+    <label for="section-f235e88e751d2cb18d527c1784763605" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/atomic/" class="">Atomic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/os/" class="">Os</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strconv/" class="">Strconv</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sort/" class="">Sort</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strings/" class="">Strings</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/reflect/" class="">Reflect</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/time/" class="">Time</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sync/" class="">Sync</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ee53da12118bfd3e9b35f3e9494ab55b" class="toggle"  />
+    <label for="section-ee53da12118bfd3e9b35f3e9494ab55b" class="flex justify-between">
+      <a role="button" class="">LeetCode</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/" class="">golang力扣刷题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/" class="">golang力扣刷题（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/%E5%BF%85%E5%88%B7top101/" class="">必刷top101</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" class="">LeetCode算法总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>数据库</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle"  />
+    <label for="section-94f26238d1ca3b5bcd40eadc7a88d726" class="flex justify-between">
+      <a role="button" class="">MySql</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" class="">MySql基础总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="">Mac连接数据库所遇到的问题</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="toggle"  />
+    <label for="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="flex justify-between">
+      <a role="button" class="">Redis</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="">Redis集群搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/" class="">Redis基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="">redis面试总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8be9c2251abd1fe110e3c1520cac6177" class="toggle"  />
+    <label for="section-8be9c2251abd1fe110e3c1520cac6177" class="flex justify-between">
+      <a role="button" class="">SQLite</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/" class="">Sqlite</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/" class="">Xorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ad390db13e5fa9e14f921f4e4f77900e" class="toggle"  />
+    <label for="section-ad390db13e5fa9e14f921f4e4f77900e" class="flex justify-between">
+      <a role="button" class="">C/C&#43;&#43;</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/cc&#43;&#43;/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>区块链</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle"  />
+    <label for="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="flex justify-between">
+      <a role="button" class="">Fabric</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">fabric相关机制与原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/" class="">智能合约</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/" class="">fabric-sdk-go详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/" class="">fabric-ca详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle"  />
+    <label for="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="flex justify-between">
+      <a role="button" class="">环境测试</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/" class="">fabric网络中的报错（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/" class="">fabric网络中的报错（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">fabric环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/" class="">solo节点测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/" class="">fabric多机搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/" class="">部署tape测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/" class="">手动生成ca证书搭建fabric网络</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/" class="">centos安装fabric1.2</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-25aef1d59a561fcefcaecb043ef8afd2" class="toggle"  />
+    <label for="section-25aef1d59a561fcefcaecb043ef8afd2" class="flex justify-between">
+      <a role="button" class="">配置文件</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/" class="">cryptogen生成的证书详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">docker-compose.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">configtx.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">crypto-config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/" class="">升级链码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/" class="">区块链网络添加组织</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/" class="">fabric浏览器搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/" class="">如何在已有组织中增加节点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/" class="">Fabric1.4多通道实验</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b07621083aa30b12de4c0333941e479f" class="toggle"  />
+    <label for="section-b07621083aa30b12de4c0333941e479f" class="flex justify-between">
+      <a role="button" class="">比特币</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">比特币相关机制与原理</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle"  />
+    <label for="section-ff5477999ef29208270c84e8b56b2758" class="flex justify-between">
+      <a role="button" class="">IPFS</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/" class="">go-ipfs-api</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" class="">ipfs-webui可视化工具搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/" class="">IPFS基本原理（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/" class="">IPFS私有网络搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-77a0a17b06e8d04cfb0fba9952941706" class="toggle"  />
+    <label for="section-77a0a17b06e8d04cfb0fba9952941706" class="flex justify-between">
+      <a role="button" class="">密码学</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" class="">区块链安全基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/" class="">椭圆曲线加密</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/" class="">密码学基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2e4d10b323fd668021dbd532575d8790" class="toggle" checked />
+    <label for="section-2e4d10b323fd668021dbd532575d8790" class="flex justify-between">
+      <a role="button" class="">Docker</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/" class="active">Docker基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/" class="">Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" class="">docker常用知识总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-70383d7f28a7ae4bf840a844eb61aa16" class="toggle"  />
+    <label for="section-70383d7f28a7ae4bf840a844eb61aa16" class="flex justify-between">
+      <a role="button" class="">共识算法</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">共识算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" class="">Raft共识算法</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>前端</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
+    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
+      <a role="button" class="">博客</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%9B%BE%E4%B9%A6/" class="">图书</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/" class="">工具库</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="https://gitee.com/chaincode"  target="_blank" rel="noopener">
+        Gitee
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Docker基础</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#docker简介">Docker简介</a>
+          <ul>
+            <li><a href="#架构与结构">架构与结构</a></li>
+            <li><a href="#docker特点">docker特点</a></li>
+            <li><a href="#安装">安装</a></li>
+            <li><a href="#基本命令">基本命令</a></li>
+            <li><a href="#删除docker命令">删除docker命令</a></li>
+            <li><a href="#docker基本目录">docker基本目录</a></li>
+          </ul>
+        </li>
+        <li><a href="#docker核心技术">Docker核心技术</a>
+          <ul>
+            <li><a href="#镜像管理">镜像管理</a></li>
+            <li><a href="#容器管理">容器管理</a></li>
+            <li><a href="#数据管理">数据管理</a></li>
+            <li><a href="#网络管理">网络管理</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h2 id="docker简介">
+  Docker简介
+  <a class="anchor" href="#docker%e7%ae%80%e4%bb%8b">#</a>
+</h2>
+<p>Docker是一个开源的容器引擎，它基于LCX容器技术，使用Go语言开发。</p>
+<p>源代码托管在Github上，并遵从Apache2.0协议。</p>
+<p>Docker采用C/S架构，其可以轻松的为任何应用创建一个轻量级的、可移植的、自给自足的容器。</p>
+<p>Docker就是一种快速解决生产问题的一种技术手段,开发，运行和部署应用程序的开放管理平台。</p>
+<p>Docker提供了在一个完全隔离的环境中打包和运行应用程序的能力，这个隔离的环境被称为容器。 由于容器的隔离性和安全性，因此可以在一个主机(宿主机)上同时运行多个相互隔离的容器，互不干预。</p>
+<p><strong>Docker主要解决的问题</strong>:</p>
+<p>保证程序运行环境的一致性; 降低配置开发环境、生产环境的复杂度和成本; 实现程序的快速部署和分发。</p>
+<h3 id="架构与结构">
+  架构与结构
+  <a class="anchor" href="#%e6%9e%b6%e6%9e%84%e4%b8%8e%e7%bb%93%e6%9e%84">#</a>
+</h3>
+<h4 id="架构图">
+  <strong>架构图</strong>
+  <a class="anchor" href="#%e6%9e%b6%e6%9e%84%e5%9b%be">#</a>
+</h4>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209192110975.png" alt="" /></p>
+<blockquote>
+<p><strong>Docker</strong>是采用了(c/s)架构模式的应用程序</p>
+<p>Client dockerCLI :客户端docker命令行</p>
+<p>REST API : 一套介于客户端与服务端的之间进行通信并指示其执行的接口</p>
+<p>Server docker daemon:服务端dacker守护进程等待客户端发送命令来执行</p>
+</blockquote>
+<p><strong>Docker的四大核心技术</strong></p>
+<ul>
+<li>IMAGE-镜像</li>
+<li>CONTAINER-容器</li>
+<li>DATA VOLUMES-数据卷</li>
+<li>NETWORK-网络</li>
+</ul>
+<h4 id="结构图">
+  结构图
+  <a class="anchor" href="#%e7%bb%93%e6%9e%84%e5%9b%be">#</a>
+</h4>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209192115844.png" alt="" /></p>
+<h5 id="docker客户端docker-client">
+  Docker客户端(Docker Client)
+  <a class="anchor" href="#docker%e5%ae%a2%e6%88%b7%e7%ab%afdocker-client">#</a>
+</h5>
+<p>Docker客户端(Docker Client)是用户与Docker进行交互的最主要方式。当在终端输入docker命令时，对应的就会 在服务端产生对应的作用，并把结果返回给客户端。Docker Client除了连接本地服务端，通过更改或指定 DOCKER_HOST连接远程服务端。</p>
+<h5 id="docker服务端docker-server">
+  Docker服务端(Docker Server)
+  <a class="anchor" href="#docker%e6%9c%8d%e5%8a%a1%e7%ab%afdocker-server">#</a>
+</h5>
+<p>Docker Daemon其实就是Docker 的服务端。它负责监听Docker API请求(如Docker Client)并管理Docker对象(Docker Objects)，如镜像、容器、网络、数据卷等</p>
+<h5 id="docker-registries">
+  Docker Registries
+  <a class="anchor" href="#docker-registries">#</a>
+</h5>
+<p>俗称Docker仓库，专门用于存储镜像的云服务环境.</p>
+<p>Docker Hub就是一个公有的存放镜像的地方，类似Github存储代码文件。同样的也可以类似Github那样搭建私有 的仓库。</p>
+<h5 id="docker-对象docker-objects">
+  Docker 对象(Docker Objects)
+  <a class="anchor" href="#docker-%e5%af%b9%e8%b1%a1docker-objects">#</a>
+</h5>
+<p>镜像:一个Docker的可执行文件，其中包括运行应用程序所需的所有代码内容、依赖库、环境变量和配置文件等。
+容器:镜像被运行起来后的实例。 网络:外部或者容器间如何互相访问的网络方式，如host模式、bridge模式。 数据卷:容器与宿主机之间、容器与容器之间共享存储方式，类似虚拟机与主机之间的共享文件目录。</p>
+<h3 id="docker特点">
+  docker特点
+  <a class="anchor" href="#docker%e7%89%b9%e7%82%b9">#</a>
+</h3>
+<h4 id="三大理念">
+  三大理念:
+  <a class="anchor" href="#%e4%b8%89%e5%a4%a7%e7%90%86%e5%bf%b5">#</a>
+</h4>
+<p><strong>构建</strong>:龙珠里的胶囊，将你需要的场景构建好，装在一个小胶囊里</p>
+<p><strong>运输</strong>:随身携带着房子、车子等，非常方便</p>
+<p><strong>运行</strong>:只需要你轻轻按一下胶囊，找个合适的地方一放，就ok了</p>
+<p><strong>优点</strong>:</p>
+<ul>
+<li>
+<p>多: 适用场景多</p>
+</li>
+<li>
+<p>快: 环境部署快、更新快</p>
+</li>
+<li>
+<p>好: 好多人在用</p>
+</li>
+<li>
+<p>省: 省钱省力省人工</p>
+</li>
+</ul>
+<p><strong>缺点</strong>:</p>
+<ul>
+<li>
+<p>太腻歪人: 依赖操作系统</p>
+</li>
+<li>
+<p>不善沟通: 依赖网络</p>
+</li>
+<li>
+<p>不善理财: 银行U盾等场景不能用</p>
+</li>
+</ul>
+<h3 id="安装">
+  安装
+  <a class="anchor" href="#%e5%ae%89%e8%a3%85">#</a>
+</h3>
+<p><a href="https://chaincode.gitee.io/docs/%e5%8c%ba%e5%9d%97%e9%93%be/fabric/%e7%8e%af%e5%a2%83%e6%b5%8b%e8%af%95/2021-03-24-fabric%e7%8e%af%e5%a2%83%e6%90%ad%e5%bb%ba/">docker安装</a></p>
+<h3 id="基本命令">
+  基本命令
+  <a class="anchor" href="#%e5%9f%ba%e6%9c%ac%e5%91%bd%e4%bb%a4">#</a>
+</h3>
+<pre tabindex="0"><code>docker [OPTIONS] COMMAND
+Options:
+      --config string 客户端配置文件的位置
+  -c, --context string 用于连接到
+                           守护进程（覆盖 DOCKER_HOST 环境变量和
+                           使用“docker context use”设置的默认上下文）
+  -D, --debug 启用调试模式
+  -H, --host 列出要连接的守护进程套接字
+  -l, --log-level string 设置日志级别
+                           (&#34;debug&#34;|&#34;info&#34;|&#34;warn&#34;|&#34;error&#34;|&#34;fatal&#34;)
+                           (default &#34;info&#34;)
+      --tls 使用 TLS；由 --tlsverify 暗示
+      --tlscacert string 仅由该 CA 签名的信任证书
+      --tlscert string TLS 证书文件的路径
+      --tlskey string TLS 密钥文件的路径
+      --tlsverify 使用 TLS 并验证远程
+  -v, --version 打印版本信息并退出
+COMMAND:
+  build       从Dockerfile构建镜像
+  commit      从容器的更改创建新镜像
+  cp          在容器和本地文件系统之间复制文件/文件夹
+  create      创建创建一个新容器
+  diff        检查容器文件系统上文件或目录的更改
+  events      从服务器获取实时事件
+  exec        在正在运行的容器中运行命令
+  export      将容器的文件系统导出为 tar 存档
+  history     显示镜像的历史
+  images      列出镜像
+  import      从 tarball 导入内容以创建文件系统镜像
+  info        显示系统范围的信息
+  inspect     返回有关 Docker 对象的低级信息
+  kill        杀死一个或多个正在运行的容器
+  load        从 tar 存档或 STDIN 加载镜像
+  login       登录到 Docker 注册表
+  logout      从 Docker 注册表中注销
+  logs        获取容器的日志
+  pause       暂停一个或多个容器内的所有进程
+  port        列出端口映射或容器的特定映射
+  ps          列出容器
+  pull        从注册表中提取镜像或存储库
+  push        将镜像或存储库推送到注册表
+  rename      重命名容器
+  restart     重启一个或多个容器
+  rm          移除一个或多个容器
+  rmi         删除一张或多张镜像
+  run         在新容器中运行命令
+  save        保存将一个或多个图像保存到 tar 存档（默认流式传输到 STDOUT）
+  search      在 Docker Hub 中搜索镜像
+  start       启动一个或多个停止的容器
+  stats       显示容器资源使用统计的实时流
+  stop        停止一个或多个正在运行的容器
+  top         显示一个容器的运行进程
+  unpause     取消暂停一个或多个容器中的所有进程
+  update      更新一个或多个容器的配置
+  version     显示 Docker 版本信息
+  wait        阻塞直到一个或多个容器停止，然后打印它们的退出代码
+</code></pre><h3 id="删除docker命令">
+  删除docker命令
+  <a class="anchor" href="#%e5%88%a0%e9%99%a4docker%e5%91%bd%e4%bb%a4">#</a>
+</h3>
+<pre tabindex="0"><code>sudo apt-get purge docker-ce -y
+sudo rm -rf /etc/docker
+sudo rm -rf /var/lib/docker/
+</code></pre><h3 id="docker基本目录">
+  docker基本目录
+  <a class="anchor" href="#docker%e5%9f%ba%e6%9c%ac%e7%9b%ae%e5%bd%95">#</a>
+</h3>
+<pre tabindex="0"><code>/etc/docker/            #docker的认证目录
+/var/lib/docker/        #docker的应用目录
+</code></pre><h2 id="docker核心技术">
+  Docker核心技术
+  <a class="anchor" href="#docker%e6%a0%b8%e5%bf%83%e6%8a%80%e6%9c%af">#</a>
+</h2>
+<h3 id="镜像管理">
+  镜像管理
+  <a class="anchor" href="#%e9%95%9c%e5%83%8f%e7%ae%a1%e7%90%86">#</a>
+</h3>
+<h4 id="简介">
+  简介
+  <a class="anchor" href="#%e7%ae%80%e4%bb%8b">#</a>
+</h4>
+<p>镜像是一个Docker的可执行文件，其中包括运行应用程序所需的所有代码内容、依赖库、环境变量和配置文件等。 通过镜像可以创建一个或多个容器。</p>
+<h4 id="命令">
+  命令
+  <a class="anchor" href="#%e5%91%bd%e4%bb%a4">#</a>
+</h4>
+<h5 id="搜索镜像">
+  搜索镜像
+  <a class="anchor" href="#%e6%90%9c%e7%b4%a2%e9%95%9c%e5%83%8f">#</a>
+</h5>
+<pre tabindex="0"><code>docker serach [镜像名称]
+#NAME:名称 
+#DESCRIPTION:基本功能描述 
+#STARS:下载次数 
+#OFFICIAL:官方 
+#AUTOMATED:自动的运行
+</code></pre><h5 id="获取镜像">
+  获取镜像
+  <a class="anchor" href="#%e8%8e%b7%e5%8f%96%e9%95%9c%e5%83%8f">#</a>
+</h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker pull <span style="color:#f92672">[</span>镜像名称<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>docker pull ubuntu 
+</span></span><span style="display:flex;"><span>docker pull nginx
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#获取的镜像在哪里? </span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#/var/lib/docker 目录下</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#由于权限的原因我们需要切换root用户 </span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#那我们首先要重设置root用户的密码:</span>
+</span></span><span style="display:flex;"><span>sudo passwd root 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#这样就可以设置root用户的密码了。 </span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#之后就可以自由的切换到root用户了 :</span>
+</span></span><span style="display:flex;"><span>su
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#输入root用户的密码即可。</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#当然，如果想从root用户切换回一般用户，则可使用 su -val(一般用户名) </span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#而当你再次切回到root用户，则只需要键入exit,再次输入exit则回到最初的用户下 </span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#操作下面的文件可以查看相关的镜像信息</span>
+</span></span><span style="display:flex;"><span>vim /var/lib/docker/image/overlay2/repositories.json
+</span></span></code></pre></div><h5 id="查看镜像">
+  查看镜像
+  <a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e9%95%9c%e5%83%8f">#</a>
+</h5>
+<pre tabindex="0"><code>docker imgages [镜像名称]
+docker image ls [镜像名称]
+#docker images -a 列出所有的本地的images(包括已删除的镜像记录)
+#REPOSITORY:镜像的名称
+#TAG :镜像的版本标签
+#IMAGE ID:镜像id
+#CREATED:镜像是什么时候创建的
+#SIZE:大小
+</code></pre><h5 id="重命名">
+  重命名
+  <a class="anchor" href="#%e9%87%8d%e5%91%bd%e5%90%8d">#</a>
+</h5>
+<pre tabindex="0"><code>docker tag [老镜像名称]:[老镜像版本][新镜像名称]:[新镜像版本]
+docker tag nginx:latest panda-nginx:v1.0
+</code></pre><h5 id="删除镜像">
+  删除镜像
+  <a class="anchor" href="#%e5%88%a0%e9%99%a4%e9%95%9c%e5%83%8f">#</a>
+</h5>
+<pre tabindex="0"><code>docker rmi [命令参数][镜像ID]
+docker rmi [命令参数][镜像名称]:[镜像版本]
+docker image rm [命令参数][镜像]
+#命令演示:
+$docker rmi 3fa822599e10
+$docker rmi mysql:latest
+#注意:
+如果一个image_id存在多个名称，那么应该使用 名称:版本 的格式删除镜像 #命令参数(OPTIONS):
+-f, --force 强制删除
+</code></pre><h5 id="导出镜像">
+  导出镜像
+  <a class="anchor" href="#%e5%af%bc%e5%87%ba%e9%95%9c%e5%83%8f">#</a>
+</h5>
+<p>将已经下载好的镜像，导出到本地，以备后用。</p>
+<pre tabindex="0"><code>docker save [命令参数][导出镜像名称][本地镜像镜像] 
+#命令参数(OPTIONS):
+-o, --output string 指定写入的文件名和路径 
+
+#导出镜像
+docker save -o nginx.tar nginx
+</code></pre><h5 id="导入镜像">
+  导入镜像
+  <a class="anchor" href="#%e5%af%bc%e5%85%a5%e9%95%9c%e5%83%8f">#</a>
+</h5>
+<p>将save命令打包的镜像导入本地镜像库中</p>
+<pre tabindex="0"><code>docker load [命令参数][被导入镜像压缩文件的名称]
+docker load &lt; [被导入镜像压缩文件的名称]
+docker load --input [被导入镜像压缩文件的名称] 
+#命令参数(OPTIONS):
+-i, --input string 指定要打入的文件，如没有指定，默认是STDIN
+
+#导入镜像文件:
+docker load &lt; nginx.tar 
+#注意:
+如果发现导入的时候没有权限需要使用chmod命令修改镜像文件的权限
+</code></pre><h5 id="查看镜像历史">
+  查看镜像历史
+  <a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e9%95%9c%e5%83%8f%e5%8e%86%e5%8f%b2">#</a>
+</h5>
+<pre tabindex="0"><code>docker history [镜像名称]:[镜像版本]
+docker history [镜像ID]
+
+#IMAGE:编号
+#CREATED:创建的
+#CREATED BY :基于那些命令创建的 #SIZE:大小
+#COMMENT:评论
+</code></pre><h5 id="查看镜像详细信息">
+  查看镜像详细信息
+  <a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e9%95%9c%e5%83%8f%e8%af%a6%e7%bb%86%e4%bf%a1%e6%81%af">#</a>
+</h5>
+<pre tabindex="0"><code>docker image inspect [命令参数] [镜像名称]:[镜像版本]
+docker inspect [命令参数] [镜像ID]
+
+#查看镜像详细信息:
+docker inspect nginx
+</code></pre><h5 id="根据模版创建镜像">
+  根据模版创建镜像
+  <a class="anchor" href="#%e6%a0%b9%e6%8d%ae%e6%a8%a1%e7%89%88%e5%88%9b%e5%bb%ba%e9%95%9c%e5%83%8f">#</a>
+</h5>
+<pre tabindex="0"><code>#登录系统模板镜像网站:
+#https://download.openvz.org/template/precreated/ 
+#找到一个镜像模板进行下载，比如说ubuntu-16.04-x86_64.tar.gz，地址为: #https://download.openvz.org/template/precreated/ubuntu-16.04-x86_64.tar.gz 
+#命令格式:
+cat 模板文件名.tar | docker import - [自定义镜像名]
+#演示效果:
+$ cat ubuntu-16.04-x86_64.tar.gz | docker import - ubuntu-mini
+</code></pre><h3 id="容器管理">
+  容器管理
+  <a class="anchor" href="#%e5%ae%b9%e5%99%a8%e7%ae%a1%e7%90%86">#</a>
+</h3>
+<h4 id="简介-1">
+  简介
+  <a class="anchor" href="#%e7%ae%80%e4%bb%8b-1">#</a>
+</h4>
+<p>docker容器技术指Docker是一个由GO语言写的程序运行的“容器”(Linux containers， LXCs) containers的中文解释是集装箱。</p>
+<p>Docker则实现了一种应用程序级别的隔离，它改变我们基本的开发、操作单元，由直接操作虚拟主机（VM），转换到操作程序运行的容器上来</p>
+<p><strong>容器</strong>：是一种轻量级、可移植、并将应用程序进行打包的技术，使应用程序可以在几乎任何地方以相同的方式运行。</p>
+<p>Docker将镜像文件运行起来后，产生的对象就是容器。容器相当于镜像运行起来的一个实例。</p>
+<p>容器具备一定的生命周期。</p>
+<p>另外，可以借助docker ps命令查看运行的容器，如同在linux上利用ps命令查看运行着的进程那样。</p>
+<p>我们就可以理解容器就是被封装起来的进程操作,只不过现在的进程可以简单也可以复杂,复杂的话可以运行1个操作系统.简单的话可以运行1个回显字符串.</p>
+<h5 id="容器与虚拟机的相同点不同点">
+  容器与虚拟机的相同点/不同点
+  <a class="anchor" href="#%e5%ae%b9%e5%99%a8%e4%b8%8e%e8%99%9a%e6%8b%9f%e6%9c%ba%e7%9a%84%e7%9b%b8%e5%90%8c%e7%82%b9%e4%b8%8d%e5%90%8c%e7%82%b9">#</a>
+</h5>
+<h5 id="相同点">
+  相同点：
+  <a class="anchor" href="#%e7%9b%b8%e5%90%8c%e7%82%b9">#</a>
+</h5>
+<ul>
+<li>容器和虚拟机一样，都会对物理硬件资源进行共享和使用</li>
+<li>容器和虚拟机的生命周期比较相似（创建、运行、暂停、关闭等等）</li>
+<li>容器中或虚拟机中都可以安装各种应用，如redis、mysql等。也就是说，在容器中的操作，如同在一个虚拟机（操作系统）中操作一样。</li>
+<li>同虚拟机一样，容器创建后，会存储在宿主机上：Linux上位于/var/lib/docker/containers下</li>
+</ul>
+<h5 id="不同点">
+  不同点：
+  <a class="anchor" href="#%e4%b8%8d%e5%90%8c%e7%82%b9">#</a>
+</h5>
+<ul>
+<li>虚拟机的创建、启动、关闭都是基于一个完整的操作系统。一个虚拟机就是一个完整的操作系统。而容器直接运行在宿主机的内核上，其本质上是一系列进程的集合。</li>
+<li>容器是轻量级的，虚拟机是重量级的。</li>
+<li>容器不需要额外的资源来管理，虚拟机额外有更多的性能消耗。</li>
+<li>意味着在给定的硬件上能运行更多数量的容器，甚至可以直接把Docker运行在虚拟机上。</li>
+</ul>
+<h4 id="命令-1">
+  命令
+  <a class="anchor" href="#%e5%91%bd%e4%bb%a4-1">#</a>
+</h4>
+<h5 id="查看容器">
+  查看容器
+  <a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e5%ae%b9%e5%99%a8">#</a>
+</h5>
+<pre tabindex="0"><code>docker ps   //显示容器列表
+
+#CONTAINER ID 容器ID
+#IMAGE 基于那个镜像
+#COMMAND 运行镜像使用了哪些命令? #CREATED多久前创建时间
+#STATUS 开启还是关闭
+#PORTS端口号
+#NAMES容器名称默认是随机的
+#注意:
+管理docker容器可以通过名称，也可以通过ID
+ps是显示正在运行的容器， -a是显示所有运行过的容器，包括已经不运行的容器
+</code></pre><h5 id="创建待启动容器">
+  创建待启动容器
+  <a class="anchor" href="#%e5%88%9b%e5%bb%ba%e5%be%85%e5%90%af%e5%8a%a8%e5%ae%b9%e5%99%a8">#</a>
+</h5>
+<pre tabindex="0"><code>docker create [OPTIONS] IMAGE [COMMAND] [ARG...]
+docker create [参数命令] 依赖镜像 [容器内命令] [命令参数]
+
+#命令参数(OPTIONS):查看更多
+-t, --tty
+-i, --interactive
+--name
+分配一个伪TTY，也就是分配虚拟终端 即使没有连接，也要保持STDIN打开 为容器起名，如果没有指定将会随机产生一个名称
+#命令参数(COMMAND\ARG):
+COMMAND 表示容器启动后，需要在容器中执行的命令，如ps、ls 等命令
+ARG 表示执行 COMMAND 时需要提供的一些参数，如ps 命令的 aux、ls命令的-a等等
+#创建容器(附上ls命令和a参数)
+docker create -it --name ubuntu-1 ubuntu ls -a
+</code></pre><h5 id="启动容器">
+  启动容器
+  <a class="anchor" href="#%e5%90%af%e5%8a%a8%e5%ae%b9%e5%99%a8">#</a>
+</h5>
+<p><strong>启动待启动或已关闭容器</strong></p>
+<pre tabindex="0"><code>docker start [容器名称]或[容器ID] 
+
+#命令参数(OPTIONS):
+-a, --attach 将当前shell的 STDOUT/STDERR 连接到容器上
+-i, --interactive 将当前shell的 STDIN连接到容器上 
+#启动上面创建的容器
+docker start -a ubuntu-1
+</code></pre><p><strong>创建新容器并启动</strong></p>
+<pre tabindex="0"><code>docker run [命令参数] [镜像名称][执行的命令]
+</code></pre><pre tabindex="0"><code>命令参数(OPTIONS):
+-t, --tty
+-i, --interactive
+    --name
+-d, --detach
+--rm
+分配一个伪TTY，也就是分配虚拟终端 即使没有连接，也要保持STDIN打开 为容器起名，如果没有指定将会随机产生一个名称 在后台运行容器并打印出容器ID 当容器退出运行后，自动删除容器
+#启动一个镜像输出内容并删除容器
+docker run --rm --name nginx1 nginx /bin/echo &#34;hello docker&#34;
+</code></pre><pre tabindex="0"><code>注意
+docker run 其实是两个命令的集合体 docker creat+docker start
+</code></pre><p><strong>守护进程方式启动容器（常用方式）</strong></p>
+<pre tabindex="0"><code>#命令格式:
+docker run -d [image_name] command ... #守护进程方式启动容器:
+docker run -d nginx
+</code></pre><h5 id="容器暂停">
+  容器暂停
+  <a class="anchor" href="#%e5%ae%b9%e5%99%a8%e6%9a%82%e5%81%9c">#</a>
+</h5>
+<pre tabindex="0"><code>docker pause [容器名称]或[容器ID]
+</code></pre><h6 id="容器取消暂停">
+  容器取消暂停
+  <a class="anchor" href="#%e5%ae%b9%e5%99%a8%e5%8f%96%e6%b6%88%e6%9a%82%e5%81%9c">#</a>
+</h6>
+<pre tabindex="0"><code>docker unpause [容器名称]或[容器ID]
+</code></pre><h5 id="容器重启">
+  容器重启
+  <a class="anchor" href="#%e5%ae%b9%e5%99%a8%e9%87%8d%e5%90%af">#</a>
+</h5>
+<pre tabindex="0"><code>#作用: 
+    重启一个或多个处于运行状态、暂停状态、关闭状态或者新建状态的容器 该命令相当于stop和start命令的结合
+#命令格式:
+docker restart [容器名称]或[容器ID]
+#命令参数(OPTIONS):
+-t, --time int 重启前，等待的时间，单位秒(默认 10s)
+#恢复容器
+docker restart -t 20 a229eabf1f32
+</code></pre><h5 id="关闭容器">
+  关闭容器
+  <a class="anchor" href="#%e5%85%b3%e9%97%ad%e5%ae%b9%e5%99%a8">#</a>
+</h5>
+<pre tabindex="0"><code>docker stop [容器名称]或[容器ID]
+</code></pre><h5 id="终止容器">
+  终止容器
+  <a class="anchor" href="#%e7%bb%88%e6%ad%a2%e5%ae%b9%e5%99%a8">#</a>
+</h5>
+<pre tabindex="0"><code>docker kill [容器名称]或[容器ID]
+</code></pre><h5 id="删除容器">
+  删除容器
+  <a class="anchor" href="#%e5%88%a0%e9%99%a4%e5%ae%b9%e5%99%a8">#</a>
+</h5>
+<h6 id="正常删除">
+  正常删除
+  <a class="anchor" href="#%e6%ad%a3%e5%b8%b8%e5%88%a0%e9%99%a4">#</a>
+</h6>
+<pre tabindex="0"><code>docker rm [容器名称]或[容器ID]
+</code></pre><h6 id="强制删除">
+  强制删除
+  <a class="anchor" href="#%e5%bc%ba%e5%88%b6%e5%88%a0%e9%99%a4">#</a>
+</h6>
+<pre tabindex="0"><code>docker rm -f [容器名称]或[容器ID]
+</code></pre><h5 id="批量关闭容器">
+  批量关闭容器
+  <a class="anchor" href="#%e6%89%b9%e9%87%8f%e5%85%b3%e9%97%ad%e5%ae%b9%e5%99%a8">#</a>
+</h5>
+<pre tabindex="0"><code>docker rm -f $(docker ps -a -q) 
+#按照执行顺序$()， 获取到现在容器的id然后进行删除
+</code></pre><h5 id="进入容器">
+  进入容器
+  <a class="anchor" href="#%e8%bf%9b%e5%85%a5%e5%ae%b9%e5%99%a8">#</a>
+</h5>
+<h6 id="创建并进入">
+  创建并进入
+  <a class="anchor" href="#%e5%88%9b%e5%bb%ba%e5%b9%b6%e8%bf%9b%e5%85%a5">#</a>
+</h6>
+<pre tabindex="0"><code>docker run --name [container_name] -it [docker_image] /bin/bash
+
+#命令演示:
+docker run -it --name panda-nginx nginx /bin/bash
+#docker 容器启动命令参数详解: 
+#--name:给容器定义一个名称 
+#-i:则让容器的标准输入保持打开。 
+#-t:让docker分配一个伪终端,并绑定到容器的标准输入上 
+#/bin/bash:执行一个命令
+</code></pre><h6 id="退出容器">
+  退出容器
+  <a class="anchor" href="#%e9%80%80%e5%87%ba%e5%ae%b9%e5%99%a8">#</a>
+</h6>
+<pre tabindex="0"><code>#方法一: 
+exit 
+#方法二: 
+Ctrl + D
+</code></pre><h6 id="手工方式进入容器">
+  手工方式进入容器
+  <a class="anchor" href="#%e6%89%8b%e5%b7%a5%e6%96%b9%e5%bc%8f%e8%bf%9b%e5%85%a5%e5%ae%b9%e5%99%a8">#</a>
+</h6>
+<pre tabindex="0"><code>docker exec -it 容器id /bin/bash
+</code></pre><h6 id="生产方式进入容器">
+  生产方式进入容器
+  <a class="anchor" href="#%e7%94%9f%e4%ba%a7%e6%96%b9%e5%bc%8f%e8%bf%9b%e5%85%a5%e5%ae%b9%e5%99%a8">#</a>
+</h6>
+<p>我们生产中常用的进入容器方法是使用脚本，脚本内容如下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#定义进入仓库函数 docker_in(){ NAME_ID=$1</span>
+</span></span><span style="display:flex;"><span>  PID<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>docker inspect --format <span style="color:#f92672">{{</span>.State.Pid<span style="color:#f92672">}}</span> $NAME_ID<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>  nsenter --target $PID --mount --uts --ipc --net --pid
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>docker_in $1
+</span></span></code></pre></div><p>直接执行的话是没有执行权限的所以需要赋值权限</p>
+<pre tabindex="0"><code>#赋权执行
+chmod +x docker_in.sh 
+#进入指定的容器，并测试
+./docker_in.sh b3fbcba852fd
+</code></pre><p>注意:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">当拷贝到linux下的时候会出现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">-bash: ./docker_in.sh: /bin/bash^M: 解释器错误: 没有那个文件或目录 这个问题大多数是因为你的脚本文件在windows下编辑过。windows下，每一行的结尾是\n\r，而在linux下 文件的结尾是\n，那么你在windows下编辑过的文件在linux下打开看的时候每一行的结尾就会多出来一个字 符\r,用cat -A docker_in.sh时你可以看到这个\r字符被显示为^M，这时候只需要删除这个字符就可以了。 可以使用命令 sed -i &rsquo;s/\r$//&rsquo; docker_in.sh</td>
+</tr>
+</tbody>
+</table>
+<h5 id="基于容器创建镜像">
+  基于容器创建镜像
+  <a class="anchor" href="#%e5%9f%ba%e4%ba%8e%e5%ae%b9%e5%99%a8%e5%88%9b%e5%bb%ba%e9%95%9c%e5%83%8f">#</a>
+</h5>
+<h6 id="方式一">
+  方式一：
+  <a class="anchor" href="#%e6%96%b9%e5%bc%8f%e4%b8%80">#</a>
+</h6>
+<pre tabindex="0"><code>#命令格式:
+docker commit -m &#39;改动信息&#39; -a &#34;作者信息&#34; [container_id][new_image:tag] 
+#命令演示:
+#进入一个容器，创建文件后并退出:
+$ ./docker_in.sh d74fff341687
+$ mkdir /hello
+$ mkdir /world
+$ ls
+$ exit
+#创建一个镜像:
+$ docker commit -m &#39;mkdir /hello /world &#39; -a &#34;panda&#34; d74fff341687 nginx:v0.2 
+#查看镜像:
+$ docker images
+#启动一个容器
+$ docker run -itd nginx:v0.2 /bin/bash
+#进入容器进行查看
+$ ./docker_in.sh ae63ab299a84
+$ ls
+</code></pre><h6 id="方式二">
+  方式二：
+  <a class="anchor" href="#%e6%96%b9%e5%bc%8f%e4%ba%8c">#</a>
+</h6>
+<pre tabindex="0"><code>#命令格式:
+docker export [容器id] &gt; 模板文件名.tar #命令演示:
+#创建镜像:
+$ docker export ae63ab299a84 &gt; nginx.tar #导入镜像:
+$ cat nginx.tar | docker import - panda-test
+</code></pre><table>
+<thead>
+<tr>
+<th>导出(export)导入(import)与保存(save)加载(load)的恩怨情仇 import与load的区别:</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>import与load的区别:<br/>import可以重新指定镜像的名字，docker load不可以</td>
+</tr>
+<tr>
+<td>export 与 保存 save 的区别:<br/> 1、export导出的镜像文件大小，小于 save保存的镜像。<br/> 2、export 导出(import导入)是根据容器拿到的镜像，再导入时会丢失镜像所有的历史。</td>
+</tr>
+</tbody>
+</table>
+<h5 id="查看容器日志">
+  查看容器日志
+  <a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e5%ae%b9%e5%99%a8%e6%97%a5%e5%bf%97">#</a>
+</h5>
+<pre tabindex="0"><code>docker logs [容器id]
+</code></pre><h5 id="查看容器详细信息">
+  查看容器详细信息
+  <a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e5%ae%b9%e5%99%a8%e8%af%a6%e7%bb%86%e4%bf%a1%e6%81%af">#</a>
+</h5>
+<pre tabindex="0"><code>docker inspect [容器id]
+
+查看容器网络信息:
+docker inspect --format=&#39;{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}&#39; 930f29ccdf8a
+</code></pre><h5 id="查看容器端口信息">
+  查看容器端口信息
+  <a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e5%ae%b9%e5%99%a8%e7%ab%af%e5%8f%a3%e4%bf%a1%e6%81%af">#</a>
+</h5>
+<pre tabindex="0"><code>docker port [容器id]
+</code></pre><h5 id="容器重命名">
+  容器重命名
+  <a class="anchor" href="#%e5%ae%b9%e5%99%a8%e9%87%8d%e5%91%bd%e5%90%8d">#</a>
+</h5>
+<pre tabindex="0"><code>docker rename [容器id]或[容器名称] [容器新名称]
+</code></pre><h3 id="数据管理">
+  数据管理
+  <a class="anchor" href="#%e6%95%b0%e6%8d%ae%e7%ae%a1%e7%90%86">#</a>
+</h3>
+<h4 id="数据卷简介">
+  数据卷简介
+  <a class="anchor" href="#%e6%95%b0%e6%8d%ae%e5%8d%b7%e7%ae%80%e4%bb%8b">#</a>
+</h4>
+<p>数据卷和数据卷容器：在使用Docker过程中，对数据进行持久化保存，和容器之间进行数据共享。</p>
+<p><strong>数据卷</strong>：就是将宿主机的某个目录，映射到容器中，作为数据存储到目录，我们就可以在宿主机对数据进行存储。</p>
+<p>**数据卷：**容器内数据直接映射到本地主机环境。</p>
+<p><strong>数据卷特性</strong>：</p>
+<ul>
+<li>数据卷可以在容器之间共享和重用，本地与容器间传递数据更高效；</li>
+<li>对数据卷的修改会立马有效，容器内部与本地目录均可；</li>
+<li>对数据卷的更新不会影响镜像，对数据与应用进行了解耦操作；</li>
+<li>卷会一直存在，直到没有容器使用；</li>
+</ul>
+<h4 id="命令详解">
+  命令详解
+  <a class="anchor" href="#%e5%91%bd%e4%bb%a4%e8%af%a6%e8%a7%a3">#</a>
+</h4>
+<pre tabindex="0"><code>docker run --help
+-v, --volume list            Bind mount a volume (default []) 
+                             挂载一个数据卷，默认为空
+</code></pre><p>我们可以使用命令 docker run 用来创建容器，可以在使用docker run 命令时添加 -v 参数，就可以创建并挂载一个到多个数据卷到当前运行的容器中。 -v 参数的作用是将宿主机的一个目录作为容器的数据卷挂载到docker容器 中，使宿主机和容器之间可以共享一个 目录，如果本地路径不存在，Docker也会自动创建。</p>
+<h4 id="数据卷管理">
+  数据卷管理
+  <a class="anchor" href="#%e6%95%b0%e6%8d%ae%e5%8d%b7%e7%ae%a1%e7%90%86">#</a>
+</h4>
+<h5 id="目录">
+  目录
+  <a class="anchor" href="#%e7%9b%ae%e5%bd%95">#</a>
+</h5>
+<pre tabindex="0"><code>#命令格式:
+docker run -itd --name [容器名字] -v [宿主机目录]:[容器目录][镜像名称] [命令(可选)]
+#命令演示:
+#创建测试文件:
+echo &#34;file1&#34; &gt; tmp/file1.txt
+#启动一个容器，挂载数据卷:
+docker run -itd --name test1 -v /home/itcast/tmp/:/test1/ nginx #注意宿主机目录需要绝对路径
+#测试效果
+docker exec -it a53c61c77 /bin/bash
+root@a53c61c77bde:/# cat /test1/file1.txt
+file1
+</code></pre><h5 id="文件不推荐">
+  文件（不推荐）
+  <a class="anchor" href="#%e6%96%87%e4%bb%b6%e4%b8%8d%e6%8e%a8%e8%8d%90">#</a>
+</h5>
+<pre tabindex="0"><code>#命令格式:
+docker run -itd --name [容器名字] -v [宿主机文件]:[容器文件][镜像名称] [命令(可选)]
+#命令演示:
+#创建测试文件
+echo &#34;file1&#34; &gt; /tmp/file1.txt
+#启动一个容器，挂载数据卷
+docker run -itd --name test2 -v /home/itcast/tmp/file1.txt:/nihao/nihao.sh nginx
+#测试效果
+docker exec -it 84c37743 /bin/bash root@84c37743d339:/# cat /nihao/nihao.sh file1
+</code></pre><p><strong>注意：</strong></p>
+<pre tabindex="0"><code>1、Docker挂载数据卷的默认读写权限(rw)，用户可以通过ro设置为只读格式:[宿主机文件]:[容器文件]:ro 
+2、如果直接挂载一个文件到容器，使用文件工具进行编辑，可能会造成文件的改变，从Docker1.1.0起，这会导致 报错误信息。所以推荐的方式是直接挂在文件所在的目录。
+</code></pre><h4 id="数据卷容器简介">
+  数据卷容器简介
+  <a class="anchor" href="#%e6%95%b0%e6%8d%ae%e5%8d%b7%e5%ae%b9%e5%99%a8%e7%ae%80%e4%bb%8b">#</a>
+</h4>
+<p>需要在多个容器之间共享一些持续更新的数据，最简单的方式是使用数据卷容器。数据卷容器也是一个容器，但是他的目的是专门用来提供数据卷共其他容器挂载。</p>
+<p>**数据卷容器：**使用特定容器来维护数据卷；</p>
+<p>简单点:数据卷容器就是为其他容器提供数据交互存储的容器</p>
+<h4 id="数据卷容器实践">
+  数据卷容器实践
+  <a class="anchor" href="#%e6%95%b0%e6%8d%ae%e5%8d%b7%e5%ae%b9%e5%99%a8%e5%ae%9e%e8%b7%b5">#</a>
+</h4>
+<h5 id="创建数据卷容器">
+  创建数据卷容器
+  <a class="anchor" href="#%e5%88%9b%e5%bb%ba%e6%95%b0%e6%8d%ae%e5%8d%b7%e5%ae%b9%e5%99%a8">#</a>
+</h5>
+<pre tabindex="0"><code>#命令格式:
+docker create -v [容器数据卷目录] --name [容器名字][镜像名称] [命令(可选)] 
+
+#执行效果
+docker create -v /data --name v1-test1 nginx
+</code></pre><h5 id="创建两个容器同时挂载数据卷容器">
+  创建两个容器，同时挂载数据卷容器
+  <a class="anchor" href="#%e5%88%9b%e5%bb%ba%e4%b8%a4%e4%b8%aa%e5%ae%b9%e5%99%a8%e5%90%8c%e6%97%b6%e6%8c%82%e8%bd%bd%e6%95%b0%e6%8d%ae%e5%8d%b7%e5%ae%b9%e5%99%a8">#</a>
+</h5>
+<pre tabindex="0"><code>#命令格式:
+docker run --volumes-from [数据卷容器id/name] -tid --name [容器名字][镜像名称] [命令(可 选)]
+#执行效果:
+#创建 vc-test1 容器:
+docker run --volumes-from 4693558c49e8 -tid --name vc-test1 nginx /bin/bash
+#创建 vc-test2 容器:
+docker run --volumes-from 4693558c49e8 -tid --name vc-test2 nginx /bin/bash
+</code></pre><h5 id="确认卷容器共享">
+  确认卷容器共享
+  <a class="anchor" href="#%e7%a1%ae%e8%ae%a4%e5%8d%b7%e5%ae%b9%e5%99%a8%e5%85%b1%e4%ba%ab">#</a>
+</h5>
+<pre tabindex="0"><code>#进入vc-test1，操作数据卷容器:
+$ docker exec -it vc-test1 /bin/bash root@c408f4f14786:/# ls /data/
+root@c408f4f14786:/# echo &#39;v-test1&#39; &gt; /data/v-test1.txt root@c408f4f14786:/# exit
+#进入vc-test2，确认数据卷:
+$ docker exec -it vc-test2 /bin/bash root@7448eee82ab0:/# echo &#39;v-test2&#39; &gt; /data/v-test2.txt root@7448eee82ab0:/# ls /data/
+v-test1.txt
+root@7448eee82ab0:/# exit
+#回到vc-test1进行验证
+$ docker exec -it vc-test1 /bin/bash root@c408f4f14786:/# ls /data/
+v-test1.txt v-test2.txt
+root@c408f4f14786:/# cat /data/v-test2.txt
+v-test2
+</code></pre><h4 id="数据备份原理">
+  数据备份原理
+  <a class="anchor" href="#%e6%95%b0%e6%8d%ae%e5%a4%87%e4%bb%bd%e5%8e%9f%e7%90%86">#</a>
+</h4>
+<p>工作中很多的容器的数据需要查看，所有需要备份将数据很轻松的拿到本地目录。</p>
+<p>原理图:</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209211631070.png" alt="" /></p>
+<p>数据备份方案:</p>
+<ul>
+<li>创建一个挂载数据卷容器的容器</li>
+<li>挂载宿主机本地目录作为备份数据卷</li>
+<li>将数据卷容器的内容备份到宿主机本地目录挂载的数据卷中</li>
+<li>完成备份操作后销毁刚创建的容器</li>
+</ul>
+<pre tabindex="0"><code>在2.3.4的数据卷容器基础上做数据的备份
+#命令格式:
+$ docker run --rm --volumes-from [数据卷容器id/name] -v [宿主机目录]:[容器目录][镜像名称] [备份命令]
+#命令演示:
+#创建备份目录:
+$ mkdir /backup/
+#创建备份的容器:
+$ docker run --rm --volumes-from 60205766d61a -v /home/itcast/backup/:/backup/ nginx tar zcPf /backup/data.tar.gz /data
+#验证操作:
+$ ls /backup
+$ zcat /backup/data.tar.gz
+</code></pre><p>注释: -P:使用原文件的原来属性(属性不会依据使用者而变)，恢复字段到它们的原始方式，忽略现有的用户权 限屏蔽位(umask)。 加了-p之后，tar进行解压后，生成的文件的权限，是直接取自tar包里面文件的权限(不会再 使用该用户的umask值进行运算)，那么不加-p参数，将还要再减去umask的值(位运算的减)，但是如果使用 root用户进行操作，加不加-p参数都一样。</p>
+<h4 id="数据还原原理">
+  数据还原原理
+  <a class="anchor" href="#%e6%95%b0%e6%8d%ae%e8%bf%98%e5%8e%9f%e5%8e%9f%e7%90%86">#</a>
+</h4>
+<p>原理图:</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209211632898.png" alt="" /></p>
+<p>数据恢复方案：</p>
+<ul>
+<li>创建一个新的数据卷容器(或删除原数据卷容器的内容)</li>
+<li>创建一个新容器，挂载数据卷容器，同时挂载本地的备份目录作为数据卷</li>
+<li>将要恢复的数据解压到容器中</li>
+<li>完成还原操作后销毁刚创建的容器</li>
+</ul>
+<pre tabindex="0"><code>#命令格式:
+docker run --rm -itd --volumes-from [数据要到恢复的容器] -v [宿主机备份目录]:[容器备份目录] [镜像名称] [解压命令]
+#命令实践:
+#启动数据卷容器:
+$ docker start c408f4f14786
+#删除源容器内容:
+$ docker exec -it vc-test1 bash root@c408f4f14786:/# rm -rf /data/*
+#恢复数据:
+docker run --rm --volumes-from v-test -v /home/itcast/backup/:/backup/ nginx tar xPf /backup/data.tar.gz -C /data
+#验证:
+$ docker exec -it vc-test1/bin/bash root@c408f4f14786:/# ls /data/data/ v-test1.txt v-test2.txt
+#新建新的数据卷容器:
+$ docker create -v /newdata --name v-test2 nginx
+#简历新的容器挂载数据卷容器
+$ docker run --volumes-from a7e9a33f3acb -tid --name vc-test3 nginx /bin/bash #恢复数据:
+docker run --rm --volumes-from v-test2 -v /home/itcast/backup/:/backup/ nginx tar xPf /backup/data.tar.gz -C /newdata
+#验证:
+$ docker exec -it vc-test3 /bin/bash
+root@c408f4f14786:/# ls /newdata
+v-test1.txt v-test2.txt
+</code></pre><p>注意: 解压的时候，如果使用目录的话，一定要在解压的时候使用 -C 制定挂载的数据卷容器，不然的话容器数据 是无法恢复的，因为容器中默认的backup目录不是数据卷，即使解压后，也看不到文件。</p>
+<p>数据是最宝贵的资源，docker在设计上考虑到了这点，并且为数据的操作提供了充分的支持。</p>
+<h3 id="网络管理">
+  网络管理
+  <a class="anchor" href="#%e7%bd%91%e7%bb%9c%e7%ae%a1%e7%90%86">#</a>
+</h3>
+<h4 id="端口映射">
+  端口映射
+  <a class="anchor" href="#%e7%ab%af%e5%8f%a3%e6%98%a0%e5%b0%84">#</a>
+</h4>
+<p>默认情况下，容器和宿主机之间网络是隔离的，我们可以通过端口映射的方式，将容器中的端口，映射到宿主机的某个端口上。这样我们就可以通过宿主机的ip+port的方式来访问容器里的内容</p>
+<p><strong>Docker的端口映射：</strong></p>
+<ul>
+<li>随机映射 -P(大写)</li>
+<li>指定映射 -p 宿主机ip:宿主机端口:容器端口</li>
+</ul>
+<p><strong>注意</strong>: 生产场景一般不使用随机映射，但是随机映射的好处就是由docker分配，端口不会冲突, 不管哪种映射都会 有所消耗，影响性能，因为涉及到映射的操作</p>
+<h4 id="随机映射">
+  随机映射
+  <a class="anchor" href="#%e9%9a%8f%e6%9c%ba%e6%98%a0%e5%b0%84">#</a>
+</h4>
+<h5 id="默认随机映射">
+  默认随机映射
+  <a class="anchor" href="#%e9%bb%98%e8%ae%a4%e9%9a%8f%e6%9c%ba%e6%98%a0%e5%b0%84">#</a>
+</h5>
+<pre tabindex="0"><code>#命令格式:
+docker run -d -P [镜像名称] 
+#命令效果: 
+#先启动一个普通的nginx镜像
+$ docker run -d nginx 
+#查看当前宿主机开放了哪些端口 
+$ netstat -tnulp
+
+#启动一个默认随机映射的nginx镜像 
+$ docker run -d -P nginx 
+#查看当前宿主机开放了哪些端口
+$ netstat -tnulp
+</code></pre><p>注意: 宿主机的32768被映射到容器的80端口 -P 自动绑定所有对外提供服务的容器端口，映射的端口将会从没有 使用的端口池中自动随机选择， 但是如果连续启动多个容器的话，则下一个容器的端口默认是当前容器占用端口号 +1</p>
+<p>注意: 浏览器输入的格式是: docker容器宿主机的ip:容器映射的端口</p>
+<h5 id="指定主机随机映射">
+  指定主机随机映射
+  <a class="anchor" href="#%e6%8c%87%e5%ae%9a%e4%b8%bb%e6%9c%ba%e9%9a%8f%e6%9c%ba%e6%98%a0%e5%b0%84">#</a>
+</h5>
+<pre tabindex="0"><code>#命令格式
+docker run -d -p [宿主机ip]::[容器端口] --name [容器名称][镜像名称]
+#命令效果
+docker run -d -p 192.168.8.14::80 --name nginx-1 nginx
+docker ps
+</code></pre><h4 id="指定映射">
+  指定映射
+  <a class="anchor" href="#%e6%8c%87%e5%ae%9a%e6%98%a0%e5%b0%84">#</a>
+</h4>
+<h5 id="指定端口映射">
+  指定端口映射
+  <a class="anchor" href="#%e6%8c%87%e5%ae%9a%e7%ab%af%e5%8f%a3%e6%98%a0%e5%b0%84">#</a>
+</h5>
+<pre tabindex="0"><code>#命令格式:
+docker run -d -p [宿主机ip]:[宿主机端口]:[容器端口] --name [容器名字][镜像名称]
+#注意:
+#如果不指定宿主机ip的话，默认使用 0.0.0.0，
+#命令实践: 
+#现状我们在启动容器的时候，给容器指定一个访问的端口 1199
+docker run -d -p 192.168.8.14:1199:80 --name nginx-2 nginx #查看新容器ip
+docker inspect --format=&#39;{{range .NetworkSettings.Networks}}{{.IPAddress}} {{end}}&#39; 0ad3acfbfb76
+#查看容器端口映射
+docker ps
+</code></pre><h5 id="指定多端口映射">
+  指定多端口映射
+  <a class="anchor" href="#%e6%8c%87%e5%ae%9a%e5%a4%9a%e7%ab%af%e5%8f%a3%e6%98%a0%e5%b0%84">#</a>
+</h5>
+<pre tabindex="0"><code>#命令格式
+docker run -d -p [宿主机端口1]:[容器端口1] -p [宿主机端口2]:[容器端口2] --name [容器名
+称][镜像名称] 
+#开起多端口映射实践
+docker run -d -p 520:443 -p 6666:80 --name nginx-3 nginx 
+#查看容器进程
+docker ps
+</code></pre><h4 id="网络管理基础">
+  网络管理基础
+  <a class="anchor" href="#%e7%bd%91%e7%bb%9c%e7%ae%a1%e7%90%86%e5%9f%ba%e7%a1%80">#</a>
+</h4>
+<h5 id="docker网络命令">
+  docker网络命令
+  <a class="anchor" href="#docker%e7%bd%91%e7%bb%9c%e5%91%bd%e4%bb%a4">#</a>
+</h5>
+<pre tabindex="0"><code>#查看网络命令帮助
+docker network help
+。。。。。。
+connect     #将一个容器连接到一个网络
+create      #创建一个网络
+disconnect  #从网络断开一个容器
+inspect     #在一个或多个网络上显示详细信息
+ls          #网络列表
+prune       #删除所有未使用的网络
+rm          #删除一个或多个网络。
+</code></pre><pre tabindex="0"><code>#查看当前主机网络
+docker network ls
+</code></pre><pre tabindex="0"><code>#查看bridge的网络内部信息
+docker network inspect bridge
+</code></pre><pre tabindex="0"><code>查看容器详细信息
+#命令格式:
+docker inspect [容器id]
+#命令效果: 查看容器全部信息:
+docker inspect 930f29ccdf8a
+查看容器网络信息:
+docker inspect --format=&#39;{{range .NetworkSettings.Networks}}{{.IPAddress}}
+{{end}}&#39; 930f29ccdf8a
+</code></pre><pre tabindex="0"><code>查看容器端口信息
+#命令格式:
+docker port [容器id]
+#命令效果:
+docker port 930f29ccdf8a
+</code></pre><h4 id="网络模式简介">
+  网络模式简介
+  <a class="anchor" href="#%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%bc%8f%e7%ae%80%e4%bb%8b">#</a>
+</h4>
+<h5 id="bridge模式">
+  bridge模式
+  <a class="anchor" href="#bridge%e6%a8%a1%e5%bc%8f">#</a>
+</h5>
+<p>bridge模式: 简单来说:就是穿马甲，打着宿主机的旗号，做自己的事情。 Docker的默认模式，它会在docker容 器启动时候，自动配置好自己的网络信息![截屏2022-09-21 16.46.33](/Users/tianzhiwei/Library/Application Support/typora-user-images/截屏2022-09-21 16.46.33.png)，同一宿主机的所有容器都在一个网络下，彼此间可以通信。类似于我们 vmware虚拟机的桥接模式。 利用宿主机的网卡进行通信，因为涉及到网络转换，所以会造成资源消耗，网络效率会低。</p>
+<h5 id="host模式">
+  host模式
+  <a class="anchor" href="#host%e6%a8%a1%e5%bc%8f">#</a>
+</h5>
+<p>简单来说，就是鸠占鹊巢，用着宿主机的东西，干自己的事情。容器使用宿主机的ip地址进行通信。 特点:容器和宿主机共享网络</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209211647979.png" alt="" /></p>
+<h5 id="container模式">
+  container模式
+  <a class="anchor" href="#container%e6%a8%a1%e5%bc%8f">#</a>
+</h5>
+<p>新创建的容器间使用，使用已创建的容器网络，类似一个局域网。 特点:容器和容器共享网络</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209211648372.png" alt="" /></p>
+<h5 id="none模式">
+  none模式
+  <a class="anchor" href="#none%e6%a8%a1%e5%bc%8f">#</a>
+</h5>
+<p>这种模式最纯粹，不会帮你做任何网络的配置，可以最大限度的定制化。 不提供网络服务，容器启动 后无网络连接。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209211648926.png" alt="" /></p>
+<h5 id="overlay模式">
+  overlay模式
+  <a class="anchor" href="#overlay%e6%a8%a1%e5%bc%8f">#</a>
+</h5>
+<p>容器彼此不再同一网络，而且能互相通行。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209211649611.png" alt="" /></p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#docker简介">Docker简介</a>
+          <ul>
+            <li><a href="#架构与结构">架构与结构</a></li>
+            <li><a href="#docker特点">docker特点</a></li>
+            <li><a href="#安装">安装</a></li>
+            <li><a href="#基本命令">基本命令</a></li>
+            <li><a href="#删除docker命令">删除docker命令</a></li>
+            <li><a href="#docker基本目录">docker基本目录</a></li>
+          </ul>
+        </li>
+        <li><a href="#docker核心技术">Docker核心技术</a>
+          <ul>
+            <li><a href="#镜像管理">镜像管理</a></li>
+            <li><a href="#容器管理">容器管理</a></li>
+            <li><a href="#数据管理">数据管理</a></li>
+            <li><a href="#网络管理">网络管理</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

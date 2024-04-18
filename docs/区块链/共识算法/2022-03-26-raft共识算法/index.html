@@ -1,0 +1,2182 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="分布式共识算法 # 首先我们先明确这个问题：为什么需要分布式共识算法？
+这就要从当前的分布式系统设计的缺陷来看了，假设我们的集群现在有两个客户端和三个服务端，如下图：
+在这个分布式系统的设计中，往往要满足CAP理论，而分布式共识算法解决的就是CAP理论中的一致性问题。整个一致性问题分为三种问题：
+顺序一致性 线性一致性 因果一致性 顺序一致性 # 假设执行结果与这些处理器以某一串行顺序执行的结果相同，同时每个处理器内部操作的执行看起来又与程序描述的顺序一致。满足该条件的多处理器系统我们就认为是顺序一致的。实际上，处理器可以看做一个进程或者一个线程，甚至是一个分布式系统。
+这句话并不是很好理解，我们看一下分布式系统中顺序一致性的一个例子：
+假设客户端A有两条命令： command1:set(x,1)	//设置x为1 command2:set(x,3) 客户端B有一下两条命令： command3:get(x)	//得到x的当前值 command4:set(x,4) 那么如果服务端那边收到的节点只要满足command2在command1后面执行并且comand4在command3后面执行我们就认为其满足顺序一致性。 线性一致性 # 线性一致性或称原子一致性或严格一致性，指的是程序在执行顺序组合中存在可线性化点P的执行模型，这意味着一个操作将在程序的调用和返回之间的某个点P生效，之后被系统中并发运行的所有其他线程所感知。
+通俗来讲，线性一致性可以说是顺序一致性的升级版。其会有一个全局时钟，假设还是上面发送的命令，只不过加上了时间信息： 客户端A发送的命令如下：
+[14:01]command1:set(x,1)	//设置x为1 [14:02]command2:set(x,3) 客户端B发送的命令如下：
+[14:03]command3:get(x)	//得到x的当前值 [14:04]command4:set(x,4) 注： 这里假设时延可能是几分钟级别的，所以有可能是command3在command1之前到
+所以，假设初始值x = 0，而我们到达的顺序如下：
+command1-&gt;command3-&gt;command2-&gt;command4 command1-&gt;command3-&gt;command4-&gt;command2 ... 这个顺序确实是满足顺序一致性，但是我们get(x)获得的值可谓是千奇百怪，可能是0，1，3 。为了解决顺序一致性的不足，所以才提出的线性一致性。其要求命令满足全局时钟的时序性。所以很容易就知道，满足线性一致性的一定满足顺序一致性；相反，满足顺序一致性的不一定会满足线性一致性。 因果一致性 # 线性一致性要求所有线程的操作按照一个绝对的时钟顺序执行，这意味着线性一致性是限制并发的，否则这种顺序性就无法保证。由于在真实环境中很难保证绝对时钟同步，因此线性一致性是一种理论。实现线性一致性的代价也最高，但是实战中可以弱化部分线性一致性：只保证有因果关系的事件的顺序，没有因果关系的事件可以并发执行，其指的是假设有两个事件：A事件和B事件，如果A发生在B后面，那么就称A和B具有因果关系。
+拜占庭将军问题 # 拜占庭将军问题是一个协议问题，拜占庭帝国军队的将军们必须全体一致的决定是否攻击某一支敌军。问题是这些将军在地理上是分隔开来的，并且将军中存在叛徒。叛徒可以任意行动以达到以下目标：欺骗某些将军采取进攻行动；促成一个不是所有将军都同意的决定，如当将军们不希望进攻时促成进攻行动；或者迷惑某些将军，使他们无法做出决定。如果叛徒达到了这些目的之一，则任何攻击行动的结果都是注定要失败的，只有完全达成一致的努力才能获得胜利。
+含义是在存在消息丢失的不可靠信道上试图通过消息传递的方式达到一致性是不可能的。
+Raft共识 # 简介 # Raft实现一致性的机制是：首先选择一个leader全权负责管理日志复制，leader从客户端接收log entries（日志条目），将它们复制给集群中的其他机器，然后负责告诉它机器什么时候将日志应用于它们的状态机。举个例子，leader可以在无需询问其他server的情况下决定把新entries放在哪个位置，数据永远是从leader流向其他机器（leader的强一致性）。一个leader可以fail或者与其他机器失去连接，这种情况下会有新的leader被选举出来。
+在任何时刻，每个server节点有三种状态：leader、candidate、follower。
+leader：作为客户端的接收者，接收客户端发送的日志复制请求，并将日志信息复制到follower节点中，维持网络各个节点的状态。 candidate：在leader选举阶段存在的状态，通过任期号term和票数进行领导人身份竞争，获胜者将成为下一任期的领导人。 follower：作为leader节点发送日志复制请求的接收者，与leader节点通信，接收账本信息，并确认账本信息的有效性，完成日志信息的提交和存储。 正常运行时，只有一个leader，其余全是follower。follower是被动的：它们不主动提出请求，只是响应leader和candidate的请求。leader负责处理所有客户端请求（如果客户端先连接某个follower，该follower负责将它重定向到leader）。candidate状态用户选举leader节点。
+如何让跨网络机器之间协调一致性？
+状态的立即一致性 状态的最终一致性 raft来源于paxos，它简化了paxos，以易于理解为首要目标，尽量提供与paxos一样的功能与性能。
+提出问题：
+1、输入：写入命令
+2、输出：所有节点最终处于相同的状态
+2、约束">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="Raft共识算法" />
+<meta property="og:description" content="分布式共识算法 # 首先我们先明确这个问题：为什么需要分布式共识算法？
+这就要从当前的分布式系统设计的缺陷来看了，假设我们的集群现在有两个客户端和三个服务端，如下图：
+在这个分布式系统的设计中，往往要满足CAP理论，而分布式共识算法解决的就是CAP理论中的一致性问题。整个一致性问题分为三种问题：
+顺序一致性 线性一致性 因果一致性 顺序一致性 # 假设执行结果与这些处理器以某一串行顺序执行的结果相同，同时每个处理器内部操作的执行看起来又与程序描述的顺序一致。满足该条件的多处理器系统我们就认为是顺序一致的。实际上，处理器可以看做一个进程或者一个线程，甚至是一个分布式系统。
+这句话并不是很好理解，我们看一下分布式系统中顺序一致性的一个例子：
+假设客户端A有两条命令： command1:set(x,1)	//设置x为1 command2:set(x,3) 客户端B有一下两条命令： command3:get(x)	//得到x的当前值 command4:set(x,4) 那么如果服务端那边收到的节点只要满足command2在command1后面执行并且comand4在command3后面执行我们就认为其满足顺序一致性。 线性一致性 # 线性一致性或称原子一致性或严格一致性，指的是程序在执行顺序组合中存在可线性化点P的执行模型，这意味着一个操作将在程序的调用和返回之间的某个点P生效，之后被系统中并发运行的所有其他线程所感知。
+通俗来讲，线性一致性可以说是顺序一致性的升级版。其会有一个全局时钟，假设还是上面发送的命令，只不过加上了时间信息： 客户端A发送的命令如下：
+[14:01]command1:set(x,1)	//设置x为1 [14:02]command2:set(x,3) 客户端B发送的命令如下：
+[14:03]command3:get(x)	//得到x的当前值 [14:04]command4:set(x,4) 注： 这里假设时延可能是几分钟级别的，所以有可能是command3在command1之前到
+所以，假设初始值x = 0，而我们到达的顺序如下：
+command1-&gt;command3-&gt;command2-&gt;command4 command1-&gt;command3-&gt;command4-&gt;command2 ... 这个顺序确实是满足顺序一致性，但是我们get(x)获得的值可谓是千奇百怪，可能是0，1，3 。为了解决顺序一致性的不足，所以才提出的线性一致性。其要求命令满足全局时钟的时序性。所以很容易就知道，满足线性一致性的一定满足顺序一致性；相反，满足顺序一致性的不一定会满足线性一致性。 因果一致性 # 线性一致性要求所有线程的操作按照一个绝对的时钟顺序执行，这意味着线性一致性是限制并发的，否则这种顺序性就无法保证。由于在真实环境中很难保证绝对时钟同步，因此线性一致性是一种理论。实现线性一致性的代价也最高，但是实战中可以弱化部分线性一致性：只保证有因果关系的事件的顺序，没有因果关系的事件可以并发执行，其指的是假设有两个事件：A事件和B事件，如果A发生在B后面，那么就称A和B具有因果关系。
+拜占庭将军问题 # 拜占庭将军问题是一个协议问题，拜占庭帝国军队的将军们必须全体一致的决定是否攻击某一支敌军。问题是这些将军在地理上是分隔开来的，并且将军中存在叛徒。叛徒可以任意行动以达到以下目标：欺骗某些将军采取进攻行动；促成一个不是所有将军都同意的决定，如当将军们不希望进攻时促成进攻行动；或者迷惑某些将军，使他们无法做出决定。如果叛徒达到了这些目的之一，则任何攻击行动的结果都是注定要失败的，只有完全达成一致的努力才能获得胜利。
+含义是在存在消息丢失的不可靠信道上试图通过消息传递的方式达到一致性是不可能的。
+Raft共识 # 简介 # Raft实现一致性的机制是：首先选择一个leader全权负责管理日志复制，leader从客户端接收log entries（日志条目），将它们复制给集群中的其他机器，然后负责告诉它机器什么时候将日志应用于它们的状态机。举个例子，leader可以在无需询问其他server的情况下决定把新entries放在哪个位置，数据永远是从leader流向其他机器（leader的强一致性）。一个leader可以fail或者与其他机器失去连接，这种情况下会有新的leader被选举出来。
+在任何时刻，每个server节点有三种状态：leader、candidate、follower。
+leader：作为客户端的接收者，接收客户端发送的日志复制请求，并将日志信息复制到follower节点中，维持网络各个节点的状态。 candidate：在leader选举阶段存在的状态，通过任期号term和票数进行领导人身份竞争，获胜者将成为下一任期的领导人。 follower：作为leader节点发送日志复制请求的接收者，与leader节点通信，接收账本信息，并确认账本信息的有效性，完成日志信息的提交和存储。 正常运行时，只有一个leader，其余全是follower。follower是被动的：它们不主动提出请求，只是响应leader和candidate的请求。leader负责处理所有客户端请求（如果客户端先连接某个follower，该follower负责将它重定向到leader）。candidate状态用户选举leader节点。
+如何让跨网络机器之间协调一致性？
+状态的立即一致性 状态的最终一致性 raft来源于paxos，它简化了paxos，以易于理解为首要目标，尽量提供与paxos一样的功能与性能。
+提出问题：
+1、输入：写入命令
+2、输出：所有节点最终处于相同的状态
+2、约束" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" /><meta property="article:section" content="docs" />
+<meta property="article:published_time" content="2022-03-26T21:22:14+00:00" />
+<meta property="article:modified_time" content="2022-03-26T21:22:14+00:00" />
+<title>Raft共识算法 | Soulmate</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" >
+<link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.5623389946cf2cb816d7e28b27d101617d469cca326a6a0a0bf362549d6ba433.js" integrity="sha256-ViM4mUbPLLgW1&#43;KLJ9EBYX1GnMoyamoKC/NiVJ1rpDM=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo.png" alt="Logo" /><span>Soulmate</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-074eed0fb8c6f9d99dfeff898388792f" class="toggle"  />
+    <label for="section-074eed0fb8c6f9d99dfeff898388792f" class="flex justify-between">
+      <a role="button" class="">计算机基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="">Vim编程常用快捷键</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E9%85%8D%E7%BD%AEkylinv10/" class="">配置 Kylin V10</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="">计算机网络基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/linux%E5%9F%BA%E7%A1%80/" class="">Linux基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/git%E5%9F%BA%E7%A1%80/" class="">Git基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Golang</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-670eda717a06f31447c52422ec93a159" class="toggle"  />
+    <label for="section-670eda717a06f31447c52422ec93a159" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/" class="">go语言基础（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/cgo/" class="">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/flag/" class="">Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/grpc/" class="">Grpc</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/" class="">ProtoBuf</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">常用业务代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/" class="">go语言基础（三）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/" class="">go语言底层基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/" class="">benchmark测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/" class="">Goland常用技巧</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle"  />
+    <label for="section-c453881a62c640f6a4cceec99c02477e" class="flex justify-between">
+      <a role="button" class="">高阶</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" class="">Go高阶-语言基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f235e88e751d2cb18d527c1784763605" class="toggle"  />
+    <label for="section-f235e88e751d2cb18d527c1784763605" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/atomic/" class="">Atomic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/os/" class="">Os</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strconv/" class="">Strconv</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sort/" class="">Sort</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strings/" class="">Strings</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/reflect/" class="">Reflect</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/time/" class="">Time</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sync/" class="">Sync</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ee53da12118bfd3e9b35f3e9494ab55b" class="toggle"  />
+    <label for="section-ee53da12118bfd3e9b35f3e9494ab55b" class="flex justify-between">
+      <a role="button" class="">LeetCode</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/" class="">golang力扣刷题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/" class="">golang力扣刷题（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/%E5%BF%85%E5%88%B7top101/" class="">必刷top101</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" class="">LeetCode算法总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>数据库</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle"  />
+    <label for="section-94f26238d1ca3b5bcd40eadc7a88d726" class="flex justify-between">
+      <a role="button" class="">MySql</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" class="">MySql基础总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="">Mac连接数据库所遇到的问题</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="toggle"  />
+    <label for="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="flex justify-between">
+      <a role="button" class="">Redis</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="">Redis集群搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/" class="">Redis基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="">redis面试总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8be9c2251abd1fe110e3c1520cac6177" class="toggle"  />
+    <label for="section-8be9c2251abd1fe110e3c1520cac6177" class="flex justify-between">
+      <a role="button" class="">SQLite</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/" class="">Sqlite</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/" class="">Xorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ad390db13e5fa9e14f921f4e4f77900e" class="toggle"  />
+    <label for="section-ad390db13e5fa9e14f921f4e4f77900e" class="flex justify-between">
+      <a role="button" class="">C/C&#43;&#43;</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/cc&#43;&#43;/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>区块链</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle"  />
+    <label for="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="flex justify-between">
+      <a role="button" class="">Fabric</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">fabric相关机制与原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/" class="">智能合约</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/" class="">fabric-sdk-go详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/" class="">fabric-ca详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle"  />
+    <label for="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="flex justify-between">
+      <a role="button" class="">环境测试</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/" class="">fabric网络中的报错（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/" class="">fabric网络中的报错（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">fabric环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/" class="">solo节点测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/" class="">fabric多机搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/" class="">部署tape测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/" class="">手动生成ca证书搭建fabric网络</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/" class="">centos安装fabric1.2</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-25aef1d59a561fcefcaecb043ef8afd2" class="toggle"  />
+    <label for="section-25aef1d59a561fcefcaecb043ef8afd2" class="flex justify-between">
+      <a role="button" class="">配置文件</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/" class="">cryptogen生成的证书详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">docker-compose.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">configtx.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">crypto-config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/" class="">升级链码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/" class="">区块链网络添加组织</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/" class="">fabric浏览器搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/" class="">如何在已有组织中增加节点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/" class="">Fabric1.4多通道实验</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b07621083aa30b12de4c0333941e479f" class="toggle"  />
+    <label for="section-b07621083aa30b12de4c0333941e479f" class="flex justify-between">
+      <a role="button" class="">比特币</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">比特币相关机制与原理</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle"  />
+    <label for="section-ff5477999ef29208270c84e8b56b2758" class="flex justify-between">
+      <a role="button" class="">IPFS</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/" class="">go-ipfs-api</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" class="">ipfs-webui可视化工具搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/" class="">IPFS基本原理（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/" class="">IPFS私有网络搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-77a0a17b06e8d04cfb0fba9952941706" class="toggle"  />
+    <label for="section-77a0a17b06e8d04cfb0fba9952941706" class="flex justify-between">
+      <a role="button" class="">密码学</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" class="">区块链安全基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/" class="">椭圆曲线加密</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/" class="">密码学基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2e4d10b323fd668021dbd532575d8790" class="toggle"  />
+    <label for="section-2e4d10b323fd668021dbd532575d8790" class="flex justify-between">
+      <a role="button" class="">Docker</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/" class="">Docker基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/" class="">Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" class="">docker常用知识总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-70383d7f28a7ae4bf840a844eb61aa16" class="toggle" checked />
+    <label for="section-70383d7f28a7ae4bf840a844eb61aa16" class="flex justify-between">
+      <a role="button" class="">共识算法</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">共识算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" class="active">Raft共识算法</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>前端</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
+    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
+      <a role="button" class="">博客</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%9B%BE%E4%B9%A6/" class="">图书</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/" class="">工具库</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="https://gitee.com/chaincode"  target="_blank" rel="noopener">
+        Gitee
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Raft共识算法</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#分布式共识算法">分布式共识算法</a></li>
+            <li><a href="#拜占庭将军问题">拜占庭将军问题</a></li>
+          </ul>
+        </li>
+        <li><a href="#raft共识">Raft共识</a>
+          <ul>
+            <li><a href="#简介">简介</a></li>
+            <li><a href="#raft原理">Raft原理</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h3 id="分布式共识算法">
+  分布式共识算法
+  <a class="anchor" href="#%e5%88%86%e5%b8%83%e5%bc%8f%e5%85%b1%e8%af%86%e7%ae%97%e6%b3%95">#</a>
+</h3>
+<p>首先我们先明确这个问题：为什么需要分布式共识算法？</p>
+<p>这就要从当前的分布式系统设计的缺陷来看了，假设我们的集群现在有两个客户端和三个服务端，如下图：</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209062232142.png" alt="" /></p>
+<p>在这个分布式系统的设计中，往往要满足CAP理论，而分布式<strong>共识算法</strong>解决的就是CAP理论中的一致性问题。整个一致性问题分为三种问题：</p>
+<ul>
+<li>顺序一致性</li>
+<li>线性一致性</li>
+<li>因果一致性</li>
+</ul>
+<h4 id="顺序一致性">
+  顺序一致性
+  <a class="anchor" href="#%e9%a1%ba%e5%ba%8f%e4%b8%80%e8%87%b4%e6%80%a7">#</a>
+</h4>
+<p><strong>假设执行结果与这些处理器以某一串行顺序执行的结果相同，同时每个处理器内部操作的执行看起来又与程序描述的顺序一致</strong>。满足该条件的多处理器系统我们就认为是顺序一致的。实际上，处理器可以看做一个进程或者一个线程，甚至是一个分布式系统。</p>
+<p>这句话并不是很好理解，我们看一下分布式系统中顺序一致性的一个例子：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">假设客户端</span>A有两条命令<span style="color:#960050;background-color:#1e0010">：</span>
+</span></span><span style="display:flex;"><span>command1:set(x,<span style="color:#ae81ff">1</span>)	<span style="color:#75715e">//设置x为1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>command2:set(x,<span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">客户端</span>B有一下两条命令<span style="color:#960050;background-color:#1e0010">：</span>
+</span></span><span style="display:flex;"><span>command3:get(x)		<span style="color:#75715e">//得到x的当前值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>command4:set(x,<span style="color:#ae81ff">4</span>)
+</span></span></code></pre></div><p>那么如果服务端那边收到的节点只要满足command2在command1后面执行并且comand4在command3后面执行我们就认为其满足顺序一致性。
+<img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209062237117.png" alt="" /></p>
+<h4 id="线性一致性">
+  线性一致性
+  <a class="anchor" href="#%e7%ba%bf%e6%80%a7%e4%b8%80%e8%87%b4%e6%80%a7">#</a>
+</h4>
+<p>线性一致性或称原子一致性或严格一致性，指的是程序在执行顺序组合中存在可线性化点P的执行模型，这意味着一个操作将在程序的调用和返回之间的某个点P生效，之后被系统中并发运行的所有其他线程所感知。</p>
+<p><font color='red'>通俗来讲，线性一致性可以说是顺序一致性的升级版。其会有一个<strong>全局时钟</strong>，假设还是上面发送的命令，只不过加上了时间信息：</font>
+客户端A发送的命令如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>[<span style="color:#ae81ff">14</span><span style="color:#f92672">:</span><span style="color:#ae81ff">01</span>]command1:set(x,<span style="color:#ae81ff">1</span>)	<span style="color:#75715e">//设置x为1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>[<span style="color:#ae81ff">14</span><span style="color:#f92672">:</span><span style="color:#ae81ff">02</span>]command2:set(x,<span style="color:#ae81ff">3</span>)
+</span></span></code></pre></div><p>客户端B发送的命令如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>[<span style="color:#ae81ff">14</span><span style="color:#f92672">:</span><span style="color:#ae81ff">03</span>]command3:get(x)		<span style="color:#75715e">//得到x的当前值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>[<span style="color:#ae81ff">14</span><span style="color:#f92672">:</span><span style="color:#ae81ff">04</span>]command4:set(x,<span style="color:#ae81ff">4</span>)
+</span></span></code></pre></div><blockquote>
+<p><strong>注</strong>：
+这里假设时延可能是几分钟级别的，所以有可能是command3在command1之前到</p>
+</blockquote>
+<p>所以，假设初始值x = 0，而我们到达的顺序如下：</p>
+<pre tabindex="0"><code>command1-&gt;command3-&gt;command2-&gt;command4
+command1-&gt;command3-&gt;command4-&gt;command2
+...
+</code></pre><p>这个顺序确实是满足顺序一致性，但是我们get(x)获得的值可谓是千奇百怪，可能是0，1，3 。为了解决顺序一致性的不足，所以才提出的线性一致性。其要求命令满足全局时钟的时序性。所以很容易就知道，满足线性一致性的一定满足顺序一致性；相反，满足顺序一致性的不一定会满足线性一致性。
+<img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209062246319.png" alt="" /></p>
+<h4 id="因果一致性">
+  因果一致性
+  <a class="anchor" href="#%e5%9b%a0%e6%9e%9c%e4%b8%80%e8%87%b4%e6%80%a7">#</a>
+</h4>
+<p>线性一致性要求所有线程的操作按照一个绝对的时钟顺序执行，这意味着线性一致性是限制并发的，否则这种顺序性就无法保证。由于在真实环境中很难保证绝对时钟同步，因此线性一致性是一种理论。实现线性一致性的代价也最高，但是实战中可以弱化部分线性一致性：只保证有因果关系的事件的顺序，没有因果关系的事件可以并发执行，其指的是假设有两个事件：A事件和B事件，如果A发生在B后面，那么就称A和B具有因果关系。</p>
+<h3 id="拜占庭将军问题">
+  拜占庭将军问题
+  <a class="anchor" href="#%e6%8b%9c%e5%8d%a0%e5%ba%ad%e5%b0%86%e5%86%9b%e9%97%ae%e9%a2%98">#</a>
+</h3>
+<p>拜占庭将军问题是一个协议问题，<a href="https://baike.baidu.com/item/%e6%8b%9c%e5%8d%a0%e5%ba%ad%e5%b8%9d%e5%9b%bd/475514?fromModule=lemma_inlink">拜占庭帝国</a>军队的将军们必须全体一致的决定是否攻击某一支敌军。问题是这些将军在地理上是分隔开来的，并且将军中存在叛徒。叛徒可以任意行动以达到以下目标：欺骗某些将军采取进攻行动；促成一个不是所有将军都同意的决定，如当将军们不希望进攻时促成进攻行动；或者迷惑某些将军，使他们无法做出决定。如果叛徒达到了这些目的之一，则任何攻击行动的结果都是注定要失败的，只有完全达成一致的努力才能获得胜利。</p>
+<p><font color='red'>含义是在存在消息丢失的不可靠信道上试图通过消息传递的方式达到一致性是不可能的。</font></p>
+<h2 id="raft共识">
+  Raft共识
+  <a class="anchor" href="#raft%e5%85%b1%e8%af%86">#</a>
+</h2>
+<h3 id="简介">
+  简介
+  <a class="anchor" href="#%e7%ae%80%e4%bb%8b">#</a>
+</h3>
+<p>Raft实现一致性的机制是：首先选择一个leader全权负责管理日志复制，leader从客户端接收log entries（日志条目），将它们复制给集群中的其他机器，然后负责告诉它机器什么时候将日志应用于它们的状态机。举个例子，leader可以在无需询问其他server的情况下决定把新entries放在哪个位置，数据永远是从leader流向其他机器（leader的强一致性）。一个leader可以fail或者与其他机器失去连接，这种情况下会有新的leader被选举出来。</p>
+<p>在任何时刻，每个server节点有三种状态：leader、candidate、follower。</p>
+<ul>
+<li>leader：作为客户端的接收者，接收客户端发送的日志复制请求，并将日志信息复制到follower节点中，维持网络各个节点的状态。</li>
+<li>candidate：在leader选举阶段存在的状态，通过任期号term和票数进行领导人身份竞争，获胜者将成为下一任期的领导人。</li>
+<li>follower：作为leader节点发送日志复制请求的接收者，与leader节点通信，接收账本信息，并确认账本信息的有效性，完成日志信息的提交和存储。</li>
+</ul>
+<p>正常运行时，只有一个leader，其余全是follower。follower是被动的：它们不主动提出请求，只是响应leader和candidate的请求。leader负责处理所有客户端请求（如果客户端先连接某个follower，该follower负责将它重定向到leader）。candidate状态用户选举leader节点。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208032225624.png" alt="" /></p>
+<p>如何让跨网络机器之间协调一致性？</p>
+<ul>
+<li>状态的立即一致性</li>
+<li>状态的最终一致性</li>
+</ul>
+<p>raft来源于paxos，它简化了paxos，以易于理解为首要目标，尽量提供与paxos一样的功能与性能。</p>
+<blockquote>
+<p>提出问题：</p>
+<p>1、输入：写入命令</p>
+<p>2、输出：所有节点最终处于相同的状态</p>
+<p>2、约束</p>
+<ul>
+<li>网络不确定性：在非拜占庭情况下，出现网络 分区/冗余/丢失/乱序/ 等问题下要保证正确。</li>
+<li>基本可用性：集群中大部分节点能够保持互相通信，那么集群就应该能够正确响应客户端。</li>
+<li>不依赖时序：不依赖物理时钟或极端的消息延迟来保证一致性。</li>
+<li>快速响应：对客户端请求对响应不能依赖集群中最慢的节点。</li>
+</ul>
+<p>一个可行解：</p>
+<ul>
+<li>初始化的时候有一个领导节点，负责发送日志到其他跟随者，并决定日志的顺序</li>
+<li>当读请求到来时，在任意节点都可以读，而写请求只能重定向到领导者进行</li>
+<li>领导者先写人自己的日志，然后同步给半数以上的节点，跟随者表示都OK了，领导者才提交日志</li>
+<li>日志最终由领导者先按顺序应用与状态机，其他跟随者随机应用到状态机</li>
+<li>当领导者奔溃后，其他跟随者通过心跳感知并选举出新的领导者继续集群的正常运转</li>
+<li>当有新的节点加入或推出集群，需要将配置信息同步给整个集群</li>
+</ul>
+</blockquote>
+<p><font color='red'>raft共识算法中不能保证你的命令一定会被执行，如果你的命令还没有从leader结点同步到大多数追随结点的时候就挂掉，命令就不会被执行。</font></p>
+<h3 id="raft原理">
+  Raft原理
+  <a class="anchor" href="#raft%e5%8e%9f%e7%90%86">#</a>
+</h3>
+<h4 id="基本原理">
+  基本原理
+  <a class="anchor" href="#%e5%9f%ba%e6%9c%ac%e5%8e%9f%e7%90%86">#</a>
+</h4>
+<p>从上面的描述我们可以看到节点的角色不是固定的，其会在三个角色中转换。我们举个例子来说，假设我们有三个节点A、B、C，它们的基本信息如下图中。一开始所有的节点都是follower状态，并且处于时期0这个状态。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209062150322.png" alt="" /></p>
+<blockquote>
+<p><strong>注</strong>：
+在Raft算法中，所有节点会被分配不同的超时时间，时间限定在150ms~300ms之间。为什么这么设置是因为如果设置相同的超时时间就会导致所有节点同时过期会导致迟迟选不出leader，看到后面就会明白。</p>
+</blockquote>
+<p>150ms过去之后，A发现怎么leader没跟我联络感情，是不是leader已经寄了？王侯将相宁有种乎！于是A成为候选人给自己投了一票并开创自己的时代时期 1，并给其他还没过期的follower发送信息请求它们支持自己当leader。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209062151926.png" alt="" /></p>
+<p>节点B和C在收到来自A的消息之后，又没有收到其他要求称王者的信息，于是就选择支持A节点，加入A的时代并刷新自己的剩余时间。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209062152807.png" alt="" /></p>
+<p>之后 A <strong>得到了超过一半的节点支持</strong>，成为leader，并定时给B和C联络联络感情（心跳信息）目的是防止有节点因为长时间收不到开始反叛成candidate。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209062153423.png" alt="" /></p>
+<p>之后整个分布式集群就可以和客户端开始通信了，客户端会发送消息给leader，之后leader会保证集群的一致性并且<strong>当整个集群中的一半节点都完成客户端发送的命令之后才会真正的返回给客户端</strong>，表示完成此次命令。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209062154376.png" alt="" /></p>
+<p>但是这只是个概况，我们还缺了亿点点细节：</p>
+<ul>
+<li>选举机制</li>
+<li>日志复制</li>
+</ul>
+<h4 id="选举机制">
+  选举机制
+  <a class="anchor" href="#%e9%80%89%e4%b8%be%e6%9c%ba%e5%88%b6">#</a>
+</h4>
+<p>刚刚我们讲了最普通的一个选举过程，但是我们可能还会遇到一些特殊情况：</p>
+<ul>
+<li>新加入节点</li>
+<li>leader 掉线</li>
+<li>多个follower同时超时</li>
+</ul>
+<h5 id="新节点加入">
+  新节点加入
+  <a class="anchor" href="#%e6%96%b0%e8%8a%82%e7%82%b9%e5%8a%a0%e5%85%a5">#</a>
+</h5>
+<p>当有一个节点加入当前的分布式集群的时候，leader会检测并发现它并给他发送消息。使其加入此分布式集群。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209062156583.png" alt="" /></p>
+<h5 id="leader-掉线处理">
+  leader 掉线处理
+  <a class="anchor" href="#leader-%e6%8e%89%e7%ba%bf%e5%a4%84%e7%90%86">#</a>
+</h5>
+<p>假设我们现在的服务器A掉线，由于没有leader维持心跳消息，这个时候服务器B和C会进入超时倒计时的状态。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209062158154.png" alt="" /></p>
+<p>200ms过去，服务器B开始超时了，这个时候它揭竿而起成为candidate，并向节点C发送消息请求其支持自己成为leader。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209062200097.png" alt="" /></p>
+<p>之后，在一系列判断条件之后（后面会讲），节点C会回复节点B的请求信息。插句题外话哈，在B还没收到C的回复消息之前，假设A只是刚刚网络不通畅，现在死而复生，给B发送消息了。那么B发现A的时期比自己落后了，这还等什么？！苍天已死，黄天当立，之后反手将其收为小弟。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209062200998.png" alt="" /></p>
+<p>之后节点B顺利成为leader。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209062201490.png" alt="" /></p>
+<h5 id="多个-follower-同时掉线">
+  多个 follower 同时掉线
+  <a class="anchor" href="#%e5%a4%9a%e4%b8%aa-follower-%e5%90%8c%e6%97%b6%e6%8e%89%e7%ba%bf">#</a>
+</h5>
+<p>现在假设有4个节点：A、B、C、D。其中A和D的超时时间是相同的。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209062201485.png" alt="" /></p>
+<p>150ms过后，A和D同时成为candidate，争相为了成为leader给B和C发消息。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209062203203.png" alt="" /></p>
+<p>这个时候有对于B和C有两个选择，一个是它们一起支持两个中的一次，也就是要么支持A要么支持D，这样这样其中一个就会成为leader，我们假设它们两个都支持A。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209062204896.png" alt="" /></p>
+<p>另外一种选择就是，A和D各的一票支持，它们的支持者跟进它们各自的leader的时期，然后本轮选举结束。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209062204253.png" alt="" /></p>
+<p>之后50ms过去之后，B的超时时间过期了，其获得candiate的资格，这个时候其会向其他follower发送消息请求支持。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209062205041.png" alt="" /></p>
+<p>之后A、B、D 因为当前的B也没有支持者，所以就会支持B，B顺利成为leader。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209062209097.png" alt="" /></p>
+<h4 id="log-relocation">
+  Log Relocation
+  <a class="anchor" href="#log-relocation">#</a>
+</h4>
+<p>在raft集群中，所有日志都必须首先提交至leader节点。leader在每个heartbeat向follower发送AppendEntries RPC同步日志，follower如果发现没问题，复制成功后会给leader一个表示成功的ACK，leader收到超过半数的ACK后应用该日志，返回客户端执行结果。若follower节点宕机、运行缓慢或者丢包，则leader节点会不断重试Ap pendEntries RPC,直到所有follower节点最终都复制所有日志条目。</p>
+<p>上述的具体过程如下：</p>
+<p>首先有一条 uncommitted 的日志条目提交至 leader 节点。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209071408377.png" alt="" /></p>
+<p>在下一个 heartbeat，leader 将此条目复制给所有的 follower。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209071409908.png" alt="" /></p>
+<p>当大多数节点记录此条目之后，leader 节点认定此条目有效，将此条目设定为已提交并存储于本地磁盘。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209071410685.png" alt="" /></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209071411872.png" alt="" /></p>
+<p>在下一个 heartbeat，leader 通知所有 follower 提交这一日志条目并存储于各自的磁盘内。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209071411608.png" alt="" /></p>
+<h4 id="日志复制">
+  日志复制
+  <a class="anchor" href="#%e6%97%a5%e5%bf%97%e5%a4%8d%e5%88%b6">#</a>
+</h4>
+<p>当我们的集群leader 选举之后。Leader 接收所有客户端请求，然后转化为 log 复制命令，发送通知其他节点完成日志复制请求。每个日志复制请求包括状态机命令 &amp; 任期号，同时还有前一个日志的任期号和日志索引。状态机命令表示客户端请求的数据操作指令，任期号表示 leader 的当前任期，任期也就是上图中的时期。</p>
+<p>而当follower 收到日志复制命令会执行处理流程：</p>
+<p>follower 会使用前一个日志的任期号和日志索引来对比自己的数据：</p>
+<ul>
+<li>如果相同，接收复制请求，回复 ok；</li>
+<li>否则回拒绝复制当前日志，回复 error；</li>
+</ul>
+<p>leader 收到拒绝复制的回复后，继续发送节点日志复制请求，不过这次会带上更前面的一个日志任期号和索引；</p>
+<p>如此循环往复，直到找到一个共同的任期号&amp;日志索引。此时 follower 从这个索引值开始复制，最终和 leader 节点日志保持一致；</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209062212070.png" alt="" /></p>
+<p>日志复制过程中，Leader 会无限重试直到成功。如果超过半数的节点复制日志成功，就可以任务当前数据请求达成了共识，即日志可以 commite 提交了；</p>
+<blockquote>
+<p>注：
+这里要提到的一点就是，如果follower发现canidate的日志还没有自己的新（索引号没自己大），其是不会支持其成为leader的。</p>
+</blockquote>
+<h4 id="network-partition-情况下进行复制日志">
+  Network Partition 情况下进行复制日志:
+  <a class="anchor" href="#network-partition-%e6%83%85%e5%86%b5%e4%b8%8b%e8%bf%9b%e8%a1%8c%e5%a4%8d%e5%88%b6%e6%97%a5%e5%bf%97">#</a>
+</h4>
+<p>由于网络的隔断，造成集群中多数的节点在一段时间内无法访问到 leader 节点。按照 raft 共识算法，没有 leader 的那一组集群将会通过选举投票出新的 leader，甚至会在两个集群内产生不一致的日志条目。在集群重新完整连通之后，原来的 leader 仍会按照 raft 共识算法从步进数更高的 leader 同步日志并将自己切换为 follower。</p>
+<ul>
+<li>集群的理想状</li>
+</ul>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209071413779.png" alt="" /></p>
+<p>网络间隔造成大多数的节点无法访问 leader 节点</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209071414469.png" alt="" /></p>
+<p>新的日志条目添加到 leader 中</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209071414085.png" alt="" /></p>
+<p>leader 节点将此条日志同步至能够访问到 leader 的节点。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209071415283.png" alt="" /></p>
+<p>follower 确认日志被记录，但是确认记录日志的 follower 数量没有超过集群节点的半数，leader 节点并不将此条日志存档</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209071415353.png" alt="" /></p>
+<p>在被隔断的这部分节点，在 election timeout 之后，followers 中产生 candidate 并发起选举</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209071415393.png" alt="" /></p>
+<p>多数节点接受投票之后，candidate 成为 leader</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209071416295.png" alt="" /></p>
+<p>一个日志条目被添加到新的 leader并复制给新 leader 的 follower</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209071416066.png" alt="" /></p>
+<p>多数节点确认之后，leader 将日志条目提交并存储</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209071417092.png" alt="" /></p>
+<p>在下一个 heartbeat，leader 通知 follower 各自提交并保存在本地磁盘</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209071417526.png" alt="" /></p>
+<p>经过一段时间之后，集群重新连通到一起，集群中出现两个 leader 并且存在不一致的日志条目</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209071418843.png" alt="" /></p>
+<p>新的 leader 在下一次 heartbeat timeout 时向所有的节点发送一次 heartbeat</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209071419616.png" alt="" /></p>
+<p>#1 leader 在收到任期号term更高的 #2 leader heartbeat 时放弃 leader 地位并切换到 follower 状态</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209071419414.png" alt="" /></p>
+<p>此时leader同步未被复制的日志条目给所有的 follower</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202209071420691.png" alt="" /></p>
+<p>通过这种方式，只要集群中有效连接的节点超过总数的一半，集群将一直以这种规则运行下去并始终确保各个节点中的数据始终一致。</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#分布式共识算法">分布式共识算法</a></li>
+            <li><a href="#拜占庭将军问题">拜占庭将军问题</a></li>
+          </ul>
+        </li>
+        <li><a href="#raft共识">Raft共识</a>
+          <ul>
+            <li><a href="#简介">简介</a></li>
+            <li><a href="#raft原理">Raft原理</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

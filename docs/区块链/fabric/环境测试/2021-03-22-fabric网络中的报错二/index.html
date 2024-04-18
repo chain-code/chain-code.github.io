@@ -1,0 +1,2200 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="重要声明 ，早期写的博客，后面发现里面的某些解决办法是错误的，看个开心就好 ，我也懒得改。 # 问题一： # fatal: unable to access &lsquo;https://github.com/hyperledger/fabric-samples.git/&#39;: Failed to connect to github.com port 443: 拒绝连接
+解决办法： # 命令行输入： git config --global --unset http.proxy git config --global --unset https.proxy 问题二； # Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Post http://%2Fvar%2Frun%2Fdocker.sock/v1.40/images/create?fromImage=hyperledger%2Ffabric-ca&tag=1.4.9: dial unix /var/run/docker.sock: connect: permission denied
+解决办法： # 用VPN下载
+Fabric2.3.0版本测试网络运行问题解决办法 # 问题一： # Starting nodes with CLI timeout of &lsquo;5&rsquo; tries and CLI delay of &lsquo;3&rsquo; seconds and using database &rsquo;leveldb&rsquo; with crypto from &lsquo;cryptogen&rsquo;">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="fabric网络中的报错（二）" />
+<meta property="og:description" content="重要声明 ，早期写的博客，后面发现里面的某些解决办法是错误的，看个开心就好 ，我也懒得改。 # 问题一： # fatal: unable to access &lsquo;https://github.com/hyperledger/fabric-samples.git/&#39;: Failed to connect to github.com port 443: 拒绝连接
+解决办法： # 命令行输入： git config --global --unset http.proxy git config --global --unset https.proxy 问题二； # Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Post http://%2Fvar%2Frun%2Fdocker.sock/v1.40/images/create?fromImage=hyperledger%2Ffabric-ca&tag=1.4.9: dial unix /var/run/docker.sock: connect: permission denied
+解决办法： # 用VPN下载
+Fabric2.3.0版本测试网络运行问题解决办法 # 问题一： # Starting nodes with CLI timeout of &lsquo;5&rsquo; tries and CLI delay of &lsquo;3&rsquo; seconds and using database &rsquo;leveldb&rsquo; with crypto from &lsquo;cryptogen&rsquo;" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/" /><meta property="article:section" content="docs" />
+<meta property="article:published_time" content="2021-03-22T18:51:50+00:00" />
+<meta property="article:modified_time" content="2021-03-22T18:51:50+00:00" />
+<title>fabric网络中的报错（二） | Soulmate</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" >
+<link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.5623389946cf2cb816d7e28b27d101617d469cca326a6a0a0bf362549d6ba433.js" integrity="sha256-ViM4mUbPLLgW1&#43;KLJ9EBYX1GnMoyamoKC/NiVJ1rpDM=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo.png" alt="Logo" /><span>Soulmate</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-074eed0fb8c6f9d99dfeff898388792f" class="toggle"  />
+    <label for="section-074eed0fb8c6f9d99dfeff898388792f" class="flex justify-between">
+      <a role="button" class="">计算机基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="">Vim编程常用快捷键</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E9%85%8D%E7%BD%AEkylinv10/" class="">配置 Kylin V10</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="">计算机网络基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/linux%E5%9F%BA%E7%A1%80/" class="">Linux基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/git%E5%9F%BA%E7%A1%80/" class="">Git基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Golang</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-670eda717a06f31447c52422ec93a159" class="toggle"  />
+    <label for="section-670eda717a06f31447c52422ec93a159" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/" class="">go语言基础（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/cgo/" class="">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/flag/" class="">Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/grpc/" class="">Grpc</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/" class="">ProtoBuf</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">常用业务代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/" class="">go语言基础（三）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/" class="">go语言底层基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/" class="">benchmark测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/" class="">Goland常用技巧</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle"  />
+    <label for="section-c453881a62c640f6a4cceec99c02477e" class="flex justify-between">
+      <a role="button" class="">高阶</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" class="">Go高阶-语言基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f235e88e751d2cb18d527c1784763605" class="toggle"  />
+    <label for="section-f235e88e751d2cb18d527c1784763605" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/atomic/" class="">Atomic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/os/" class="">Os</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strconv/" class="">Strconv</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sort/" class="">Sort</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strings/" class="">Strings</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/reflect/" class="">Reflect</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/time/" class="">Time</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sync/" class="">Sync</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ee53da12118bfd3e9b35f3e9494ab55b" class="toggle"  />
+    <label for="section-ee53da12118bfd3e9b35f3e9494ab55b" class="flex justify-between">
+      <a role="button" class="">LeetCode</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/" class="">golang力扣刷题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/" class="">golang力扣刷题（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/%E5%BF%85%E5%88%B7top101/" class="">必刷top101</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" class="">LeetCode算法总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>数据库</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle"  />
+    <label for="section-94f26238d1ca3b5bcd40eadc7a88d726" class="flex justify-between">
+      <a role="button" class="">MySql</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" class="">MySql基础总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="">Mac连接数据库所遇到的问题</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="toggle"  />
+    <label for="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="flex justify-between">
+      <a role="button" class="">Redis</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="">Redis集群搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/" class="">Redis基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="">redis面试总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8be9c2251abd1fe110e3c1520cac6177" class="toggle"  />
+    <label for="section-8be9c2251abd1fe110e3c1520cac6177" class="flex justify-between">
+      <a role="button" class="">SQLite</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/" class="">Sqlite</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/" class="">Xorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ad390db13e5fa9e14f921f4e4f77900e" class="toggle"  />
+    <label for="section-ad390db13e5fa9e14f921f4e4f77900e" class="flex justify-between">
+      <a role="button" class="">C/C&#43;&#43;</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/cc&#43;&#43;/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>区块链</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle" checked />
+    <label for="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="flex justify-between">
+      <a role="button" class="">Fabric</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">fabric相关机制与原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/" class="">智能合约</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/" class="">fabric-sdk-go详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/" class="">fabric-ca详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle" checked />
+    <label for="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="flex justify-between">
+      <a role="button" class="">环境测试</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/" class="">fabric网络中的报错（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/" class="active">fabric网络中的报错（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">fabric环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/" class="">solo节点测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/" class="">fabric多机搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/" class="">部署tape测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/" class="">手动生成ca证书搭建fabric网络</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/" class="">centos安装fabric1.2</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-25aef1d59a561fcefcaecb043ef8afd2" class="toggle"  />
+    <label for="section-25aef1d59a561fcefcaecb043ef8afd2" class="flex justify-between">
+      <a role="button" class="">配置文件</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/" class="">cryptogen生成的证书详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">docker-compose.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">configtx.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">crypto-config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/" class="">升级链码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/" class="">区块链网络添加组织</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/" class="">fabric浏览器搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/" class="">如何在已有组织中增加节点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/" class="">Fabric1.4多通道实验</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b07621083aa30b12de4c0333941e479f" class="toggle"  />
+    <label for="section-b07621083aa30b12de4c0333941e479f" class="flex justify-between">
+      <a role="button" class="">比特币</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">比特币相关机制与原理</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle"  />
+    <label for="section-ff5477999ef29208270c84e8b56b2758" class="flex justify-between">
+      <a role="button" class="">IPFS</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/" class="">go-ipfs-api</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" class="">ipfs-webui可视化工具搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/" class="">IPFS基本原理（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/" class="">IPFS私有网络搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-77a0a17b06e8d04cfb0fba9952941706" class="toggle"  />
+    <label for="section-77a0a17b06e8d04cfb0fba9952941706" class="flex justify-between">
+      <a role="button" class="">密码学</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" class="">区块链安全基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/" class="">椭圆曲线加密</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/" class="">密码学基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2e4d10b323fd668021dbd532575d8790" class="toggle"  />
+    <label for="section-2e4d10b323fd668021dbd532575d8790" class="flex justify-between">
+      <a role="button" class="">Docker</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/" class="">Docker基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/" class="">Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" class="">docker常用知识总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-70383d7f28a7ae4bf840a844eb61aa16" class="toggle"  />
+    <label for="section-70383d7f28a7ae4bf840a844eb61aa16" class="flex justify-between">
+      <a role="button" class="">共识算法</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">共识算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" class="">Raft共识算法</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>前端</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
+    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
+      <a role="button" class="">博客</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%9B%BE%E4%B9%A6/" class="">图书</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/" class="">工具库</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="https://gitee.com/chaincode"  target="_blank" rel="noopener">
+        Gitee
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>fabric网络中的报错（二）</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#重要声明-早期写的博客后面发现里面的某些解决办法是错误的看个开心就好-我也懒得改"><strong>重要声明 ，早期写的博客，后面发现里面的某些解决办法是错误的，看个开心就好 ，我也懒得改。</strong></a>
+      <ul>
+        <li>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#fabric230版本测试网络运行问题解决办法">Fabric2.3.0版本测试网络运行问题解决办法</a>
+      <ul>
+        <li>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+        <li><a href="#name-------------command-------state-----------------------ports">Name             Command       State                       Ports</a>
+          <ul>
+            <li></li>
+            <li><a href="#问题十二">问题十二：</a></li>
+            <li><a href="#部署fabric-ca过程中的报错">部署fabric-ca过程中的报错</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h1 id="重要声明-早期写的博客后面发现里面的某些解决办法是错误的看个开心就好-我也懒得改">
+  <strong>重要声明 ，早期写的博客，后面发现里面的某些解决办法是错误的，看个开心就好 ，我也懒得改。</strong>
+  <a class="anchor" href="#%e9%87%8d%e8%a6%81%e5%a3%b0%e6%98%8e-%e6%97%a9%e6%9c%9f%e5%86%99%e7%9a%84%e5%8d%9a%e5%ae%a2%e5%90%8e%e9%9d%a2%e5%8f%91%e7%8e%b0%e9%87%8c%e9%9d%a2%e7%9a%84%e6%9f%90%e4%ba%9b%e8%a7%a3%e5%86%b3%e5%8a%9e%e6%b3%95%e6%98%af%e9%94%99%e8%af%af%e7%9a%84%e7%9c%8b%e4%b8%aa%e5%bc%80%e5%bf%83%e5%b0%b1%e5%a5%bd-%e6%88%91%e4%b9%9f%e6%87%92%e5%be%97%e6%94%b9">#</a>
+</h1>
+<h4 id="问题一">
+  问题一：
+  <a class="anchor" href="#%e9%97%ae%e9%a2%98%e4%b8%80">#</a>
+</h4>
+<blockquote>
+<p>fatal: unable to access &lsquo;<a href="https://github.com/hyperledger/fabric-samples.git/%27">https://github.com/hyperledger/fabric-samples.git/'</a>: Failed to connect to github.com port 443: 拒绝连接</p>
+</blockquote>
+<h5 id="解决办法">
+  解决办法：
+  <a class="anchor" href="#%e8%a7%a3%e5%86%b3%e5%8a%9e%e6%b3%95">#</a>
+</h5>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>命令行输入<span style="color:#960050;background-color:#1e0010">：</span>
+</span></span><span style="display:flex;"><span>git config <span style="color:#f92672">--</span>global <span style="color:#f92672">--</span>unset http<span style="color:#f92672">.</span><span style="color:#a6e22e">proxy</span> 
+</span></span><span style="display:flex;"><span>git config <span style="color:#f92672">--</span>global <span style="color:#f92672">--</span>unset https<span style="color:#f92672">.</span><span style="color:#a6e22e">proxy</span>
+</span></span></code></pre></div></blockquote>
+<h4 id="问题二">
+  问题二；
+  <a class="anchor" href="#%e9%97%ae%e9%a2%98%e4%ba%8c">#</a>
+</h4>
+<blockquote>
+<p>Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Post <a href="http://%2Fvar%2Frun%2Fdocker.sock/v1.40/images/create?fromImage=hyperledger%2Ffabric-ca&amp;tag=1.4.9">http://%2Fvar%2Frun%2Fdocker.sock/v1.40/images/create?fromImage=hyperledger%2Ffabric-ca&tag=1.4.9</a>: dial unix /var/run/docker.sock: connect: permission denied</p>
+</blockquote>
+<h5 id="解决办法-1">
+  解决办法：
+  <a class="anchor" href="#%e8%a7%a3%e5%86%b3%e5%8a%9e%e6%b3%95-1">#</a>
+</h5>
+<blockquote>
+<p>用VPN下载</p>
+</blockquote>
+<h1 id="fabric230版本测试网络运行问题解决办法">
+  Fabric2.3.0版本测试网络运行问题解决办法
+  <a class="anchor" href="#fabric230%e7%89%88%e6%9c%ac%e6%b5%8b%e8%af%95%e7%bd%91%e7%bb%9c%e8%bf%90%e8%a1%8c%e9%97%ae%e9%a2%98%e8%a7%a3%e5%86%b3%e5%8a%9e%e6%b3%95">#</a>
+</h1>
+<h4 id="问题一-1">
+  问题一：
+  <a class="anchor" href="#%e9%97%ae%e9%a2%98%e4%b8%80-1">#</a>
+</h4>
+<blockquote>
+<p>Starting nodes with CLI timeout of &lsquo;5&rsquo; tries and CLI delay of &lsquo;3&rsquo; seconds and using database &rsquo;leveldb&rsquo; with crypto from &lsquo;cryptogen&rsquo;</p>
+<p>./network.sh: line 51: 37615 Abort trap: 6      peer version &gt; /dev/null 2&gt;&amp;1</p>
+<p>Peer binary and configuration files not found..</p>
+<p>Follow the instructions in the Fabric docs to install the Fabric Binaries:</p>
+<p><a href="https://hyperledger-fabric.readthedocs.io/en/latest/install.html">https://hyperledger-fabric.readthedocs.io/en/latest/install.html</a></p>
+</blockquote>
+<h5 id="解决办法-2">
+  解决办法：
+  <a class="anchor" href="#%e8%a7%a3%e5%86%b3%e5%8a%9e%e6%b3%95-2">#</a>
+</h5>
+<blockquote>
+<p>这是镜像没下载完  造成的</p>
+<p>换VPN 切手机热点下载镜像    具体什么原因导致下载失败不知道  反正失败了好多次 网上的方法也试了好多次 没啥用</p>
+</blockquote>
+<h4 id="问题二-1">
+  问题二：
+  <a class="anchor" href="#%e9%97%ae%e9%a2%98%e4%ba%8c-1">#</a>
+</h4>
+<blockquote>
+<p>Error: error getting endorser client for channel: endorser client failed to connect to localhost:7051: failed to create new connection: context deadline exceeded</p>
+<p>错误：错误获取代言人客户端的通道：代言人客户端未能连接到本地端：7051：未能创建新连接：上下文截止日期已过</p>
+</blockquote>
+<blockquote>
+<p>Lexi</p>
+<p>错误：获取广播客户端时出错：订购者客户端无法连接到orderer.test.com：7050：无法创建新的连接：超出了上下文截止日期</p>
+</blockquote>
+<h5 id="解决办法-3">
+  解决办法：
+  <a class="anchor" href="#%e8%a7%a3%e5%86%b3%e5%8a%9e%e6%b3%95-3">#</a>
+</h5>
+<blockquote>
+<p>好多的原因都会报这种错误，具体说不清楚 ，反正我被这个报错玩过好多次。。。。</p>
+<p>比如说 第二个错误是因为我安装链码只安装到了一个组织，另一个没有安装。</p>
+</blockquote>
+<h4 id="问题三">
+  问题三：
+  <a class="anchor" href="#%e9%97%ae%e9%a2%98%e4%b8%89">#</a>
+</h4>
+<blockquote>
+<p>Error: failed to normalize chaincode path: &lsquo;go list&rsquo; failed with: go: <a href="mailto:github.com/golang/protobuf@v1.3.2">github.com/golang/protobuf@v1.3.2</a>: Get &ldquo;<a href="https://proxy.golang.org/github.com/golang/protobuf/@v/v1.3.2.mod%22">https://proxy.golang.org/github.com/golang/protobuf/@v/v1.3.2.mod"</a>: dial tcp 216.58.200.241:443: i/o timeout: exit status 1</p>
+<p>Chaincode packaging has failed
+Deploying chaincode failed</p>
+</blockquote>
+<h5 id="解决办法-4">
+  解决办法：
+  <a class="anchor" href="#%e8%a7%a3%e5%86%b3%e5%8a%9e%e6%b3%95-4">#</a>
+</h5>
+<blockquote>
+<p>下载go依赖包</p>
+<p>cd ../hyperledger/fabric-samples/chaincode/sacc</p>
+<p>go mod init</p>
+<p>go env -w GOPROXY=https://goproxy.cn,direct
+go mod vendor</p>
+</blockquote>
+<h4 id="问题四">
+  问题四：
+  <a class="anchor" href="#%e9%97%ae%e9%a2%98%e5%9b%9b">#</a>
+</h4>
+<blockquote>
+<p>Could not find profile: soloOrgsOrdererGenesis</p>
+<p>Could not find profile: soloOrgsOrdererGenesis. Please make sure that FABRIC_CFG_PATH or -configPath is set to a path which contains configtx.yaml with the specified profile</p>
+</blockquote>
+<h5 id="解决办法-5">
+  解决办法：
+  <a class="anchor" href="#%e8%a7%a3%e5%86%b3%e5%8a%9e%e6%b3%95-5">#</a>
+</h5>
+<blockquote>
+<p>export FABRIC_CFG_PATH=/home/hyperledger/solotest    后面的路径改成你项目configtx.yaml文件的路径</p>
+</blockquote>
+<h4 id="问题五">
+  问题五：
+  <a class="anchor" href="#%e9%97%ae%e9%a2%98%e4%ba%94">#</a>
+</h4>
+<blockquote>
+<p>Error: failed to create deliver client for orderer: orderer client failed to connect to orderer.example.com:7050: failed to create new connection: connection error: desc = &ldquo;transport: error while dialing: dial tcp: lookup orderer.example.com on 127.0.0.11:53: no such host&rdquo;</p>
+<p>错误：无法为订购者创建交付客户端：订购者客户端未能连接到orderer.example.com：7050：无法创建新连接：连接错误：desc =“运输：拨号时出错：拨打tcp：查找orderer.example。 127.0.0.11:53上的com：没有这样的主机”</p>
+<p>第二次提交相同代码出现下面问题：</p>
+<p>Error: failed to create deliver client for orderer: orderer client failed to connect to orderer.example.com:7050: failed to create new connection: context deadline exceeded</p>
+<p>错误：无法为订购者创建交付客户端：订购者客户端无法连接到orderer.example.com：7050：未能创建新的连接：超出了上下文截止日期</p>
+</blockquote>
+<h5 id="解决办法-6">
+  解决办法：
+  <a class="anchor" href="#%e8%a7%a3%e5%86%b3%e5%8a%9e%e6%b3%95-6">#</a>
+</h5>
+<blockquote>
+<p>命令行输入</p>
+<p>docker-compose ps   查看order.example.com    是否有 0.0.0.0:7050-&gt;7050/tcp</p>
+<p>如果没有请查看docker-compose.yaml配置文件 肯定哪里错了</p>
+</blockquote>
+<blockquote>
+<h2 id="name-------------command-------state-----------------------ports">
+  Name             Command       State                       Ports
+  <a class="anchor" href="#name-------------command-------state-----------------------ports">#</a>
+</h2>
+<p>cli                      /bin/sh           Up                                                 <br>
+orderer.example.com      orderer           Up      0.0.0.0:7050-&gt;7050/tcp                     <br>
+peer0.org1.example.com   peer node start   Up      0.0.0.0:7051-&gt;7051/tcp, 0.0.0.0:7053-&gt;7053/tcp</p>
+</blockquote>
+<h4 id="问题六">
+  问题六：
+  <a class="anchor" href="#%e9%97%ae%e9%a2%98%e5%85%ad">#</a>
+</h4>
+<blockquote>
+<p>docker 获得权限被拒绝</p>
+<p>Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get <a href="http://%2Fvar%2Frun%2Fdocker.sock/v1.40/containers/json">http://%2Fvar%2Frun%2Fdocker.sock/v1.40/containers/json</a>: dial unix /var/run/docker.sock: connect: permission denied</p>
+<p>Couldn&rsquo;t connect to Docker daemon at http+docker://localunixsocket - is it running?
+If it&rsquo;s at a non-standard location, specify the URL with the DOCKER_HOST environment variable.</p>
+</blockquote>
+<h5 id="解决办法-7">
+  解决办法：
+  <a class="anchor" href="#%e8%a7%a3%e5%86%b3%e5%8a%9e%e6%b3%95-7">#</a>
+</h5>
+<blockquote>
+<p>sudo usermod -aG docker $USER</p>
+<p>sudo chmod 666 /var/run/docker.sock</p>
+</blockquote>
+<h4 id="问题七">
+  问题七：
+  <a class="anchor" href="#%e9%97%ae%e9%a2%98%e4%b8%83">#</a>
+</h4>
+<blockquote>
+<p>cryptogen：未找到命令</p>
+</blockquote>
+<h5 id="解决办法-8">
+  解决办法：
+  <a class="anchor" href="#%e8%a7%a3%e5%86%b3%e5%8a%9e%e6%b3%95-8">#</a>
+</h5>
+<blockquote>
+<p>打开 usr/local/bin   看看里面的东西还在不在</p>
+<p>如果不在</p>
+<p>复制fabric-samples/bin 文件夹里面的东西 到usr/local/bin里面去</p>
+<p>如果需要管理员权限</p>
+<p>命令行输入：sudo nautilus</p>
+</blockquote>
+<h4 id="问题八">
+  问题八：
+  <a class="anchor" href="#%e9%97%ae%e9%a2%98%e5%85%ab">#</a>
+</h4>
+<blockquote>
+<p>Named volume &ldquo;peer0.org2.example.com:/var/hyperledger/production:rw&rdquo; is used in service &ldquo;peer0.org2.example.com&rdquo; but no declaration was found in the volumes section.</p>
+</blockquote>
+<h4 id="解决办法-9">
+  解决办法：
+  <a class="anchor" href="#%e8%a7%a3%e5%86%b3%e5%8a%9e%e6%b3%95-9">#</a>
+</h4>
+<blockquote>
+<p>version: &lsquo;2&rsquo;</p>
+<p>volumes:
+orderer.example.com:
+peer0.org1.example.com:
+peer0.org2.example.com:     这里没加入内容  小错误</p>
+</blockquote>
+<h4 id="问题九">
+  问题九：
+  <a class="anchor" href="#%e9%97%ae%e9%a2%98%e4%b9%9d">#</a>
+</h4>
+<blockquote>
+<p>Error: got unexpected status: FORBIDDEN &ndash; config update for existing channel did not pass initial checks: implicit policy evaluation failed - 0 sub-policies were satisfied, but this policy requires 1 of the &lsquo;Writers&rsquo; sub-policies to be satisfied: permission denied</p>
+</blockquote>
+<h5 id="解决办法-10">
+  解决办法：
+  <a class="anchor" href="#%e8%a7%a3%e5%86%b3%e5%8a%9e%e6%b3%95-10">#</a>
+</h5>
+<blockquote>
+<pre tabindex="0"><code>docker volume  prune     关掉所用容器后 执行这个命令，修剪数据卷    大胆一点 ，删
+</code></pre></blockquote>
+<h4 id="问题十">
+  问题十：
+  <a class="anchor" href="#%e9%97%ae%e9%a2%98%e5%8d%81">#</a>
+</h4>
+<blockquote>
+<p>txid [8a33c33de95c2590c49c8f28a91f736b537a3ac319ea968309e4d52a9dea99d5] committed with status (ENDORSEMENT_POLICY_FAILURE) at peer0.org2.example.com:8051
+Error: transaction invalidated with status (ENDORSEMENT_POLICY_FAILURE)</p>
+<p>错误：交易因状态无效（ENDORSEMENT_POLICY_FAILURE）</p>
+</blockquote>
+<h5 id="解决办法-11">
+  解决办法：
+  <a class="anchor" href="#%e8%a7%a3%e5%86%b3%e5%8a%9e%e6%b3%95-11">#</a>
+</h5>
+<blockquote>
+<p>peer lifecycle chaincode commit -o orderer.example.com:7050 &ndash;tls true &ndash;cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem &ndash;peerAddresses peer0.org1.example.com:7051 &ndash;tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt &ndash;peerAddresses peer0.org2.example.com:8051 &ndash;tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt &ndash;channelID mychannel &ndash;name sacc &ndash;version 1.0 &ndash;sequence 1 &ndash;init-required</p>
+</blockquote>
+<p>这里&ndash;peerAddresses     &ndash;tlsRootCertFiles  你只设置了一个</p>
+<h4 id="问题十一">
+  问题十一：
+  <a class="anchor" href="#%e9%97%ae%e9%a2%98%e5%8d%81%e4%b8%80">#</a>
+</h4>
+<blockquote>
+<p>在建立bee run 项目时</p>
+<p>../github.com/prometheus/common/expfmt/decode.go:25:2: cannot find package &ldquo;github.com/matttproud/golang_protobuf_extensions/pbutil&rdquo; in any of:
+/usr/local/go/src/github.com/matttproud/golang_protobuf_extensions/pbutil (from $GOROOT)
+/home/tianzhiwei/go/src/github.com/matttproud/golang_protobuf_extensions/pbutil (from $GOPATH)</p>
+</blockquote>
+<h5 id="解决办法-12">
+  解决办法：
+  <a class="anchor" href="#%e8%a7%a3%e5%86%b3%e5%8a%9e%e6%b3%95-12">#</a>
+</h5>
+<blockquote>
+<p>go mod init</p>
+<p>如果显示：go mod init: modules disabled by GO111MODULE=off; see &lsquo;go help modules&rsquo;</p>
+<p>先export GO111MODULE=&ldquo;on&rdquo;</p>
+<p>然后go mod init</p>
+</blockquote>
+<h3 id="问题十二">
+  问题十二：
+  <a class="anchor" href="#%e9%97%ae%e9%a2%98%e5%8d%81%e4%ba%8c">#</a>
+</h3>
+<blockquote>
+<p>Error: error getting chaincode bytes: &lsquo;go list&rsquo; failed with: no required module provides package github.com/chaincode/sacc: go.mod file not found in current directory or any parent directory; see &lsquo;go help modules&rsquo;: exit status 1</p>
+</blockquote>
+<p><strong>解决办法</strong></p>
+<blockquote>
+<p>cd /opt/gopath/src/github.com/chaincode/sacc</p>
+<p>//进入链码文件夹下 输入下面的东西</p>
+<p>go env -w GO111MODULE=off</p>
+</blockquote>
+<h3 id="部署fabric-ca过程中的报错">
+  部署fabric-ca过程中的报错
+  <a class="anchor" href="#%e9%83%a8%e7%bd%b2fabric-ca%e8%bf%87%e7%a8%8b%e4%b8%ad%e7%9a%84%e6%8a%a5%e9%94%99">#</a>
+</h3>
+<h4 id="问题一-2">
+  问题一：
+  <a class="anchor" href="#%e9%97%ae%e9%a2%98%e4%b8%80-2">#</a>
+</h4>
+<pre tabindex="0"><code>安装libtool与libltdl-dev依赖包时
+
+无法解析域名“security.ubuntu.com”
+</code></pre><h5 id="解决办法-13">
+  解决办法：
+  <a class="anchor" href="#%e8%a7%a3%e5%86%b3%e5%8a%9e%e6%b3%95-13">#</a>
+</h5>
+<pre tabindex="0"><code>sudo vim /etc/resolv.conf # 添加如下内容
+
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+nameserver 127.0.0.1
+
+输入Esc，:wq，保存并退出
+sudo /etc/init.d/networking restart
+</code></pre></article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#重要声明-早期写的博客后面发现里面的某些解决办法是错误的看个开心就好-我也懒得改"><strong>重要声明 ，早期写的博客，后面发现里面的某些解决办法是错误的，看个开心就好 ，我也懒得改。</strong></a>
+      <ul>
+        <li>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#fabric230版本测试网络运行问题解决办法">Fabric2.3.0版本测试网络运行问题解决办法</a>
+      <ul>
+        <li>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+        <li><a href="#name-------------command-------state-----------------------ports">Name             Command       State                       Ports</a>
+          <ul>
+            <li></li>
+            <li><a href="#问题十二">问题十二：</a></li>
+            <li><a href="#部署fabric-ca过程中的报错">部署fabric-ca过程中的报错</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

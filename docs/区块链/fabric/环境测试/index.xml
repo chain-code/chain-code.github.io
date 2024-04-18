@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>环境测试 on Soulmate</title>
+    <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/</link>
+    <description>Recent content in 环境测试 on Soulmate</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 20 Dec 2021 10:11:10 +0000</lastBuildDate><atom:link href="https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>fabric网络中的报错（一）</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/</link>
+      <pubDate>Tue, 26 Jan 2021 11:17:56 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/</guid>
+      <description>重要声明 ，早期写的博客，后面发现里面的某些解决办法是错误的，看个开心就好 ，我也懒得改。 # 报错一： # Error: Could not assemble transaction, err Proposal response was not successful, error code 500, msg error starting container: error starting container: Post http://unix.sock/containers/create?name=dev-peer0.org2.example.com-mycc-1.0: dial unix /host/var/run/docker.sock: connect: no such file or directory
+问题原因 # 此问题是由适用于macOS的Docker Desktop的较新版本引起的。
+要解决此问题，请在Docker Desktop首选项中，取消选中该框Use gRPC FUSE for file sharing， 以使用旧版osxfs文件共享，然后单击**Apply****＆**Restart
+报错二： # 问题原因： # 环境配置问题，进入go.mod文件 重新配置
+github.com/Shopify/sarama v1.27.2 // indirect github.com/astaxie/beego v1.12.1 github.com/fsouza/go-dockerclient v1.7.0 // indirect github.com/grpc-ecosystem/go-grpc-middleware v1.2.2 // indirect github.</description>
+    </item>
+    
+    <item>
+      <title>fabric网络中的报错（二）</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/</link>
+      <pubDate>Mon, 22 Mar 2021 18:51:50 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/</guid>
+      <description>重要声明 ，早期写的博客，后面发现里面的某些解决办法是错误的，看个开心就好 ，我也懒得改。 # 问题一： # fatal: unable to access &amp;lsquo;https://github.com/hyperledger/fabric-samples.git/&#39;: Failed to connect to github.com port 443: 拒绝连接
+解决办法： # 命令行输入： git config --global --unset http.proxy git config --global --unset https.proxy 问题二； # Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Post http://%2Fvar%2Frun%2Fdocker.sock/v1.40/images/create?fromImage=hyperledger%2Ffabric-ca&amp;tag=1.4.9: dial unix /var/run/docker.sock: connect: permission denied
+解决办法： # 用VPN下载
+Fabric2.3.0版本测试网络运行问题解决办法 # 问题一： # Starting nodes with CLI timeout of &amp;lsquo;5&amp;rsquo; tries and CLI delay of &amp;lsquo;3&amp;rsquo; seconds and using database &amp;rsquo;leveldb&amp;rsquo; with crypto from &amp;lsquo;cryptogen&amp;rsquo;</description>
+    </item>
+    
+    <item>
+      <title>fabric环境搭建</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Wed, 24 Mar 2021 17:12:42 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</guid>
+      <description>Hyperledger Fabric基础环境之Docker # Docker 是一个开源的应用容器引擎，基于Go语言并遵从Apache2.0 协议开源。Docker 可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。容器是完全使用沙箱机制，相互之间不会有任何接口,更重要的是容器性能开销极低。Docker 从 17.03 版本之后分为 CE（Community Edition: 社区版） 和 EE（Enterprise Edition: 企业版），我们用社区版就可以了。
+1.Docker安装与配置 # 使用 Docker 仓库进行安装在新主机上首次安装 Docker Engine-Community 之前，需要设置 Docker 仓库。之后，您可以从仓库安装和更新 Docker 。
+使用apt-get命令更新包索引。
+sudo apt-get update 使用apt-get命令安装依赖包，用于通过HTTPS来获取仓库。
+sudo apt-get install \ apt-transport-https \ ca-certificates \ curl \ git \ gnupg-agent \ software-properties-common 使用curl命令添加 Docker 的官方 GPG 密钥。
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - 9DC8 5822 9FC7 DD38 854A E2D8 8D81 803C 0EBF CD88 使用以下命令通过搜索指纹的后8个字符，验证您现在是否拥有带有指纹的密钥。</description>
+    </item>
+    
+    <item>
+      <title>solo节点测试</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/</link>
+      <pubDate>Thu, 25 Mar 2021 19:18:57 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/</guid>
+      <description>生成Fabric证书 # Hyperledger Fabric通过证书文件来配置组织、节点以及用户。证书文件（实际上，数字证书就是经过CA认证过的公钥）的标准为X.509，编码格式为PEM，以—–BEGIN开头,以—–END结尾。X.509 数字证书不但包括用户名和公共密钥，而且还包括有关该用户的其他信息。除了扩展名为PEM的还有以下这些：
+CRT ：应该是certificate的三个字母，还是证书的意思。打开看也是PEM编码格式。 KEY： 用来存放一个公钥或私钥，并非X.509证书。打开看依然PEM格式。 证书的默认签名算法为ECDSA，Hash算法为SHA-256。Fabric中设计中考虑了三种类型证书:
+登记证书（ECert）：颁发给提供了注册凭证的用户或节点实体，长期有效。（主要就是通ECert对实体身份检验） 通信证书（TLSCert）：TLS证书用来保障通信链路安全，控制对网络层的接入访问，可以对远端实体身份校验，防止窃听。 交易证书（TCert）：颁发给用户，控制每个交易的权限，一般针对某个交易，短期有效。 1.证书的文件的编写 # 首先我们使用以下命令在进入~/hyperledger目录并创建一个项目目录solotest。
+cd ~/hyperledger mkdir solotest cd solotest 我们可以使用以下命令来查看生成证书文件的模板文件。
+cryptogen showtemplate 使用以下命令将模板文件复制到当前目录下。
+cryptogen showtemplate &amp;gt; crypto-config.yaml 配置文件的模板如下：
+OrdererOrgs:	- Name: Orderer	Domain: example.com	Specs: - Hostname: orderer - Hostname: orderer2 PeerOrgs: - Name: Org1	Domain: org1.example.com	EnableNodeOUs: true	Template:	Count: 2 Users:	Count: 2 - Name: Org2 Domain: org2.example.com EnableNodeOUs: true Template: Count: 2 Specs: - Hostname: hello Users: Count: 1 OrdererOrgs 排序节点组织信息</description>
+    </item>
+    
+    <item>
+      <title>fabric多机搭建</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Thu, 25 Mar 2021 19:26:42 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/</guid>
+      <description>多机搭建前准备 # 这部分实验内容使用的是Ubuntu操作系统，所需要的实验环境与单节点搭建部分相同，包括docker的安装golang的安装fabric的安装等。为了方便，以上环境已在虚拟机中安装完成。
+1.网络结构 # 这部分课程我们要搭建一个多机多节点的网络，结构如下。网络中有两个组织分别为org1、org2，每个组织各有一个peer节点，同时还有一个orderer节点。
+名称 IP hosts 组织机构 Orderer 172.17.0.10 orderer.test.com orderer Org1peer0 172.17.0.11 peer0.org1.test.com org1 Org2peer0 172.17.0.12 peer0.org2.test.com org2 2.设置网络host # 使用以下命令，我们在三台虚拟机中分别查看当前虚拟机的IP，其中最后一行为本机IP。
+cat /etc/hosts 127.0.0.1	localhost ::1	localhost ip6-localhost ip6-loopback fe00::0	ip6-localnet ff00::0	ip6-mcastprefix ff02::1	ip6-allnodes ff02::2	ip6-allrouters 172.17.0.10	1cbb99f39f9a 配置所有服务器网络host,在三台虚拟机中都进行以下操作。
+vi /etc/hosts 在最后插入（IP与host任意指定，确定后不能更改），写入以下内容后，按 Esc 键退回一般模式，然后输入 :wq 命令并回车保存退出文件。
+172.17.0.10 orderer.test.com 172.17.0.11 peer0.org1.test.com 172.17.0.12 peer0.org2.test.com 3.ssh安装 # 在多机搭建的过程中我们会使用到scp命令。Linux scp 命令用于 Linux 之间复制文件和目录。
+scp 是 secure copy 的缩写, scp 是 Linux 系统下基于 ssh 登陆进行安全的远程文件拷贝命令。</description>
+    </item>
+    
+    <item>
+      <title>部署tape测试</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/</link>
+      <pubDate>Mon, 20 Dec 2021 10:11:10 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/</guid>
+      <description>安装 # cd hyperledger git clone https://github.com/Hyperledger-TWGC/tape.git cd tape go build ./cmd/tape 测试 # 测试前将organizations文件夹放到tape 里面去 复制一下 就是里面包含各种证书的文件夹 配路径
+修改config.yaml文件
+# Definition of nodes peer1: &amp;amp;peer1 addr: localhost:7051 tls_ca_cert: ./organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem peer2: &amp;amp;peer2 addr: localhost:9051 tls_ca_cert: ./organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp/tlscacerts/tlsca.org2.example.com-cert.pem orderer1: &amp;amp;orderer1 addr: localhost:7050 tls_ca_cert: ./organizations/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem # Nodes to interact with endorsers: - *peer1 - *peer2 # we might support multi-committer in the future for more complex test scenario, # i.e. consider tx committed only if it&amp;#39;s done on &amp;gt;50% of nodes.</description>
+    </item>
+    
+    <item>
+      <title>手动生成ca证书搭建fabric网络</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/</link>
+      <pubDate>Sat, 01 May 2021 17:16:17 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/</guid>
+      <description>亲测有效 # 【摘要】 之前介绍了使用官方脚本自动化启动一个Fabric网络，并且所有的证书都是通过官方的命令行工具cryptogen直接生成网络中的所有节点的证书。在开发环境可以这么简单进行，但是生成环境下还是需要我们自定义对网络中的节点的证书进行配置。所以在本文中，将会详细介绍一个从手动生成证书一直到启动网络的整体步骤。本文只交代整体的搭建步骤。对于Fabric-Ca的讲解不在本文的范围内。
+之前介绍了使用官方脚本自动化启动一个Fabric网络，并且所有的证书都是通过官方的命令行工具cryptogen直接生成网络中的所有节点的证书。在开发环境可以这么简单进行，但是生成环境下还是需要我们自定义对网络中的节点的证书进行配置。 所以在本文中，将会详细介绍一个从手动生成证书一直到启动网络的整体步骤。本文只交代整体的搭建步骤。对于Fabric-Ca的讲解不在本文的范围内，将在另一篇文章中说明。 在这里贴出官方文档地址.
+1.整体架构 # 架构图直接贴过来好了： 官方文档采用的是多机环境，这里简洁化一点，所有的操作都在一台机器上进行，至于多机环境，以后再补充好了。 介绍一下本文所采用的整体架构：
+三个组织 Org0 -&amp;gt; 组织0 Org1 -&amp;gt; 组织1 Org2 -&amp;gt; 组织2 组织中的成员 Org0 一个Orderer节点，一个Org0的Admin节点 Org1 两个Peer节点，一个Org1的Admin节点，一个Org1的User节点 Org2 两个Peer节点，一个Org2的Admin节点，一个Org2的User节点 共有四台CA服务器 TLS服务器 -&amp;gt; 为网络中所有节点颁发TLS证书，用于通信的加密 Org1的CA服务器 -&amp;gt; 为组织1中所有用户颁发证书 Org2的Ca服务器 -&amp;gt; 为组织2中所有用户颁发证书 Org0的CA服务器 -&amp;gt; 为组织0中所有用户颁发证书 这里的四台CA服务器都是根服务器。彼此之间都是独立的存在，没有任何关系。，也就是说每一个CA服务器生成的证书在其他CA服务器都是不能用的。 介绍完之后，可以进入正题了。
+1.1Fabric，Fabric-Ca安装 # 本文默认读者都是对Fabric有一定的了解的，所以一些安装过程这里就没有重复说明。 第一步是安装Fabric-Ca环境，可以参考这里,这篇文章还没有写完，以后慢慢补，不过环境的安装已经有说明。 还有就是Fabric的环境安装，可以参考这里。
+完成环境搭建后，我们还需要一个HOME文件夹，用于存放我们生成的证书文件与fabric配置相关的文件。 本文设置HOME文件夹路径为:
+$GOPATH/src/github.com/caDemo/ 请读者自行创建，一般不要用太复杂的路径,也不要用中文路径，会为之后的操作带来很多麻烦。在下文中简单称HOME文件夹为工作目录,除非特殊说明，一般命令的执行都是在工作目录进行。
+2 CA服务器配置 # 2.1启动TLS CA服务器 # 前期工作准备好之后，我们开始启动第一台CA服务器。本文中使用Docker容器启动。 首先在工作目录创建docker-compose.yaml文件：
+touch docker-compose.yaml 并在文件内添加以下内容(tips:内容格式不要乱掉)：
+version: &amp;#39;2&amp;#39; networks: fabric-ca: services: ca-tls: container_name: ca-tls image: hyperledger/fabric-ca command: sh -c &amp;#39;fabric-ca-server start -d -b tls-ca-admin:tls-ca-adminpw --port 7052&amp;#39; environment: - FABRIC_CA_SERVER_HOME=/ca/tls - FABRIC_CA_SERVER_TLS_ENABLED=true - FABRIC_CA_SERVER_CSR_CN=ca-tls - FABRIC_CA_SERVER_CSR_HOSTS=0.</description>
+    </item>
+    
+    <item>
+      <title>centos安装fabric1.2</title>
+      <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/</link>
+      <pubDate>Thu, 18 Mar 2021 16:04:53 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/</guid>
+      <description>一、环境安装 # 1、安装基本工具 # yum install curl 2、安装docker # 2.1确保yum包更新到最新 # yum update -y 2.2 对服务器进行清理， 如果之前安装过Docker ， 需要先执行卸载操作，具体命令 # sudo yum remove docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-selinux docker-engine-selinux docker-engine 2.3 安装需要的软件包： # yum install -y yum-utils device-mapper-persistent-data lvm2 2.4添加docker yum 源 # sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo 2.5安装docker # yum install docker-ce -y 2.6查看docker版本信息，是否安装成功 # docker --version 2.7 docker基本命令 # 启动docker：
+systemctl start docker 停止docker：
+systemctl stop docker 重启docker：</description>
+    </item>
+    
+  </channel>
+</rss>

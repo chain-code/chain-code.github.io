@@ -1,0 +1,2271 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="基于fabric 2.3 # 客户端使用sdk与fabric网络交互，需要告诉sdk两类信息：
+我是谁：即当前客户端的信息，包含所属组织、密钥和证书文件的路径等， 这是每个客户端专用的信息。 对方是谁：即fabric网络结构的信息，channel、org、orderer和peer等 的怎么组合起当前fabric网络的，这些结构信息应当与configytx.yaml中是一致的。这是通用配置，每个客户端都可以拿来使用。另外，这部分信息并不需要是完整fabric网络信息，如果当前客户端只和部分节点交互，那配置文件中只需要包含所使用到的网络信息。 原文件 # 我们复制官方的config_e2e_multiorg_bootstrap.yaml文件
+文件位置：https://github.com/hyperledger/fabric-sdk-go/blob/main/test/fixtures/config/config_e2e_multiorg_bootstrap.yaml
+######################## 声明部分 ############################### # Copyright SecureKey Technologies Inc. All Rights Reserved. # 版权所有 SecureKey Technologies Inc. 保留所有权利。 # SPDX-License-Identifier: Apache-2.0 # # The network connection profile provides client applications the information about the target blockchain network that are necessary #for the applications to interact with it. These are all knowledge #that must be acquired from out-of-band sources. This file provides #such a source.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="config.yaml文件详解" />
+<meta property="og:description" content="基于fabric 2.3 # 客户端使用sdk与fabric网络交互，需要告诉sdk两类信息：
+我是谁：即当前客户端的信息，包含所属组织、密钥和证书文件的路径等， 这是每个客户端专用的信息。 对方是谁：即fabric网络结构的信息，channel、org、orderer和peer等 的怎么组合起当前fabric网络的，这些结构信息应当与configytx.yaml中是一致的。这是通用配置，每个客户端都可以拿来使用。另外，这部分信息并不需要是完整fabric网络信息，如果当前客户端只和部分节点交互，那配置文件中只需要包含所使用到的网络信息。 原文件 # 我们复制官方的config_e2e_multiorg_bootstrap.yaml文件
+文件位置：https://github.com/hyperledger/fabric-sdk-go/blob/main/test/fixtures/config/config_e2e_multiorg_bootstrap.yaml
+######################## 声明部分 ############################### # Copyright SecureKey Technologies Inc. All Rights Reserved. # 版权所有 SecureKey Technologies Inc. 保留所有权利。 # SPDX-License-Identifier: Apache-2.0 # # The network connection profile provides client applications the information about the target blockchain network that are necessary #for the applications to interact with it. These are all knowledge #that must be acquired from out-of-band sources. This file provides #such a source." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" /><meta property="article:section" content="docs" />
+<meta property="article:published_time" content="2021-03-30T15:47:11+00:00" />
+<meta property="article:modified_time" content="2021-03-30T15:47:11+00:00" />
+<title>config.yaml文件详解 | Soulmate</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" >
+<link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.5623389946cf2cb816d7e28b27d101617d469cca326a6a0a0bf362549d6ba433.js" integrity="sha256-ViM4mUbPLLgW1&#43;KLJ9EBYX1GnMoyamoKC/NiVJ1rpDM=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo.png" alt="Logo" /><span>Soulmate</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-074eed0fb8c6f9d99dfeff898388792f" class="toggle"  />
+    <label for="section-074eed0fb8c6f9d99dfeff898388792f" class="flex justify-between">
+      <a role="button" class="">计算机基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="">Vim编程常用快捷键</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E9%85%8D%E7%BD%AEkylinv10/" class="">配置 Kylin V10</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="">计算机网络基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/linux%E5%9F%BA%E7%A1%80/" class="">Linux基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/git%E5%9F%BA%E7%A1%80/" class="">Git基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Golang</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-670eda717a06f31447c52422ec93a159" class="toggle"  />
+    <label for="section-670eda717a06f31447c52422ec93a159" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/" class="">go语言基础（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/cgo/" class="">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/flag/" class="">Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/grpc/" class="">Grpc</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/" class="">ProtoBuf</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">常用业务代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/" class="">go语言基础（三）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/" class="">go语言底层基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/" class="">benchmark测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/" class="">Goland常用技巧</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle"  />
+    <label for="section-c453881a62c640f6a4cceec99c02477e" class="flex justify-between">
+      <a role="button" class="">高阶</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" class="">Go高阶-语言基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f235e88e751d2cb18d527c1784763605" class="toggle"  />
+    <label for="section-f235e88e751d2cb18d527c1784763605" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/atomic/" class="">Atomic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/os/" class="">Os</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strconv/" class="">Strconv</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sort/" class="">Sort</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strings/" class="">Strings</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/reflect/" class="">Reflect</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/time/" class="">Time</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sync/" class="">Sync</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ee53da12118bfd3e9b35f3e9494ab55b" class="toggle"  />
+    <label for="section-ee53da12118bfd3e9b35f3e9494ab55b" class="flex justify-between">
+      <a role="button" class="">LeetCode</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/" class="">golang力扣刷题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/" class="">golang力扣刷题（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/%E5%BF%85%E5%88%B7top101/" class="">必刷top101</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" class="">LeetCode算法总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>数据库</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle"  />
+    <label for="section-94f26238d1ca3b5bcd40eadc7a88d726" class="flex justify-between">
+      <a role="button" class="">MySql</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" class="">MySql基础总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="">Mac连接数据库所遇到的问题</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="toggle"  />
+    <label for="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="flex justify-between">
+      <a role="button" class="">Redis</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="">Redis集群搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/" class="">Redis基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="">redis面试总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8be9c2251abd1fe110e3c1520cac6177" class="toggle"  />
+    <label for="section-8be9c2251abd1fe110e3c1520cac6177" class="flex justify-between">
+      <a role="button" class="">SQLite</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/" class="">Sqlite</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/" class="">Xorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ad390db13e5fa9e14f921f4e4f77900e" class="toggle"  />
+    <label for="section-ad390db13e5fa9e14f921f4e4f77900e" class="flex justify-between">
+      <a role="button" class="">C/C&#43;&#43;</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/cc&#43;&#43;/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>区块链</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle" checked />
+    <label for="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="flex justify-between">
+      <a role="button" class="">Fabric</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">fabric相关机制与原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/" class="">智能合约</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/" class="">fabric-sdk-go详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/" class="">fabric-ca详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle"  />
+    <label for="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="flex justify-between">
+      <a role="button" class="">环境测试</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/" class="">fabric网络中的报错（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/" class="">fabric网络中的报错（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">fabric环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/" class="">solo节点测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/" class="">fabric多机搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/" class="">部署tape测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/" class="">手动生成ca证书搭建fabric网络</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/" class="">centos安装fabric1.2</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-25aef1d59a561fcefcaecb043ef8afd2" class="toggle" checked />
+    <label for="section-25aef1d59a561fcefcaecb043ef8afd2" class="flex justify-between">
+      <a role="button" class="">配置文件</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/" class="">cryptogen生成的证书详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="active">config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">docker-compose.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">configtx.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">crypto-config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/" class="">升级链码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/" class="">区块链网络添加组织</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/" class="">fabric浏览器搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/" class="">如何在已有组织中增加节点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/" class="">Fabric1.4多通道实验</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b07621083aa30b12de4c0333941e479f" class="toggle"  />
+    <label for="section-b07621083aa30b12de4c0333941e479f" class="flex justify-between">
+      <a role="button" class="">比特币</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">比特币相关机制与原理</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle"  />
+    <label for="section-ff5477999ef29208270c84e8b56b2758" class="flex justify-between">
+      <a role="button" class="">IPFS</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/" class="">go-ipfs-api</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" class="">ipfs-webui可视化工具搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/" class="">IPFS基本原理（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/" class="">IPFS私有网络搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-77a0a17b06e8d04cfb0fba9952941706" class="toggle"  />
+    <label for="section-77a0a17b06e8d04cfb0fba9952941706" class="flex justify-between">
+      <a role="button" class="">密码学</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" class="">区块链安全基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/" class="">椭圆曲线加密</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/" class="">密码学基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2e4d10b323fd668021dbd532575d8790" class="toggle"  />
+    <label for="section-2e4d10b323fd668021dbd532575d8790" class="flex justify-between">
+      <a role="button" class="">Docker</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/" class="">Docker基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/" class="">Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" class="">docker常用知识总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-70383d7f28a7ae4bf840a844eb61aa16" class="toggle"  />
+    <label for="section-70383d7f28a7ae4bf840a844eb61aa16" class="flex justify-between">
+      <a role="button" class="">共识算法</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">共识算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" class="">Raft共识算法</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>前端</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
+    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
+      <a role="button" class="">博客</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%9B%BE%E4%B9%A6/" class="">图书</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/" class="">工具库</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="https://gitee.com/chaincode"  target="_blank" rel="noopener">
+        Gitee
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>config.yaml文件详解</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#基于fabric-23"><strong>基于fabric 2.3</strong></a>
+          <ul>
+            <li><a href="#原文件">原文件</a></li>
+            <li><a href="#修改后文件">修改后文件</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h2 id="基于fabric-23">
+  <strong>基于fabric 2.3</strong>
+  <a class="anchor" href="#%e5%9f%ba%e4%ba%8efabric-23">#</a>
+</h2>
+<p>客户端使用sdk与fabric网络交互，需要告诉sdk两类信息：</p>
+<ul>
+<li>我是谁：即当前客户端的信息，包含所属组织、密钥和证书文件的路径等，
+这是每个客户端专用的信息。</li>
+<li>对方是谁：即fabric网络结构的信息，channel、org、orderer和peer等 的怎么组合起当前fabric网络的，这些结构信息应当与<code>configytx.yaml</code>中是一致的。这是通用配置，每个客户端都可以拿来使用。另外，这部分信息并不需要是完整fabric网络信息，如果当前客户端只和部分节点交互，那配置文件中只需要包含所使用到的网络信息。</li>
+</ul>
+<h3 id="原文件">
+  原文件
+  <a class="anchor" href="#%e5%8e%9f%e6%96%87%e4%bb%b6">#</a>
+</h3>
+<p>我们复制官方的<code>config_e2e_multiorg_bootstrap.yaml</code>文件</p>
+<p>文件位置：https://github.com/hyperledger/fabric-sdk-go/blob/main/test/fixtures/config/config_e2e_multiorg_bootstrap.yaml</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e">########################    声明部分   ###############################</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copyright SecureKey Technologies Inc. All Rights Reserved.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#  版权所有 SecureKey Technologies Inc. 保留所有权利。</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># SPDX-License-Identifier: Apache-2.0</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># The network connection profile provides client applications the information about the target blockchain network that are necessary #for the applications to interact with it. These are all knowledge #that must be acquired from out-of-band sources. This file provides #such a source.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#网络连接配置文件为客户端应用程序提供有关目标区块链网络的信息， 这些信息是应用程序与#其交互所必需的。这些都是必须从带外资源中获取的知识。该文件提供了这样的来源。</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Schema version of the content. Used by the SDK to apply the #corresponding parsing rules.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#内容的架构版本。 SDK 用于应用相应的解析规则。</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">version</span>: <span style="color:#ae81ff">1.0.0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">########################    客户端部分   ###############################</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># The client section used by GO SDK.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">client</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">organization</span>: <span style="color:#ae81ff">org1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 这个应用程序实例属于哪个组织?这个值必须是定义在&#34;organizations&#34;下的一个组织的名称。</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">logging</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">level</span>: <span style="color:#ae81ff">info</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Root of the MSP directories with keys and certs.</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#  带有密钥和证书的 MSP 目录的根。</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">cryptoconfig</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">path</span>: <span style="color:#ae81ff">${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Some SDKs support pluggable KV stores, the properties under &#34;credentialStore&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># are implementation specific</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 一些SDK支持可插拔的KV存储，&#34;credentialStore&#34;下的属性是具体实现</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">credentialStore</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># [Optional]. Used by user store. Not needed if all credentials are embedded in configuration</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># and enrollments are performed elswhere.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># [可选的] 用于用户存储。如果所有凭证都嵌入到配置中，并且在其他地方执行登记，则不需要。</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">path</span>: <span style="color:#e6db74">&#34;/tmp/state-store&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># [Optional]. Specific to the CryptoSuite implementation used by GO SDK. Software-based implementations</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># requiring a key store. PKCS#11 based implementations does not.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># [可选的] 特定于GO SDK使用的CryptoSuite实现。基于软件的实现需要密钥存储区。基于PKCS#11的实现则不用。</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">cryptoStore</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Specific to the underlying KeyValueStore that backs the crypto key store.</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># 特定于支持加密密钥存储的基础KeyValueStore。</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/tmp/msp</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># [Optional] BCCSP config for the client. Used by GO SDK.</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># [可选的] 客户端的BCCSP配置。用于GO SDK</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">BCCSP</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">security</span>:
+</span></span><span style="display:flex;"><span>     <span style="color:#f92672">enabled</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#f92672">default</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">provider</span>: <span style="color:#e6db74">&#34;SW&#34;</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#f92672">hashAlgorithm</span>: <span style="color:#e6db74">&#34;SHA2&#34;</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#f92672">softVerify</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#f92672">level</span>: <span style="color:#ae81ff">256</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">tlsCerts</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># [Optional]. Use system certificate pool when connecting to peers, orderers (for negotiating TLS) Default: false</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># [可选的] 当连接到对等节点、排序节点(用于协商TLS)时使用系统证书池。默认值：false</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">systemCertPool</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># [Optional]. Client key and cert for TLS handshake with peers and orderers</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># [可选的] 与对等节点和排序节点进行TLS握手的客户端密钥和证书</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">client</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">key</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">path</span>: <span style="color:#ae81ff">${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/peerOrganizations/tls.example.com/users/User1@tls.example.com/tls/client.key</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">cert</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">path</span>: <span style="color:#ae81ff">${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/peerOrganizations/tls.example.com/users/User1@tls.example.com/tls/client.crt</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">########################    通道部分   ###############################</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">channels</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># multi-org test channel</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">orgchannel</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># anchor peers only for the bootstrap config is required, other org&#39;s peers will be discovered</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 仅用于引导配置的锚点对等点是必需的，将发现其他组织的对等点</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">peers</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">peer0.org1.example.com</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">endorsingPeer</span>: <span style="color:#66d9ef">true</span> <span style="color:#ae81ff">//是否为背书节点</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e"># 这个对等节点是否会被发送交易建议以供背书?对等端必须安装了chaincode。</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 应用程序也可以使用这个属性来决定哪个对等节点发送chaincode安装请求。默认值:true</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">chaincodeQuery</span>: <span style="color:#66d9ef">true</span>  <span style="color:#ae81ff">//是否接受链码查询</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e"># 这个对等节点会被发送查询建议吗?对等端必须安装了chaincode。</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 应用程序也可以使用这个属性来决定哪个对等节点发送chaincode安装请求。默认值:true</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">ledgerQuery</span>: <span style="color:#66d9ef">true</span>  <span style="color:#ae81ff">//是否接受不需要链码的查询</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># queryBlock(), queryTransaction(), etc. Default: true</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 这个对等节点是否会被发送不需要链码的查询建议，如queryBlock()， queryTransaction()等。默认值:true</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">eventSource</span>: <span style="color:#66d9ef">true</span>   <span style="color:#ae81ff">//是否为SDK侦听器注册的目标</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 这个对等节点会成为SDK侦听器注册的目标吗?所有对等节点都可以产生事件，但应用程序通常只需要连接到一个对等节点就可以监听事件。</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e"># 默认:真</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">peer0.org2.example.com</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">endorsingPeer</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">chaincodeQuery</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">ledgerQuery</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">eventSource</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">policies</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">queryChannelConfig</span>: <span style="color:#75715e"># 检索通道配置块的选项</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">minResponses</span>: <span style="color:#ae81ff">1</span>  <span style="color:#75715e"># 最小成功响应数(来自目标/对等节点)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">maxTargets</span>: <span style="color:#ae81ff">1</span>    <span style="color:#75715e"># 通道配置将为这些数量的随机目标检索</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">retryOpts</span>:       <span style="color:#75715e"># 查询配置块的重试选项</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">attempts</span>: <span style="color:#ae81ff">5</span>      <span style="color:#75715e"># 重试次数 </span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">initialBackoff</span>: <span style="color:#ae81ff">500ms </span> <span style="color:#75715e"># 第一次重试尝试的后退间隔</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">maxBackoff</span>: <span style="color:#ae81ff">5s   </span> <span style="color:#75715e"># 任何重试尝试的最大回退间隔</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">backoffFactor</span>: <span style="color:#ae81ff">2.0</span> <span style="color:#75715e"># 它使初始的回退周期以指数形式增加</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">########################    组织部分   ###############################</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># list of participating organizations in this network</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 此网络中的参与组织列表</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">organizations</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">org1</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">mspid</span>: <span style="color:#ae81ff">Org1MSP</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># This org&#39;s MSP store (absolute path or relative to client.cryptoconfig)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 这个组织的 MSP 存储（绝对路径或相对于 client.cryptoconfig）</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">cryptoPath</span>:  <span style="color:#ae81ff">peerOrganizations/org1.example.com/users/{username}@org1.example.com/msp</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">peers</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">peer0.org1.example.com</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">org2</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">mspid</span>: <span style="color:#ae81ff">Org2MSP</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">cryptoPath</span>:  <span style="color:#ae81ff">peerOrganizations/org2.example.com/users/{username}@org2.example.com/msp</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">peers</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">peer0.org2.example.com</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Orderer Org name</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">ordererorg</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Membership Service Provider ID for this organization</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 此组织的会员服务提供商 ID</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">mspID</span>: <span style="color:#ae81ff">OrdererMSP</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Needed to load users crypto keys and certs for this org (absolute path or relative to global crypto path, DEV mode)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 需要为此组织加载用户加密密钥和证书（绝对路径或相对于全局加密路径，DEV 模式）</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">cryptoPath</span>: <span style="color:#ae81ff">ordererOrganizations/example.com/users/{username}@example.com/msp</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">########################   对等节点部分   ###############################</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># List of peers to send various requests to, including endorsement, query</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># and event listener registration.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 发送各种请求的节点列表，包括背书、查询和事件监听器注册。</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">peers</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># defining bootstrap peers only</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 只定义引导节点</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">peer0.org1.example.com</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># [Optional] Default: Infer from hostname</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># [可选] 默认值：从主机名推断</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">url</span>: <span style="color:#ae81ff">peer0.org1.example.com:7051  </span> <span style="color:#75715e"># 此URL用于发送背书和查询请求</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">grpcOptions</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># 这些参数的设置应该与服务器上的keepalive策略相协调，因为不兼容的设置可能导致连接关闭。</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># 当“keep-alive-time”的持续时间设置为0或更小时，保持活跃的客户端参数将被禁用</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ssl-target-name-override</span>: <span style="color:#ae81ff">peer0.org1.example.com</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">keep-alive-time</span>: <span style="color:#ae81ff">0s</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">keep-alive-timeout</span>: <span style="color:#ae81ff">20s</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">keep-alive-permit</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">fail-fast</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># 如果address没有定义协议，Allow-insecure将被考虑，如果address为true则GRPC或GRPCS</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">allow-insecure</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">tlsCACerts</span>: <span style="color:#75715e"># 证书本地绝对路径</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">path</span>:  <span style="color:#ae81ff">${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">peer0.org2.example.com</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">url</span>: <span style="color:#ae81ff">peer0.org2.example.com:8051</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">grpcOptions</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ssl-target-name-override</span>: <span style="color:#ae81ff">peer0.org2.example.com</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">keep-alive-time</span>: <span style="color:#ae81ff">0s</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">keep-alive-timeout</span>: <span style="color:#ae81ff">20s</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">keep-alive-permit</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">fail-fast</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">allow-insecure</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">tlsCACerts</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">path</span>: <span style="color:#ae81ff">${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">########################   排序节点部分   ###############################</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># List of orderers to send transaction and channel create/update requests to. For the time</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># being only one orderer is needed. If more than one is defined, which one get used by the</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># SDK is implementation specific. Consult each SDK&#39;s documentation for its handling of orderers.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 要发送事务和通道创建/更新请求的订购者列表。目前只需要一份订单。如果定义了多个，那么SDK将使用哪个是特定于实现的。</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 请查阅每个SDK的文档，了解它对排序的处理。</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">orderers</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># needed to fetch the ordrerer config for create channel</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 需要为创建通道获取 orderrerer 配置</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">orderer.example.com</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># [Optional] Default: Infer from hostname</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># [可选] 默认值：从主机名推断</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">url</span>: <span style="color:#ae81ff">orderer.example.com:7050</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">grpcOptions</span>: <span style="color:#75715e"># 这些是gRPC库定义的标准属性，它们将原样传递给gRPC客户端构造函数</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ssl-target-name-override</span>: <span style="color:#ae81ff">orderer.example.com</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">keep-alive-time</span>: <span style="color:#ae81ff">0s</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">keep-alive-timeout</span>: <span style="color:#ae81ff">20s</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">keep-alive-permit</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">fail-fast</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">allow-insecure</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">tlsCACerts</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">path</span>: <span style="color:#ae81ff">${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># EntityMatchers enable substitution of network hostnames with static configurations</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e"># so that properties can be mapped. Regex can be used for this purpose</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># UrlSubstitutionExp can be empty which means the same network hostname will be used</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># UrlSubstitutionExp can be given same as mapped peer url, so that mapped peer url can be used</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># UrlSubstitutionExp can have golang regex matchers like ${1}.local.example.${2}:${3} for pattern</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e"># like peer0.org1.example.com:1234 which converts peer0.org1.example.com to peer0.org1.local.example.com:1234</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># sslTargetOverrideUrlSubstitutionExp follow in the same lines as</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e"># SubstitutionExp for the fields gprcOptions.ssl-target-name-override respectively</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># In any case mappedHost&#39;s config will be used, so mapped host cannot be empty, if entityMatchers are used</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># EntityMatchers支持使用静态配置替换网络主机名，以便可以映射属性。</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 正则表达式可以用于此目的</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># UrlSubstitutionExp可以为空，这意味着将使用相同的网络主机名</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># UrlSubstitutionExp可以与映射的对等节点url相同，这样就可以使用映射的对等url</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">entityMatchers</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">peer</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># the below matcher will allow dynamic discovery to use the anchor peer (peer0.org1.example.com)下面的匹配器将允许动态发现使用锚点对等点</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># as a template for all org1 discovered peers config 作为所有 org1 发现的对等配置的模板</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">pattern</span>: <span style="color:#ae81ff">(\w+).org1.example.com:(\d+)</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">urlSubstitutionExp</span>: <span style="color:#ae81ff">${1}.org1.example.com:${2}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">sslTargetOverrideUrlSubstitutionExp</span>: <span style="color:#ae81ff">${1}.org1.example.com</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">mappedHost</span>: <span style="color:#ae81ff">peer0.org1.example.com</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">pattern</span>: <span style="color:#ae81ff">(\w+).org2.example.com:(\d+)</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">urlSubstitutionExp</span>: <span style="color:#ae81ff">${1}.org2.example.com:${2}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">sslTargetOverrideUrlSubstitutionExp</span>: <span style="color:#ae81ff">${1}.org2.example.com</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">mappedHost</span>: <span style="color:#ae81ff">peer0.org2.example.com</span>
+</span></span></code></pre></div><h3 id="修改后文件">
+  修改后文件
+  <a class="anchor" href="#%e4%bf%ae%e6%94%b9%e5%90%8e%e6%96%87%e4%bb%b6">#</a>
+</h3>
+<pre tabindex="0"><code>version: 1.0.0
+client:                            //SDK使用的客户端部分  意思就是换客户端 从这里换 
+  organization: org1               //应用程序所属的Org组织名
+  logging:                         //日志级别
+    level: info
+  cryptoconfig:                    //指定存储证书所在目录
+    path: /home/tianzhiwei/go/src/education/conf/crypto-config
+//这种方式就是把用户名和密码直接存储在本地的一个文件中，而用户和密码对通过一个别名来引用，这样可以避免密码铭文格式可能会存在的安全问题
+  credentialStore:                 //指定密钥存储库
+    path: &#34;/tmp/state-store&#34;
+    cryptoStore:
+      path: /tmp/msp
+  BCCSP:                           //为客户端配置BCCSP  密码算法模块   基本都这样写
+    security:
+     enabled: true
+     default:
+      provider: &#34;SW&#34;
+     hashAlgorithm: &#34;SHA2&#34;
+     softVerify: true
+     level: 256
+  tlsCerts:
+    systemCertPool: true  //证书池策略，默认为false，提高身份认证速率
+    client:
+      key:                          //客户端密钥路径
+        path: /home/tianzhiwei/go/src/education/conf/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.key
+      cert:                         //证书路径
+        path: /home/tianzhiwei/go/src/education/conf/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.crt
+
+channels:                           //指定通道信息
+  mychannel:
+   orderers:
+      - orderer.example.com
+    peers:
+      peer0.org1.example.com:
+        endorsingPeer: true         //是否为背书节点，默认为true
+        chaincodeQuery: true        //是否接受链码查询，默认为true
+        ledgerQuery: true           //是否接受不需要链码的查询，默认为true
+        eventSource: true           //是否为SDK侦听器注册的目标，默认为true
+
+      peer1.org1.example.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+
+    policies:
+      queryChannelConfig:           //检索通道配置块选项
+        minResponses: 1             //从目标/peers的最小响应数
+        maxTargets: 1               //通道配置随机检索目标数量
+        retryOpts:                  //查询区块配置的重试选项
+          attempts: 5               //重试次数
+          initialBackoff: 500ms     //第一次重试的间隔时间
+          maxBackoff: 5s            //重试的最大间隔时间
+          backoffFactor: 2.0
+
+organizations:                      //指定网络环境中的组织信息
+  org1:
+    mspid: Org1MSP
+
+    cryptoPath:  peerOrganizations/org1.example.com/users/{username}@org1.example.com/msp
+
+    peers:
+      - peer0.org1.example.com
+      - peer1.org1.example.com
+
+  ordererorg:                       
+      mspID: OrdererMSP
+      cryptoPath: ordererOrganizations/example.com/users/{username}@example.com/msp
+
+orderers:
+  orderer.example.com:
+    url: orderer.example.com:7050
+    grpcOptions:
+      ssl-target-name-override: orderer.example.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+
+    tlsCACerts:                  //指定orderer列表信息
+   
+      path: /home/tianzhiwei/go/src/education/conf/crypto-config/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
+
+peers:           //不同的请求发送到的peers列表，包括背书、查询、事件监听器注册
+  peer0.org1.example.com:
+
+    url: peer0.org1.example.com:7051
+    grpcOptions:
+      ssl-target-name-override: peer0.org1.example.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+    tlsCACerts:       //证书位置的绝对路径
+      path: /home/tianzhiwei/go/src/education/conf/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
+
+  peer1.org1.example.com:
+    url: peer1.org1.example.com:9051
+    grpcOptions:
+      ssl-target-name-override: peer1.org1.example.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+    tlsCACerts:
+      path: /home/tianzhiwei/go/src/education/conf/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
+
+#certificateAuthorities:             //指定标准证书颁发机构   具体这段咋用还在摸索中
+#  ca.org1.example.com:
+#    url: https://ca.org1.example.com:7054
+#    grpcOptions:
+#      ssl-target-name-override: ca.org1.example.com
+#    tlsCACerts:
+#      path: path/to/tls/cert/for/ca-org1
+#    registrar:
+#      enrollId: usually-it-is_admin
+#      enrollSecret: adminpasswd
+#    caName: ca.org1.example.com
+
+
+entityMatchers:
+  peer:
+
+    - pattern: (\w+).org1.example.com:(\d+)
+      urlSubstitutionExp: ${1}.org1.example.com:${2}
+      sslTargetOverrideUrlSubstitutionExp: ${1}.org1.example.com
+      mappedHost: peer0.org1.example.com
+
+  
+</code></pre></article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#基于fabric-23"><strong>基于fabric 2.3</strong></a>
+          <ul>
+            <li><a href="#原文件">原文件</a></li>
+            <li><a href="#修改后文件">修改后文件</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,2233 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="MSP # msp定义 # MSP是hyperleger fabric对网络中的组成成员进行身份管理与验证的模块组件。
+作用：
+管理用户ID
+验证想要加入网络的节点
+为客户发起的交易提供凭证
+MSP 在Hyperledger Fabric中按级别分类如下：
+网络MSP：对整个hyperledger fabric网络中的成员进行管理；定义参与组织的MSP，以及组织成员中的那些成员被授权执行管理任务（如创建通道）
+通道MSP：对一个通道中的成员进行管理，通道在特定的一组组织之间提供私有通信；在该通道的MSP环境中（通道策略）定义了谁有权限参与通道上的某些行为（如添加组织或实例化链码）。
+Peer MSP：每个Peer节点都有一个单独的MSP实例，执行与通道MSP完全相同的功能，其限制是它仅适用于定义它的Peer节点。
+Orderer MSP：与Peer MSP相同，Orederer节点的本地MSP也在其节点的文件系统上定义，仅适用于该Orderer节点。
+User MSP：每个组织都可以拥有多个不同的用户，都在其Organization节点的文件系统上定义，仅适用于定义它的Peer节点。
+在Hyperledger Fabric中，各个网络参与者之间的通信安全依赖于PKI（Public Key Infrastructure,公钥基础结构）标准实现，并确保在区块链上发布的消息得到相应的认证。
+PKI只是一个体系结构，负责生成及颁发证书。在H yperledger fabric 中，默认MSP实际上使用符合X.509标准的证书作为身份，采用传统的PKI分层模型来实现。
+PKI的四个关键要素：
+数字证书：最常见的证书类型符合X.509标准的证书。
+公钥和私钥：
+证书颁发机构：这些证书由CA进行数字签名，CA是为组织的参与者提供可验证的数字身份的基础。
+证书撤销列表：
+MSP的组成结构 # MSP
+RCA 根CA ：文件夹包含根CA的自签名X.509证书列表，用于自签名及给中间CA证书签名。 ICA 中间CA ：包含根CA颁发的证书列表。 OU 组织单位：这些单位列在$FABRIC_CFG_PATH/msp/config.yaml文件中，包含一个组织单位列表，其成员被视为该MSP所代表的组织的一部分。 B 管理页：此文件夹包含一个标识列表，用于定义具有此组织管理员角色的角色。 ReCA 撤销证书：保存已被撤销参与者身份的信息。 SCA 签名证书：背书节点在交易提案响应中的签名证书。 KeyStore 私钥： TLS RCA TLS根CA TLS ICA TLS中间CA Fabric-ca # fabric-ca 项目是专门为了解决Fabric账号问题而发起的一个开源项目, 它非常完美的解决了fabric账号生成的问题。fabric-ca项目由 fabric-server 和fabric-client这两个模块组成。其中fabric-server在 fabric中占有非常重要的作用。我们使用cryptogen命令可以同配置文件生成一些账号信息, 但是如果有动态添加账号的需求, 就无法满足, 所以这个时候我们就应该在项目中引入fabric-ca。">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="fabric-ca详解" />
+<meta property="og:description" content="MSP # msp定义 # MSP是hyperleger fabric对网络中的组成成员进行身份管理与验证的模块组件。
+作用：
+管理用户ID
+验证想要加入网络的节点
+为客户发起的交易提供凭证
+MSP 在Hyperledger Fabric中按级别分类如下：
+网络MSP：对整个hyperledger fabric网络中的成员进行管理；定义参与组织的MSP，以及组织成员中的那些成员被授权执行管理任务（如创建通道）
+通道MSP：对一个通道中的成员进行管理，通道在特定的一组组织之间提供私有通信；在该通道的MSP环境中（通道策略）定义了谁有权限参与通道上的某些行为（如添加组织或实例化链码）。
+Peer MSP：每个Peer节点都有一个单独的MSP实例，执行与通道MSP完全相同的功能，其限制是它仅适用于定义它的Peer节点。
+Orderer MSP：与Peer MSP相同，Orederer节点的本地MSP也在其节点的文件系统上定义，仅适用于该Orderer节点。
+User MSP：每个组织都可以拥有多个不同的用户，都在其Organization节点的文件系统上定义，仅适用于定义它的Peer节点。
+在Hyperledger Fabric中，各个网络参与者之间的通信安全依赖于PKI（Public Key Infrastructure,公钥基础结构）标准实现，并确保在区块链上发布的消息得到相应的认证。
+PKI只是一个体系结构，负责生成及颁发证书。在H yperledger fabric 中，默认MSP实际上使用符合X.509标准的证书作为身份，采用传统的PKI分层模型来实现。
+PKI的四个关键要素：
+数字证书：最常见的证书类型符合X.509标准的证书。
+公钥和私钥：
+证书颁发机构：这些证书由CA进行数字签名，CA是为组织的参与者提供可验证的数字身份的基础。
+证书撤销列表：
+MSP的组成结构 # MSP
+RCA 根CA ：文件夹包含根CA的自签名X.509证书列表，用于自签名及给中间CA证书签名。 ICA 中间CA ：包含根CA颁发的证书列表。 OU 组织单位：这些单位列在$FABRIC_CFG_PATH/msp/config.yaml文件中，包含一个组织单位列表，其成员被视为该MSP所代表的组织的一部分。 B 管理页：此文件夹包含一个标识列表，用于定义具有此组织管理员角色的角色。 ReCA 撤销证书：保存已被撤销参与者身份的信息。 SCA 签名证书：背书节点在交易提案响应中的签名证书。 KeyStore 私钥： TLS RCA TLS根CA TLS ICA TLS中间CA Fabric-ca # fabric-ca 项目是专门为了解决Fabric账号问题而发起的一个开源项目, 它非常完美的解决了fabric账号生成的问题。fabric-ca项目由 fabric-server 和fabric-client这两个模块组成。其中fabric-server在 fabric中占有非常重要的作用。我们使用cryptogen命令可以同配置文件生成一些账号信息, 但是如果有动态添加账号的需求, 就无法满足, 所以这个时候我们就应该在项目中引入fabric-ca。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/" /><meta property="article:section" content="docs" />
+<meta property="article:published_time" content="2021-04-15T14:30:23+00:00" />
+<meta property="article:modified_time" content="2021-04-15T14:30:23+00:00" />
+<title>fabric-ca详解 | Soulmate</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" >
+<link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.5623389946cf2cb816d7e28b27d101617d469cca326a6a0a0bf362549d6ba433.js" integrity="sha256-ViM4mUbPLLgW1&#43;KLJ9EBYX1GnMoyamoKC/NiVJ1rpDM=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo.png" alt="Logo" /><span>Soulmate</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-074eed0fb8c6f9d99dfeff898388792f" class="toggle"  />
+    <label for="section-074eed0fb8c6f9d99dfeff898388792f" class="flex justify-between">
+      <a role="button" class="">计算机基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="">Vim编程常用快捷键</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E9%85%8D%E7%BD%AEkylinv10/" class="">配置 Kylin V10</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="">计算机网络基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/linux%E5%9F%BA%E7%A1%80/" class="">Linux基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/git%E5%9F%BA%E7%A1%80/" class="">Git基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Golang</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-670eda717a06f31447c52422ec93a159" class="toggle"  />
+    <label for="section-670eda717a06f31447c52422ec93a159" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/" class="">go语言基础（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/cgo/" class="">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/flag/" class="">Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/grpc/" class="">Grpc</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/" class="">ProtoBuf</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">常用业务代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/" class="">go语言基础（三）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/" class="">go语言底层基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/" class="">benchmark测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/" class="">Goland常用技巧</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle"  />
+    <label for="section-c453881a62c640f6a4cceec99c02477e" class="flex justify-between">
+      <a role="button" class="">高阶</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" class="">Go高阶-语言基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f235e88e751d2cb18d527c1784763605" class="toggle"  />
+    <label for="section-f235e88e751d2cb18d527c1784763605" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/atomic/" class="">Atomic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/os/" class="">Os</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strconv/" class="">Strconv</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sort/" class="">Sort</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strings/" class="">Strings</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/reflect/" class="">Reflect</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/time/" class="">Time</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sync/" class="">Sync</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ee53da12118bfd3e9b35f3e9494ab55b" class="toggle"  />
+    <label for="section-ee53da12118bfd3e9b35f3e9494ab55b" class="flex justify-between">
+      <a role="button" class="">LeetCode</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/" class="">golang力扣刷题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/" class="">golang力扣刷题（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/%E5%BF%85%E5%88%B7top101/" class="">必刷top101</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" class="">LeetCode算法总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>数据库</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle"  />
+    <label for="section-94f26238d1ca3b5bcd40eadc7a88d726" class="flex justify-between">
+      <a role="button" class="">MySql</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" class="">MySql基础总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="">Mac连接数据库所遇到的问题</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="toggle"  />
+    <label for="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="flex justify-between">
+      <a role="button" class="">Redis</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="">Redis集群搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/" class="">Redis基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="">redis面试总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8be9c2251abd1fe110e3c1520cac6177" class="toggle"  />
+    <label for="section-8be9c2251abd1fe110e3c1520cac6177" class="flex justify-between">
+      <a role="button" class="">SQLite</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/" class="">Sqlite</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/" class="">Xorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ad390db13e5fa9e14f921f4e4f77900e" class="toggle"  />
+    <label for="section-ad390db13e5fa9e14f921f4e4f77900e" class="flex justify-between">
+      <a role="button" class="">C/C&#43;&#43;</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/cc&#43;&#43;/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>区块链</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle" checked />
+    <label for="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="flex justify-between">
+      <a role="button" class="">Fabric</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">fabric相关机制与原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/" class="">智能合约</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/" class="">fabric-sdk-go详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/" class="active">fabric-ca详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle"  />
+    <label for="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="flex justify-between">
+      <a role="button" class="">环境测试</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/" class="">fabric网络中的报错（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/" class="">fabric网络中的报错（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">fabric环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/" class="">solo节点测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/" class="">fabric多机搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/" class="">部署tape测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/" class="">手动生成ca证书搭建fabric网络</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/" class="">centos安装fabric1.2</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-25aef1d59a561fcefcaecb043ef8afd2" class="toggle"  />
+    <label for="section-25aef1d59a561fcefcaecb043ef8afd2" class="flex justify-between">
+      <a role="button" class="">配置文件</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/" class="">cryptogen生成的证书详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">docker-compose.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">configtx.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">crypto-config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/" class="">升级链码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/" class="">区块链网络添加组织</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/" class="">fabric浏览器搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/" class="">如何在已有组织中增加节点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/" class="">Fabric1.4多通道实验</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b07621083aa30b12de4c0333941e479f" class="toggle"  />
+    <label for="section-b07621083aa30b12de4c0333941e479f" class="flex justify-between">
+      <a role="button" class="">比特币</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">比特币相关机制与原理</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle"  />
+    <label for="section-ff5477999ef29208270c84e8b56b2758" class="flex justify-between">
+      <a role="button" class="">IPFS</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/" class="">go-ipfs-api</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" class="">ipfs-webui可视化工具搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/" class="">IPFS基本原理（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/" class="">IPFS私有网络搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-77a0a17b06e8d04cfb0fba9952941706" class="toggle"  />
+    <label for="section-77a0a17b06e8d04cfb0fba9952941706" class="flex justify-between">
+      <a role="button" class="">密码学</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" class="">区块链安全基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/" class="">椭圆曲线加密</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/" class="">密码学基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2e4d10b323fd668021dbd532575d8790" class="toggle"  />
+    <label for="section-2e4d10b323fd668021dbd532575d8790" class="flex justify-between">
+      <a role="button" class="">Docker</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/" class="">Docker基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/" class="">Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" class="">docker常用知识总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-70383d7f28a7ae4bf840a844eb61aa16" class="toggle"  />
+    <label for="section-70383d7f28a7ae4bf840a844eb61aa16" class="flex justify-between">
+      <a role="button" class="">共识算法</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">共识算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" class="">Raft共识算法</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>前端</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
+    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
+      <a role="button" class="">博客</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%9B%BE%E4%B9%A6/" class="">图书</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/" class="">工具库</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="https://gitee.com/chaincode"  target="_blank" rel="noopener">
+        Gitee
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>fabric-ca详解</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#msp">MSP</a></li>
+            <li><a href="#fabric-ca">Fabric-ca</a></li>
+            <li><a href="#初始化ca">初始化ca</a></li>
+            <li><a href="#hyperledger-fabric-ca-客户端命令">Hyperledger fabric ca 客户端命令</a></li>
+            <li><a href="#docker-compose文件中ca配置">docker-compose文件中ca配置</a></li>
+            <li><a href="#hyperledger-fabric-ca-实操">hyperledger fabric CA 实操</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h3 id="msp">
+  MSP
+  <a class="anchor" href="#msp">#</a>
+</h3>
+<h4 id="msp定义">
+  msp定义
+  <a class="anchor" href="#msp%e5%ae%9a%e4%b9%89">#</a>
+</h4>
+<p><font color='red'>MSP是hyperleger fabric对网络中的组成成员进行身份管理与验证的模块组件。</font></p>
+<blockquote>
+<p><strong>作用：</strong></p>
+<p>管理用户ID</p>
+<p>验证想要加入网络的节点</p>
+<p>为客户发起的交易提供凭证</p>
+<p><font color='red'>MSP 在Hyperledger Fabric中按级别分类如下：</font></p>
+<p><font color='red'>网络MSP：</font>对整个hyperledger fabric网络中的成员进行管理；定义参与组织的MSP，以及组织成员中的那些成员被授权执行管理任务（如创建通道）</p>
+<p><font color='red'>通道MSP：</font>对一个通道中的成员进行管理，通道在特定的一组组织之间提供私有通信；在该通道的MSP环境中（通道策略）定义了谁有权限参与通道上的某些行为（如添加组织或实例化链码）。</p>
+<p><font color='red'>Peer MSP：</font>每个Peer节点都有一个单独的MSP实例，执行与通道MSP完全相同的功能，其限制是它仅适用于定义它的Peer节点。</p>
+<p><font color='red'>Orderer MSP：</font>与Peer MSP相同，Orederer节点的本地MSP也在其节点的文件系统上定义，仅适用于该Orderer节点。</p>
+<p><font color='red'>User MSP：</font>每个组织都可以拥有多个不同的用户，都在其Organization节点的文件系统上定义，仅适用于定义它的Peer节点。</p>
+</blockquote>
+<blockquote>
+<p><font color='red'>在Hyperledger Fabric中，各个网络参与者之间的通信安全依赖于PKI（Public Key Infrastructure,公钥基础结构）标准实现，并确保在区块链上发布的消息得到相应的认证。</font></p>
+<p><font color='blue'>PKI只是一个体系结构，负责生成及颁发证书。在H yperledger fabric 中，默认MSP实际上使用符合X.509标准的证书作为身份，采用传统的PKI分层模型来实现。</font></p>
+<p><strong>PKI的四个关键要素：</strong></p>
+<p>数字证书：最常见的证书类型符合X.509标准的证书。</p>
+<p>公钥和私钥：</p>
+<p>证书颁发机构：这些证书由CA进行数字签名，CA是为组织的参与者提供可验证的数字身份的基础。</p>
+<p>证书撤销列表：</p>
+</blockquote>
+<h4 id="msp的组成结构">
+  MSP的组成结构
+  <a class="anchor" href="#msp%e7%9a%84%e7%bb%84%e6%88%90%e7%bb%93%e6%9e%84">#</a>
+</h4>
+<blockquote>
+<p>MSP</p>
+<ul>
+<li>RCA 根CA ：文件夹包含根CA的自签名X.509证书列表，用于自签名及给中间CA证书签名。</li>
+<li>ICA  中间CA ：包含根CA颁发的证书列表。</li>
+<li>OU 组织单位：这些单位列在$FABRIC_CFG_PATH/msp/config.yaml文件中，包含一个组织单位列表，其成员被视为该MSP所代表的组织的一部分。</li>
+<li>B 管理页：此文件夹包含一个标识列表，用于定义具有此组织管理员角色的角色。</li>
+<li>ReCA 撤销证书：保存已被撤销参与者身份的信息。</li>
+<li>SCA 签名证书：背书节点在交易提案响应中的签名证书。</li>
+<li>KeyStore 私钥：</li>
+<li>TLS RCA TLS根CA</li>
+<li>TLS ICA TLS中间CA</li>
+</ul>
+</blockquote>
+<h3 id="fabric-ca">
+  Fabric-ca
+  <a class="anchor" href="#fabric-ca">#</a>
+</h3>
+<blockquote>
+<p>fabric-ca 项目是专门为了解决Fabric账号问题而发起的一个开源项目, 它非常完美的解决了fabric账号生成的问题。fabric-ca项目由 fabric-server 和fabric-client这两个模块组成。其中fabric-server在 fabric中占有非常重要的作用。我们使用<code>cryptogen</code>命令可以同配置文件生成一些账号信息, 但是如果有动态添加账号的需求, 就无法满足, 所以这个时候我们就应该在项目中引入fabric-ca。</p>
+</blockquote>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/1.png" alt="" /></p>
+<blockquote>
+<p>上图中Fabric CA提供了两种访问方式调用Server服务</p>
+<ul>
+<li>通过Fabric-Client调用</li>
+<li>通过SDK调用 （node.js，java， go）</li>
+</ul>
+<p>通常情况下， 一个组织会对应一个fabric-server服务器，</p>
+<ul>
+<li>要在每个组织中部署一个fabric-ca服务器, 给当前组织注册新用户</li>
+<li>Hyperledger fabric CA客户端或SDK可以连接到Hyperledger fabric CA服务器集群，集群由HA Proxy等实现负载均衡。</li>
+<li>服务器可能包含多个CA，每个CA都是根CA或者中间CA，每个中间CA都有一个父CA。</li>
+</ul>
+</blockquote>
+<h3 id="初始化ca">
+  初始化ca
+  <a class="anchor" href="#%e5%88%9d%e5%a7%8b%e5%8c%96ca">#</a>
+</h3>
+<ul>
+<li>
+<p>确定hyperleger fabric CA服务器的主目录</p>
+<ul>
+<li>检查命令行，有-home 则使用-home的值为主目录</li>
+<li>检查FABRIC_CA_SERVER_CA_HOME</li>
+<li>检查FABRIC_CA_HOME</li>
+<li>检查CA_CFG_PATH</li>
+<li>否则使用当前工作目录作为服务器端的主目录</li>
+</ul>
+</li>
+<li>
+<p>初始化hyperledger fabric ca</p>
+<blockquote>
+<p>fabric-ca-server init -b admin:pass         //初始化命令</p>
+</blockquote>
+<p>执行命令后生成如下文件：</p>
+<ul>
+<li>fabric-ca-server-config.yaml：默认配置文件</li>
+<li>ca-cert.pem: PEM格式的CA证书文件，自签名；</li>
+<li>fabric-ca-server.db: 存放数据的SQLite3数据库；</li>
+<li>map/keystore/: 路径下存放个人身份的私钥文件，对应签名证书；</li>
+</ul>
+</li>
+<li>
+<p>快速启动ca</p>
+<blockquote>
+<p>fabric-ca-server start -b admin:pass     如果没有初始化，启动过程会自动初始化</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="hyperledger-fabric-ca-客户端命令">
+  Hyperledger fabric ca 客户端命令
+  <a class="anchor" href="#hyperledger-fabric-ca-%e5%ae%a2%e6%88%b7%e7%ab%af%e5%91%bd%e4%bb%a4">#</a>
+</h3>
+<h4 id="五个子命令">
+  五个子命令
+  <a class="anchor" href="#%e4%ba%94%e4%b8%aa%e5%ad%90%e5%91%bd%e4%bb%a4">#</a>
+</h4>
+<p><strong>执行这些命令都是通过服务端RESTful接口来进行操作</strong></p>
+<blockquote>
+<p>enroll : 注册获取ECert</p>
+<p>register : 登记用户</p>
+<p>getcainfo : 获取CA服务的证书链</p>
+<p>reenroll : 重新注册</p>
+<p>revoke : 撤销签发的证书身份</p>
+<p>version ：Hyperledger fabric CA 客户端版本信息</p>
+</blockquote>
+<h3 id="docker-compose文件中ca配置">
+  docker-compose文件中ca配置
+  <a class="anchor" href="#docker-compose%e6%96%87%e4%bb%b6%e4%b8%adca%e9%85%8d%e7%bd%ae">#</a>
+</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>  <span style="color:#f92672">ca.org1.example.com</span>:                       <span style="color:#ae81ff">//服务器名</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">hyperledger/fabric-ca:1.4.9       //fabric-ca镜像文件</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">ca.org1.example.com</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:               
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server  //fabric-ca容器中的home目录</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">FABRIC_CA_SERVER_CA_NAME=ca.org1.example.com     //服务器名 自己起</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem              //明确当前fabric-ca属于那个组织</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/priv_sk //私钥</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">FABRIC_CA_SERVER_TLS_ENABLED=true</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem      //覆盖配置文件中的cert.pem设置：</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/priv_sk</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">7054</span>:<span style="color:#ae81ff">7054</span>      <span style="color:#ae81ff">//fabric-ca服务器绑定的端口</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">command</span>: <span style="color:#ae81ff">sh -c &#39;fabric-ca-server start -b admin:adminpw -d&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:                                <span style="color:#ae81ff">//用户名：密码</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server-config</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">test</span>
+</span></span></code></pre></div><pre tabindex="0"><code> fabric-ca-client enroll -u https://admin:pass@ca.org1.example.com:7054 --tls.certfiles /etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem
+ 
+</code></pre><h3 id="hyperledger-fabric-ca-实操">
+  hyperledger fabric CA 实操
+  <a class="anchor" href="#hyperledger-fabric-ca-%e5%ae%9e%e6%93%8d">#</a>
+</h3>
+<h4 id="1初始化">
+  1.初始化
+  <a class="anchor" href="#1%e5%88%9d%e5%a7%8b%e5%8c%96">#</a>
+</h4>
+<h4 id="2启动fabric-ca服务">
+  2.启动fabric-ca服务
+  <a class="anchor" href="#2%e5%90%af%e5%8a%a8fabric-ca%e6%9c%8d%e5%8a%a1">#</a>
+</h4>
+<pre tabindex="0"><code>这两个都不用操作  应为你在启动ca.org1.example.com容器的时候已经做了
+    ports:
+      - 7054:7054      //fabric-ca服务器绑定的端口
+    command: sh -c &#39;fabric-ca-server start -b admin:adminpw -d&#39;
+    volumes:                                //用户名：密码
+记住这个密码 
+</code></pre><h4 id="3配置数据库">
+  3.配置数据库
+  <a class="anchor" href="#3%e9%85%8d%e7%bd%ae%e6%95%b0%e6%8d%ae%e5%ba%93">#</a>
+</h4>
+<p>我用的默认的  其他的以后用到再学  所以这块也不用管</p>
+<h4 id="4配置ldap">
+  4.配置LDAP
+  <a class="anchor" href="#4%e9%85%8d%e7%bd%aeldap">#</a>
+</h4>
+<p>这块也暂时不用管，还没用到</p>
+<h4 id="5实用ca客户端命令">
+  5.实用CA客户端命令
+  <a class="anchor" href="#5%e5%ae%9e%e7%94%a8ca%e5%ae%a2%e6%88%b7%e7%ab%af%e5%91%bd%e4%bb%a4">#</a>
+</h4>
+<h5 id="注册用户">
+  注册用户
+  <a class="anchor" href="#%e6%b3%a8%e5%86%8c%e7%94%a8%e6%88%b7">#</a>
+</h5>
+<pre tabindex="0"><code>$docker exec -it ca.org1.example.com bash     //进入容器终端
+$export PATH=$PATH:$GOPATH/bin
+$export FABRIC_CA_CLIENT_HOME=$HOME/fabric-ca/clients/admin
+$fabric-ca-client enroll -u https://admin:adminpw@ca.org1.example.com:7054 --tls.certfiles /etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem
+</code></pre><pre tabindex="0"><code>如果成功会出现一下结果：  不成功自行解决
+2021/04/17 09:44:54 [INFO] Created a default configuration file at /root/fabric-ca/clients/admin/fabric-ca-client-config.yaml
+2021/04/17 09:44:54 [INFO] TLS Enabled
+2021/04/17 09:44:54 [INFO] generating key: &amp;{A:ecdsa S:256}
+2021/04/17 09:44:54 [INFO] encoded CSR
+2021/04/17 09:44:54 [INFO] Stored client certificate at /root/fabric-ca/clients/admin/msp/signcerts/cert.pem
+2021/04/17 09:44:54 [INFO] Stored root CA certificate at /root/fabric-ca/clients/admin/msp/cacerts/ca-org1-example-com-7054.pem
+2021/04/17 09:44:54 [INFO] Stored Issuer public key at /root/fabric-ca/clients/admin/msp/IssuerPublicKey
+2021/04/17 09:44:54 [INFO] Stored Issuer revocation public key at /root/fabric-ca/clients/admin/msp/IssuerRevocationPublicKey
+</code></pre><h5 id="登记用户">
+  登记用户
+  <a class="anchor" href="#%e7%99%bb%e8%ae%b0%e7%94%a8%e6%88%b7">#</a>
+</h5>
+<p>暂时没用  以后补充</p>
+<h5 id="登记节点">
+  登记节点
+  <a class="anchor" href="#%e7%99%bb%e8%ae%b0%e8%8a%82%e7%82%b9">#</a>
+</h5>
+<pre tabindex="0"><code>$export FABRIC_CA_CLIENT_HOME=$HOME/fabric-ca/clients/admin
+$fabric-ca-client register --id.name peer1.org1.example.com --id.type peer --id.affiliation org1.department1 --id.secret peer1pw --tls.certfiles /etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem
+</code></pre><pre tabindex="0"><code>如果成功：则显示
+2021/04/17 09:53:56 [INFO] Configuration file location: /root/fabric-ca/clients/admin/fabric-ca-client-config.yaml
+2021/04/17 09:53:56 [INFO] TLS Enabled
+2021/04/17 09:53:56 [INFO] TLS Enabled
+Password: peer2pw
+</code></pre><h5 id="注册节点">
+  注册节点
+  <a class="anchor" href="#%e6%b3%a8%e5%86%8c%e8%8a%82%e7%82%b9">#</a>
+</h5>
+<pre tabindex="0"><code>$export FABRIC_CA_CLIENT_HOME=$HOME/fabric-ca/clients/peer1.org1.example.com
+$fabric-ca-client enroll -u https://peer1.org1.example.com:peer1pw@ca.org1.example.com:7054 -M $FABRIC_CA_CLIENT_HOME/msp --tls.certfiles /etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem
+</code></pre><pre tabindex="0"><code>如果成功：
+2021/04/17 09:59:05 [INFO] TLS Enabled
+2021/04/17 09:59:05 [INFO] generating key: &amp;{A:ecdsa S:256}
+2021/04/17 09:59:05 [INFO] encoded CSR
+2021/04/17 09:59:05 [INFO] Stored client certificate at /root/fabric-ca/clients/peer2.org1.example.com/msp/signcerts/cert.pem
+2021/04/17 09:59:05 [INFO] Stored root CA certificate at /root/fabric-ca/clients/peer2.org1.example.com/msp/cacerts/ca-org1-example-com-7054.pem
+2021/04/17 09:59:05 [INFO] Stored Issuer public key at /root/fabric-ca/clients/peer2.org1.example.com/msp/IssuerPublicKey
+2021/04/17 09:59:05 [INFO] Stored Issuer revocation public key at /root/fabric-ca/clients/peer2.org1.example.com/msp/IssuerRevocationPublicKey
+</code></pre><h4 id="注册tls-ca的管理员">
+  注册TLS CA的管理员
+  <a class="anchor" href="#%e6%b3%a8%e5%86%8ctls-ca%e7%9a%84%e7%ae%a1%e7%90%86%e5%91%98">#</a>
+</h4>
+<pre tabindex="0"><code>$docker exec -it ca.org1.example.com bash     //进入容器终端
+$export FABRIC_CA_CLIENT_TLS_CERTFILES=/tmp/hyperledger/tls-ca/crypto/tls-ca-cert.pem
+$export FABRIC_CA_CLIENT_HOME=/tmp/hyperledger/tls-ca/admin
+$fabric-ca-client enroll -d -u https://admin:adminpw@ca.org1.example.com:7054 --tls.certfiles /etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem
+</code></pre><pre tabindex="0"><code>成功后终端显示
+2021/04/28 08:50:50 [DEBUG] Set log level: 
+2021/04/28 08:50:50 [DEBUG] Home directory: /etc/hyperledger/fabric-ca-server
+2021/04/28 08:50:50 [INFO] Created a default configuration file at /etc/hyperledger/fabric-ca-server/fabric-ca-client-config.yaml
+2021/04/28 08:50:50 [DEBUG] Client configuration settings: &amp;{URL:https://admin:adminpw@ca.org1.example.com:7054 MSPDir:msp TLS:{Enabled:true CertFiles:[/etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem] Client:{KeyFile: CertFile:}} Enrollment:{ Name: Secret:**** CAName: AttrReqs:[] Profile: Label: CSR:&lt;nil&gt; Type:x509  } CSR:{CN:admin Names:[{C:US ST:North Carolina L: O:Hyperledger OU:Fabric SerialNumber:}] Hosts:[18ed2407e2d5] KeyRequest:0xc00037f3c0 CA:&lt;nil&gt; SerialNumber:} ID:{Name: Type:client Secret: MaxEnrollments:0 Affiliation: Attributes:[] CAName:} Revoke:{Name: Serial: AKI: Reason: CAName: GenCRL:false} CAInfo:{CAName:} CAName: CSP:0xc00037ee00 Debug:true LogLevel:}
+2021/04/28 08:50:50 [DEBUG] Entered runEnroll
+2021/04/28 08:50:50 [DEBUG] Enrolling { Name:admin Secret:**** CAName: AttrReqs:[] Profile: Label: CSR:&amp;{admin [{US North Carolina  Hyperledger Fabric }] [18ed2407e2d5] 0xc00037f3c0 &lt;nil&gt; } Type:x509  }
+2021/04/28 08:50:50 [DEBUG] Initializing client with config: &amp;{URL:https://ca.org1.example.com:7054 MSPDir:msp TLS:{Enabled:true CertFiles:[/etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem] Client:{KeyFile: CertFile:}} Enrollment:{ Name:admin Secret:**** CAName: AttrReqs:[] Profile: Label: CSR:&amp;{admin [{US North Carolina  Hyperledger Fabric }] [18ed2407e2d5] 0xc00037f3c0 &lt;nil&gt; } Type:x509  } CSR:{CN:admin Names:[{C:US ST:North Carolina L: O:Hyperledger OU:Fabric SerialNumber:}] Hosts:[18ed2407e2d5] KeyRequest:0xc00037f3c0 CA:&lt;nil&gt; SerialNumber:} ID:{Name: Type:client Secret: MaxEnrollments:0 Affiliation: Attributes:[] CAName:} Revoke:{Name: Serial: AKI: Reason: CAName: GenCRL:false} CAInfo:{CAName:} CAName: CSP:0xc00037ee00 Debug:true LogLevel:}
+2021/04/28 08:50:50 [DEBUG] Initializing BCCSP: &amp;{ProviderName:SW SwOpts:0xc00040c480 PluginOpts:&lt;nil&gt;}
+2021/04/28 08:50:50 [DEBUG] Initializing BCCSP with software options &amp;{SecLevel:256 HashFamily:SHA2 Ephemeral:false FileKeystore:0xc00018d870 DummyKeystore:&lt;nil&gt; InmemKeystore:&lt;nil&gt;}
+2021/04/28 08:50:50 [INFO] TLS Enabled
+2021/04/28 08:50:50 [DEBUG] CA Files: [/etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem]
+2021/04/28 08:50:50 [DEBUG] Client Cert File: 
+2021/04/28 08:50:50 [DEBUG] Client Key File: 
+2021/04/28 08:50:50 [DEBUG] Client TLS certificate and/or key file not provided
+2021/04/28 08:50:50 [DEBUG] GenCSR &amp;{CN:admin Names:[{C:US ST:North Carolina L: O:Hyperledger OU:Fabric SerialNumber:}] Hosts:[18ed2407e2d5] KeyRequest:0xc00037f3c0 CA:&lt;nil&gt; SerialNumber:}
+2021/04/28 08:50:50 [INFO] generating key: &amp;{A:ecdsa S:256}
+2021/04/28 08:50:50 [DEBUG] generate key from request: algo=ecdsa, size=256
+2021/04/28 08:50:50 [INFO] encoded CSR
+2021/04/28 08:50:50 [DEBUG] Sending request
+POST https://ca.org1.example.com:7054/enroll
+{&#34;hosts&#34;:[&#34;18ed2407e2d5&#34;],&#34;certificate_request&#34;:&#34;-----BEGIN CERTIFICATE REQUEST-----\nMIIBQjCB6QIBADBdMQswCQYDVQQGEwJVUzEXMBUGA1UECBMOTm9ydGggQ2Fyb2xp\nbmExFDASBgNVBAoTC0h5cGVybGVkZ2VyMQ8wDQYDVQQLEwZGYWJyaWMxDjAMBgNV\nBAMTBWFkbWluMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEVY8JVsLawCBbIK0A\nj18kxycolPQwOcuRLOHAmiH0ZCkW3pJq29g2Y+FvrNAQPyePh46i5O6uBJoTeIzU\n1ZlqfaAqMCgGCSqGSIb3DQEJDjEbMBkwFwYDVR0RBBAwDoIMMThlZDI0MDdlMmQ1\nMAoGCCqGSM49BAMCA0gAMEUCIQCHB2aVKIYFY//Q/8ObCnhbtN1zy7CsccX2VdAF\nq/aGggIgYLdJeWef/Kix3dMhLRFYK7R7RRylK3ORJYhLcqrTFjE=\n-----END CERTIFICATE REQUEST-----\n&#34;,&#34;profile&#34;:&#34;&#34;,&#34;crl_override&#34;:&#34;&#34;,&#34;label&#34;:&#34;&#34;,&#34;NotBefore&#34;:&#34;0001-01-01T00:00:00Z&#34;,&#34;NotAfter&#34;:&#34;0001-01-01T00:00:00Z&#34;,&#34;CAName&#34;:&#34;&#34;}
+2021/04/28 08:50:50 [DEBUG] Received response
+statusCode=201 (201 Created)
+2021/04/28 08:50:50 [DEBUG] Response body result: map[Cert:LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNXVENDQWYrZ0F3SUJBZ0lVSGRuSjZUT1VaczlDWWlhRURNWnlYZmhtcGhrd0NnWUlLb1pJemowRUF3SXcKY3pFTE1Ba0dBMVVFQmhNQ1ZWTXhFekFSQmdOVkJBZ1RDa05oYkdsbWIzSnVhV0V4RmpBVUJnTlZCQWNURFZOaApiaUJHY21GdVkybHpZMjh4R1RBWEJnTlZCQW9URUc5eVp6RXVaWGhoYlhCc1pTNWpiMjB4SERBYUJnTlZCQU1UCkUyTmhMbTl5WnpFdVpYaGhiWEJzWlM1amIyMHdIaGNOTWpFd05ESTRNRGcwTmpBd1doY05Nakl3TkRJNE1EZzEKTVRBd1dqQmRNUXN3Q1FZRFZRUUdFd0pWVXpFWE1CVUdBMVVFQ0JNT1RtOXlkR2dnUTJGeWIyeHBibUV4RkRBUwpCZ05WQkFvVEMwaDVjR1Z5YkdWa1oyVnlNUTh3RFFZRFZRUUxFd1pqYkdsbGJuUXhEakFNQmdOVkJBTVRCV0ZrCmJXbHVNRmt3RXdZSEtvWkl6ajBDQVFZSUtvWkl6ajBEQVFjRFFnQUVWWThKVnNMYXdDQmJJSzBBajE4a3h5Y28KbFBRd09jdVJMT0hBbWlIMFpDa1czcEpxMjlnMlkrRnZyTkFRUHllUGg0Nmk1TzZ1QkpvVGVJelUxWmxxZmFPQgpoakNCZ3pBT0JnTlZIUThCQWY4RUJBTUNCNEF3REFZRFZSMFRBUUgvQkFJd0FEQWRCZ05WSFE0RUZnUVU3ODhyClZ3dHZBSDNzSnFqTTFEaG5ZVTAzMVlzd0t3WURWUjBqQkNRd0lvQWczWWRpbk4yZVE4eURpSUhRc0xOSGZCV2oKMWF2cS9MQVRoa2s1SE1qSkpac3dGd1lEVlIwUkJCQXdEb0lNTVRobFpESTBNRGRsTW1RMU1Bb0dDQ3FHU000OQpCQU1DQTBnQU1FVUNJUUQ4RVliK1FSS2dWdlZZdEE5dXFEcVlrL3VmOTlha0daLzUyVlNDNUxTVEF3SWdFNkFuCmJCcSt2QjNsOGxYTENMKzFhaktvNlhuNnZiQ2hka2VzV0pEa3pkbz0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo= ServerInfo:map[CAChain:LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNVVENDQWZpZ0F3SUJBZ0lSQUtBbUp0ZTR6b3F5ZFBCTFBscHBHVGN3Q2dZSUtvWkl6ajBFQXdJd2N6RUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpFdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekV1WlhoaGJYQnNaUzVqYjIwd0hoY05NakV3TWpBMU1UQXpNakF3V2hjTk16RXdNakF6TVRBek1qQXcKV2pCek1Rc3dDUVlEVlFRR0V3SlZVekVUTUJFR0ExVUVDQk1LUTJGc2FXWnZjbTVwWVRFV01CUUdBMVVFQnhNTgpVMkZ1SUVaeVlXNWphWE5qYnpFWk1CY0dBMVVFQ2hNUWIzSm5NUzVsZUdGdGNHeGxMbU52YlRFY01Cb0dBMVVFCkF4TVRZMkV1YjNKbk1TNWxlR0Z0Y0d4bExtTnZiVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUEKQkRtZkpBaWpWWldCa0xLbi9ORlhUL2Y1bVQwZ1NwQVF3RTlvaE1zWlp0L2wwdkhvMXFpMmM4Z2dkTTdIQkppSQpMOGVjMG8vUVo2c3hIR0J4WG1pSXUzU2piVEJyTUE0R0ExVWREd0VCL3dRRUF3SUJwakFkQmdOVkhTVUVGakFVCkJnZ3JCZ0VGQlFjREFnWUlLd1lCQlFVSEF3RXdEd1lEVlIwVEFRSC9CQVV3QXdFQi96QXBCZ05WSFE0RUlnUWcKM1lkaW5OMmVROHlEaUlIUXNMTkhmQldqMWF2cS9MQVRoa2s1SE1qSkpac3dDZ1lJS29aSXpqMEVBd0lEUndBdwpSQUlnRnc2MzZkR0hnM3lGSU8xZVhXNXdoNjNwNzc0aUZ6VWR4TEhrakg0U0NQWUNJSGZ1Y2JHWXhkSmRwMUJWClpKUkd3QzBFTWV5VXFjYmZYcFV1akkxS2tZNzMKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo= CAName:ca.org1.example.com IssuerPublicKey:CgJPVQoEUm9sZQoMRW5yb2xsbWVudElEChBSZXZvY2F0aW9uSGFuZGxlEkQKIMgw1E4Z4WSJARR04GCv3lgl8l3hX6RLTLj5c/8lxBkgEiD4L9X26aRPniH3SWAGSUZIywBdR8APC5Q6UMd4oDwrkBpECiDxWFxxb5IxT+mgQbILQ3YZHDAAnsSscNvByUAckvnutxIgw1eQ8qTmltVLyA/4gtinC5zbLiCYbKMBaKnunWI6ClMiRAogo/u/AXrC55W1Gkohgj6JrSpNCLrth5O7a2GAaj0+0ooSIE5xmdTV6EEcMrAkRQ4Hjq1JAn27N5zyQcJ5gZ13w+YIIkQKIJ1JPUC+iH74r8xqWeAL0ieAduLXYYd7LOJj4unYepH+EiCfSn7tCRDj/ofAVam/jGJqd8wjK1hmPbyJG0BvV1+F8CJECiDRi11o96kTqYgeQQUeuPWDT24S9r2J2Lutfc8s9L6lmBIgrqS8o6CPoVWTq4obqBxQZ1LeLPHpfTK0lR8vi9rmk1MiRAognknvm1L2etcNrcJHK9IrDlC0qzs8UC1ha/Xm/jLSEg0SIMPSZZHUjM8xYcBN72GIFTD4QF6CVFnzJfakXMbPwigJKogBCiDpbe0h96TE30xCH6cnbkY1sZent9Srz6h52MS96qogfRIgDROHC88L/71g+5eJlaC3GwzNCResxzHRVF8zanslRN4aIGsOhtun32eqvHYQgOKpWYxR6FUKt7PvQRj80+DMzWqYIiDTab3Wrr5OsJqFcUeIBTQkm6kSITPO1Qb7fE13cCni7TJECiCSijrzATGkfSnI9ozDUfbhVZX+KOsLKiCMvgpLp6VomBIgroOBa/9M5C/Oxjaee/hUNvMun5K9ekBazBAEwbg4+lY6RAogKNY56fu1lhSP6cz54CeB6N/0RGMHW/7zdmkXNj7LNlwSIM+ourO94xrXU4c5z3tzfrKkdjo2Idl0Wf5tPcweNRqOQiAKbR1SLLsJZDFdV22qSwGeqpAKRDD0NyKuaebhOAm210ogDCsGYwpymg6Fj9ITaRwFfxY0W9/WX8lxw+jVVSvU8dNSIMiWEigoXf9B8vLPsF9w0YYjq6g4Ug6iMfr4dfeP0kyX IssuerRevocationPublicKey:LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUhZd0VBWUhLb1pJemowQ0FRWUZLNEVFQUNJRFlnQUVpd2F0MXJSTDRlM0xSZVAyZ0x2RGRtZ3JqZmtKSGFSTApaSEZLKzVXTExKVndmNFJ3SFJzN0hlUUljemEzams0bFAvS1lOVUtKSjFEV0UwT2VyeTljdzlOUnpQM3oxb2wxCktTQ2ExWmEydDJ1VmY0VURIYVhPUVBwd2dySXNMZ2pCCi0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo= Version:]]
+2021/04/28 08:50:50 [DEBUG] newEnrollmentResponse admin
+2021/04/28 08:50:50 [INFO] Stored client certificate at /etc/hyperledger/fabric-ca-server/msp/signcerts/cert.pem
+2021/04/28 08:50:50 [INFO] Stored root CA certificate at /etc/hyperledger/fabric-ca-server/msp/cacerts/ca-org1-example-com-7054.pem
+2021/04/28 08:50:50 [INFO] Stored Issuer public key at /etc/hyperledger/fabric-ca-server/msp/IssuerPublicKey
+2021/04/28 08:50:50 [INFO] Stored Issuer revocation public key at /etc/hyperledger/fabric-ca-server/msp/IssuerRevocationPublicKey
+</code></pre><pre tabindex="0"><code>//fabric-ca-client register -d --id.name peer1-org1 --id.secret peer1PW --id.type peer -u https://0.0.0.0:7052
+$fabric-ca-client register -d --id.name peer2.org1.example.com --id.secret peer2PW --id.type peer -u https://ca.org1.example.com:7054 --tls.certfiles /etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem
+
+//fabric-ca-client register -d --id.name peer1-org2 --id.secret peer1PW --id.type peer -u https://0.0.0.0:7052
+//fabric-ca-client register -d --id.name peer2-org2 --id.secret peer2PW --id.type peer -u https://0.0.0.0:7052
+//fabric-ca-client register -d --id.name orderer1-org0 --id.secret ordererPW --id.type orderer -u https://0.0.0.0:7052
+</code></pre><pre tabindex="0"><code>成功后终端显示
+2021/04/28 08:55:25 [DEBUG] Set log level: 
+2021/04/28 08:55:25 [DEBUG] Home directory: /etc/hyperledger/fabric-ca-server
+2021/04/28 08:55:25 [INFO] Configuration file location: /etc/hyperledger/fabric-ca-server/fabric-ca-client-config.yaml
+2021/04/28 08:55:25 [DEBUG] Checking for enrollment
+2021/04/28 08:55:25 [DEBUG] Initializing client with config: &amp;{URL:https://ca.org1.example.com:7054 MSPDir:msp TLS:{Enabled:true CertFiles:[/etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem] Client:{KeyFile: CertFile:}} Enrollment:{ Name: Secret:**** CAName: AttrReqs:[] Profile: Label: CSR:&lt;nil&gt; Type:x509  } CSR:{CN:admin Names:[{C:US ST:North Carolina L: O:Hyperledger OU:Fabric SerialNumber:}] Hosts:[18ed2407e2d5] KeyRequest:0xc000451920 CA:&lt;nil&gt; SerialNumber:} ID:{Name:peer2.org1.example.com Type:peer Secret:peer2PW MaxEnrollments:0 Affiliation: Attributes:[] CAName:} Revoke:{Name: Serial: AKI: Reason: CAName: GenCRL:false} CAInfo:{CAName:} CAName: CSP:0xc000451cc0 Debug:true LogLevel:}
+2021/04/28 08:55:25 [DEBUG] Initializing BCCSP: &amp;{ProviderName:SW SwOpts:0xc0003f2300 PluginOpts:&lt;nil&gt;}
+2021/04/28 08:55:25 [DEBUG] Initializing BCCSP with software options &amp;{SecLevel:256 HashFamily:SHA2 Ephemeral:false FileKeystore:0xc000169050 DummyKeystore:&lt;nil&gt; InmemKeystore:&lt;nil&gt;}
+2021/04/28 08:55:25 [INFO] TLS Enabled
+2021/04/28 08:55:25 [DEBUG] CA Files: [/etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem]
+2021/04/28 08:55:25 [DEBUG] Client Cert File: 
+2021/04/28 08:55:25 [DEBUG] Client Key File: 
+2021/04/28 08:55:25 [DEBUG] Client TLS certificate and/or key file not provided
+2021/04/28 08:55:25 [DEBUG] CheckIdemixEnrollment - ipkFile: /etc/hyperledger/fabric-ca-server/msp/IssuerPublicKey, idemixCredFrile: /etc/hyperledger/fabric-ca-server/msp/user/SignerConfig
+2021/04/28 08:55:25 [DEBUG] Client configuration settings: &amp;{URL:https://ca.org1.example.com:7054 MSPDir:/etc/hyperledger/fabric-ca-server/msp TLS:{Enabled:true CertFiles:[/etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem] Client:{KeyFile: CertFile:}} Enrollment:{ Name: Secret:**** CAName: AttrReqs:[] Profile: Label: CSR:&lt;nil&gt; Type:x509  } CSR:{CN:admin Names:[{C:US ST:North Carolina L: O:Hyperledger OU:Fabric SerialNumber:}] Hosts:[18ed2407e2d5] KeyRequest:0xc000451920 CA:&lt;nil&gt; SerialNumber:} ID:{Name:peer2.org1.example.com Type:peer Secret:peer2PW MaxEnrollments:0 Affiliation: Attributes:[] CAName:} Revoke:{Name: Serial: AKI: Reason: CAName: GenCRL:false} CAInfo:{CAName:} CAName: CSP:0xc000451cc0 Debug:true LogLevel:}
+2021/04/28 08:55:25 [DEBUG] Entered runRegister
+2021/04/28 08:55:25 [DEBUG] Initializing client with config: &amp;{URL:https://ca.org1.example.com:7054 MSPDir:/etc/hyperledger/fabric-ca-server/msp TLS:{Enabled:true CertFiles:[/etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem] Client:{KeyFile: CertFile:}} Enrollment:{ Name: Secret:**** CAName: AttrReqs:[] Profile: Label: CSR:&lt;nil&gt; Type:x509  } CSR:{CN:admin Names:[{C:US ST:North Carolina L: O:Hyperledger OU:Fabric SerialNumber:}] Hosts:[18ed2407e2d5] KeyRequest:0xc000451920 CA:&lt;nil&gt; SerialNumber:} ID:{Name:peer2.org1.example.com Type:peer Secret:peer2PW MaxEnrollments:0 Affiliation: Attributes:[] CAName:} Revoke:{Name: Serial: AKI: Reason: CAName: GenCRL:false} CAInfo:{CAName:} CAName: CSP:0xc000451cc0 Debug:true LogLevel:}
+2021/04/28 08:55:25 [DEBUG] Initializing BCCSP: &amp;{ProviderName:SW SwOpts:0xc0003f2300 PluginOpts:&lt;nil&gt;}
+2021/04/28 08:55:25 [DEBUG] Initializing BCCSP with software options &amp;{SecLevel:256 HashFamily:SHA2 Ephemeral:false FileKeystore:0xc000169050 DummyKeystore:&lt;nil&gt; InmemKeystore:&lt;nil&gt;}
+2021/04/28 08:55:25 [INFO] TLS Enabled
+2021/04/28 08:55:25 [DEBUG] CA Files: [/etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem]
+2021/04/28 08:55:25 [DEBUG] Client Cert File: 
+2021/04/28 08:55:25 [DEBUG] Client Key File: 
+2021/04/28 08:55:25 [DEBUG] Client TLS certificate and/or key file not provided
+2021/04/28 08:55:25 [DEBUG] Loading identity: keyFile=/etc/hyperledger/fabric-ca-server/msp/keystore/key.pem, certFile=/etc/hyperledger/fabric-ca-server/msp/signcerts/cert.pem
+2021/04/28 08:55:25 [DEBUG] No credential found at /etc/hyperledger/fabric-ca-server/msp/user/SignerConfig: open /etc/hyperledger/fabric-ca-server/msp/user/SignerConfig: no such file or directory
+2021/04/28 08:55:25 [DEBUG] No Idemix credential found at /etc/hyperledger/fabric-ca-server/msp/user/SignerConfig
+2021/04/28 08:55:25 [DEBUG] Register { Name:peer2.org1.example.com Type:peer Secret:**** MaxEnrollments:0 Affiliation: Attributes:[] CAName:  }
+2021/04/28 08:55:25 [DEBUG] Adding token-based authorization header
+2021/04/28 08:55:25 [DEBUG] Sending request
+POST https://ca.org1.example.com:7054/register
+{&#34;id&#34;:&#34;peer2.org1.example.com&#34;,&#34;type&#34;:&#34;peer&#34;,&#34;secret&#34;:&#34;peer2PW&#34;,&#34;affiliation&#34;:&#34;&#34;}
+2021/04/28 08:55:25 [DEBUG] Received response
+statusCode=201 (201 Created)
+2021/04/28 08:55:25 [DEBUG] Response body result: map[secret:peer2PW]
+2021/04/28 08:55:25 [DEBUG] The register request completed successfully
+Password: peer2PW
+</code></pre></article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#msp">MSP</a></li>
+            <li><a href="#fabric-ca">Fabric-ca</a></li>
+            <li><a href="#初始化ca">初始化ca</a></li>
+            <li><a href="#hyperledger-fabric-ca-客户端命令">Hyperledger fabric ca 客户端命令</a></li>
+            <li><a href="#docker-compose文件中ca配置">docker-compose文件中ca配置</a></li>
+            <li><a href="#hyperledger-fabric-ca-实操">hyperledger fabric CA 实操</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

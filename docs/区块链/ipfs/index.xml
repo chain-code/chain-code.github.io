@@ -26,8 +26,8 @@
 在IPFS项目的组织架构中，有一个IPFS-GUI工作组，主要目的是开发IPFS可视化工具，并使工具更简单、更易用、更美观。
 IPFS WebUI是IPFS的Web界面，可以用来检查您的节点统计信息，展示由IPLD驱动的默克尔树结构，查看世界各地的节点并管理您的文件，而无需触摸命令行工具。
 这都是粘贴的，废话不多说，直接开始安装
-安装 # 拉取ipfs-webui文件 cd ~ git clone https://github.com/ipfs/ipfs-webui.git 进入安装 cd ipfs-webui npm install 报错：
-request to https://dist.ipfs.io/go-ipfs/versions failed, reason: connect ECONNREFUSED 69.171.233.24:443 。。。。。。。。。。。。 。。。。。。。。。。。。 npm ERR! code ELIFECYCLE npm ERR! errno 1 npm ERR! go-ipfs-dep@0.4.18 install: `node src/bin.js` npm ERR! Exit status 1 npm ERR! npm ERR! Failed at the go-ipfs-dep@0.4.18 install script. npm ERR! This is probably not a problem with npm.</description>
+安装 # 拉取ipfs-webui文件 cd ~git clone https://github.com/ipfs/ipfs-webui.git 进入安装 cd ipfs-webuinpm install 报错：
+request to https://dist.ipfs.io/go-ipfs/versions failed, reason: connect ECONNREFUSED 69.171.233.24:443。。。。。。。。。。。。。。。。。。。。。。。。npm ERR! code ELIFECYCLEnpm ERR! errno 1npm ERR! go-ipfs-dep@0.4.18 install: `node src/bin.js`npm ERR! Exit status 1npm ERR! npm ERR! Failed at the go-ipfs-dep@0.4.18 install script.npm ERR! This is probably not a problem with npm.</description>
     </item>
     
     <item>

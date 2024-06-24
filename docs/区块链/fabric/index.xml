@@ -16,7 +16,7 @@
       <description>Hyperledger fabric认知 # fabric由来 # ​ 2015年12月由Linux基金会主导并牵头，IBM、Intel、Cisco等制造和科技行业的巨头共同宣布了Hyperledger fabric联合项目成立。
 ​	hyperledger fabric利用容器技术来托管链码，其中包括系统的应用程序逻辑。
 ​	Hyperledger Fabric 是分布式账本解决方案的平台，采用模块化架构，提供高安全性、弹性、灵活性和可扩展性。它被设计为支持以可插拔方式实现不同组件，并适应复杂的经济生态系统。
-hyperledger fabric与其他公有区块链系统最大的不同主要体现在以下两个方面： （1）私有 fabric提供建立通道的功能，允许参与交易新建一个单独的账本。 （2）许可 与开放无须许可的网络系统允许未知身份的参与者加入网络不同（需要通过工作量证明协议来保证交易有效并维护网络的安全），Hyperledger fabric通过MSP来登记所有成员。 cURL是什么？有什么作用？
+hyperledger fabric与其他公有区块链系统最大的不同主要体现在以下两个方面：（1）私有fabric提供建立通道的功能，允许参与交易新建一个单独的账本。（2）许可与开放无须许可的网络系统允许未知身份的参与者加入网络不同（需要通过工作量证明协议来保证交易有效并维护网络的安全），Hyperledger fabric通过MSP来登记所有成员。 cURL是什么？有什么作用？
 cURL是一个可以在终端命令行下使用URL语法执行的开源文件传输工具。它支持基于HTTP/Socket的代理；cURL还支持使用SSL证书，支持HTTP POST、HTTP PUT，支持FTP上传，以及基于HTTP表单的上传；支持cookie，可以使用用户名+密码的方式实现认证等。
 Hyperledger fabric架构 # 交易流程 # 背书 # 一个示例背书策略可能这样定义：参与区块链网络的四个组织中有三个必须在交易被认为有效之前签署该交易。所有的交易，无论是有效的还是无效的，都会被添加到分布式账本中，但只有有效交易会更新世界状态。
 如果一项背书策略指定了必须有不止一个组织来签署交易，那么只有当足够数量的组织都执行了智能合约，才能够生成有效交易。
@@ -75,7 +75,7 @@ pkg/client/ledger：启用对通道底层账本的查询。参考：https ://god
 pkg/client/resmgmt：提供安装链码等资源管理能力。参考：https ://godoc.org/github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt
 pkg/client/msp：启用身份管理功能。参考：https ://godoc.org/github.com/hyperledger/fabric-sdk-go/pkg/client/msp
 基本工作流程
-1) 使用配置实例化一个 fabsdk 实例。 注意：fabsdk 维护缓存，因此您应该最小化 fabsdk 本身的实例。 2) 使用您的 fabsdk 实例创建基于用户和组织的上下文。 注意：通道上下文还需要通道 ID。 3) 使用它的 New func 创建一个客户端实例，传递上下文。 注意：您为所需的每个上下文创建一个新的客户端实例。 4）使用每个客户提供的功能来创建您的解决方案！ 5) 调用 fabsdk.Close() 释放资源和缓存。 2、准备网络环境 # 准备证书文件 # 具体参照solo节点测试
+1) 使用配置实例化一个 fabsdk 实例。注意：fabsdk 维护缓存，因此您应该最小化 fabsdk 本身的实例。2) 使用您的 fabsdk 实例创建基于用户和组织的上下文。注意：通道上下文还需要通道 ID。3) 使用它的 New func 创建一个客户端实例，传递上下文。注意：您为所需的每个上下文创建一个新的客户端实例。4）使用每个客户提供的功能来创建您的解决方案！5) 调用 fabsdk.Close() 释放资源和缓存。 2、准备网络环境 # 准备证书文件 # 具体参照solo节点测试
 在$GOPATH/src目录下创建一个名为sdktest的文件夹做为项目根目录,在此目录下创建名为fixtures的文件夹存放我们网络相关配置文件。
 编辑crypto-config.yaml的文件（这里为一个组织两个节点）
 cryptogen generate --config=crypto-config.yaml 生成证书 在fixtures路径下创建一个名为configtx.yaml的文件
@@ -83,7 +83,7 @@ cryptogen generate --config=crypto-config.yaml 生成证书 在fixtures路径下
 生成创世块文件
 生成通道文件
 锚节点更新（两个组织都要更新）
-完成后：channel-artifacts文件夹 channel.tx Org1MSPanchors.tx Org1MSPanchors.tx genesis.block 配置docker-compose文件</description>
+完成后：channel-artifacts文件夹channel.tx Org1MSPanchors.tx Org1MSPanchors.tx genesis.block 配置docker-compose文件</description>
     </item>
     
     <item>
@@ -136,7 +136,7 @@ https://uzshare.com/view/830631
 1、环境配置 # 运行官方测试网络，确保它正常运行，详情请见fabric环境搭建后面测试部分。
 进入CLI容器，并使用容器内的以下命令检查对等版本：
 docker exec -it cli /bin/bash peer version 运行以下命令，确保JQ工具已在CLI容器中安装并正常工作：
-jq --version jq 运行以下命令，确保configtxlator工具可用，验证工具版本，在后台启动工具，并验证工具在后台、CLI容器内正确运行
+jq --versionjq 运行以下命令，确保configtxlator工具可用，验证工具版本，在后台启动工具，并验证工具在后台、CLI容器内正确运行
 configtxlator version 后台启动configtxlator并查看网络状态 （两行一起复制粘贴进去）
 configtxlator start &amp;amp; netstat -ap 2、检索当前配置 # 通过在CLI容器中运行以下命令来设置和验证以下环境变量：
 export CHANNEL_NAME=mychannel export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem 生成第三个组织的证书文件及配置文件
@@ -154,10 +154,10 @@ export CHANNEL_NAME=mychannel export ORDERER_CA=/opt/gopath/src/github.com/hyper
 先要保证你之前的项目已启动
 搭建目录结构 # 1、$GOPATH/src目录下创建edu-explorer文件夹
 2、edu-explorer文件夹下创建以下目录结构
-docker-compose.yaml config.json connection-profile/test-network.json organizations/ordererOrganizations/ 第3、4解决 organizations/peerOrganizations/ 3、复制自己的项目中crypto-config 文件夹 到edu-explorer文件中
+docker-compose.yamlconfig.jsonconnection-profile/test-network.jsonorganizations/ordererOrganizations/ 第3、4解决organizations/peerOrganizations/ 3、复制自己的项目中crypto-config 文件夹 到edu-explorer文件中
 cp -r cp -r $GOPATH/src/education/conf/crypto-config ../edu-explorer 4、改名 把crypto-config改成organizations 保持跟官方目录结构一样
 mv crypto-config organizations 官方给出的文件内容 # 复制以下内容到相应文件中去
-docker-compose.yaml # # SPDX-License-Identifier: Apache-2.0 version: &amp;#39;2.1&amp;#39; volumes: pgdata: walletstore: networks: mynetwork.com: external: name: net_test services: explorerdb.mynetwork.com: image: hyperledger/explorer-db:latest container_name: explorerdb.mynetwork.com hostname: explorerdb.mynetwork.com environment: - DATABASE_DATABASE=fabricexplorer - DATABASE_USERNAME=hppoc - DATABASE_PASSWORD=password healthcheck: test: &amp;#34;pg_isready -h localhost -p 5432 -q -U postgres&amp;#34; interval: 30s timeout: 10s retries: 5 volumes: - pgdata:/var/lib/postgresql/data networks: - mynetwork.</description>
+docker-compose.yaml # # SPDX-License-Identifier: Apache-2.0version: &amp;#39;2.1&amp;#39;volumes:pgdata:walletstore:networks:mynetwork.com:external:name: net_testservices:explorerdb.mynetwork.com:image: hyperledger/explorer-db:latestcontainer_name: explorerdb.mynetwork.comhostname: explorerdb.mynetwork.comenvironment:- DATABASE_DATABASE=fabricexplorer- DATABASE_USERNAME=hppoc- DATABASE_PASSWORD=passwordhealthcheck:test: &amp;#34;pg_isready -h localhost -p 5432 -q -U postgres&amp;#34;interval: 30stimeout: 10sretries: 5volumes:- pgdata:/var/lib/postgresql/datanetworks:- mynetwork.</description>
     </item>
     
     <item>
@@ -178,7 +178,7 @@ cryptogen extend --config=./crypto-config.yaml 可在crypto-config/peerOrganizat
 注：&amp;ndash;config参数应以实际情况下配置文件的名称及路径为准
 3.启动容器
 在docker-compose.yaml文件中加入新节点信息
-version: &amp;#39;2&amp;#39; volumes: orderer.example.com: peer0.org1.example.com: peer1.org1.example.com: //加这里 networks: test: peer1.org1.example.com: container_name: peer1.org1.example.com image: hyperledger/fabric-peer:latest environment: #Generic peer variables - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock # the following setting starts chaincode containers on the same # bridge network as the peers # https://docs.</description>
+version: &amp;#39;2&amp;#39;volumes:orderer.example.com:peer0.org1.example.com:peer1.org1.example.com: //加这里networks:test: peer1.org1.example.com: container_name: peer1.org1.example.com image: hyperledger/fabric-peer:latest environment: #Generic peer variables - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock # the following setting starts chaincode containers on the same # bridge network as the peers # https://docs.</description>
     </item>
     
     <item>
@@ -190,9 +190,9 @@ version: &amp;#39;2&amp;#39; volumes: orderer.example.com: peer0.org1.example.co
       <description>Hyperledger Fabric支持在一组相同的机构之间的多通道部署， 每个通道都相当于一个单独的区块链。Fabric的多通道特性 不仅可以满足机构之间不同的数据共享需求，同时也可以提高 整个Fabric网络的吞吐量。本文将演示如何使用Hyperledger Fabric 1.4.3搭建一个多通道的区块链网络、部署并访问链码。
 1、Hyperledger Fabric多通道网络实验环境概述 # 我们将构造一个包含3个机构的Hyperledger Fabric网络：Org1、Org2和Org3， 每个机构中包含一个节点Peer0。网络包含两个通道：由Org1、 Org2和Org3组成的ChannelAll，以及由Org1和Org2组成的Channel12，因此 这个Fabric网络是多通道的配置。在这两个Fabric通道上我们将部署同样的链码， 即Fabrc-Samples中提供的Simple Asset链码：
 2、Hyperledger Fabric多通道网络实验环境搭建 # Step 1：在Hyperledger官方提供的fabric-samples目录下克隆本教程提供的示例代码：
-cd fabric-samples git clone https://github.com/kctam/3org2ch_143.git cd 3org2ch_143 Step 2：为参与Fabric通道的机构生成所需的密码学资料
+cd fabric-samplesgit clone https://github.com/kctam/3org2ch_143.gitcd 3org2ch_143 Step 2：为参与Fabric通道的机构生成所需的密码学资料
 ../bin/cryptogen generate --config=./crypto-config.yaml Step 3：生成Fabric通道素材
-mkdir channel-artifacts &amp;amp;&amp;amp; export FABRIC_CFG_PATH=$PWD ../bin/configtxgen -profile OrdererGenesis \ -outputBlock ./channel-artifacts/genesis.block export CHANNEL_ONE_NAME=channelall export CHANNEL_ONE_PROFILE=ChannelAll export CHANNEL_TWO_NAME=channel12 export CHANNEL_TWO_PROFILE=Channel12 ../bin/configtxgen -profile ${CHANNEL_ONE_PROFILE} \ -outputCreateChannelTx ./channel-artifacts/${CHANNEL_ONE_NAME}.tx \ -channelID $CHANNEL_ONE_NAME ../bin/configtxgen -profile ${CHANNEL_TWO_PROFILE} \ -outputCreateChannelTx ./channel-artifacts/${CHANNEL_TWO_NAME}.tx \ -channelID $CHANNEL_TWO_NAME .</description>
+mkdir channel-artifacts &amp;amp;&amp;amp; export FABRIC_CFG_PATH=$PWD../bin/configtxgen -profile OrdererGenesis \-outputBlock ./channel-artifacts/genesis.blockexport CHANNEL_ONE_NAME=channelallexport CHANNEL_ONE_PROFILE=ChannelAllexport CHANNEL_TWO_NAME=channel12export CHANNEL_TWO_PROFILE=Channel12../bin/configtxgen -profile ${CHANNEL_ONE_PROFILE} \-outputCreateChannelTx ./channel-artifacts/${CHANNEL_ONE_NAME}.tx \-channelID $CHANNEL_ONE_NAME../bin/configtxgen -profile ${CHANNEL_TWO_PROFILE} \-outputCreateChannelTx ./channel-artifacts/${CHANNEL_TWO_NAME}.tx \-channelID $CHANNEL_TWO_NAME.</description>
     </item>
     
   </channel>

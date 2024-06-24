@@ -16,7 +16,7 @@
       <description>力扣刷题（一） # 力扣刷题 全部题目模块（1～100）
 简单 # 山峰数组 # 符合下列属性的数组 arr 称为 山峰数组（山脉数组） ：arr.length &amp;gt;= 3存在 i（0 &amp;lt; i &amp;lt; arr.length - 1）使得： arr[0] &amp;lt; arr[1] &amp;lt; &amp;hellip; arr[i-1] &amp;lt; arr[i] arr[i] &amp;gt; arr[i+1] &amp;gt; &amp;hellip; &amp;gt; arr[arr.length - 1] 给定由整数组成的山峰数组 arr ，返回任何满足 arr[0] &amp;lt; arr[1] &amp;lt; &amp;hellip; arr[i - 1] &amp;lt; arr[i] &amp;gt; arr[i + 1] &amp;gt; &amp;hellip; &amp;gt; arr[arr.length - 1] 的下标 i ，即山峰顶部。
 示例 1：
-输入：arr = [0,1,0] 输出：1 示例 2：</description>
+输入：arr = [0,1,0]输出：1 示例 2：</description>
     </item>
     
     <item>
@@ -27,7 +27,7 @@
       <guid>https://chain-code.github.io/docs/golang/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/</guid>
       <description>力扣刷题（二） # 力扣刷题 全部题目模块（101～200）
 简单 # 对称二叉树 # 给你一个二叉树的根节点 root ， 检查它是否轴对称。
-输入：root = [1,2,2,3,4,4,3] 输出：true //不能使用中序遍历后看其是否对称，例如[1,2,2,2,null,2] func isSymmetric(root *TreeNode) bool { return metric(root.Left,root.Right) } func metric(left *TreeNode,right *TreeNode) bool{ if left==nil&amp;amp;&amp;amp;right==nil{ //如果都为nil证明到底了返回true return true } if left==nil||right==nil{ //一个为nil一个不为nil返回false return false } if left.Val!=right.Val{ //不相等返回false return false } return metric(left.Left,right.Right)&amp;amp;&amp;amp;metric(left.Right,right.Left) //将两边同时放进去递归 } 执行用时：0 ms, 在所有 Go 提交中击败了100.00%的用户 内存消耗：2.7 MB, 在所有 Go 提交中击败了67.20%的用户 相交链表 # 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回 null 。</description>
+输入：root = [1,2,2,3,4,4,3]输出：true //不能使用中序遍历后看其是否对称，例如[1,2,2,2,null,2] func isSymmetric(root *TreeNode) bool { return metric(root.Left,root.Right) } func metric(left *TreeNode,right *TreeNode) bool{ if left==nil&amp;amp;&amp;amp;right==nil{ //如果都为nil证明到底了返回true return true } if left==nil||right==nil{ //一个为nil一个不为nil返回false return false } if left.Val!=right.Val{ //不相等返回false return false } return metric(left.Left,right.Right)&amp;amp;&amp;amp;metric(left.Right,right.Left) //将两边同时放进去递归 } 执行用时：0 ms, 在所有 Go 提交中击败了100.00%的用户 内存消耗：2.7 MB, 在所有 Go 提交中击败了67.20%的用户 相交链表 # 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回 null 。</description>
     </item>
     
     <item>
@@ -43,8 +43,8 @@
 如当输入链表{1,2,3}时，
 经反转后，原链表变为{3,2,1}，所以对应的输出为{3,2,1}。
 以上转换过程如下图所示：
-输入：{1,2,3} 返回值：{3,2,1} func ReverseList( pHead *ListNode ) *ListNode { if pHead==nil||pHead.Next==nil{ return pHead } p:=&amp;amp;ListNode{Val:-1,Next:pHead} //设置一个头节点，防止冲突 pHead=p p=pHead.Next q:=p for p.Next!=nil{ q=p.Next p.Next=q.Next q.Next=pHead.Next //这道题的重点在这里=头节点的下一个 pHead.Next=q } return pHead.Next } 链表内指定区间反转 # 将一个节点数为 size 链表 m 位置到 n 位置之间的区间反转，要求时间复杂度 O(n)O(n)，空间复杂度 O(1)O(1)。
-例如： 给出的链表为 1→2→3→4→5→NULL1→2→3→4→5→NULL, m=2,n=4, 返回 1→4→3→2→5→NULL1→4→3→2→5→NULL. func reverseBetween( head *ListNode , m int , n int ) *ListNode { // write code here if head.</description>
+输入：{1,2,3}返回值：{3,2,1} func ReverseList( pHead *ListNode ) *ListNode { if pHead==nil||pHead.Next==nil{ return pHead } p:=&amp;amp;ListNode{Val:-1,Next:pHead} //设置一个头节点，防止冲突 pHead=p p=pHead.Next q:=p for p.Next!=nil{ q=p.Next p.Next=q.Next q.Next=pHead.Next //这道题的重点在这里=头节点的下一个 pHead.Next=q } return pHead.Next } 链表内指定区间反转 # 将一个节点数为 size 链表 m 位置到 n 位置之间的区间反转，要求时间复杂度 O(n)O(n)，空间复杂度 O(1)O(1)。
+例如：给出的链表为 1→2→3→4→5→NULL1→2→3→4→5→NULL, m=2,n=4,返回 1→4→3→2→5→NULL1→4→3→2→5→NULL. func reverseBetween( head *ListNode , m int , n int ) *ListNode { // write code here if head.</description>
     </item>
     
     <item>
@@ -57,8 +57,8 @@
 例题 # 正则表达式匹配 # 给你一个字符串 s 和一个字符规律 p，请你来实现一个支持 &amp;lsquo;.&amp;rsquo; 和 &amp;lsquo;*&amp;rsquo; 的正则表达式匹配。
 &amp;lsquo;.&amp;rsquo; 匹配任意单个字符 &amp;lsquo;*&amp;rsquo; 匹配零个或多个前面的那一个元素 所谓匹配，是要涵盖 整个 字符串 s的，而不是部分字符串。
 示例 1：
-输入：s = &amp;#34;aa&amp;#34; p = &amp;#34;a&amp;#34; 输出：false 解释：&amp;#34;a&amp;#34; 无法匹配 &amp;#34;aa&amp;#34; 整个字符串。 示例 2:
-输入：s = &amp;#34;aa&amp;#34; p = &amp;#34;a*&amp;#34; 输出：true 解释：因为 &amp;#39;*&amp;#39; 代表可以匹配零个或多个前面的那一个元素, 在这里前面的元素就是 &amp;#39;a&amp;#39;。因此，字符串 &amp;#34;aa&amp;#34; 可被视为 &amp;#39;a&amp;#39; 重复了一次。 func isMatch(s string, p string) bool { m, n := len(s), len(p) matches := func(i, j int) bool { if i == 0 { return false } if p[j-1] == &amp;#39;.</description>
+输入：s = &amp;#34;aa&amp;#34; p = &amp;#34;a&amp;#34;输出：false解释：&amp;#34;a&amp;#34; 无法匹配 &amp;#34;aa&amp;#34; 整个字符串。 示例 2:
+输入：s = &amp;#34;aa&amp;#34; p = &amp;#34;a*&amp;#34;输出：true解释：因为 &amp;#39;*&amp;#39; 代表可以匹配零个或多个前面的那一个元素, 在这里前面的元素就是 &amp;#39;a&amp;#39;。因此，字符串 &amp;#34;aa&amp;#34; 可被视为 &amp;#39;a&amp;#39; 重复了一次。 func isMatch(s string, p string) bool { m, n := len(s), len(p) matches := func(i, j int) bool { if i == 0 { return false } if p[j-1] == &amp;#39;.</description>
     </item>
     
   </channel>

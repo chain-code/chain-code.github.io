@@ -35,7 +35,7 @@ defer是Go语言提供的一种用于注册延迟调用的机制：让函数或�
 defer会有短暂延迟，对时间要求特别高的程序，可以避免使用它。
 defer的执行顺序 # defer语句并不会马上执行，而是会进入一个栈，函数return前，会按先进后出的顺序执行。先进后出的原因是后面定义的函数可能会依赖前面的资源，自然要先执行；否则，如果前面的先执行了，那后面的函数依赖就没有了，因而可能会出错。
 在defer函数定义时，对外部变量的引用有两种方式：函数参数、闭包引用。前者在defer定义时就把值传递给defer，并且被cache起来；后者则会在defer函数真正调用时根据整个上下文确定参数当前的值。
-func main(){ var whatever [3]struct{} for i:=range whatever{ defer func(){ fmt.Println(i) }() } } 2 2 2 defer 后面跟的是一个闭包，i是“引用”类型的变量，for循环结束后i的值为2，因此后面打印了3个2.</description>
+func main(){ var whatever [3]struct{} for i:=range whatever{ defer func(){ fmt.Println(i) }() } } 222defer 后面跟的是一个闭包，i是“引用”类型的变量，for循环结束后i的值为2，因此后面打印了3个2.</description>
     </item>
     
     <item>

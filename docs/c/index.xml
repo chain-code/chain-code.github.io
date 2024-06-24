@@ -5,12 +5,36 @@
     <link>https://chain-code.github.io/docs/c/</link>
     <description>Recent content in C on Soulmate</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <lastBuildDate>Wed, 27 Mar 2024 12:11:30 +0000</lastBuildDate><atom:link href="https://chain-code.github.io/docs/c/index.xml" rel="self" type="application/rss+xml" />
+    <language>zh-cn</language><atom:link href="https://chain-code.github.io/docs/c/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CGo</title>
+      <link>https://chain-code.github.io/docs/c/cgo/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/c/cgo/</guid>
+      <description>CGO入门 # Golang 自带的 CGO 可以支持与 C 语言接口的互通。
+Go 与 C 的桥梁：cgo 入门，剖析与实践 - 知乎 (zhihu.com)
+启用CGO特性 # 在 golang 代码中加入 import “C” 语句就可以启动 CGO 特性。这样在进行 go build 命令时，就会在编译和连接阶段启动 gcc 编译器。
+package mainimport &amp;#34;C&amp;#34; // import &amp;#34;C&amp;#34;更像是一个关键字，CGO工具在预处理时会删掉这一行func main() {} 使用 -x 选项可以查看 go 程序编译过程中执行的所有指令。可以看到 golang 编译器已经为 test1.go 创建了 CGO 编译选项
+[root@VM-centos ~/cgo_test/golink2]# go build -x test1.goWORK=/tmp/go-build330287398mkdir -p $WORK/b001/cd /root/cgo_test/golink2CGO_LDFLAGS=&amp;#39;&amp;#34;-g&amp;#34; &amp;#34;-O2&amp;#34;&amp;#39; /usr/lib/golang/pkg/tool/linux_amd64/cgo -objdir $WORK/b001/ -importpath command-line-arguments -- -I $WORK/b001/ -g -O2 .</description>
+    </item>
+    
+    <item>
+      <title>CGO遇到的问题解决</title>
+      <link>https://chain-code.github.io/docs/c/cgo%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/c/cgo%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/</guid>
+      <description>CGO调用海康威视SDK # 问题一：宏定义问题 # 在C语言中，extern &amp;quot;C&amp;quot; 是用于指定C++编译器按照C语言的方式进行函数名的命名规则和链接的修饰符。然而，根据您提供的错误信息，您正在使用的是C语言的编译器（gcc），而不是C++编译器。
+cgo: gcc errors for preamble:In file included from .\hikvision.go:6:0:error: expected identifier or &amp;#39;(&amp;#39; before string constant#define NET_DVR_API extern &amp;#34;C&amp;#34; __declspec(dllimport)note: in definition of macro &amp;#39;NET_DVR_API&amp;#39;#define NET_DVR_API extern &amp;#34;C&amp;#34; __declspec(dllimport)^~~ 添加这个：
+#ifndef __cplusplus#define NET_DVR_API#else#define NET_DVR_API extern &amp;#34;C&amp;#34;#endif 原文件
+#ifndef _HC_NET_SDK_H_ #define _HC_NET_SDK_H_ #ifndef _WINDOWS_ #if (defined(_WIN32) || defined(_WIN64)) #include &amp;lt;winsock2.h&amp;gt; #include &amp;lt;windows.h&amp;gt; #endif #endif #if defined(_WIN64) #define OS_WINDOWS64 1 #endif #if defined(__LP64__) #define OS_POSIX64 1 #endif #ifndef __PLAYRECT_defined #define __PLAYRECT_defined typedef struct __PLAYRECT { int x; int y; int uWidth; int uHeight; }PLAYRECT; #endif #if (defined(_WIN32)) //windows //#define NET_DVR_API extern &amp;#34;C&amp;#34; __declspec(dllimport) 防止宏被重复定义 这里注释掉 typedef unsigned __int64 UINT64; typedef signed __int64 INT64; #elif defined(__linux__) || defined(__APPLE__) //linux #define BOOL int typedef unsigned int DWORD; typedef unsigned short WORD; typedef unsigned short USHORT; typedef short SHORT; typedef int LONG; typedef unsigned char BYTE; typedef unsigned int UINT; typedef void* LPVOID; typedef void* HANDLE; typedef unsigned int* LPDWORD; typedef unsigned long long UINT64; typedef signed long long INT64; #ifndef TRUE #define TRUE 1 #endif #ifndef FALSE #define FALSE 0 #endif #ifndef NULL #define NULL 0 #endif #define __stdcall #define CALLBACK #define NET_DVR_API extern &amp;#34;C&amp;#34; typedef unsigned int COLORKEY; typedef unsigned int COLORREF; #ifndef __HWND_defined #define __HWND_defined #if defined(__APPLE__) || defined(ANDROID) typedef void* HWND; #elif defined(__linux__) typedef unsigned int HWND; #else typedef void* HWND; #endif #endif #ifndef __HDC_defined #define __HDC_defined #if defined(__linux__) typedef struct __DC { void* surface; //SDL Surface HWND hWnd; //HDC window handle }DC; typedef DC* HDC; #else typedef void* HDC; #endif #endif typedef struct tagInitInfo { int uWidth; int uHeight; }INITINFO; #endif #ifndef __cplusplus #define NET_DVR_API #else #define NET_DVR_API extern &amp;#34;C&amp;#34; #endif 问题二：C语言不支持在函数参数列表中使用默认参数 # cgo: gcc errors for preamble:In file included from .</description>
+    </item>
+    
     <item>
       <title>业务代码</title>
       <link>https://chain-code.github.io/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/</link>
-      <pubDate>Wed, 27 Mar 2024 12:11:30 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/</guid>
       <description> 监听windows是否处于休眠唤醒状态 # #include &amp;lt;windows.h&amp;gt; #include &amp;lt;iostream&amp;gt; #include &amp;lt;powrprof.h&amp;gt; #pragma comment(lib, &amp;#34;Powrprof.lib&amp;#34;) using namespace std; ULONG CALLBACK DeviceCallback(PVOID Context, ULONG Type, PVOID Setting) { if (Type == PBT_APMSUSPEND) { cout &amp;lt;&amp;lt; &amp;#34;close&amp;#34; &amp;lt;&amp;lt; endl; } if (Type == PBT_APMRESUMESUSPEND) { cout &amp;lt;&amp;lt; &amp;#34;open&amp;#34; &amp;lt;&amp;lt; endl; } return ERROR_SUCCESS; } int main() { HPOWERNOTIFY g_power_notify_handle = NULL; DEVICE_NOTIFY_SUBSCRIBE_PARAMETERS params; params.Callback = DeviceCallback; params.Context = 0; PowerRegisterSuspendResumeNotification(DEVICE_NOTIFY_CALLBACK, &amp;amp;params, &amp;amp;g_power_notify_handle); MSG msg; while (GetMessage(&amp;amp;msg, NULL, 0, 0)) { TranslateMessage(&amp;amp;msg); DispatchMessage(&amp;amp;msg); } PowerUnregisterSuspendResumeNotification(g_power_notify_handle); return 0; } </description>

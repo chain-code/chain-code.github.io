@@ -35,7 +35,7 @@ sqlite3 mysql dsn mymysql postgres 在engine创建完成后可以进行一些设
 声明model时，tag是可选的，GORM支持以下tag：tag名大小写不敏感，但建议使用camelcase风格
 标签名 说明 column 指定列名 type 列数据类型，推荐使用兼容性好的通用类型，例如：所有数据库都支持bool、int、uint、float、string、time、bytes并且可以和其他标签一起使用，例如：not null、size、autoIncrement&amp;hellip;像varbinary（8）这样指定数据库数据类型也是支持的。在使用指定数据库数据类型时，它需要是完整的数据库数据类型，如：MEDIUMINT、UNSIGNED、not、NULL、AUTO、INSTREMENT size 指定列大小，例如：size: 256 primaryKey 指定列为主键 unique 指定列为唯一 default 指定列的默认值 precision 指定列的精度 scale 指定列大小 not null 不能为空 autolncrement 指定列为自动增长 embedded 嵌套字段 embeddedPrefix 嵌入字段的列名前缀 autoCreateTime 创建时追踪当前时间，对于int字段，它会追踪时间戳秒数，您可以使用nano/milli来追踪纳秒、毫秒时间戳，例如autoCreateTime:nano autoUpdateTime 创建/更新时追踪当前时间，对于int字段，它会追踪时间戳秒数，您可以使用nano/milli来追踪纳秒、毫秒时间戳，例如：autoupdateTime:milli index 根据参数创建索引1，多个字段使用相同的名称则创建复合索引，查看索引获取详情 uniqueindex 与index相同，但创建的是唯一索引 check 创建检查约束，例如check:age＞13查看约束获取详情 &amp;lt;- 设置字段写入的权限，&amp;lt;-:create只创建、&amp;lt;-:update只更新、&amp;lt;-:false无写入权限、「&amp;lt;-创建和更新权限 -&amp;gt; 设置字段读的权限，-&amp;gt;:false无读权限 - 忽略该字段，-无读写权限 gorm使用中遇到的坑点 # 3、Count方法不适合放在raw方法后面，否则将会出错
 count:=0 db.Raw(sql).Count(&amp;amp;count) 正确用法
-db.Model(&amp;amp;User{}).Where(&amp;#34;name = ?&amp;#34;, &amp;#34;jinzhu&amp;#34;).Count(&amp;amp;count) //正确用法 result := engine.Raw(querySQL, args...).Find(resultData) if result.Error != nil { err = fmt.</description>
+db.Model(&amp;amp;User{}).Where(&amp;#34;name = ?&amp;#34;, &amp;#34;jinzhu&amp;#34;).Count(&amp;amp;count) //正确用法result := engine.Raw(querySQL, args...).Find(resultData)if result.Error != nil {err = fmt.</description>
     </item>
     
   </channel>

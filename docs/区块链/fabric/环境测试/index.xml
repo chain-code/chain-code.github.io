@@ -17,7 +17,7 @@
 问题原因 # 此问题是由适用于macOS的Docker Desktop的较新版本引起的。
 要解决此问题，请在Docker Desktop首选项中，取消选中该框Use gRPC FUSE for file sharing， 以使用旧版osxfs文件共享，然后单击**Apply****＆**Restart
 报错二： # 问题原因： # 环境配置问题，进入go.mod文件 重新配置
-github.com/Shopify/sarama v1.27.2 // indirect github.com/astaxie/beego v1.12.1 github.com/fsouza/go-dockerclient v1.7.0 // indirect github.com/grpc-ecosystem/go-grpc-middleware v1.2.2 // indirect github.</description>
+github.com/Shopify/sarama v1.27.2 // indirectgithub.com/astaxie/beego v1.12.1github.com/fsouza/go-dockerclient v1.7.0 // indirectgithub.com/grpc-ecosystem/go-grpc-middleware v1.2.2 // indirectgithub.</description>
     </item>
     
     <item>
@@ -82,7 +82,7 @@ scp 是 secure copy 的缩写, scp 是 Linux 系统下基于 ssh 登陆进行安
       <pubDate>Mon, 20 Dec 2021 10:11:10 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/</guid>
-      <description>安装 # cd hyperledger git clone https://github.com/Hyperledger-TWGC/tape.git cd tape go build ./cmd/tape 测试 # 测试前将organizations文件夹放到tape 里面去 复制一下 就是里面包含各种证书的文件夹 配路径
+      <description>安装 # cd hyperledgergit clone https://github.com/Hyperledger-TWGC/tape.gitcd tapego build ./cmd/tape 测试 # 测试前将organizations文件夹放到tape 里面去 复制一下 就是里面包含各种证书的文件夹 配路径
 修改config.yaml文件
 # Definition of nodes peer1: &amp;amp;peer1 addr: localhost:7051 tls_ca_cert: ./organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem peer2: &amp;amp;peer2 addr: localhost:9051 tls_ca_cert: ./organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp/tlscacerts/tlsca.org2.example.com-cert.pem orderer1: &amp;amp;orderer1 addr: localhost:7050 tls_ca_cert: ./organizations/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem # Nodes to interact with endorsers: - *peer1 - *peer2 # we might support multi-committer in the future for more complex test scenario, # i.e. consider tx committed only if it&amp;#39;s done on &amp;gt;50% of nodes.</description>
     </item>

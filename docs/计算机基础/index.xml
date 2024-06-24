@@ -37,12 +37,90 @@ Redis宕机 大规模key使用了相同的过期时间 解决
     </item>
     
     <item>
+      <title>crontab使用</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/crontab%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/crontab%E4%BD%BF%E7%94%A8/</guid>
+      <description>简介 # Linux crontab 是 Linux 系统中用于设置周期性被执行的指令的命令。
+当安装完成操作系统之后，默认便会启动此任务调度命令。
+crond 命令每分钟会定期检查是否有要执行的工作，如果有要执行的工作便会自动执行该工作。
+**注意：**新创建的 cron 任务，不会马上执行，至少要过 2 分钟后才可以，当然你可以重启 cron 来马上执行。
+Linux 任务调度的工作主要分为以下两类：
+**1、系统执行的工作：**系统周期性所要执行的工作，如备份系统数据、清理缓存 **2、个人执行的工作：**某个用户定期要做的工作，例如每隔 10 分钟检查邮件服务器是否有新信，这些工作可由每个用户自行设置 语法 # crontab [ -u user ] file crontab [ -u user ] { -l | -r | -e } 说明：
+crontab 是用来让使用者在固定时间或固定间隔执行程序之用，换句话说，也就是类似使用者的时程表。
+-u user 是指设定指定 user 的时程表，这个前提是你必须要有其权限(比如说是 root)才能够指定他人的时程表。如果不使用 -u user 的话，就是表示设定自己的时程表。
+参数说明：
+-e : 执行文字编辑器来设定时程表，内定的文字编辑器是 Vi/Vim，如果你想用别的文字编辑器，则请先设定 VISUAL 环境变数来指定使用那个文字编辑器(比如说 setenv VISUAL joe) -r : 删除目前的时程表 -l : 列出目前的时程表 查看当前用户的 crontab 文件：</description>
+    </item>
+    
+    <item>
+      <title>libewf库编译</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/libewf%E5%BA%93%E7%BC%96%E8%AF%91/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/libewf%E5%BA%93%E7%BC%96%E8%AF%91/</guid>
+      <description>地址：libyal/libewf: Libewf is a library to access the Expert Witness Compression Format (EWF) (github.com)
+1、下载最新稳定版本
+libewf-experimental-&amp;lt;version&amp;gt;.tar.gz 2、解压
+3、在麒麟系统上安装软件包
+sudo apt install git autoconf automake autopoint libtool pkg-config flex bison 4、进入libewf文件夹编译
+./configure --enable-shared=no --enable-static=yes --enable-wide-character-type=yes --enable-shared=no：表示禁用共享库的生成，即只生成静态库。
+--enable-static=yes：表示启用静态库的生成。
+--enable-wide-character-type=yes：表示启用宽字符类型（wide character type）支持
+若不启用 会报 in function _cgo_8405f37c7b66_Cfunc_libewf_handle_open_wide&#39;: undefined reference to libewf_handle_open_wide 的错误
+5、make
+make -j8 6、生成的文件在../libewf/.libs文件夹下</description>
+    </item>
+    
+    <item>
+      <title>localhost与127.0.0.1</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/localhost%E4%B8%8E127.0.0.1/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/localhost%E4%B8%8E127.0.0.1/</guid>
+      <description> 一、基本概念 # 首先，我们需要明确localhost和127.0.0.1各自的定义。
+localhost：在计算机网络中，localhost是一个主机名（hostname），指的是当前你正在使用的设备。它是一个常用于访问本机上运行的网络服务的域名。 127.0.0.1：而127.0.0.1则是一个IP地址，属于IPv4协议下的一个特殊地址。它被称为环回地址（loopback address），用于网络软件 测试 以及访问本机服务。 二、技术细节与差异 # 解析过程的不同 # 虽然localhost和127.0.0.1都指向本机，但它们的工作方式存在差异。
+当你使用localhost时，系统会通过DNS（域名系统）解析来将其转换为相应的IP地址。一般情况下，这个过程很快，因为大多数操作系统都会在本地的hosts文件中对localhost进行映射，使其指向127.0.0.1或类似的环回地址。相反，使用127.0.0.1时，由于它本身就是一个IP地址，因此无需通过DNS解析，数据包直接在本机内部路由。
+性能差异 # 虽然这两者之间的性能差异微乎其微，但在某些高性能要求的环境中，避免即使是最小的延迟也是至关重要的。
+使用localhost可能会引入微小的延迟，因为需要经过DNS解析的过程。127.0.0.1则可以省略这一步骤，稍微提升效率。
+IPv6环境 # 在IPv6环境下，localhost的解析和使用还具有更多的考量。
+localhost在IPv6中通常解析为::1，这是IPv6下的环回地址。直接使用127.0.0.1无法利用IPv6的优势，因此在IPv6优先的网络环境中，推荐使用localhost。
+三、应用场景举例 # 开发环境 # 在软件和网站开发过程中，开发 者经常需要在本地机器上运行和测试代码。使用localhost或127.0.0.1可以方便地访问本地开发服务器，无需通过外部网络。
+# 通过localhost访问本地开发服务器curl http://localhost:8080# 或者使用IP地址curl http://127.0.0.1:8080 网络软件测试 # 开发网络应用或服务时，测试环回功能非常重要。这可以确保软件在将数据发送到网络之前能正确处理数据。127.0.0.1在这种情况下被广泛使用。
+四、最佳实践建议 # 在大多数常规应用场景中，使用localhost和127.0.0.1不会造成明显的差别。但是，从性能和兼容性的角度考虑，理解二者的差异是有益的。 对于侧重于性能的应用，直接使用IP地址（127.0.0.1或::1）可以略微减少DNS解析的开销。 当开发依赖于IPv6环境的应用时，优先使用localhost以确保正确解析环回地址。 </description>
+    </item>
+    
+    <item>
       <title>Vim编程常用快捷键</title>
       <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</guid>
-      <description> 常用快捷键 # 插入 # 在光标后插入：a 在光标前插入：i 在光标下方新开一行插入：o (小写) 光标上下左右移动 # 左移：h 退格 //退格可以左移动到上一行 右移：l 空格 //空格可以右移到下一行 推荐空格 上移：k 下移：j 上下移动行 # 下移一行到第一个非空白字符串：+ enter //推荐enter 上移一行到第一个非空白字符串：- 快速上下移动 # 移动到文档末尾：G 移动到文档开头：gg 向下移动一段：} //代码中的空行 也算一段的隔离标识 向上移动一段：{ 向下移动一部分：[] //代码中就是一个函数一个函数的移动 比较实用 向上移动一部分：][ 单词左右移动 # 向左移动一个单词：w 向右移动一个单词：b 移动到当前行开头：0 （零） 移动到当前行末尾：$ 移动到当前单词末尾：e 选择文本 # 进入逐字可视模式：v 退出可视模式：Esc 删除 # 删除该行： dd 删除该单词：dw 复制粘贴 # 复制：y 剪切：d 和删除类似 粘贴：p 复制当前行：yy 剪切当前行：dd 撤销 # 撤销最后操作：u </description>
+      <description> 常用快捷键 # 插入 # 在光标后插入：a在光标前插入：i在光标下方新开一行插入：o (小写) 光标上下左右移动 # 左移：h 退格 //退格可以左移动到上一行右移：l 空格 //空格可以右移到下一行 推荐空格上移：k下移：j 上下移动行 # 下移一行到第一个非空白字符串：+ enter //推荐enter上移一行到第一个非空白字符串：- 快速上下移动 # 移动到文档末尾：G移动到文档开头：gg向下移动一段：} //代码中的空行 也算一段的隔离标识向上移动一段：{向下移动一部分：[] //代码中就是一个函数一个函数的移动 比较实用向上移动一部分：][ 单词左右移动 # 向左移动一个单词：w向右移动一个单词：b移动到当前行开头：0 （零）移动到当前行末尾：$移动到当前单词末尾：e 选择文本 # 进入逐字可视模式：v退出可视模式：Esc 删除 # 删除该行： dd删除该单词：dw 复制粘贴 # 复制：y剪切：d 和删除类似粘贴：p复制当前行：yy剪切当前行：dd 撤销 # 撤销最后操作：u </description>
+    </item>
+    
+    <item>
+      <title>代码整洁之道</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%95%B4%E6%B4%81%E4%B9%8B%E9%81%93/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%95%B4%E6%B4%81%E4%B9%8B%E9%81%93/</guid>
+      <description>整洁代码 # 简单代码，根据重要顺序应该是：
+能通过所有测试 没有重复代码 体现系统中的全部设计理念 包括尽量少的实体，比如方法、函数等 光写好代码是不够的，必须时时刻刻保持整洁。
+有意义的命名 # 1、命名要名副其实，直接体现要做的事情。
+openFile--&amp;gt;openVideo 2、选择一个好名字要花时间，但省下来的时间比花掉的多。一旦发现有更好的名称，就换掉旧的。
+3、避免使用会引起误解的名称，尤其是遇到一些缩写，要防止其存在歧义。
+//反面例子 type Std struct { Name string Age int Cls string } std 可能被误解为 Standard，而实际上它应该表示 Student（学生）。
+4、不要去做无意义的区分，例如：taskData和taskInfo，名称虽然不同但意义没有差别。
+variable一词不应当出现在变量名中，table一词不应该出现在表名中。例如：NameString不可取，名称后面建议不要加类型。
+//反面例子 var recordMap map[int64]*RecordDbManager 总之在读者能区分的情况下、不产生歧义的情况下，越简单的命名就是好命名。
+5、使用可以读出来的命名。
+generationTimestamp要比genymdhms要好的多，即使前一个比较长一点，但是无所谓，表达准确意思。 6、使用可以搜索的名字
+长名称胜于短名称，搜得到的名称比自编代码写就的名称要好。
+//反面例子 for i：=0；i&amp;lt;30;i++{ s+=t[i]*4/5 } //4 和 5代表什么意思要用常量说明，否则维护人员很难注意 const WorkDays int =5 const realDays int =4 7、命名不要有无意义的前缀，人们只会看到名称中有意义的部分。
+//反面例子 var m_student string 8、避免思维映射。例如：循环计数通常使用i，j，k，千万别用l 。专业的程序员编写其他人能理解的代码。
+//反面例子 for l：=0；l&amp;lt;30;l++{ s+=t[l]*4/5 } 9、结构体命名不应该用动词，方法命名应该用动词，可加上get, is ,set 前缀。</description>
     </item>
     
     <item>
@@ -51,7 +129,7 @@ Redis宕机 大规模key使用了相同的过期时间 解决
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/</guid>
-      <description>/***　*　瓦瓦　十　*　十齱龠己　亅瓦車己　*　乙龍龠毋日丶　丶乙己毋毋丶　*　十龠馬鬼車瓦　己十瓦毋毋　*　鬼馬龠馬龠十　己己毋車毋瓦　*　毋龠龠龍龠鬼乙丶丶乙車乙毋鬼車己　*　乙龠龍龍鬼龍瓦　十瓦毋乙瓦龠瓦亅　*　馬齱龍馬鬼十丶日己己己毋車乙丶　*　己齱馬鬼車十十毋日乙己己乙乙　*　車馬齱齱日乙毋瓦己乙瓦日亅　*　亅車齺龖瓦乙車龖龍乙乙十　*　日龠龠十亅車龍毋十十　*　日毋己亅　己己十亅亅　*　丶己十十乙　丶丶丶丶丶　*　亅己十龍龖瓦　丶　丶　乙十　*　亅己十龠龖毋　丶丶　丶己鬼鬼瓦亅　*　十日十十日亅丶亅丶　丶十日毋鬼馬馬車乙　*　十日乙十亅亅亅丶　十乙己毋鬼鬼鬼龍齺馬乙　*　丶瓦己乙十十亅丶亅乙乙乙己毋鬼鬼鬼龍齱齺齺鬼十　*　乙乙十十十亅乙瓦瓦己日瓦毋鬼鬼龠齱齱龍龍齱齱毋丶　*　亅十十十十乙瓦車毋瓦瓦日車馬龠龍龍龍龍龍龠龠龠馬亅 *　十十十十己毋車瓦瓦瓦瓦鬼馬龠龍龠龠龍龠龠龠馬龠車 *　亅十十日毋瓦日日瓦鬼鬼鬼龠龠馬馬龠龍龍龠馬馬車 *　亅亅亅乙瓦瓦毋車車車馬龍龠鬼鬼馬龠龍龍龠馬馬鬼 *　丶丶乙亅亅乙車鬼鬼鬼毋車龍龍龠鬼馬馬龠龍齱齱龍馬鬼 *　亅己十十己十日鬼鬼車瓦毋龠龍龠馬馬龠龠龠齱齺齺齱龠鬼 *　亅乙乙乙十車馬車毋馬齱齱龍龠龠龠馬龠龍齱龍龠龠鬼瓦 *　丶毋龠鬼車瓦車馬龠龍龠龠龍齱齱龠馬馬鬼毋日 *　十乙己日十　丶己鬼龍齱齺齱龍馬馬馬車毋己 *　丶十己乙亅丶　亅瓦馬龠龍龠龠馬毋瓦乙 *　丶十十乙亅十　亅己瓦車馬龠鬼車瓦乙 *　丶十乙十十丶　丶丶亅十瓦鬼車瓦己 *　丶亅亅丶　亅日瓦日 *　丶 */ /*** * .</description>
+      <description>/***　*　瓦瓦　十　*　十齱龠己　亅瓦車己　*　乙龍龠毋日丶　丶乙己毋毋丶　*　十龠馬鬼車瓦　己十瓦毋毋　*　鬼馬龠馬龠十　己己毋車毋瓦　*　毋龠龠龍龠鬼乙丶丶乙車乙毋鬼車己　*　乙龠龍龍鬼龍瓦　十瓦毋乙瓦龠瓦亅　*　馬齱龍馬鬼十丶日己己己毋車乙丶　*　己齱馬鬼車十十毋日乙己己乙乙　*　車馬齱齱日乙毋瓦己乙瓦日亅　*　亅車齺龖瓦乙車龖龍乙乙十　*　日龠龠十亅車龍毋十十　*　日毋己亅　己己十亅亅　*　丶己十十乙　丶丶丶丶丶　*　亅己十龍龖瓦　丶　丶　乙十　*　亅己十龠龖毋　丶丶　丶己鬼鬼瓦亅　*　十日十十日亅丶亅丶　丶十日毋鬼馬馬車乙　*　十日乙十亅亅亅丶　十乙己毋鬼鬼鬼龍齺馬乙　*　丶瓦己乙十十亅丶亅乙乙乙己毋鬼鬼鬼龍齱齺齺鬼十　*　乙乙十十十亅乙瓦瓦己日瓦毋鬼鬼龠齱齱龍龍齱齱毋丶　*　亅十十十十乙瓦車毋瓦瓦日車馬龠龍龍龍龍龍龠龠龠馬亅*　十十十十己毋車瓦瓦瓦瓦鬼馬龠龍龠龠龍龠龠龠馬龠車*　亅十十日毋瓦日日瓦鬼鬼鬼龠龠馬馬龠龍龍龠馬馬車*　亅亅亅乙瓦瓦毋車車車馬龍龠鬼鬼馬龠龍龍龠馬馬鬼*　丶丶乙亅亅乙車鬼鬼鬼毋車龍龍龠鬼馬馬龠龍齱齱龍馬鬼*　亅己十十己十日鬼鬼車瓦毋龠龍龠馬馬龠龠龠齱齺齺齱龠鬼*　亅乙乙乙十車馬車毋馬齱齱龍龠龠龠馬龠龍齱龍龠龠鬼瓦*　丶毋龠鬼車瓦車馬龠龍龠龠龍齱齱龠馬馬鬼毋日*　十乙己日十　丶己鬼龍齱齺齱龍馬馬馬車毋己*　丶十己乙亅丶　亅瓦馬龠龍龠龠馬毋瓦乙*　丶十十乙亅十　亅己瓦車馬龠鬼車瓦乙*　丶十乙十十丶　丶丶亅十瓦鬼車瓦己*　丶亅亅丶　亅日瓦日*　丶*/ /*** * .</description>
     </item>
     
     <item>
@@ -78,15 +156,27 @@ ssh-keygen -t rsa -C &amp;#34;github邮箱地址&amp;#34; -f ~/.ssh/github_rsa 2
     </item>
     
     <item>
+      <title>获取内网活跃IP</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%8E%B7%E5%8F%96%E5%86%85%E7%BD%91%E6%B4%BB%E8%B7%83ip/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%8E%B7%E5%8F%96%E5%86%85%E7%BD%91%E6%B4%BB%E8%B7%83ip/</guid>
+      <description>获取内网活跃IP # https://rogerzhu.gitbooks.io/-tcp-udp-ip/content/chapter1/arp-lian-jie-mac-he-ip.html
+内网广播ARP Request # ARP（Address Resolution Protocol），地址解析协议，是根据IP地址获取物理地址的一个TCP/IP协议。主机发送信息时将包含目标IP地址的ARP请求广播到网络上的所有主机，并接收返回信息，以此确认目标的物理地址。
+当我们要向以太网中另一台主机发送IP数据时，我们本地会根据目的主机的IP地址在ARP高速缓存中查询相应的以太网地址，ARP高速缓存是主机维护的一个IP地址到相应以太网地址的映射表。如果查询失败，ARP会广播一个询问（op字段为1）目的主机硬件地址的报文，等待目标主机的响应。 因为ARP高速缓存有时效性，读取到目标主机的硬件地址后，最好发送一个ICMP包验证目标是否在线。当然也可以选择不从高速缓存里读取数据，而是直接并发发送arp包，等待在线主机回应ARP报文。
+通过内网IP和子网掩码计算内网IP范围 # // 获取所有网卡 func Test_Net(t *testing.T) { // 获取所有网卡接口 interfaces, err := net.Interfaces() if err != nil { fmt.Println(&amp;#34;Error:&amp;#34;, err) return } for _, iface := range interfaces { fmt.Printf(&amp;#34;Name: %s\n&amp;#34;, iface.Name) fmt.Printf(&amp;#34;MTU: %d\n&amp;#34;, iface.MTU) fmt.Printf(&amp;#34;HardwareAddr: %s\n&amp;#34;, iface.HardwareAddr) fmt.Printf(&amp;#34;Flags: %s\n&amp;#34;, iface.Flags) // 获取每个接口的地址信息 addrs, err := iface.Addrs() if err != nil { fmt.Println(&amp;#34;Error:&amp;#34;, err) continue } for i, addr := range addrs { fmt.</description>
+    </item>
+    
+    <item>
       <title>配置 Kylin V10</title>
       <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E9%85%8D%E7%BD%AEkylinv10/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E9%85%8D%E7%BD%AEkylinv10/</guid>
-      <description>配置KylinV10 # 设置“root”登录密码 # sudo su - passwd # 设置登录密码 允许“root”远程登录 # sudo vim /etc/ssh/sshd_config # ↓↓↓↓修改的内容↓↓↓↓ PermitRootLogin yes # ↑↑↑↑修改的内容↑↑↑↑ sudo systemctl restart sshd 允许通过图像界面登录到“root” # sudo vim /usr/share/lightdm/lightdm.conf.d/95-ukui-greeter.conf 95-ukui-greeter.conf
-greeter-session=ukui-greeter user-session=ukui greeter-setup-script=/usr/lib/ukui-greeter/ukui-greeter-nm-start.sh # ↓↓↓↓追加的内容↓↓↓↓ allow-guest=false greeter-show-manual-login=true # ↑↑↑↑追加的内容↑↑↑↑ 开机自动登录到“root” # sudo vim /etc/lightdm/lightdm.conf lightdm.conf
-[SeatDefaults] autologin-guest=false # ↓↓↓↓修改的内容↓↓↓↓ autologin-user=root # ↑↑↑↑修改的内容↑↑↑↑ autologin-user-timeout=0 关闭“麒麟安全授权认证” # sudo vim /etc/default/grub grub
-# ... GRUB_DEFAULT=0 GRUB_TIMEOUT=5 GRUB_DISTRIBUTOR=`lsb_release -i -s 2&amp;gt; /dev/null || echo Debian` GRUB_DISTRIBUTOR_RELEASE=`lsb_release -d -s | awk -F&amp;#34; &amp;#34; &amp;#39;{print $2 &amp;#34; &amp;#34; $3}&amp;#39; 2&amp;gt; /dev/null || echo &amp;#34;&amp;#34;` GRUB_CMDLINE_LINUX_DEFAULT=&amp;#34;quiet splash&amp;#34; GRUB_CMDLINE_LINUX=&amp;#34;&amp;#34; # ↓↓↓↓修改的内容↓↓↓↓ # GRUB_CMDLINE_LINUX_SECURITY=&amp;#34;audit=0 security=kysec&amp;#34; GRUB_CMDLINE_LINUX_SECURITY=&amp;#34;audit=0 security=&amp;#34; # ↑↑↑↑修改的内容↑↑↑↑ # .</description>
+      <description>配置KylinV10 # 设置“root”登录密码 # sudo su -passwd# 设置登录密码 允许“root”远程登录 # sudo vim /etc/ssh/sshd_config # ↓↓↓↓修改的内容↓↓↓↓PermitRootLogin yes# ↑↑↑↑修改的内容↑↑↑↑ sudo systemctl restart sshd 允许通过图像界面登录到“root” # sudo vim /usr/share/lightdm/lightdm.conf.d/95-ukui-greeter.conf 95-ukui-greeter.conf
+greeter-session=ukui-greeteruser-session=ukuigreeter-setup-script=/usr/lib/ukui-greeter/ukui-greeter-nm-start.sh# ↓↓↓↓追加的内容↓↓↓↓allow-guest=falsegreeter-show-manual-login=true# ↑↑↑↑追加的内容↑↑↑↑ 开机自动登录到“root” # sudo vim /etc/lightdm/lightdm.conf lightdm.conf
+[SeatDefaults]autologin-guest=false# ↓↓↓↓修改的内容↓↓↓↓autologin-user=root# ↑↑↑↑修改的内容↑↑↑↑autologin-user-timeout=0 关闭“麒麟安全授权认证” # sudo vim /etc/default/grub grub
+# ...GRUB_DEFAULT=0GRUB_TIMEOUT=5GRUB_DISTRIBUTOR=`lsb_release -i -s 2&amp;gt; /dev/null || echo Debian`GRUB_DISTRIBUTOR_RELEASE=`lsb_release -d -s | awk -F&amp;#34; &amp;#34; &amp;#39;{print $2 &amp;#34; &amp;#34; $3}&amp;#39; 2&amp;gt; /dev/null || echo &amp;#34;&amp;#34;`GRUB_CMDLINE_LINUX_DEFAULT=&amp;#34;quiet splash&amp;#34;GRUB_CMDLINE_LINUX=&amp;#34;&amp;#34;# ↓↓↓↓修改的内容↓↓↓↓# GRUB_CMDLINE_LINUX_SECURITY=&amp;#34;audit=0 security=kysec&amp;#34;GRUB_CMDLINE_LINUX_SECURITY=&amp;#34;audit=0 security=&amp;#34;# ↑↑↑↑修改的内容↑↑↑↑# .</description>
     </item>
     
     <item>
@@ -165,6 +255,17 @@ B+树索引结构适用于绝大多数场景 如果数据离散型高、基数�
     </item>
     
     <item>
+      <title>虚拟组网</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%99%9A%E6%8B%9F%E7%BB%84%E7%BD%91/</link>
+      <pubDate>Wed, 02 Nov 2022 20:37:13 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%99%9A%E6%8B%9F%E7%BB%84%E7%BD%91/</guid>
+      <description>虚拟组网 # 需要一个云服务器作为灯塔
+https://zhw.in/post/virtual-networking/
+https://github.com/slackhq/nebula?tab=readme-ov-file</description>
+    </item>
+    
+    <item>
       <title>Linux基础</title>
       <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/linux%E5%9F%BA%E7%A1%80/</link>
       <pubDate>Thu, 22 Sep 2022 14:56:19 +0800</pubDate>
@@ -212,8 +313,8 @@ git的两大特点 # 版本控制：可以解决多人同时开发的代码问�
 git init 可以看到在git_test目录下创建了一个.git隐藏目录，这就是版本库目录。
 版本创建与回退 # 使用 # 在git_test目录下创建一个文件code.txt，编辑内容如下：
 使用如下两条命令可以创建一个版本：
-git add code.txt git commit –m &amp;#39;版本1&amp;#39; 添加身份标识（git不做检查）
-git config --global user.email &amp;#34;you@example.com&amp;#34; git config --global user.name &amp;#34;Your Name&amp;#34; 然后再执行git commit -m ‘版本一’
+git add code.txtgit commit –m &amp;#39;版本1&amp;#39; 添加身份标识（git不做检查）
+git config --global user.email &amp;#34;you@example.com&amp;#34;git config --global user.name &amp;#34;Your Name&amp;#34; 然后再执行git commit -m ‘版本一’
 使用如下命令可以查看版本记录：
 git log 继续编辑code.txt，在里面增加一行。
 使用如下命令再创建一个版本并查看版本记录：

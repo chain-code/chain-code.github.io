@@ -49,7 +49,7 @@ int64, err := strconv.ParseInt(string, 10, 64) int到string
 string:=strconv.Itoa(int) int64到string
 string:=strconv.FormatInt(int64,10) 10进制转16进制
 strconv.FormatInt(int64, 16) 想保留前面的数
-func main() { decimal := 2 hex := fmt.Sprintf(&amp;#34;%02x&amp;#34;, decimal) fmt.Println(hex) // 输出：02 } </description>
+func main() {decimal := 2hex := fmt.Sprintf(&amp;#34;%02x&amp;#34;, decimal)fmt.Println(hex) // 输出：02} </description>
     </item>
     
     <item>
@@ -60,10 +60,10 @@ func main() { decimal := 2 hex := fmt.Sprintf(&amp;#34;%02x&amp;#34;, decimal) f
       <guid>https://chain-code.github.io/docs/golang/package/sort/</guid>
       <description>sort —— 排序算法 # sort包提供了对[]int切片、[]float64切片和[]string切片完整支持，主要包括：
 对基本数据类型切片的排序支持 基本数据元素查找 判断基本数据类型切片是否已经排好序 对排好序的数据集合逆序 对[]int切片排序是更常使用sort.Ints()，而不是直接使用IntSlice类型。
-s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据 sort.Ints(s) fmt.Println(s) //将会输出[1 2 3 4 5 6] 如果要使用降序排序，显然要用前面提到的Reverse()方法：
-s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据 sort.Sort(sort.Reverse(sort.IntSlice(s))) fmt.Println(s) //将会输出[6 5 4 3 2 1] 如果要查找整数x在切片a中的位置，相对于前面提到的Search()方法，sort包提供了SearchInts():
+s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据sort.Ints(s)fmt.Println(s) //将会输出[1 2 3 4 5 6] 如果要使用降序排序，显然要用前面提到的Reverse()方法：
+s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据sort.Sort(sort.Reverse(sort.IntSlice(s)))fmt.Println(s) //将会输出[6 5 4 3 2 1] 如果要查找整数x在切片a中的位置，相对于前面提到的Search()方法，sort包提供了SearchInts():
 func SearchInts(a []int, x int) int 注意，SearchInts()的使用条件为：切片a已经升序排序
-s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据 sort.Ints(s) //排序后的s为[1 2 3 4 5 6] fmt.</description>
+s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据sort.Ints(s) //排序后的s为[1 2 3 4 5 6]fmt.</description>
     </item>
     
     <item>
@@ -73,7 +73,7 @@ s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据 sort.Ints(s) //排序�
       
       <guid>https://chain-code.github.io/docs/golang/package/strings/</guid>
       <description>strings.Split # func Split(s, sep string) []string strings.Split 函数用于通过指定的分隔符切割字符串，并返回切割后的字符串切片。
-func main() { fmtPrintln(stringsSplit(&amp;#34;Linux, Unix, Windows, Android&amp;#34;, &amp;#34;, &amp;#34;)) fmtPrintln(stringsSplit(&amp;#34; Linux is very very very good! &amp;#34;, &amp;#34; &amp;#34;)) } 输出：返回的是字符串数组。 [Linux Unix Windows Android] [ Linux is very very very good! ] strings.Split(s, sep) 1 s：待分割的字符串（字符串类型的参数） sep：分隔符 （字符串类型的参数） 返回值： 返回一个字符串切片。 strings.Join # func Join(elems []string, sep string) string 作用：使用 sep 作为分隔符，将elems 中的所有字符连接起来：
+func main() {fmtPrintln(stringsSplit(&amp;#34;Linux, Unix, Windows, Android&amp;#34;, &amp;#34;, &amp;#34;))fmtPrintln(stringsSplit(&amp;#34; Linux is very very very good! &amp;#34;, &amp;#34; &amp;#34;))}输出：返回的是字符串数组。[Linux Unix Windows Android][ Linux is very very very good! ] strings.Split(s, sep)1s：待分割的字符串（字符串类型的参数）sep：分隔符 （字符串类型的参数）返回值：返回一个字符串切片。 strings.Join # func Join(elems []string, sep string) string 作用：使用 sep 作为分隔符，将elems 中的所有字符连接起来：
 func main() { elems := []string{&amp;#34;I&amp;#34;, &amp;#34;like&amp;#34;, &amp;#34;golang&amp;#34;, &amp;#34;!</description>
     </item>
     

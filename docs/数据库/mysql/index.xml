@@ -37,8 +37,8 @@ SQL structured query language 结构化查询语言。
 缺点：多表查询效率低了
 提示：我们现在用的主流的数据库都是关系模型的。
 MySql安装 # 在Ubuntu中，默认情况下，只有最新版本的MySQL包含在APT软件包存储库中,要安装它，只需更新服务器上的包索引并安装默认包apt-get。
-#命令1 sudo apt-get update #命令2 sudo apt-get install mysql-server 初始化配置 # sudo mysql_secure_installation 配置项较多，如下所示：
-#1 VALIDATE PASSWORD PLUGIN can be used to test passwords... Press y|Y for Yes, any other key for No: N (我的选项) #2 Please set the password for root here.</description>
+#命令1sudo apt-get update#命令2sudo apt-get install mysql-server 初始化配置 # sudo mysql_secure_installation 配置项较多，如下所示：
+#1VALIDATE PASSWORD PLUGIN can be used to test passwords...Press y|Y for Yes, any other key for No: N (我的选项)#2Please set the password for root here.</description>
     </item>
     
     <item>

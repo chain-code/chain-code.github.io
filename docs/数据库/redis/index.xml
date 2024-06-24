@@ -36,8 +36,8 @@ go语言redis-cluster开源客户端https://github.com/gitstliu/go-redis-cluster
 配置机器1 # Ø 在演示中，192.168.110.37为当前ubuntu机器的ip
 Ø 在192.168.110.37上进⼊Desktop⽬录，创建conf⽬录
 Ø 在conf⽬录下创建⽂件7000.conf，编辑内容如下
-port 7000 bind 192.168.110.37 daemonize yes pidfile 7000.pid cluster-enabled yes cluster-config-file 7000_node.conf cluster-node-timeout 15000 appendonly yese Ø 在conf⽬录下创建⽂件7001.conf，编辑内容如下
-port 7001 bind 192.168.110.37 daemonize yes pidfile 7001.pid cluster-enabled yes cluster-config-file 7001_node.conf cluster-node-timeout 15000 appendonly yes Ø 在conf⽬录下创建⽂件7002.conf，编辑内容如下</description>
+port 7000bind 192.168.110.37daemonize yespidfile 7000.pidcluster-enabled yescluster-config-file 7000_node.confcluster-node-timeout 15000appendonly yese Ø 在conf⽬录下创建⽂件7001.conf，编辑内容如下
+port 7001bind 192.168.110.37daemonize yespidfile 7001.pidcluster-enabled yescluster-config-file 7001_node.confcluster-node-timeout 15000appendonly yes Ø 在conf⽬录下创建⽂件7002.conf，编辑内容如下</description>
     </item>
     
     <item>

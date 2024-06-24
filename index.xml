@@ -6,7 +6,7 @@
     <description>Recent content in Home on Soulmate</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 27 Mar 2024 12:11:30 +0000</lastBuildDate><atom:link href="https://chain-code.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 05 May 2023 11:51:49 +0800</lastBuildDate><atom:link href="https://chain-code.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Docker基础</title>
       <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/</link>
@@ -61,7 +61,7 @@ defer是Go语言提供的一种用于注册延迟调用的机制：让函数或�
 defer会有短暂延迟，对时间要求特别高的程序，可以避免使用它。
 defer的执行顺序 # defer语句并不会马上执行，而是会进入一个栈，函数return前，会按先进后出的顺序执行。先进后出的原因是后面定义的函数可能会依赖前面的资源，自然要先执行；否则，如果前面的先执行了，那后面的函数依赖就没有了，因而可能会出错。
 在defer函数定义时，对外部变量的引用有两种方式：函数参数、闭包引用。前者在defer定义时就把值传递给defer，并且被cache起来；后者则会在defer函数真正调用时根据整个上下文确定参数当前的值。
-func main(){ var whatever [3]struct{} for i:=range whatever{ defer func(){ fmt.Println(i) }() } } 2 2 2 defer 后面跟的是一个闭包，i是“引用”类型的变量，for循环结束后i的值为2，因此后面打印了3个2.</description>
+func main(){ var whatever [3]struct{} for i:=range whatever{ defer func(){ fmt.Println(i) }() } } 222defer 后面跟的是一个闭包，i是“引用”类型的变量，for循环结束后i的值为2，因此后面打印了3个2.</description>
     </item>
     
     <item>
@@ -102,7 +102,7 @@ Redis宕机 大规模key使用了相同的过期时间 解决
       <description>Hyperledger fabric认知 # fabric由来 # ​ 2015年12月由Linux基金会主导并牵头，IBM、Intel、Cisco等制造和科技行业的巨头共同宣布了Hyperledger fabric联合项目成立。
 ​	hyperledger fabric利用容器技术来托管链码，其中包括系统的应用程序逻辑。
 ​	Hyperledger Fabric 是分布式账本解决方案的平台，采用模块化架构，提供高安全性、弹性、灵活性和可扩展性。它被设计为支持以可插拔方式实现不同组件，并适应复杂的经济生态系统。
-hyperledger fabric与其他公有区块链系统最大的不同主要体现在以下两个方面： （1）私有 fabric提供建立通道的功能，允许参与交易新建一个单独的账本。 （2）许可 与开放无须许可的网络系统允许未知身份的参与者加入网络不同（需要通过工作量证明协议来保证交易有效并维护网络的安全），Hyperledger fabric通过MSP来登记所有成员。 cURL是什么？有什么作用？
+hyperledger fabric与其他公有区块链系统最大的不同主要体现在以下两个方面：（1）私有fabric提供建立通道的功能，允许参与交易新建一个单独的账本。（2）许可与开放无须许可的网络系统允许未知身份的参与者加入网络不同（需要通过工作量证明协议来保证交易有效并维护网络的安全），Hyperledger fabric通过MSP来登记所有成员。 cURL是什么？有什么作用？
 cURL是一个可以在终端命令行下使用URL语法执行的开源文件传输工具。它支持基于HTTP/Socket的代理；cURL还支持使用SSL证书，支持HTTP POST、HTTP PUT，支持FTP上传，以及基于HTTP表单的上传；支持cookie，可以使用用户名+密码的方式实现认证等。
 Hyperledger fabric架构 # 交易流程 # 背书 # 一个示例背书策略可能这样定义：参与区块链网络的四个组织中有三个必须在交易被认为有效之前签署该交易。所有的交易，无论是有效的还是无效的，都会被添加到分布式账本中，但只有有效交易会更新世界状态。
 如果一项背书策略指定了必须有不止一个组织来签署交易，那么只有当足够数量的组织都执行了智能合约，才能够生成有效交易。
@@ -122,7 +122,7 @@ Hyperledger fabric架构 # 交易流程 # 背书 # 一个示例背书策略可�
       <description>力扣刷题（一） # 力扣刷题 全部题目模块（1～100）
 简单 # 山峰数组 # 符合下列属性的数组 arr 称为 山峰数组（山脉数组） ：arr.length &amp;gt;= 3存在 i（0 &amp;lt; i &amp;lt; arr.length - 1）使得： arr[0] &amp;lt; arr[1] &amp;lt; &amp;hellip; arr[i-1] &amp;lt; arr[i] arr[i] &amp;gt; arr[i+1] &amp;gt; &amp;hellip; &amp;gt; arr[arr.length - 1] 给定由整数组成的山峰数组 arr ，返回任何满足 arr[0] &amp;lt; arr[1] &amp;lt; &amp;hellip; arr[i - 1] &amp;lt; arr[i] &amp;gt; arr[i + 1] &amp;gt; &amp;hellip; &amp;gt; arr[arr.length - 1] 的下标 i ，即山峰顶部。
 示例 1：
-输入：arr = [0,1,0] 输出：1 示例 2：</description>
+输入：arr = [0,1,0]输出：1 示例 2：</description>
     </item>
     
     <item>
@@ -156,19 +156,32 @@ Go协程goroutine: 是一种轻量线程，它不是操作系统的线程，而�
 问题原因 # 此问题是由适用于macOS的Docker Desktop的较新版本引起的。
 要解决此问题，请在Docker Desktop首选项中，取消选中该框Use gRPC FUSE for file sharing， 以使用旧版osxfs文件共享，然后单击**Apply****＆**Restart
 报错二： # 问题原因： # 环境配置问题，进入go.mod文件 重新配置
-github.com/Shopify/sarama v1.27.2 // indirect github.com/astaxie/beego v1.12.1 github.com/fsouza/go-dockerclient v1.7.0 // indirect github.com/grpc-ecosystem/go-grpc-middleware v1.2.2 // indirect github.</description>
+github.com/Shopify/sarama v1.27.2 // indirectgithub.com/astaxie/beego v1.12.1github.com/fsouza/go-dockerclient v1.7.0 // indirectgithub.com/grpc-ecosystem/go-grpc-middleware v1.2.2 // indirectgithub.</description>
     </item>
     
     <item>
       <title>CGo</title>
-      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/cgo/</link>
+      <link>https://chain-code.github.io/docs/c/cgo/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/cgo/</guid>
+      <guid>https://chain-code.github.io/docs/c/cgo/</guid>
       <description>CGO入门 # Golang 自带的 CGO 可以支持与 C 语言接口的互通。
+Go 与 C 的桥梁：cgo 入门，剖析与实践 - 知乎 (zhihu.com)
 启用CGO特性 # 在 golang 代码中加入 import “C” 语句就可以启动 CGO 特性。这样在进行 go build 命令时，就会在编译和连接阶段启动 gcc 编译器。
-package main import &amp;#34;C&amp;#34; // import &amp;#34;C&amp;#34;更像是一个关键字，CGO工具在预处理时会删掉这一行 func main() { } 使用 -x 选项可以查看 go 程序编译过程中执行的所有指令。可以看到 golang 编译器已经为 test1.go 创建了 CGO 编译选项
-[root@VM-centos ~/cgo_test/golink2]# go build -x test1.go WORK=/tmp/go-build330287398 mkdir -p $WORK/b001/ cd /root/cgo_test/golink2 CGO_LDFLAGS=&amp;#39;&amp;#34;-g&amp;#34; &amp;#34;-O2&amp;#34;&amp;#39; /usr/lib/golang/pkg/tool/linux_amd64/cgo -objdir $WORK/b001/ -importpath command-line-arguments -- -I $WORK/b001/ -g -O2 .</description>
+package mainimport &amp;#34;C&amp;#34; // import &amp;#34;C&amp;#34;更像是一个关键字，CGO工具在预处理时会删掉这一行func main() {} 使用 -x 选项可以查看 go 程序编译过程中执行的所有指令。可以看到 golang 编译器已经为 test1.go 创建了 CGO 编译选项
+[root@VM-centos ~/cgo_test/golink2]# go build -x test1.goWORK=/tmp/go-build330287398mkdir -p $WORK/b001/cd /root/cgo_test/golink2CGO_LDFLAGS=&amp;#39;&amp;#34;-g&amp;#34; &amp;#34;-O2&amp;#34;&amp;#39; /usr/lib/golang/pkg/tool/linux_amd64/cgo -objdir $WORK/b001/ -importpath command-line-arguments -- -I $WORK/b001/ -g -O2 .</description>
+    </item>
+    
+    <item>
+      <title>CGO遇到的问题解决</title>
+      <link>https://chain-code.github.io/docs/c/cgo%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/c/cgo%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/</guid>
+      <description>CGO调用海康威视SDK # 问题一：宏定义问题 # 在C语言中，extern &amp;quot;C&amp;quot; 是用于指定C++编译器按照C语言的方式进行函数名的命名规则和链接的修饰符。然而，根据您提供的错误信息，您正在使用的是C语言的编译器（gcc），而不是C++编译器。
+cgo: gcc errors for preamble:In file included from .\hikvision.go:6:0:error: expected identifier or &amp;#39;(&amp;#39; before string constant#define NET_DVR_API extern &amp;#34;C&amp;#34; __declspec(dllimport)note: in definition of macro &amp;#39;NET_DVR_API&amp;#39;#define NET_DVR_API extern &amp;#34;C&amp;#34; __declspec(dllimport)^~~ 添加这个：
+#ifndef __cplusplus#define NET_DVR_API#else#define NET_DVR_API extern &amp;#34;C&amp;#34;#endif 原文件
+#ifndef _HC_NET_SDK_H_ #define _HC_NET_SDK_H_ #ifndef _WINDOWS_ #if (defined(_WIN32) || defined(_WIN64)) #include &amp;lt;winsock2.h&amp;gt; #include &amp;lt;windows.h&amp;gt; #endif #endif #if defined(_WIN64) #define OS_WINDOWS64 1 #endif #if defined(__LP64__) #define OS_POSIX64 1 #endif #ifndef __PLAYRECT_defined #define __PLAYRECT_defined typedef struct __PLAYRECT { int x; int y; int uWidth; int uHeight; }PLAYRECT; #endif #if (defined(_WIN32)) //windows //#define NET_DVR_API extern &amp;#34;C&amp;#34; __declspec(dllimport) 防止宏被重复定义 这里注释掉 typedef unsigned __int64 UINT64; typedef signed __int64 INT64; #elif defined(__linux__) || defined(__APPLE__) //linux #define BOOL int typedef unsigned int DWORD; typedef unsigned short WORD; typedef unsigned short USHORT; typedef short SHORT; typedef int LONG; typedef unsigned char BYTE; typedef unsigned int UINT; typedef void* LPVOID; typedef void* HANDLE; typedef unsigned int* LPDWORD; typedef unsigned long long UINT64; typedef signed long long INT64; #ifndef TRUE #define TRUE 1 #endif #ifndef FALSE #define FALSE 0 #endif #ifndef NULL #define NULL 0 #endif #define __stdcall #define CALLBACK #define NET_DVR_API extern &amp;#34;C&amp;#34; typedef unsigned int COLORKEY; typedef unsigned int COLORREF; #ifndef __HWND_defined #define __HWND_defined #if defined(__APPLE__) || defined(ANDROID) typedef void* HWND; #elif defined(__linux__) typedef unsigned int HWND; #else typedef void* HWND; #endif #endif #ifndef __HDC_defined #define __HDC_defined #if defined(__linux__) typedef struct __DC { void* surface; //SDL Surface HWND hWnd; //HDC window handle }DC; typedef DC* HDC; #else typedef void* HDC; #endif #endif typedef struct tagInitInfo { int uWidth; int uHeight; }INITINFO; #endif #ifndef __cplusplus #define NET_DVR_API #else #define NET_DVR_API extern &amp;#34;C&amp;#34; #endif 问题二：C语言不支持在函数参数列表中使用默认参数 # cgo: gcc errors for preamble:In file included from .</description>
     </item>
     
     <item>
@@ -178,7 +191,7 @@ package main import &amp;#34;C&amp;#34; // import &amp;#34;C&amp;#34;更像是�
       
       <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/channel/</guid>
       <description>channel # 如何判断通道为空
-if len(channel) == 0 { // 通道为空 } select { case &amp;lt;-channel: // 通道不为空，可以接收元素 default: // 通道为空 } 如何判断通道已关闭
+if len(channel) == 0 {// 通道为空} select {case &amp;lt;-channel:// 通道不为空，可以接收元素default:// 通道为空} 如何判断通道已关闭
 v, ok := &amp;lt;-ch 通道各种花里胡哨用法
 https://learnku.com/articles/71310
 https://cloud.tencent.com/developer/article/1911948
@@ -191,6 +204,24 @@ func main() { // 4个channel chs := make([]chan int, 4) for i, _ := range chs { 
     </item>
     
     <item>
+      <title>crontab使用</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/crontab%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/crontab%E4%BD%BF%E7%94%A8/</guid>
+      <description>简介 # Linux crontab 是 Linux 系统中用于设置周期性被执行的指令的命令。
+当安装完成操作系统之后，默认便会启动此任务调度命令。
+crond 命令每分钟会定期检查是否有要执行的工作，如果有要执行的工作便会自动执行该工作。
+**注意：**新创建的 cron 任务，不会马上执行，至少要过 2 分钟后才可以，当然你可以重启 cron 来马上执行。
+Linux 任务调度的工作主要分为以下两类：
+**1、系统执行的工作：**系统周期性所要执行的工作，如备份系统数据、清理缓存 **2、个人执行的工作：**某个用户定期要做的工作，例如每隔 10 分钟检查邮件服务器是否有新信，这些工作可由每个用户自行设置 语法 # crontab [ -u user ] file crontab [ -u user ] { -l | -r | -e } 说明：
+crontab 是用来让使用者在固定时间或固定间隔执行程序之用，换句话说，也就是类似使用者的时程表。
+-u user 是指设定指定 user 的时程表，这个前提是你必须要有其权限(比如说是 root)才能够指定他人的时程表。如果不使用 -u user 的话，就是表示设定自己的时程表。
+参数说明：
+-e : 执行文字编辑器来设定时程表，内定的文字编辑器是 Vi/Vim，如果你想用别的文字编辑器，则请先设定 VISUAL 环境变数来指定使用那个文字编辑器(比如说 setenv VISUAL joe) -r : 删除目前的时程表 -l : 列出目前的时程表 查看当前用户的 crontab 文件：</description>
+    </item>
+    
+    <item>
       <title>Flag</title>
       <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/flag/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -198,7 +229,7 @@ func main() { // 4个channel chs := make([]chan int, 4) for i, _ := range chs { 
       <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/flag/</guid>
       <description># flag # 概述 # flag包提供了一系列解析命令行参数的功能接口，官方教程的地址为：https://golang.org/pkg/flag/#pkg-overview
 命令行语法 # 命令行语法主要有以下几种形式
--flag //只支持bool类型 -flag=x -flag x //只支持非bool类型 以上语法对于一个或两个‘－’号，效果是一样的，但是要注意对于第三种情况，只支持非bool类型，原因是碰到如下情况时
+-flag //只支持bool类型-flag=x-flag x //只支持非bool类型 以上语法对于一个或两个‘－’号，效果是一样的，但是要注意对于第三种情况，只支持非bool类型，原因是碰到如下情况时
 cmd -x * *为0，false有可能表示一个文件名或文件，也有可能表示x标签的值为0或false，会产生二义性，因此规定第三种只支持非bool类型。对于整形flag，合法的值可以为1234, 0664,0x1234或负数等。对于布尔型flag，可以为1, 0, t, f, T, F, true, false, TRUE, FALSE, True, False等
 命令行参数解析 # flag.Parse() 解析函数将会在碰到第一个非flag命令行参数时停止，非flag命令行参数是指不满足命令行语法的参数，如命令行参数为cmd --flag=true abc则第一个非flag命令行参数为“abc”
 调用Parse解析后，就可以直接使用flag本身(指针类型)或者绑定的变量了(值类型) fmt.Println(&amp;#34;ip has value &amp;#34;, *ip) fmt.Println(&amp;#34;flagvar has value &amp;#34;, flagvar) 12 还可通过flag.Args(), flag.Arg(i)来获取非flag命令行参数
@@ -206,6 +237,34 @@ cmd -x * *为0，false有可能表示一个文件名或文件，也有可能表�
 命令行参数解析方法 # 使用flag主要包括以下几步
 定义flag参数，有三种方式
 通过flag.String(), Bool(), Int() 等flag.Xxx()方法，该种方式返回一个相应的指针 import &amp;#34;flag&amp;#34; var ip = flag.Int(&amp;#34;flagname&amp;#34;, 1234, &amp;#34;help message for flagname&amp;#34;) 通过flag.</description>
+    </item>
+    
+    <item>
+      <title>Golang控流</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/golang%E6%8E%A7%E6%B5%81/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/golang%E6%8E%A7%E6%B5%81/</guid>
+      <description>概述 # 流控(Rate limiting)是构建可扩展弹性系统的重要技术之一，目的是通过限制指定时间内允许通过的请求数量来控制流量。在 Go 中实施流控可以确保最佳的资源利用率，并保护应用不被过多的流量或滥用行为所冲垮。
+流控包括定义一套规则，确定客户端在给定时间窗口内可以发出多少请求，从而确保系统能够处理负载，防止滥用或拒绝服务攻击。两种常见的流控方法是：
+拒绝服务攻击（Denial of Service, DoS）是一种恶意行为，旨在剥夺合法用户访问网络服务或资源的能力。在拒绝服务攻击中，攻击者通过采取各种手段使目标系统或网络资源过载或不可用，从而阻止合法用户访问。
+拒绝服务攻击的目标可以是各种网络服务，例如网站、服务器、路由器、域名系统（DNS）等。攻击者可能利用系统或网络的弱点，通过发送大量请求、占用资源、耗尽带宽或利用其他漏洞来导致服务不可用。
+固定窗口控流：在这种方法中，在一个固定时间窗口内执行控流。例如，如果流控设置为每分钟 100 个请求，则系统在任何给定的 60 秒窗口内最多允许 100 个请求，超过此限制的请求将被拒绝或延迟到下一个时间窗口。 令牌桶控流：令牌桶控流基于令牌从桶中消失的概念。令牌桶最初装满固定数量的令牌，每个令牌代表一个请求。当客户端要发出请求时，必须从桶中获取一个令牌。如果令牌桶是空的，客户端必须等待，直到有令牌可用。 Go 提供了一个名为 golang.org/x/time/rate 的内置软件包，实现了流控功能。接下来我们看看如何使用固定窗口和令牌桶两种方法来实现流控。
+固定窗口控流 # package main import ( &amp;#34;fmt&amp;#34; &amp;#34;golang.org/x/time/rate&amp;#34; &amp;#34;time&amp;#34; ) func main() { limiter := rate.NewLimiter(rate.Limit(100), 1) // Allow 100 requests per second for i := 0; i &amp;lt; 200; i++ { if !limiter.Allow() { fmt.Println(&amp;#34;Rate limit exceeded. Request rejected.&amp;#34;) continue } // Process the request fmt.</description>
+    </item>
+    
+    <item>
+      <title>go泛型介绍</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/go%E6%B3%9B%E5%9E%8B%E4%BB%8B%E7%BB%8D/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/go%E6%B3%9B%E5%9E%8B%E4%BB%8B%E7%BB%8D/</guid>
+      <description>什么是泛型 # 泛型是一种编程特性，允许你编写更通用的代码。 泛型可以让你编写一个函数或类型，而不是针对特定的数据类型。 这样，你可以使用相同的函数或类型处理不同的数据类型，而无需为每种数据类型编写重复的代码，在python和其他语言中很早就被支持了，但是在go中直到1.18版本之后才被支持。
+为什么需要泛型 # 假如我们需要计算两数之和
+func Add(a int, b int) int {return a + b} 此时，如果我们需要去计算其他类型的，比如浮点或者字符串的和，就需要新建方法去实现
+func AddFloat32(a float32, b float32) float32 {return a + b}func AddString(a string, b string) string {return a + b} 我们也可以使用反射去解决问题，但是使用反射在运行期间获取变量类型会降低代码的执行效率并且失去编译的类型检查，同时大量的反射代码也会让程序变得复杂。如果将传入的确定的类型转换成一个类型集合，这样就只需要定义一个方法就能实现上述需求
+// 假设 T 是类型形参，在定义函数时它的类型是不确定的，类似占位符func Add[T string|float64](a T, b T) T { return a + b} 泛型语法 # 借助上面的例子，我们对于go泛型编程有了最基本的认识，对于泛型go还有很多的新的概念
+类型形参、类型实参 # 现在go语言中的函数和类型支持类型参数。类型参数列表看起来像普通的参数列表，只不过它使用方括号（[]）而不是圆括号（()）。</description>
     </item>
     
     <item>
@@ -244,6 +303,52 @@ type MyUser struct { ID int64 `json:&amp;#34;id&amp;#34;` Name string `json:&amp
 方案一 # 最简单的方式是引入另外一个辅助struct,在MarshalJSON中使用它进行正确的格式化：
 func (u *MyUser) MarshalJSON() ([]byte, error) { return json.Marshal(&amp;amp;struct { ID int64 `json:&amp;#34;id&amp;#34;` Name string `json:&amp;#34;name&amp;#34;` LastSeen int64 `json:&amp;#34;lastSeen&amp;#34;` }{ ID: u.ID, Name: u.Name, LastSeen: u.LastSeen.Unix(), }) } 方案二 # 方案一在遇到多字段的时候会很麻烦，如果我们能把原始struct嵌入到新的struct中，并让它继承所有不需要改变的字段就太好了:
 func (u *MyUser) MarshalJSON() ([]byte, error) { return json.Marshal(&amp;amp;struct { LastSeen int64 `json:&amp;#34;lastSeen&amp;#34;` *MyUser }{ LastSeen: u.</description>
+    </item>
+    
+    <item>
+      <title>libewf库编译</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/libewf%E5%BA%93%E7%BC%96%E8%AF%91/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/libewf%E5%BA%93%E7%BC%96%E8%AF%91/</guid>
+      <description>地址：libyal/libewf: Libewf is a library to access the Expert Witness Compression Format (EWF) (github.com)
+1、下载最新稳定版本
+libewf-experimental-&amp;lt;version&amp;gt;.tar.gz 2、解压
+3、在麒麟系统上安装软件包
+sudo apt install git autoconf automake autopoint libtool pkg-config flex bison 4、进入libewf文件夹编译
+./configure --enable-shared=no --enable-static=yes --enable-wide-character-type=yes --enable-shared=no：表示禁用共享库的生成，即只生成静态库。
+--enable-static=yes：表示启用静态库的生成。
+--enable-wide-character-type=yes：表示启用宽字符类型（wide character type）支持
+若不启用 会报 in function _cgo_8405f37c7b66_Cfunc_libewf_handle_open_wide&#39;: undefined reference to libewf_handle_open_wide 的错误
+5、make
+make -j8 6、生成的文件在../libewf/.libs文件夹下</description>
+    </item>
+    
+    <item>
+      <title>localhost与127.0.0.1</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/localhost%E4%B8%8E127.0.0.1/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/localhost%E4%B8%8E127.0.0.1/</guid>
+      <description> 一、基本概念 # 首先，我们需要明确localhost和127.0.0.1各自的定义。
+localhost：在计算机网络中，localhost是一个主机名（hostname），指的是当前你正在使用的设备。它是一个常用于访问本机上运行的网络服务的域名。 127.0.0.1：而127.0.0.1则是一个IP地址，属于IPv4协议下的一个特殊地址。它被称为环回地址（loopback address），用于网络软件 测试 以及访问本机服务。 二、技术细节与差异 # 解析过程的不同 # 虽然localhost和127.0.0.1都指向本机，但它们的工作方式存在差异。
+当你使用localhost时，系统会通过DNS（域名系统）解析来将其转换为相应的IP地址。一般情况下，这个过程很快，因为大多数操作系统都会在本地的hosts文件中对localhost进行映射，使其指向127.0.0.1或类似的环回地址。相反，使用127.0.0.1时，由于它本身就是一个IP地址，因此无需通过DNS解析，数据包直接在本机内部路由。
+性能差异 # 虽然这两者之间的性能差异微乎其微，但在某些高性能要求的环境中，避免即使是最小的延迟也是至关重要的。
+使用localhost可能会引入微小的延迟，因为需要经过DNS解析的过程。127.0.0.1则可以省略这一步骤，稍微提升效率。
+IPv6环境 # 在IPv6环境下，localhost的解析和使用还具有更多的考量。
+localhost在IPv6中通常解析为::1，这是IPv6下的环回地址。直接使用127.0.0.1无法利用IPv6的优势，因此在IPv6优先的网络环境中，推荐使用localhost。
+三、应用场景举例 # 开发环境 # 在软件和网站开发过程中，开发 者经常需要在本地机器上运行和测试代码。使用localhost或127.0.0.1可以方便地访问本地开发服务器，无需通过外部网络。
+# 通过localhost访问本地开发服务器curl http://localhost:8080# 或者使用IP地址curl http://127.0.0.1:8080 网络软件测试 # 开发网络应用或服务时，测试环回功能非常重要。这可以确保软件在将数据发送到网络之前能正确处理数据。127.0.0.1在这种情况下被广泛使用。
+四、最佳实践建议 # 在大多数常规应用场景中，使用localhost和127.0.0.1不会造成明显的差别。但是，从性能和兼容性的角度考虑，理解二者的差异是有益的。 对于侧重于性能的应用，直接使用IP地址（127.0.0.1或::1）可以略微减少DNS解析的开销。 当开发依赖于IPv6环境的应用时，优先使用localhost以确保正确解析环回地址。 </description>
+    </item>
+    
+    <item>
+      <title>pprof</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/pprof/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/pprof/</guid>
+      <description>[pprof用法简介](Go 语言性能调试与分析工具：pprof 用法简介 | wxsm&amp;rsquo;s pace)</description>
     </item>
     
     <item>
@@ -292,7 +397,39 @@ var v interface{} v = Person{ Name: &amp;#34;Alice&amp;#34;, Age: 30, Email: &am
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</guid>
-      <description> 常用快捷键 # 插入 # 在光标后插入：a 在光标前插入：i 在光标下方新开一行插入：o (小写) 光标上下左右移动 # 左移：h 退格 //退格可以左移动到上一行 右移：l 空格 //空格可以右移到下一行 推荐空格 上移：k 下移：j 上下移动行 # 下移一行到第一个非空白字符串：+ enter //推荐enter 上移一行到第一个非空白字符串：- 快速上下移动 # 移动到文档末尾：G 移动到文档开头：gg 向下移动一段：} //代码中的空行 也算一段的隔离标识 向上移动一段：{ 向下移动一部分：[] //代码中就是一个函数一个函数的移动 比较实用 向上移动一部分：][ 单词左右移动 # 向左移动一个单词：w 向右移动一个单词：b 移动到当前行开头：0 （零） 移动到当前行末尾：$ 移动到当前单词末尾：e 选择文本 # 进入逐字可视模式：v 退出可视模式：Esc 删除 # 删除该行： dd 删除该单词：dw 复制粘贴 # 复制：y 剪切：d 和删除类似 粘贴：p 复制当前行：yy 剪切当前行：dd 撤销 # 撤销最后操作：u </description>
+      <description> 常用快捷键 # 插入 # 在光标后插入：a在光标前插入：i在光标下方新开一行插入：o (小写) 光标上下左右移动 # 左移：h 退格 //退格可以左移动到上一行右移：l 空格 //空格可以右移到下一行 推荐空格上移：k下移：j 上下移动行 # 下移一行到第一个非空白字符串：+ enter //推荐enter上移一行到第一个非空白字符串：- 快速上下移动 # 移动到文档末尾：G移动到文档开头：gg向下移动一段：} //代码中的空行 也算一段的隔离标识向上移动一段：{向下移动一部分：[] //代码中就是一个函数一个函数的移动 比较实用向上移动一部分：][ 单词左右移动 # 向左移动一个单词：w向右移动一个单词：b移动到当前行开头：0 （零）移动到当前行末尾：$移动到当前单词末尾：e 选择文本 # 进入逐字可视模式：v退出可视模式：Esc 删除 # 删除该行： dd删除该单词：dw 复制粘贴 # 复制：y剪切：d 和删除类似粘贴：p复制当前行：yy剪切当前行：dd 撤销 # 撤销最后操作：u </description>
+    </item>
+    
+    <item>
+      <title>业务代码</title>
+      <link>https://chain-code.github.io/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/</guid>
+      <description> 监听windows是否处于休眠唤醒状态 # #include &amp;lt;windows.h&amp;gt; #include &amp;lt;iostream&amp;gt; #include &amp;lt;powrprof.h&amp;gt; #pragma comment(lib, &amp;#34;Powrprof.lib&amp;#34;) using namespace std; ULONG CALLBACK DeviceCallback(PVOID Context, ULONG Type, PVOID Setting) { if (Type == PBT_APMSUSPEND) { cout &amp;lt;&amp;lt; &amp;#34;close&amp;#34; &amp;lt;&amp;lt; endl; } if (Type == PBT_APMRESUMESUSPEND) { cout &amp;lt;&amp;lt; &amp;#34;open&amp;#34; &amp;lt;&amp;lt; endl; } return ERROR_SUCCESS; } int main() { HPOWERNOTIFY g_power_notify_handle = NULL; DEVICE_NOTIFY_SUBSCRIBE_PARAMETERS params; params.Callback = DeviceCallback; params.Context = 0; PowerRegisterSuspendResumeNotification(DEVICE_NOTIFY_CALLBACK, &amp;amp;params, &amp;amp;g_power_notify_handle); MSG msg; while (GetMessage(&amp;amp;msg, NULL, 0, 0)) { TranslateMessage(&amp;amp;msg); DispatchMessage(&amp;amp;msg); } PowerUnregisterSuspendResumeNotification(g_power_notify_handle); return 0; } </description>
+    </item>
+    
+    <item>
+      <title>代码整洁之道</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%95%B4%E6%B4%81%E4%B9%8B%E9%81%93/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%95%B4%E6%B4%81%E4%B9%8B%E9%81%93/</guid>
+      <description>整洁代码 # 简单代码，根据重要顺序应该是：
+能通过所有测试 没有重复代码 体现系统中的全部设计理念 包括尽量少的实体，比如方法、函数等 光写好代码是不够的，必须时时刻刻保持整洁。
+有意义的命名 # 1、命名要名副其实，直接体现要做的事情。
+openFile--&amp;gt;openVideo 2、选择一个好名字要花时间，但省下来的时间比花掉的多。一旦发现有更好的名称，就换掉旧的。
+3、避免使用会引起误解的名称，尤其是遇到一些缩写，要防止其存在歧义。
+//反面例子 type Std struct { Name string Age int Cls string } std 可能被误解为 Standard，而实际上它应该表示 Student（学生）。
+4、不要去做无意义的区分，例如：taskData和taskInfo，名称虽然不同但意义没有差别。
+variable一词不应当出现在变量名中，table一词不应该出现在表名中。例如：NameString不可取，名称后面建议不要加类型。
+//反面例子 var recordMap map[int64]*RecordDbManager 总之在读者能区分的情况下、不产生歧义的情况下，越简单的命名就是好命名。
+5、使用可以读出来的命名。
+generationTimestamp要比genymdhms要好的多，即使前一个比较长一点，但是无所谓，表达准确意思。 6、使用可以搜索的名字
+长名称胜于短名称，搜得到的名称比自编代码写就的名称要好。
+//反面例子 for i：=0；i&amp;lt;30;i++{ s+=t[i]*4/5 } //4 和 5代表什么意思要用常量说明，否则维护人员很难注意 const WorkDays int =5 const realDays int =4 7、命名不要有无意义的前缀，人们只会看到名称中有意义的部分。
+//反面例子 var m_student string 8、避免思维映射。例如：循环计数通常使用i，j，k，千万别用l 。专业的程序员编写其他人能理解的代码。
+//反面例子 for l：=0；l&amp;lt;30;l++{ s+=t[l]*4/5 } 9、结构体命名不应该用动词，方法命名应该用动词，可加上get, is ,set 前缀。</description>
     </item>
     
     <item>
@@ -301,7 +438,7 @@ var v interface{} v = Person{ Name: &amp;#34;Alice&amp;#34;, Age: 30, Email: &am
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/</guid>
-      <description>/***　*　瓦瓦　十　*　十齱龠己　亅瓦車己　*　乙龍龠毋日丶　丶乙己毋毋丶　*　十龠馬鬼車瓦　己十瓦毋毋　*　鬼馬龠馬龠十　己己毋車毋瓦　*　毋龠龠龍龠鬼乙丶丶乙車乙毋鬼車己　*　乙龠龍龍鬼龍瓦　十瓦毋乙瓦龠瓦亅　*　馬齱龍馬鬼十丶日己己己毋車乙丶　*　己齱馬鬼車十十毋日乙己己乙乙　*　車馬齱齱日乙毋瓦己乙瓦日亅　*　亅車齺龖瓦乙車龖龍乙乙十　*　日龠龠十亅車龍毋十十　*　日毋己亅　己己十亅亅　*　丶己十十乙　丶丶丶丶丶　*　亅己十龍龖瓦　丶　丶　乙十　*　亅己十龠龖毋　丶丶　丶己鬼鬼瓦亅　*　十日十十日亅丶亅丶　丶十日毋鬼馬馬車乙　*　十日乙十亅亅亅丶　十乙己毋鬼鬼鬼龍齺馬乙　*　丶瓦己乙十十亅丶亅乙乙乙己毋鬼鬼鬼龍齱齺齺鬼十　*　乙乙十十十亅乙瓦瓦己日瓦毋鬼鬼龠齱齱龍龍齱齱毋丶　*　亅十十十十乙瓦車毋瓦瓦日車馬龠龍龍龍龍龍龠龠龠馬亅 *　十十十十己毋車瓦瓦瓦瓦鬼馬龠龍龠龠龍龠龠龠馬龠車 *　亅十十日毋瓦日日瓦鬼鬼鬼龠龠馬馬龠龍龍龠馬馬車 *　亅亅亅乙瓦瓦毋車車車馬龍龠鬼鬼馬龠龍龍龠馬馬鬼 *　丶丶乙亅亅乙車鬼鬼鬼毋車龍龍龠鬼馬馬龠龍齱齱龍馬鬼 *　亅己十十己十日鬼鬼車瓦毋龠龍龠馬馬龠龠龠齱齺齺齱龠鬼 *　亅乙乙乙十車馬車毋馬齱齱龍龠龠龠馬龠龍齱龍龠龠鬼瓦 *　丶毋龠鬼車瓦車馬龠龍龠龠龍齱齱龠馬馬鬼毋日 *　十乙己日十　丶己鬼龍齱齺齱龍馬馬馬車毋己 *　丶十己乙亅丶　亅瓦馬龠龍龠龠馬毋瓦乙 *　丶十十乙亅十　亅己瓦車馬龠鬼車瓦乙 *　丶十乙十十丶　丶丶亅十瓦鬼車瓦己 *　丶亅亅丶　亅日瓦日 *　丶 */ /*** * .</description>
+      <description>/***　*　瓦瓦　十　*　十齱龠己　亅瓦車己　*　乙龍龠毋日丶　丶乙己毋毋丶　*　十龠馬鬼車瓦　己十瓦毋毋　*　鬼馬龠馬龠十　己己毋車毋瓦　*　毋龠龠龍龠鬼乙丶丶乙車乙毋鬼車己　*　乙龠龍龍鬼龍瓦　十瓦毋乙瓦龠瓦亅　*　馬齱龍馬鬼十丶日己己己毋車乙丶　*　己齱馬鬼車十十毋日乙己己乙乙　*　車馬齱齱日乙毋瓦己乙瓦日亅　*　亅車齺龖瓦乙車龖龍乙乙十　*　日龠龠十亅車龍毋十十　*　日毋己亅　己己十亅亅　*　丶己十十乙　丶丶丶丶丶　*　亅己十龍龖瓦　丶　丶　乙十　*　亅己十龠龖毋　丶丶　丶己鬼鬼瓦亅　*　十日十十日亅丶亅丶　丶十日毋鬼馬馬車乙　*　十日乙十亅亅亅丶　十乙己毋鬼鬼鬼龍齺馬乙　*　丶瓦己乙十十亅丶亅乙乙乙己毋鬼鬼鬼龍齱齺齺鬼十　*　乙乙十十十亅乙瓦瓦己日瓦毋鬼鬼龠齱齱龍龍齱齱毋丶　*　亅十十十十乙瓦車毋瓦瓦日車馬龠龍龍龍龍龍龠龠龠馬亅*　十十十十己毋車瓦瓦瓦瓦鬼馬龠龍龠龠龍龠龠龠馬龠車*　亅十十日毋瓦日日瓦鬼鬼鬼龠龠馬馬龠龍龍龠馬馬車*　亅亅亅乙瓦瓦毋車車車馬龍龠鬼鬼馬龠龍龍龠馬馬鬼*　丶丶乙亅亅乙車鬼鬼鬼毋車龍龍龠鬼馬馬龠龍齱齱龍馬鬼*　亅己十十己十日鬼鬼車瓦毋龠龍龠馬馬龠龠龠齱齺齺齱龠鬼*　亅乙乙乙十車馬車毋馬齱齱龍龠龠龠馬龠龍齱龍龠龠鬼瓦*　丶毋龠鬼車瓦車馬龠龍龠龠龍齱齱龠馬馬鬼毋日*　十乙己日十　丶己鬼龍齱齺齱龍馬馬馬車毋己*　丶十己乙亅丶　亅瓦馬龠龍龠龠馬毋瓦乙*　丶十十乙亅十　亅己瓦車馬龠鬼車瓦乙*　丶十乙十十丶　丶丶亅十瓦鬼車瓦己*　丶亅亅丶　亅日瓦日*　丶*/ /*** * .</description>
     </item>
     
     <item>
@@ -377,15 +514,27 @@ ssh-keygen -t rsa -C &amp;#34;github邮箱地址&amp;#34; -f ~/.ssh/github_rsa 2
     </item>
     
     <item>
+      <title>获取内网活跃IP</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%8E%B7%E5%8F%96%E5%86%85%E7%BD%91%E6%B4%BB%E8%B7%83ip/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%8E%B7%E5%8F%96%E5%86%85%E7%BD%91%E6%B4%BB%E8%B7%83ip/</guid>
+      <description>获取内网活跃IP # https://rogerzhu.gitbooks.io/-tcp-udp-ip/content/chapter1/arp-lian-jie-mac-he-ip.html
+内网广播ARP Request # ARP（Address Resolution Protocol），地址解析协议，是根据IP地址获取物理地址的一个TCP/IP协议。主机发送信息时将包含目标IP地址的ARP请求广播到网络上的所有主机，并接收返回信息，以此确认目标的物理地址。
+当我们要向以太网中另一台主机发送IP数据时，我们本地会根据目的主机的IP地址在ARP高速缓存中查询相应的以太网地址，ARP高速缓存是主机维护的一个IP地址到相应以太网地址的映射表。如果查询失败，ARP会广播一个询问（op字段为1）目的主机硬件地址的报文，等待目标主机的响应。 因为ARP高速缓存有时效性，读取到目标主机的硬件地址后，最好发送一个ICMP包验证目标是否在线。当然也可以选择不从高速缓存里读取数据，而是直接并发发送arp包，等待在线主机回应ARP报文。
+通过内网IP和子网掩码计算内网IP范围 # // 获取所有网卡 func Test_Net(t *testing.T) { // 获取所有网卡接口 interfaces, err := net.Interfaces() if err != nil { fmt.Println(&amp;#34;Error:&amp;#34;, err) return } for _, iface := range interfaces { fmt.Printf(&amp;#34;Name: %s\n&amp;#34;, iface.Name) fmt.Printf(&amp;#34;MTU: %d\n&amp;#34;, iface.MTU) fmt.Printf(&amp;#34;HardwareAddr: %s\n&amp;#34;, iface.HardwareAddr) fmt.Printf(&amp;#34;Flags: %s\n&amp;#34;, iface.Flags) // 获取每个接口的地址信息 addrs, err := iface.Addrs() if err != nil { fmt.Println(&amp;#34;Error:&amp;#34;, err) continue } for i, addr := range addrs { fmt.</description>
+    </item>
+    
+    <item>
       <title>配置 Kylin V10</title>
       <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E9%85%8D%E7%BD%AEkylinv10/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E9%85%8D%E7%BD%AEkylinv10/</guid>
-      <description>配置KylinV10 # 设置“root”登录密码 # sudo su - passwd # 设置登录密码 允许“root”远程登录 # sudo vim /etc/ssh/sshd_config # ↓↓↓↓修改的内容↓↓↓↓ PermitRootLogin yes # ↑↑↑↑修改的内容↑↑↑↑ sudo systemctl restart sshd 允许通过图像界面登录到“root” # sudo vim /usr/share/lightdm/lightdm.conf.d/95-ukui-greeter.conf 95-ukui-greeter.conf
-greeter-session=ukui-greeter user-session=ukui greeter-setup-script=/usr/lib/ukui-greeter/ukui-greeter-nm-start.sh # ↓↓↓↓追加的内容↓↓↓↓ allow-guest=false greeter-show-manual-login=true # ↑↑↑↑追加的内容↑↑↑↑ 开机自动登录到“root” # sudo vim /etc/lightdm/lightdm.conf lightdm.conf
-[SeatDefaults] autologin-guest=false # ↓↓↓↓修改的内容↓↓↓↓ autologin-user=root # ↑↑↑↑修改的内容↑↑↑↑ autologin-user-timeout=0 关闭“麒麟安全授权认证” # sudo vim /etc/default/grub grub
-# ... GRUB_DEFAULT=0 GRUB_TIMEOUT=5 GRUB_DISTRIBUTOR=`lsb_release -i -s 2&amp;gt; /dev/null || echo Debian` GRUB_DISTRIBUTOR_RELEASE=`lsb_release -d -s | awk -F&amp;#34; &amp;#34; &amp;#39;{print $2 &amp;#34; &amp;#34; $3}&amp;#39; 2&amp;gt; /dev/null || echo &amp;#34;&amp;#34;` GRUB_CMDLINE_LINUX_DEFAULT=&amp;#34;quiet splash&amp;#34; GRUB_CMDLINE_LINUX=&amp;#34;&amp;#34; # ↓↓↓↓修改的内容↓↓↓↓ # GRUB_CMDLINE_LINUX_SECURITY=&amp;#34;audit=0 security=kysec&amp;#34; GRUB_CMDLINE_LINUX_SECURITY=&amp;#34;audit=0 security=&amp;#34; # ↑↑↑↑修改的内容↑↑↑↑ # .</description>
+      <description>配置KylinV10 # 设置“root”登录密码 # sudo su -passwd# 设置登录密码 允许“root”远程登录 # sudo vim /etc/ssh/sshd_config # ↓↓↓↓修改的内容↓↓↓↓PermitRootLogin yes# ↑↑↑↑修改的内容↑↑↑↑ sudo systemctl restart sshd 允许通过图像界面登录到“root” # sudo vim /usr/share/lightdm/lightdm.conf.d/95-ukui-greeter.conf 95-ukui-greeter.conf
+greeter-session=ukui-greeteruser-session=ukuigreeter-setup-script=/usr/lib/ukui-greeter/ukui-greeter-nm-start.sh# ↓↓↓↓追加的内容↓↓↓↓allow-guest=falsegreeter-show-manual-login=true# ↑↑↑↑追加的内容↑↑↑↑ 开机自动登录到“root” # sudo vim /etc/lightdm/lightdm.conf lightdm.conf
+[SeatDefaults]autologin-guest=false# ↓↓↓↓修改的内容↓↓↓↓autologin-user=root# ↑↑↑↑修改的内容↑↑↑↑autologin-user-timeout=0 关闭“麒麟安全授权认证” # sudo vim /etc/default/grub grub
+# ...GRUB_DEFAULT=0GRUB_TIMEOUT=5GRUB_DISTRIBUTOR=`lsb_release -i -s 2&amp;gt; /dev/null || echo Debian`GRUB_DISTRIBUTOR_RELEASE=`lsb_release -d -s | awk -F&amp;#34; &amp;#34; &amp;#39;{print $2 &amp;#34; &amp;#34; $3}&amp;#39; 2&amp;gt; /dev/null || echo &amp;#34;&amp;#34;`GRUB_CMDLINE_LINUX_DEFAULT=&amp;#34;quiet splash&amp;#34;GRUB_CMDLINE_LINUX=&amp;#34;&amp;#34;# ↓↓↓↓修改的内容↓↓↓↓# GRUB_CMDLINE_LINUX_SECURITY=&amp;#34;audit=0 security=kysec&amp;#34;GRUB_CMDLINE_LINUX_SECURITY=&amp;#34;audit=0 security=&amp;#34;# ↑↑↑↑修改的内容↑↑↑↑# .</description>
     </item>
     
     <item>
@@ -461,7 +610,7 @@ HTTP的特性 # 1、简单，易于理解
       <guid>https://chain-code.github.io/docs/golang/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/</guid>
       <description>力扣刷题（二） # 力扣刷题 全部题目模块（101～200）
 简单 # 对称二叉树 # 给你一个二叉树的根节点 root ， 检查它是否轴对称。
-输入：root = [1,2,2,3,4,4,3] 输出：true //不能使用中序遍历后看其是否对称，例如[1,2,2,2,null,2] func isSymmetric(root *TreeNode) bool { return metric(root.Left,root.Right) } func metric(left *TreeNode,right *TreeNode) bool{ if left==nil&amp;amp;&amp;amp;right==nil{ //如果都为nil证明到底了返回true return true } if left==nil||right==nil{ //一个为nil一个不为nil返回false return false } if left.Val!=right.Val{ //不相等返回false return false } return metric(left.Left,right.Right)&amp;amp;&amp;amp;metric(left.Right,right.Left) //将两边同时放进去递归 } 执行用时：0 ms, 在所有 Go 提交中击败了100.00%的用户 内存消耗：2.7 MB, 在所有 Go 提交中击败了67.20%的用户 相交链表 # 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回 null 。</description>
+输入：root = [1,2,2,3,4,4,3]输出：true //不能使用中序遍历后看其是否对称，例如[1,2,2,2,null,2] func isSymmetric(root *TreeNode) bool { return metric(root.Left,root.Right) } func metric(left *TreeNode,right *TreeNode) bool{ if left==nil&amp;amp;&amp;amp;right==nil{ //如果都为nil证明到底了返回true return true } if left==nil||right==nil{ //一个为nil一个不为nil返回false return false } if left.Val!=right.Val{ //不相等返回false return false } return metric(left.Left,right.Right)&amp;amp;&amp;amp;metric(left.Right,right.Left) //将两边同时放进去递归 } 执行用时：0 ms, 在所有 Go 提交中击败了100.00%的用户 内存消耗：2.7 MB, 在所有 Go 提交中击败了67.20%的用户 相交链表 # 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回 null 。</description>
     </item>
     
     <item>
@@ -556,7 +705,7 @@ B+树索引结构适用于绝大多数场景 如果数据离散型高、基数�
       <pubDate>Sun, 27 Mar 2022 19:41:51 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/</guid>
-      <description>链表 # 链表定义 # type ListNode struct{//单链表 Val int Next *ListNode } type DoubleNode struct{//双链表 Val int Prev *DoubleNode Next *DoubleNode } 创建链表 # func CreatListNode(list []int) (tai *ListNode ){ head := &amp;amp;ListNode{Val: list[0]} //无头节点情况 head:=&amp;amp;ListNode{} tail := head for i := 1; i &amp;lt; len(list); i++ { //有头节点，这里i=0 head.Next = &amp;amp;ListNode{Val: list[i]} head = head.Next } return tail } func CreatDoubleNode(list []int) (head *DoubleNode) { //创建双链表 p := &amp;amp;DoubleNode{} q := p for i := 0; i &amp;lt; len(list); i++ { p.</description>
+      <description>链表 # 链表定义 # type ListNode struct{//单链表 Val int Next *ListNode } type DoubleNode struct{//双链表Val intPrev *DoubleNodeNext *DoubleNode} 创建链表 # func CreatListNode(list []int) (tai *ListNode ){ head := &amp;amp;ListNode{Val: list[0]} //无头节点情况 head:=&amp;amp;ListNode{} tail := head for i := 1; i &amp;lt; len(list); i++ { //有头节点，这里i=0 head.Next = &amp;amp;ListNode{Val: list[i]} head = head.Next } return tail } func CreatDoubleNode(list []int) (head *DoubleNode) { //创建双链表 p := &amp;amp;DoubleNode{} q := p for i := 0; i &amp;lt; len(list); i++ { p.</description>
     </item>
     
     <item>
@@ -607,7 +756,7 @@ pkg/client/ledger：启用对通道底层账本的查询。参考：https ://god
 pkg/client/resmgmt：提供安装链码等资源管理能力。参考：https ://godoc.org/github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt
 pkg/client/msp：启用身份管理功能。参考：https ://godoc.org/github.com/hyperledger/fabric-sdk-go/pkg/client/msp
 基本工作流程
-1) 使用配置实例化一个 fabsdk 实例。 注意：fabsdk 维护缓存，因此您应该最小化 fabsdk 本身的实例。 2) 使用您的 fabsdk 实例创建基于用户和组织的上下文。 注意：通道上下文还需要通道 ID。 3) 使用它的 New func 创建一个客户端实例，传递上下文。 注意：您为所需的每个上下文创建一个新的客户端实例。 4）使用每个客户提供的功能来创建您的解决方案！ 5) 调用 fabsdk.Close() 释放资源和缓存。 2、准备网络环境 # 准备证书文件 # 具体参照solo节点测试
+1) 使用配置实例化一个 fabsdk 实例。注意：fabsdk 维护缓存，因此您应该最小化 fabsdk 本身的实例。2) 使用您的 fabsdk 实例创建基于用户和组织的上下文。注意：通道上下文还需要通道 ID。3) 使用它的 New func 创建一个客户端实例，传递上下文。注意：您为所需的每个上下文创建一个新的客户端实例。4）使用每个客户提供的功能来创建您的解决方案！5) 调用 fabsdk.Close() 释放资源和缓存。 2、准备网络环境 # 准备证书文件 # 具体参照solo节点测试
 在$GOPATH/src目录下创建一个名为sdktest的文件夹做为项目根目录,在此目录下创建名为fixtures的文件夹存放我们网络相关配置文件。
 编辑crypto-config.yaml的文件（这里为一个组织两个节点）
 cryptogen generate --config=crypto-config.yaml 生成证书 在fixtures路径下创建一个名为configtx.yaml的文件
@@ -615,7 +764,7 @@ cryptogen generate --config=crypto-config.yaml 生成证书 在fixtures路径下
 生成创世块文件
 生成通道文件
 锚节点更新（两个组织都要更新）
-完成后：channel-artifacts文件夹 channel.tx Org1MSPanchors.tx Org1MSPanchors.tx genesis.block 配置docker-compose文件</description>
+完成后：channel-artifacts文件夹channel.tx Org1MSPanchors.tx Org1MSPanchors.tx genesis.block 配置docker-compose文件</description>
     </item>
     
     <item>
@@ -730,15 +879,6 @@ beego网址 MVC架构 # Beego是MVC架构。MVC 是一种应用非常广泛的�
     </item>
     
     <item>
-      <title>业务代码</title>
-      <link>https://chain-code.github.io/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/</link>
-      <pubDate>Wed, 27 Mar 2024 12:11:30 +0000</pubDate>
-      
-      <guid>https://chain-code.github.io/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/</guid>
-      <description> 监听windows是否处于休眠唤醒状态 # #include &amp;lt;windows.h&amp;gt; #include &amp;lt;iostream&amp;gt; #include &amp;lt;powrprof.h&amp;gt; #pragma comment(lib, &amp;#34;Powrprof.lib&amp;#34;) using namespace std; ULONG CALLBACK DeviceCallback(PVOID Context, ULONG Type, PVOID Setting) { if (Type == PBT_APMSUSPEND) { cout &amp;lt;&amp;lt; &amp;#34;close&amp;#34; &amp;lt;&amp;lt; endl; } if (Type == PBT_APMRESUMESUSPEND) { cout &amp;lt;&amp;lt; &amp;#34;open&amp;#34; &amp;lt;&amp;lt; endl; } return ERROR_SUCCESS; } int main() { HPOWERNOTIFY g_power_notify_handle = NULL; DEVICE_NOTIFY_SUBSCRIBE_PARAMETERS params; params.Callback = DeviceCallback; params.Context = 0; PowerRegisterSuspendResumeNotification(DEVICE_NOTIFY_CALLBACK, &amp;amp;params, &amp;amp;g_power_notify_handle); MSG msg; while (GetMessage(&amp;amp;msg, NULL, 0, 0)) { TranslateMessage(&amp;amp;msg); DispatchMessage(&amp;amp;msg); } PowerUnregisterSuspendResumeNotification(g_power_notify_handle); return 0; } </description>
-    </item>
-    
-    <item>
       <title>Os</title>
       <link>https://chain-code.github.io/docs/golang/package/os/</link>
       <pubDate>Fri, 05 May 2023 11:51:49 +0800</pubDate>
@@ -770,7 +910,7 @@ int64, err := strconv.ParseInt(string, 10, 64) int到string
 string:=strconv.Itoa(int) int64到string
 string:=strconv.FormatInt(int64,10) 10进制转16进制
 strconv.FormatInt(int64, 16) 想保留前面的数
-func main() { decimal := 2 hex := fmt.Sprintf(&amp;#34;%02x&amp;#34;, decimal) fmt.Println(hex) // 输出：02 } </description>
+func main() {decimal := 2hex := fmt.Sprintf(&amp;#34;%02x&amp;#34;, decimal)fmt.Println(hex) // 输出：02} </description>
     </item>
     
     <item>
@@ -781,10 +921,10 @@ func main() { decimal := 2 hex := fmt.Sprintf(&amp;#34;%02x&amp;#34;, decimal) f
       <guid>https://chain-code.github.io/docs/golang/package/sort/</guid>
       <description>sort —— 排序算法 # sort包提供了对[]int切片、[]float64切片和[]string切片完整支持，主要包括：
 对基本数据类型切片的排序支持 基本数据元素查找 判断基本数据类型切片是否已经排好序 对排好序的数据集合逆序 对[]int切片排序是更常使用sort.Ints()，而不是直接使用IntSlice类型。
-s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据 sort.Ints(s) fmt.Println(s) //将会输出[1 2 3 4 5 6] 如果要使用降序排序，显然要用前面提到的Reverse()方法：
-s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据 sort.Sort(sort.Reverse(sort.IntSlice(s))) fmt.Println(s) //将会输出[6 5 4 3 2 1] 如果要查找整数x在切片a中的位置，相对于前面提到的Search()方法，sort包提供了SearchInts():
+s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据sort.Ints(s)fmt.Println(s) //将会输出[1 2 3 4 5 6] 如果要使用降序排序，显然要用前面提到的Reverse()方法：
+s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据sort.Sort(sort.Reverse(sort.IntSlice(s)))fmt.Println(s) //将会输出[6 5 4 3 2 1] 如果要查找整数x在切片a中的位置，相对于前面提到的Search()方法，sort包提供了SearchInts():
 func SearchInts(a []int, x int) int 注意，SearchInts()的使用条件为：切片a已经升序排序
-s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据 sort.Ints(s) //排序后的s为[1 2 3 4 5 6] fmt.</description>
+s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据sort.Ints(s) //排序后的s为[1 2 3 4 5 6]fmt.</description>
     </item>
     
     <item>
@@ -794,7 +934,7 @@ s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据 sort.Ints(s) //排序�
       
       <guid>https://chain-code.github.io/docs/golang/package/strings/</guid>
       <description>strings.Split # func Split(s, sep string) []string strings.Split 函数用于通过指定的分隔符切割字符串，并返回切割后的字符串切片。
-func main() { fmtPrintln(stringsSplit(&amp;#34;Linux, Unix, Windows, Android&amp;#34;, &amp;#34;, &amp;#34;)) fmtPrintln(stringsSplit(&amp;#34; Linux is very very very good! &amp;#34;, &amp;#34; &amp;#34;)) } 输出：返回的是字符串数组。 [Linux Unix Windows Android] [ Linux is very very very good! ] strings.Split(s, sep) 1 s：待分割的字符串（字符串类型的参数） sep：分隔符 （字符串类型的参数） 返回值： 返回一个字符串切片。 strings.Join # func Join(elems []string, sep string) string 作用：使用 sep 作为分隔符，将elems 中的所有字符连接起来：
+func main() {fmtPrintln(stringsSplit(&amp;#34;Linux, Unix, Windows, Android&amp;#34;, &amp;#34;, &amp;#34;))fmtPrintln(stringsSplit(&amp;#34; Linux is very very very good! &amp;#34;, &amp;#34; &amp;#34;))}输出：返回的是字符串数组。[Linux Unix Windows Android][ Linux is very very very good! ] strings.Split(s, sep)1s：待分割的字符串（字符串类型的参数）sep：分隔符 （字符串类型的参数）返回值：返回一个字符串切片。 strings.Join # func Join(elems []string, sep string) string 作用：使用 sep 作为分隔符，将elems 中的所有字符连接起来：
 func main() { elems := []string{&amp;#34;I&amp;#34;, &amp;#34;like&amp;#34;, &amp;#34;golang&amp;#34;, &amp;#34;!</description>
     </item>
     
@@ -893,6 +1033,17 @@ package main import ( &amp;#34;fmt&amp;#34; &amp;#34;sync&amp;#34; ) var x = 10 
     </item>
     
     <item>
+      <title>虚拟组网</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%99%9A%E6%8B%9F%E7%BB%84%E7%BD%91/</link>
+      <pubDate>Wed, 02 Nov 2022 20:37:13 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%99%9A%E6%8B%9F%E7%BB%84%E7%BD%91/</guid>
+      <description>虚拟组网 # 需要一个云服务器作为灯塔
+https://zhw.in/post/virtual-networking/
+https://github.com/slackhq/nebula?tab=readme-ov-file</description>
+    </item>
+    
+    <item>
       <title>Linux基础</title>
       <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/linux%E5%9F%BA%E7%A1%80/</link>
       <pubDate>Thu, 22 Sep 2022 14:56:19 +0800</pubDate>
@@ -937,8 +1088,8 @@ Unix/Linux也采用了树状结构的文件系统，它由目录和目录下的�
 Dockerfile的作用：
 找一个镜像: ubuntu 创建一个容器: docker run ubuntu 进入容器: docker exec -it 容器 命令 操作: 各种应用配置&amp;hellip;. 构造新镜像: docker commit Dockerfile 使用准则：
 大: 首字母必须大写D 空: 尽量将Dockerfile放在空目录中。 单: 每个容器尽量只有一个功能。 少: 执行的命令越少越好。 Dockerfile文件内容:
-首行注释信息 指令(大写) 参数 #构建镜像命令格式: docker build -t [镜像名]:[版本号][Dockerfile所在目录] #构建样例: docker build -t nginx:v0.2 /opt/dockerfile/nginx/ #参数详解: -t 指定构建后的镜像信息， /opt/dockerfile/nginx/ 则代表Dockerfile存放位置，如果是当前目录，则用 .(点)表示 快速入门 # 接下来我们快速的使用Dockerfile来基于ubuntu创建一个定制化的镜像:nginx。
-#创建Dockerfile专用目录 $ mkdir ./docker/images/nginx -p $ cd docker/images/nginx/ #创建Dockerfile文件 :~/docker/images/nginx$ vim Dockerfile # 构建一个基于ubuntu的docker定制镜像 # 基础镜像 FROM ubuntu # 镜像作者 MAINTAINER panda kstwoak47@163.</description>
+首行注释信息 指令(大写) 参数 #构建镜像命令格式:docker build -t [镜像名]:[版本号][Dockerfile所在目录] #构建样例:docker build -t nginx:v0.2 /opt/dockerfile/nginx/ #参数详解:-t 指定构建后的镜像信息，/opt/dockerfile/nginx/ 则代表Dockerfile存放位置，如果是当前目录，则用 .(点)表示 快速入门 # 接下来我们快速的使用Dockerfile来基于ubuntu创建一个定制化的镜像:nginx。
+#创建Dockerfile专用目录$ mkdir ./docker/images/nginx -p$ cd docker/images/nginx/ #创建Dockerfile文件 :~/docker/images/nginx$ vim Dockerfile # 构建一个基于ubuntu的docker定制镜像 # 基础镜像FROM ubuntu# 镜像作者MAINTAINER panda kstwoak47@163.</description>
     </item>
     
     <item>
@@ -954,8 +1105,8 @@ Dockerfile的作用：
 如当输入链表{1,2,3}时，
 经反转后，原链表变为{3,2,1}，所以对应的输出为{3,2,1}。
 以上转换过程如下图所示：
-输入：{1,2,3} 返回值：{3,2,1} func ReverseList( pHead *ListNode ) *ListNode { if pHead==nil||pHead.Next==nil{ return pHead } p:=&amp;amp;ListNode{Val:-1,Next:pHead} //设置一个头节点，防止冲突 pHead=p p=pHead.Next q:=p for p.Next!=nil{ q=p.Next p.Next=q.Next q.Next=pHead.Next //这道题的重点在这里=头节点的下一个 pHead.Next=q } return pHead.Next } 链表内指定区间反转 # 将一个节点数为 size 链表 m 位置到 n 位置之间的区间反转，要求时间复杂度 O(n)O(n)，空间复杂度 O(1)O(1)。
-例如： 给出的链表为 1→2→3→4→5→NULL1→2→3→4→5→NULL, m=2,n=4, 返回 1→4→3→2→5→NULL1→4→3→2→5→NULL. func reverseBetween( head *ListNode , m int , n int ) *ListNode { // write code here if head.</description>
+输入：{1,2,3}返回值：{3,2,1} func ReverseList( pHead *ListNode ) *ListNode { if pHead==nil||pHead.Next==nil{ return pHead } p:=&amp;amp;ListNode{Val:-1,Next:pHead} //设置一个头节点，防止冲突 pHead=p p=pHead.Next q:=p for p.Next!=nil{ q=p.Next p.Next=q.Next q.Next=pHead.Next //这道题的重点在这里=头节点的下一个 pHead.Next=q } return pHead.Next } 链表内指定区间反转 # 将一个节点数为 size 链表 m 位置到 n 位置之间的区间反转，要求时间复杂度 O(n)O(n)，空间复杂度 O(1)O(1)。
+例如：给出的链表为 1→2→3→4→5→NULL1→2→3→4→5→NULL, m=2,n=4,返回 1→4→3→2→5→NULL1→4→3→2→5→NULL. func reverseBetween( head *ListNode , m int , n int ) *ListNode { // write code here if head.</description>
     </item>
     
     <item>
@@ -971,8 +1122,8 @@ git的两大特点 # 版本控制：可以解决多人同时开发的代码问�
 git init 可以看到在git_test目录下创建了一个.git隐藏目录，这就是版本库目录。
 版本创建与回退 # 使用 # 在git_test目录下创建一个文件code.txt，编辑内容如下：
 使用如下两条命令可以创建一个版本：
-git add code.txt git commit –m &amp;#39;版本1&amp;#39; 添加身份标识（git不做检查）
-git config --global user.email &amp;#34;you@example.com&amp;#34; git config --global user.name &amp;#34;Your Name&amp;#34; 然后再执行git commit -m ‘版本一’
+git add code.txtgit commit –m &amp;#39;版本1&amp;#39; 添加身份标识（git不做检查）
+git config --global user.email &amp;#34;you@example.com&amp;#34;git config --global user.name &amp;#34;Your Name&amp;#34; 然后再执行git commit -m ‘版本一’
 使用如下命令可以查看版本记录：
 git log 继续编辑code.txt，在里面增加一行。
 使用如下命令再创建一个版本并查看版本记录：
@@ -992,15 +1143,15 @@ git reset --hard 版本号 从上面可以看到版本2的版本号为：</descr
       
       <guid>https://chain-code.github.io/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/</guid>
       <description>基于Macbook M2芯片（主要原因是换电脑了，同时自己主学go语言，于是打算将Hexo换成Hugo，练练手)
-https://copyfuture.com/blogs-details/20191229203259169ljtxcq9vmlzjyvf http://scarletsky.github.io/2019/05/02/migrate-hexo-to-hugo/ https://www.tomczhen.com/2019/06/04/getting-start-blog-with-hugo/ https://lequ7.com/guan-yu-hugo-bo-ke-qian-yi-zhi-lu-cong-hexo-huan-cheng-hugo.html https://blog.csdn.net/hqweay/article/details/101233371 搭建过程从头开始
+https://copyfuture.com/blogs-details/20191229203259169ljtxcq9vmlzjyvfhttp://scarletsky.github.io/2019/05/02/migrate-hexo-to-hugo/https://www.tomczhen.com/2019/06/04/getting-start-blog-with-hugo/https://lequ7.com/guan-yu-hugo-bo-ke-qian-yi-zhi-lu-cong-hexo-huan-cheng-hugo.htmlhttps://blog.csdn.net/hqweay/article/details/101233371 搭建过程从头开始
 环境安装 # 安装Homebrew # /bin/zsh -c &amp;#34;$(curl -fsSL https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&amp;#34; 根据提示安装Git
 根据提示往下选择
-运行 source /Users/wangb/.zprofile 运行brew doctor根据提示处理现有的问题
+运行source /Users/wangb/.zprofile 运行brew doctor根据提示处理现有的问题
 brew doctor 安装Golang # 查看可安装的golang版本
 brew search go //最好使用手动安装，m2系列brew安装的go会出一些小问题 没找到什么原因 安装go环境：
 brew install go@1.18//改成你喜欢的版本号 在.zshrc 文件中追加配置
 vim ~/.zshrc 在文件最后输入一下内容：
-export GOROOT=/usr/local/go export GOPATH=$HOME/go export GOBIN=$GOPATH/bin export PATH=$PATH:$GOROOT/bin:$GOBIN export GO111MODULE=on 按 Esc 键退回一般模式，然后输入 :wq 命令并回车保存退出文件。再使用以下命令使变量立即生效。
+export GOROOT=/usr/local/goexport GOPATH=$HOME/goexport GOBIN=$GOPATH/binexport PATH=$PATH:$GOROOT/bin:$GOBINexport GO111MODULE=on 按 Esc 键退回一般模式，然后输入 :wq 命令并回车保存退出文件。再使用以下命令使变量立即生效。
 source .zshrc 由于Golang的官方代理源速度慢有时候会出现包不能下载的情况，我们使用以下命令把代理源设置为国内的代理源。
 go env -w GOPROXY=https://goproxy.cn,direct 使用以下命令查看Golang版本信息。
 go version go1.16.4 linux/amd64 使用以下命令查看Golang环境变量配置。</description>
@@ -1104,7 +1255,7 @@ P和M的个数问题 # 1、P的数量：
 声明model时，tag是可选的，GORM支持以下tag：tag名大小写不敏感，但建议使用camelcase风格
 标签名 说明 column 指定列名 type 列数据类型，推荐使用兼容性好的通用类型，例如：所有数据库都支持bool、int、uint、float、string、time、bytes并且可以和其他标签一起使用，例如：not null、size、autoIncrement&amp;hellip;像varbinary（8）这样指定数据库数据类型也是支持的。在使用指定数据库数据类型时，它需要是完整的数据库数据类型，如：MEDIUMINT、UNSIGNED、not、NULL、AUTO、INSTREMENT size 指定列大小，例如：size: 256 primaryKey 指定列为主键 unique 指定列为唯一 default 指定列的默认值 precision 指定列的精度 scale 指定列大小 not null 不能为空 autolncrement 指定列为自动增长 embedded 嵌套字段 embeddedPrefix 嵌入字段的列名前缀 autoCreateTime 创建时追踪当前时间，对于int字段，它会追踪时间戳秒数，您可以使用nano/milli来追踪纳秒、毫秒时间戳，例如autoCreateTime:nano autoUpdateTime 创建/更新时追踪当前时间，对于int字段，它会追踪时间戳秒数，您可以使用nano/milli来追踪纳秒、毫秒时间戳，例如：autoupdateTime:milli index 根据参数创建索引1，多个字段使用相同的名称则创建复合索引，查看索引获取详情 uniqueindex 与index相同，但创建的是唯一索引 check 创建检查约束，例如check:age＞13查看约束获取详情 &amp;lt;- 设置字段写入的权限，&amp;lt;-:create只创建、&amp;lt;-:update只更新、&amp;lt;-:false无写入权限、「&amp;lt;-创建和更新权限 -&amp;gt; 设置字段读的权限，-&amp;gt;:false无读权限 - 忽略该字段，-无读写权限 gorm使用中遇到的坑点 # 3、Count方法不适合放在raw方法后面，否则将会出错
 count:=0 db.Raw(sql).Count(&amp;amp;count) 正确用法
-db.Model(&amp;amp;User{}).Where(&amp;#34;name = ?&amp;#34;, &amp;#34;jinzhu&amp;#34;).Count(&amp;amp;count) //正确用法 result := engine.Raw(querySQL, args...).Find(resultData) if result.Error != nil { err = fmt.</description>
+db.Model(&amp;amp;User{}).Where(&amp;#34;name = ?&amp;#34;, &amp;#34;jinzhu&amp;#34;).Count(&amp;amp;count) //正确用法result := engine.Raw(querySQL, args...).Find(resultData)if result.Error != nil {err = fmt.</description>
     </item>
     
     <item>
@@ -1135,7 +1286,7 @@ https://uzshare.com/view/830631
 [14:01]command1:set(x,1)	//设置x为1 [14:02]command2:set(x,3) 客户端B发送的命令如下：
 [14:03]command3:get(x)	//得到x的当前值 [14:04]command4:set(x,4) 注： 这里假设时延可能是几分钟级别的，所以有可能是command3在command1之前到
 所以，假设初始值x = 0，而我们到达的顺序如下：
-command1-&amp;gt;command3-&amp;gt;command2-&amp;gt;command4 command1-&amp;gt;command3-&amp;gt;command4-&amp;gt;command2 ... 这个顺序确实是满足顺序一致性，但是我们get(x)获得的值可谓是千奇百怪，可能是0，1，3 。为了解决顺序一致性的不足，所以才提出的线性一致性。其要求命令满足全局时钟的时序性。所以很容易就知道，满足线性一致性的一定满足顺序一致性；相反，满足顺序一致性的不一定会满足线性一致性。 因果一致性 # 线性一致性要求所有线程的操作按照一个绝对的时钟顺序执行，这意味着线性一致性是限制并发的，否则这种顺序性就无法保证。由于在真实环境中很难保证绝对时钟同步，因此线性一致性是一种理论。实现线性一致性的代价也最高，但是实战中可以弱化部分线性一致性：只保证有因果关系的事件的顺序，没有因果关系的事件可以并发执行，其指的是假设有两个事件：A事件和B事件，如果A发生在B后面，那么就称A和B具有因果关系。
+command1-&amp;gt;command3-&amp;gt;command2-&amp;gt;command4command1-&amp;gt;command3-&amp;gt;command4-&amp;gt;command2... 这个顺序确实是满足顺序一致性，但是我们get(x)获得的值可谓是千奇百怪，可能是0，1，3 。为了解决顺序一致性的不足，所以才提出的线性一致性。其要求命令满足全局时钟的时序性。所以很容易就知道，满足线性一致性的一定满足顺序一致性；相反，满足顺序一致性的不一定会满足线性一致性。 因果一致性 # 线性一致性要求所有线程的操作按照一个绝对的时钟顺序执行，这意味着线性一致性是限制并发的，否则这种顺序性就无法保证。由于在真实环境中很难保证绝对时钟同步，因此线性一致性是一种理论。实现线性一致性的代价也最高，但是实战中可以弱化部分线性一致性：只保证有因果关系的事件的顺序，没有因果关系的事件可以并发执行，其指的是假设有两个事件：A事件和B事件，如果A发生在B后面，那么就称A和B具有因果关系。
 拜占庭将军问题 # 拜占庭将军问题是一个协议问题，拜占庭帝国军队的将军们必须全体一致的决定是否攻击某一支敌军。问题是这些将军在地理上是分隔开来的，并且将军中存在叛徒。叛徒可以任意行动以达到以下目标：欺骗某些将军采取进攻行动；促成一个不是所有将军都同意的决定，如当将军们不希望进攻时促成进攻行动；或者迷惑某些将军，使他们无法做出决定。如果叛徒达到了这些目的之一，则任何攻击行动的结果都是注定要失败的，只有完全达成一致的努力才能获得胜利。
 含义是在存在消息丢失的不可靠信道上试图通过消息传递的方式达到一致性是不可能的。
 Raft共识 # 简介 # Raft实现一致性的机制是：首先选择一个leader全权负责管理日志复制，leader从客户端接收log entries（日志条目），将它们复制给集群中的其他机器，然后负责告诉它机器什么时候将日志应用于它们的状态机。举个例子，leader可以在无需询问其他server的情况下决定把新entries放在哪个位置，数据永远是从leader流向其他机器（leader的强一致性）。一个leader可以fail或者与其他机器失去连接，这种情况下会有新的leader被选举出来。
@@ -1159,7 +1310,7 @@ leader：作为客户端的接收者，接收客户端发送的日志复制请�
 1、环境配置 # 运行官方测试网络，确保它正常运行，详情请见fabric环境搭建后面测试部分。
 进入CLI容器，并使用容器内的以下命令检查对等版本：
 docker exec -it cli /bin/bash peer version 运行以下命令，确保JQ工具已在CLI容器中安装并正常工作：
-jq --version jq 运行以下命令，确保configtxlator工具可用，验证工具版本，在后台启动工具，并验证工具在后台、CLI容器内正确运行
+jq --versionjq 运行以下命令，确保configtxlator工具可用，验证工具版本，在后台启动工具，并验证工具在后台、CLI容器内正确运行
 configtxlator version 后台启动configtxlator并查看网络状态 （两行一起复制粘贴进去）
 configtxlator start &amp;amp; netstat -ap 2、检索当前配置 # 通过在CLI容器中运行以下命令来设置和验证以下环境变量：
 export CHANNEL_NAME=mychannel export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem 生成第三个组织的证书文件及配置文件
@@ -1196,8 +1347,8 @@ go语言redis-cluster开源客户端https://github.com/gitstliu/go-redis-cluster
 配置机器1 # Ø 在演示中，192.168.110.37为当前ubuntu机器的ip
 Ø 在192.168.110.37上进⼊Desktop⽬录，创建conf⽬录
 Ø 在conf⽬录下创建⽂件7000.conf，编辑内容如下
-port 7000 bind 192.168.110.37 daemonize yes pidfile 7000.pid cluster-enabled yes cluster-config-file 7000_node.conf cluster-node-timeout 15000 appendonly yese Ø 在conf⽬录下创建⽂件7001.conf，编辑内容如下
-port 7001 bind 192.168.110.37 daemonize yes pidfile 7001.pid cluster-enabled yes cluster-config-file 7001_node.conf cluster-node-timeout 15000 appendonly yes Ø 在conf⽬录下创建⽂件7002.conf，编辑内容如下</description>
+port 7000bind 192.168.110.37daemonize yespidfile 7000.pidcluster-enabled yescluster-config-file 7000_node.confcluster-node-timeout 15000appendonly yese Ø 在conf⽬录下创建⽂件7001.conf，编辑内容如下
+port 7001bind 192.168.110.37daemonize yespidfile 7001.pidcluster-enabled yescluster-config-file 7001_node.confcluster-node-timeout 15000appendonly yes Ø 在conf⽬录下创建⽂件7002.conf，编辑内容如下</description>
     </item>
     
     <item>
@@ -1269,7 +1420,7 @@ Redis安装（Mac） # 直接brew安装</description>
 Go 的基准测试在单元测试方面的一个显着差异是从 0 到b.N. 事实上，基准测试会运行多次，以确保收集到足够的数据以提高基准测试下代码性能测量的准确性。
 该字段b.N不是固定值，而是动态调整以确保基准测试功能至少运行 1 秒。
 这里展示的是基准和测试函数之间的比较：
-func Benchmark1Sort(b *testing.B) { for i := 0; i &amp;lt; b.N; i++ { sort.Ints(generateSlice(1000)) } } func Test1Sort(t *testing.T) { slice := generateSlice(1000) if len(slice) != 1000 { t.Errorf(&amp;#34;unexpected slice size: %d&amp;#34;, len(slice)) } } 运行基准 # 运行 Go 的基准测试的起点是go test命令，在这里我们将看到我们需要确保我们不只是运行单元测试。</description>
+func Benchmark1Sort(b *testing.B) {for i := 0; i &amp;lt; b.N; i++ {sort.Ints(generateSlice(1000))}} func Test1Sort(t *testing.T) {slice := generateSlice(1000)if len(slice) != 1000 {t.Errorf(&amp;#34;unexpected slice size: %d&amp;#34;, len(slice))}} 运行基准 # 运行 Go 的基准测试的起点是go test命令，在这里我们将看到我们需要确保我们不只是运行单元测试。</description>
     </item>
     
     <item>
@@ -1278,7 +1429,7 @@ func Benchmark1Sort(b *testing.B) { for i := 0; i &amp;lt; b.N; i++ { sort.Ints(
       <pubDate>Mon, 20 Dec 2021 10:11:10 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/</guid>
-      <description>安装 # cd hyperledger git clone https://github.com/Hyperledger-TWGC/tape.git cd tape go build ./cmd/tape 测试 # 测试前将organizations文件夹放到tape 里面去 复制一下 就是里面包含各种证书的文件夹 配路径
+      <description>安装 # cd hyperledgergit clone https://github.com/Hyperledger-TWGC/tape.gitcd tapego build ./cmd/tape 测试 # 测试前将organizations文件夹放到tape 里面去 复制一下 就是里面包含各种证书的文件夹 配路径
 修改config.yaml文件
 # Definition of nodes peer1: &amp;amp;peer1 addr: localhost:7051 tls_ca_cert: ./organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem peer2: &amp;amp;peer2 addr: localhost:9051 tls_ca_cert: ./organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp/tlscacerts/tlsca.org2.example.com-cert.pem orderer1: &amp;amp;orderer1 addr: localhost:7050 tls_ca_cert: ./organizations/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem # Nodes to interact with endorsers: - *peer1 - *peer2 # we might support multi-committer in the future for more complex test scenario, # i.e. consider tx committed only if it&amp;#39;s done on &amp;gt;50% of nodes.</description>
     </item>
@@ -1302,8 +1453,8 @@ func Benchmark1Sort(b *testing.B) { for i := 0; i &amp;lt; b.N; i++ { sort.Ints(
 例题 # 正则表达式匹配 # 给你一个字符串 s 和一个字符规律 p，请你来实现一个支持 &amp;lsquo;.&amp;rsquo; 和 &amp;lsquo;*&amp;rsquo; 的正则表达式匹配。
 &amp;lsquo;.&amp;rsquo; 匹配任意单个字符 &amp;lsquo;*&amp;rsquo; 匹配零个或多个前面的那一个元素 所谓匹配，是要涵盖 整个 字符串 s的，而不是部分字符串。
 示例 1：
-输入：s = &amp;#34;aa&amp;#34; p = &amp;#34;a&amp;#34; 输出：false 解释：&amp;#34;a&amp;#34; 无法匹配 &amp;#34;aa&amp;#34; 整个字符串。 示例 2:
-输入：s = &amp;#34;aa&amp;#34; p = &amp;#34;a*&amp;#34; 输出：true 解释：因为 &amp;#39;*&amp;#39; 代表可以匹配零个或多个前面的那一个元素, 在这里前面的元素就是 &amp;#39;a&amp;#39;。因此，字符串 &amp;#34;aa&amp;#34; 可被视为 &amp;#39;a&amp;#39; 重复了一次。 func isMatch(s string, p string) bool { m, n := len(s), len(p) matches := func(i, j int) bool { if i == 0 { return false } if p[j-1] == &amp;#39;.</description>
+输入：s = &amp;#34;aa&amp;#34; p = &amp;#34;a&amp;#34;输出：false解释：&amp;#34;a&amp;#34; 无法匹配 &amp;#34;aa&amp;#34; 整个字符串。 示例 2:
+输入：s = &amp;#34;aa&amp;#34; p = &amp;#34;a*&amp;#34;输出：true解释：因为 &amp;#39;*&amp;#39; 代表可以匹配零个或多个前面的那一个元素, 在这里前面的元素就是 &amp;#39;a&amp;#39;。因此，字符串 &amp;#34;aa&amp;#34; 可被视为 &amp;#39;a&amp;#39; 重复了一次。 func isMatch(s string, p string) bool { m, n := len(s), len(p) matches := func(i, j int) bool { if i == 0 { return false } if p[j-1] == &amp;#39;.</description>
     </item>
     
     <item>
@@ -1316,8 +1467,8 @@ func Benchmark1Sort(b *testing.B) { for i := 0; i &amp;lt; b.N; i++ { sort.Ints(
 在IPFS项目的组织架构中，有一个IPFS-GUI工作组，主要目的是开发IPFS可视化工具，并使工具更简单、更易用、更美观。
 IPFS WebUI是IPFS的Web界面，可以用来检查您的节点统计信息，展示由IPLD驱动的默克尔树结构，查看世界各地的节点并管理您的文件，而无需触摸命令行工具。
 这都是粘贴的，废话不多说，直接开始安装
-安装 # 拉取ipfs-webui文件 cd ~ git clone https://github.com/ipfs/ipfs-webui.git 进入安装 cd ipfs-webui npm install 报错：
-request to https://dist.ipfs.io/go-ipfs/versions failed, reason: connect ECONNREFUSED 69.171.233.24:443 。。。。。。。。。。。。 。。。。。。。。。。。。 npm ERR! code ELIFECYCLE npm ERR! errno 1 npm ERR! go-ipfs-dep@0.4.18 install: `node src/bin.js` npm ERR! Exit status 1 npm ERR! npm ERR! Failed at the go-ipfs-dep@0.4.18 install script. npm ERR! This is probably not a problem with npm.</description>
+安装 # 拉取ipfs-webui文件 cd ~git clone https://github.com/ipfs/ipfs-webui.git 进入安装 cd ipfs-webuinpm install 报错：
+request to https://dist.ipfs.io/go-ipfs/versions failed, reason: connect ECONNREFUSED 69.171.233.24:443。。。。。。。。。。。。。。。。。。。。。。。。npm ERR! code ELIFECYCLEnpm ERR! errno 1npm ERR! go-ipfs-dep@0.4.18 install: `node src/bin.js`npm ERR! Exit status 1npm ERR! npm ERR! Failed at the go-ipfs-dep@0.4.18 install script.npm ERR! This is probably not a problem with npm.</description>
     </item>
     
     <item>
@@ -1392,10 +1543,10 @@ List # 常用命令 ：lpush/rpush/lpop/rpop/lrange等；
 先要保证你之前的项目已启动
 搭建目录结构 # 1、$GOPATH/src目录下创建edu-explorer文件夹
 2、edu-explorer文件夹下创建以下目录结构
-docker-compose.yaml config.json connection-profile/test-network.json organizations/ordererOrganizations/ 第3、4解决 organizations/peerOrganizations/ 3、复制自己的项目中crypto-config 文件夹 到edu-explorer文件中
+docker-compose.yamlconfig.jsonconnection-profile/test-network.jsonorganizations/ordererOrganizations/ 第3、4解决organizations/peerOrganizations/ 3、复制自己的项目中crypto-config 文件夹 到edu-explorer文件中
 cp -r cp -r $GOPATH/src/education/conf/crypto-config ../edu-explorer 4、改名 把crypto-config改成organizations 保持跟官方目录结构一样
 mv crypto-config organizations 官方给出的文件内容 # 复制以下内容到相应文件中去
-docker-compose.yaml # # SPDX-License-Identifier: Apache-2.0 version: &amp;#39;2.1&amp;#39; volumes: pgdata: walletstore: networks: mynetwork.com: external: name: net_test services: explorerdb.mynetwork.com: image: hyperledger/explorer-db:latest container_name: explorerdb.mynetwork.com hostname: explorerdb.mynetwork.com environment: - DATABASE_DATABASE=fabricexplorer - DATABASE_USERNAME=hppoc - DATABASE_PASSWORD=password healthcheck: test: &amp;#34;pg_isready -h localhost -p 5432 -q -U postgres&amp;#34; interval: 30s timeout: 10s retries: 5 volumes: - pgdata:/var/lib/postgresql/data networks: - mynetwork.</description>
+docker-compose.yaml # # SPDX-License-Identifier: Apache-2.0version: &amp;#39;2.1&amp;#39;volumes:pgdata:walletstore:networks:mynetwork.com:external:name: net_testservices:explorerdb.mynetwork.com:image: hyperledger/explorer-db:latestcontainer_name: explorerdb.mynetwork.comhostname: explorerdb.mynetwork.comenvironment:- DATABASE_DATABASE=fabricexplorer- DATABASE_USERNAME=hppoc- DATABASE_PASSWORD=passwordhealthcheck:test: &amp;#34;pg_isready -h localhost -p 5432 -q -U postgres&amp;#34;interval: 30stimeout: 10sretries: 5volumes:- pgdata:/var/lib/postgresql/datanetworks:- mynetwork.</description>
     </item>
     
     <item>
@@ -1459,7 +1610,7 @@ tls： # 存放TLS相关的证书和私钥。</description>
       <pubDate>Fri, 30 Apr 2021 19:43:22 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</guid>
-      <description>docker常用基础命令 # docker rmi -f $(docker images -q) 删除镜像 docker rm -f .... 删除容器 docker exec -it ca.org1.example.com bash 进入容器 docker exec -it peer0.org1.example.com sh exit 退出容器 control+P+Q 退出容器 docker stop $(docker ps -q) 停止所有容器 docker rm $(docker ps -aq) 删除所有容器 sudo docker volume prune sudo docker network prune docker logs id 查看docker容器日志 docker文件管理 # docker cp 容器 ID 或名称: 容器目录 物理机目录 docker目录拷贝到物理机 docker cp 物理机目录 容器 ID 或名称: 容器目录 物理机目录拷贝到docker docker cp /home/lishuma b2860e937844:/home/ 如果是把上一条命令结尾斜杠去掉，那么意思就变成了将物理机/home/lishuma 目录拷贝到容器根目录中，并且拷贝进去的目录重命名为 home。 docker cp b2860e937844:/home/lishuma /home/lishuma/test/ 反过来容器向外拷贝的命令如果去掉最后一个斜杠，那么意思同样是变成拷贝出来后，重命名为 test。 docker文件挂载 # docker run -v /home/tianzhiwei/hyperledger/catest/crypto-config/peerOrganizations/:/etc/hyperledger/fabric-ca-server-config/msp hyperledger/fabric-ca:1.</description>
+      <description>docker常用基础命令 # docker rmi -f $(docker images -q) 删除镜像docker rm -f .... 删除容器docker exec -it ca.org1.example.com bash 进入容器docker exec -it peer0.org1.example.com shexit 退出容器control+P+Q 退出容器docker stop $(docker ps -q) 停止所有容器docker rm $(docker ps -aq) 删除所有容器sudo docker volume prune sudo docker network prunedocker logs id 查看docker容器日志 docker文件管理 # docker cp 容器 ID 或名称: 容器目录 物理机目录 docker目录拷贝到物理机docker cp 物理机目录 容器 ID 或名称: 容器目录 物理机目录拷贝到dockerdocker cp /home/lishuma b2860e937844:/home/如果是把上一条命令结尾斜杠去掉，那么意思就变成了将物理机/home/lishuma 目录拷贝到容器根目录中，并且拷贝进去的目录重命名为 home。docker cp b2860e937844:/home/lishuma /home/lishuma/test/反过来容器向外拷贝的命令如果去掉最后一个斜杠，那么意思同样是变成拷贝出来后，重命名为 test。 docker文件挂载 # docker run -v /home/tianzhiwei/hyperledger/catest/crypto-config/peerOrganizations/:/etc/hyperledger/fabric-ca-server-config/msp hyperledger/fabric-ca:1.</description>
     </item>
     
     <item>
@@ -1492,8 +1643,8 @@ SQL structured query language 结构化查询语言。
 缺点：多表查询效率低了
 提示：我们现在用的主流的数据库都是关系模型的。
 MySql安装 # 在Ubuntu中，默认情况下，只有最新版本的MySQL包含在APT软件包存储库中,要安装它，只需更新服务器上的包索引并安装默认包apt-get。
-#命令1 sudo apt-get update #命令2 sudo apt-get install mysql-server 初始化配置 # sudo mysql_secure_installation 配置项较多，如下所示：
-#1 VALIDATE PASSWORD PLUGIN can be used to test passwords... Press y|Y for Yes, any other key for No: N (我的选项) #2 Please set the password for root here.</description>
+#命令1sudo apt-get update#命令2sudo apt-get install mysql-server 初始化配置 # sudo mysql_secure_installation 配置项较多，如下所示：
+#1VALIDATE PASSWORD PLUGIN can be used to test passwords...Press y|Y for Yes, any other key for No: N (我的选项)#2Please set the password for root here.</description>
     </item>
     
     <item>
@@ -1514,7 +1665,7 @@ cryptogen extend --config=./crypto-config.yaml 可在crypto-config/peerOrganizat
 注：&amp;ndash;config参数应以实际情况下配置文件的名称及路径为准
 3.启动容器
 在docker-compose.yaml文件中加入新节点信息
-version: &amp;#39;2&amp;#39; volumes: orderer.example.com: peer0.org1.example.com: peer1.org1.example.com: //加这里 networks: test: peer1.org1.example.com: container_name: peer1.org1.example.com image: hyperledger/fabric-peer:latest environment: #Generic peer variables - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock # the following setting starts chaincode containers on the same # bridge network as the peers # https://docs.</description>
+version: &amp;#39;2&amp;#39;volumes:orderer.example.com:peer0.org1.example.com:peer1.org1.example.com: //加这里networks:test: peer1.org1.example.com: container_name: peer1.org1.example.com image: hyperledger/fabric-peer:latest environment: #Generic peer variables - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock # the following setting starts chaincode containers on the same # bridge network as the peers # https://docs.</description>
     </item>
     
     <item>
@@ -1526,9 +1677,9 @@ version: &amp;#39;2&amp;#39; volumes: orderer.example.com: peer0.org1.example.co
       <description>Hyperledger Fabric支持在一组相同的机构之间的多通道部署， 每个通道都相当于一个单独的区块链。Fabric的多通道特性 不仅可以满足机构之间不同的数据共享需求，同时也可以提高 整个Fabric网络的吞吐量。本文将演示如何使用Hyperledger Fabric 1.4.3搭建一个多通道的区块链网络、部署并访问链码。
 1、Hyperledger Fabric多通道网络实验环境概述 # 我们将构造一个包含3个机构的Hyperledger Fabric网络：Org1、Org2和Org3， 每个机构中包含一个节点Peer0。网络包含两个通道：由Org1、 Org2和Org3组成的ChannelAll，以及由Org1和Org2组成的Channel12，因此 这个Fabric网络是多通道的配置。在这两个Fabric通道上我们将部署同样的链码， 即Fabrc-Samples中提供的Simple Asset链码：
 2、Hyperledger Fabric多通道网络实验环境搭建 # Step 1：在Hyperledger官方提供的fabric-samples目录下克隆本教程提供的示例代码：
-cd fabric-samples git clone https://github.com/kctam/3org2ch_143.git cd 3org2ch_143 Step 2：为参与Fabric通道的机构生成所需的密码学资料
+cd fabric-samplesgit clone https://github.com/kctam/3org2ch_143.gitcd 3org2ch_143 Step 2：为参与Fabric通道的机构生成所需的密码学资料
 ../bin/cryptogen generate --config=./crypto-config.yaml Step 3：生成Fabric通道素材
-mkdir channel-artifacts &amp;amp;&amp;amp; export FABRIC_CFG_PATH=$PWD ../bin/configtxgen -profile OrdererGenesis \ -outputBlock ./channel-artifacts/genesis.block export CHANNEL_ONE_NAME=channelall export CHANNEL_ONE_PROFILE=ChannelAll export CHANNEL_TWO_NAME=channel12 export CHANNEL_TWO_PROFILE=Channel12 ../bin/configtxgen -profile ${CHANNEL_ONE_PROFILE} \ -outputCreateChannelTx ./channel-artifacts/${CHANNEL_ONE_NAME}.tx \ -channelID $CHANNEL_ONE_NAME ../bin/configtxgen -profile ${CHANNEL_TWO_PROFILE} \ -outputCreateChannelTx ./channel-artifacts/${CHANNEL_TWO_NAME}.tx \ -channelID $CHANNEL_TWO_NAME .</description>
+mkdir channel-artifacts &amp;amp;&amp;amp; export FABRIC_CFG_PATH=$PWD../bin/configtxgen -profile OrdererGenesis \-outputBlock ./channel-artifacts/genesis.blockexport CHANNEL_ONE_NAME=channelallexport CHANNEL_ONE_PROFILE=ChannelAllexport CHANNEL_TWO_NAME=channel12export CHANNEL_TWO_PROFILE=Channel12../bin/configtxgen -profile ${CHANNEL_ONE_PROFILE} \-outputCreateChannelTx ./channel-artifacts/${CHANNEL_ONE_NAME}.tx \-channelID $CHANNEL_ONE_NAME../bin/configtxgen -profile ${CHANNEL_TWO_PROFILE} \-outputCreateChannelTx ./channel-artifacts/${CHANNEL_TWO_NAME}.tx \-channelID $CHANNEL_TWO_NAME.</description>
     </item>
     
     <item>
@@ -1567,7 +1718,7 @@ dcfaca84f325f65a&amp;hellip;,&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&am
       
       <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</guid>
       <description>基于fabric2.3
-原文件 # # Copyright IBM Corp. All Rights Reserved. # # SPDX-License-Identifier: Apache-2.0 # version: &amp;#39;2&amp;#39; volumes: # 数据卷映射, 本地 -&amp;gt; docker镜像 orderer.example.com: peer0.org1.example.com: peer1.org1.example.com: networks: # 指定容器运行的网络, 同一网络中的容器才能相互通信 test: services: orderer.example.com: # 定义的第1个服务名 container_name: orderer.example.com # 容器名称, 可以自定义 image: hyperledger/fabric-orderer:latest environment: # 环境变量设置 - FABRIC_LOGGING_SPEC=DEBUG #日志级别 - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0 #orderer节点监听的地址 - ORDERER_GENERAL_LISTENPORT=7050 #orderer默认监听7050，端口可修改 - ORDERER_GENERAL_GENESISMETHOD=file #创世块的来源，file表示来源于文件 #指定创世块文件路径 - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block - ORDERER_GENERAL_LOCALMSPID=OrdererMSP #这个ID不一样会出问题 - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp #msp账号路径 # enabled TLS - ORDERER_GENERAL_TLS_ENABLED=true #通信时是否使用TLS加密 #私钥文件 - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.</description>
+原文件 # # Copyright IBM Corp. All Rights Reserved.## SPDX-License-Identifier: Apache-2.0#version: &amp;#39;2&amp;#39;volumes: # 数据卷映射, 本地 -&amp;gt; docker镜像orderer.example.com:peer0.org1.example.com:peer1.org1.example.com:networks: # 指定容器运行的网络, 同一网络中的容器才能相互通信test:services:orderer.example.com: # 定义的第1个服务名container_name: orderer.example.com # 容器名称, 可以自定义image: hyperledger/fabric-orderer:latestenvironment: # 环境变量设置- FABRIC_LOGGING_SPEC=DEBUG #日志级别- ORDERER_GENERAL_LISTENADDRESS=0.0.0.0 #orderer节点监听的地址- ORDERER_GENERAL_LISTENPORT=7050 #orderer默认监听7050，端口可修改- ORDERER_GENERAL_GENESISMETHOD=file #创世块的来源，file表示来源于文件#指定创世块文件路径- ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block- ORDERER_GENERAL_LOCALMSPID=OrdererMSP #这个ID不一样会出问题- ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp #msp账号路径# enabled TLS- ORDERER_GENERAL_TLS_ENABLED=true #通信时是否使用TLS加密#私钥文件- ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.</description>
     </item>
     
     <item>
@@ -1577,7 +1728,7 @@ dcfaca84f325f65a&amp;hellip;,&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&am
       
       <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</guid>
       <description>基于fabric2.3
-原文件 # --- Organizations: #部分指定OrdereOrg与PeerOrg的组织信息 - &amp;amp;OrdererOrg #相当于定义了一个变量，其他地方可以引用 Name: OrdererOrg #组织名称 #将MSP定义加载为ID ID: OrdererMSP #MSP的ID MSPDir: crypto-config/ordererOrganizations/example.com/msp #MSP配置文件的路径 Policies: #组织策略， 其中`Rule`定义了规则，`OR`为或，`AND`为并 Readers: Type: Signature Rule: &amp;#34;OR(&amp;#39;OrdererMSP.member&amp;#39;)&amp;#34; Writers: Type: Signature Rule: &amp;#34;OR(&amp;#39;OrdererMSP.member&amp;#39;)&amp;#34; Admins: Type: Signature Rule: &amp;#34;OR(&amp;#39;OrdererMSP.admin&amp;#39;)&amp;#34; #Admins策略只能由管理员角色的身份提交的事务来满足 #OrdererEndpoints是所有orderers这个组织运行，其客户名单和同级可以分别连接以推送事务和接收块。 OrdererEndpoints: - orderer.example.com:7050 - &amp;amp;Org1 Name: Org1MSP ID: Org1MSP MSPDir: crypto-config/peerOrganizations/org1.example.com/msp Policies: Readers: Type: Signature Rule: &amp;#34;OR(&amp;#39;Org1MSP.admin&amp;#39;, &amp;#39;Org1MSP.peer&amp;#39;, &amp;#39;Org1MSP.client&amp;#39;)&amp;#34; Writers: Type: Signature Rule: &amp;#34;OR(&amp;#39;Org1MSP.admin&amp;#39;, &amp;#39;Org1MSP.client&amp;#39;)&amp;#34; Admins: Type: Signature Rule: &amp;#34;OR(&amp;#39;Org1MSP.admin&amp;#39;)&amp;#34; Endorsement: #有具有对等角色的身份才能满足该Endorsement策略 Type: Signature Rule: &amp;#34;OR(&amp;#39;Org1MSP.</description>
+原文件 # ---Organizations: #部分指定OrdereOrg与PeerOrg的组织信息- &amp;amp;OrdererOrg #相当于定义了一个变量，其他地方可以引用Name: OrdererOrg #组织名称#将MSP定义加载为IDID: OrdererMSP #MSP的IDMSPDir: crypto-config/ordererOrganizations/example.com/msp #MSP配置文件的路径Policies: #组织策略， 其中`Rule`定义了规则，`OR`为或，`AND`为并Readers: Type: SignatureRule: &amp;#34;OR(&amp;#39;OrdererMSP.member&amp;#39;)&amp;#34;Writers:Type: SignatureRule: &amp;#34;OR(&amp;#39;OrdererMSP.member&amp;#39;)&amp;#34;Admins:Type: SignatureRule: &amp;#34;OR(&amp;#39;OrdererMSP.admin&amp;#39;)&amp;#34; #Admins策略只能由管理员角色的身份提交的事务来满足#OrdererEndpoints是所有orderers这个组织运行，其客户名单和同级可以分别连接以推送事务和接收块。OrdererEndpoints:- orderer.example.com:7050- &amp;amp;Org1Name: Org1MSPID: Org1MSPMSPDir: crypto-config/peerOrganizations/org1.example.com/mspPolicies:Readers:Type: SignatureRule: &amp;#34;OR(&amp;#39;Org1MSP.admin&amp;#39;, &amp;#39;Org1MSP.peer&amp;#39;, &amp;#39;Org1MSP.client&amp;#39;)&amp;#34;Writers:Type: SignatureRule: &amp;#34;OR(&amp;#39;Org1MSP.admin&amp;#39;, &amp;#39;Org1MSP.client&amp;#39;)&amp;#34;Admins:Type: SignatureRule: &amp;#34;OR(&amp;#39;Org1MSP.admin&amp;#39;)&amp;#34;Endorsement: #有具有对等角色的身份才能满足该Endorsement策略Type: SignatureRule: &amp;#34;OR(&amp;#39;Org1MSP.</description>
     </item>
     
     <item>
@@ -1587,7 +1738,7 @@ dcfaca84f325f65a&amp;hellip;,&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&am
       
       <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</guid>
       <description>基于fabric2.3
-源码 # OrdererOrgs: #排序节点组织信息 - Name: Orderer #排序节点组织名 Domain: example.com #排序节点组织根域名 EnableNodeOUs: false #指定是否生成config.yaml文件 Specs: - Hostname: orderer #hostname+domain组成orderer节点的完整域名 PeerOrgs: #对等节点组织信息 - Name: Org1 #第一个组织名，自己起 Domain: org1.example.com #第一个组织根域名 EnableNodeOUs: false #在msp下生成config.yaml文件 Template: #组织中peer节点的数目 Count: 1 Users: #组织中普通用户的数目 Count: 1 - Name: Org2 Domain: org2.example.com EnableNodeOUs: false Template: Count: 1 Users: Count: 1 使用以下命令生成证书文件。
+源码 # OrdererOrgs: #排序节点组织信息- Name: Orderer #排序节点组织名Domain: example.com #排序节点组织根域名EnableNodeOUs: false #指定是否生成config.yaml文件Specs:- Hostname: orderer #hostname+domain组成orderer节点的完整域名PeerOrgs: #对等节点组织信息- Name: Org1 #第一个组织名，自己起Domain: org1.example.com #第一个组织根域名EnableNodeOUs: false #在msp下生成config.yaml文件Template: #组织中peer节点的数目Count: 1Users: #组织中普通用户的数目Count: 1- Name: Org2Domain: org2.example.comEnableNodeOUs: falseTemplate:Count: 1Users:Count: 1 使用以下命令生成证书文件。
 cryptogen工具 # 子命令 # generate：生成的组织结构及身份证书信息。
 showtemplate：显示默认配置模版
 version：显示版本信息
@@ -1629,7 +1780,7 @@ CBC 密码块链模式 # 特点：密文没有规律，经常使用
       <pubDate>Mon, 11 Jan 2021 16:15:02 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/</guid>
-      <description>基于Mac # 所需环境 # 一 安装git # 二 安装node.js # # 首先检查时候安装了git和node.js，终端输入一下命令， node -v #是否出现安装版本信息，出现说明已经安装了 git --version #同上述情况 # 如果没有安装，则进行安装,都可以通过直接下载安装测序进行安装，这里不演示，提供下载网址： [git]: https://sourceforge.net/projects/git-osx-installer/ [node.js]: https://nodejs.org/en/ 三 安装hexo # npm install -g hexo-cli 创建blog文件夹，并初始化建立博客框架 # 在你的家目录下创建一个blog文件夹 mkdir blog # 进入目录 cd blog # 初始化目录 hexo init 开启本地服务 # hexo s 出现 http://localhost:4000 可以在浏览器输入网址访问查看效果
+      <description>基于Mac # 所需环境 # 一 安装git # 二 安装node.js # # 首先检查时候安装了git和node.js，终端输入一下命令，node -v #是否出现安装版本信息，出现说明已经安装了git --version #同上述情况# 如果没有安装，则进行安装,都可以通过直接下载安装测序进行安装，这里不演示，提供下载网址：[git]: https://sourceforge.net/projects/git-osx-installer/[node.js]: https://nodejs.org/en/ 三 安装hexo # npm install -g hexo-cli 创建blog文件夹，并初始化建立博客框架 # 在你的家目录下创建一个blog文件夹mkdir blog# 进入目录cd blog# 初始化目录hexo init开启本地服务 # hexo s 出现 http://localhost:4000 可以在浏览器输入网址访问查看效果
 现在 整个hexo 博客已经部署完成
 设置主题 # 一 克隆GitHub文件到blog/themes文件夹下
 git clone -b master https://github.com/jerryc127/hexo-theme-butterfly.git themes/butterfly 二 在 Hexo 网站根目录中输入
@@ -1665,9 +1816,9 @@ npm i hexo-theme-butterfly 三 在hexo工作文件夹的根配置文件_config.<
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/</guid>
-      <description>注释 # IDEA注释 # // 这是一个单行注释 /* 这是一个多行注释 可以用于注释多行代码 */ 函数注释 # // add 函数将两个整数相加并返回结果 // 参数: a - 第一个整数, b - 第二个整数 // 返回值: 两个整数的和 func add(a, b int) int { return a + b } TODO：英语翻译为待办事项，备忘录。如果代码中有该标识，说明在标识处有功能代码待编写，待实现的功能在说明中会简略说明。
+      <description>注释 # IDEA注释 # // 这是一个单行注释/*这是一个多行注释可以用于注释多行代码*/ 函数注释 # // add 函数将两个整数相加并返回结果 // 参数: a - 第一个整数, b - 第二个整数 // 返回值: 两个整数的和 func add(a, b int) int { return a + b } TODO：英语翻译为待办事项，备忘录。如果代码中有该标识，说明在标识处有功能代码待编写，待实现的功能在说明中会简略说明。
 FIXME：可以拆成短语，fix me ，意为修理我。如果代码中有该标识，说明标识处代码需要修正，甚至代码是错误的，不能工作，需要修复，如何修正会在说明中简略说明。
-// FIXME: 这里有一个需要修复的问题 可小写 // TODO: 添加错误处理代码 添加新的注释格式 # 标签 说明 TODO: 以后要添加的功能 FIXME: 已知的BUG,以后需要修正 HACK: 代码不太好，需要优化 XXX: 包含所有tag的tag,不好明确到底用哪个tag REVIEW: 虽然好用，最好还是评审一下 OPTIMIZE: 性能不好，需要优化 NOTE: 一些说明 WARNING: 请注意 代码报红处理方法 # 设置import规范 # 1、标准库</description>
+// FIXME: 这里有一个需要修复的问题 可小写// TODO: 添加错误处理代码 添加新的注释格式 # 标签 说明 TODO: 以后要添加的功能 FIXME: 已知的BUG,以后需要修正 HACK: 代码不太好，需要优化 XXX: 包含所有tag的tag,不好明确到底用哪个tag REVIEW: 虽然好用，最好还是评审一下 OPTIMIZE: 性能不好，需要优化 NOTE: 一些说明 WARNING: 请注意 代码报红处理方法 # 设置import规范 # 1、标准库</description>
     </item>
     
   </channel>

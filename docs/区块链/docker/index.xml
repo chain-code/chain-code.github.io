@@ -43,8 +43,8 @@ docker特点 # 三大理念: # 构建:龙珠里的胶囊，将你需要的场景
 Dockerfile的作用：
 找一个镜像: ubuntu 创建一个容器: docker run ubuntu 进入容器: docker exec -it 容器 命令 操作: 各种应用配置&amp;hellip;. 构造新镜像: docker commit Dockerfile 使用准则：
 大: 首字母必须大写D 空: 尽量将Dockerfile放在空目录中。 单: 每个容器尽量只有一个功能。 少: 执行的命令越少越好。 Dockerfile文件内容:
-首行注释信息 指令(大写) 参数 #构建镜像命令格式: docker build -t [镜像名]:[版本号][Dockerfile所在目录] #构建样例: docker build -t nginx:v0.2 /opt/dockerfile/nginx/ #参数详解: -t 指定构建后的镜像信息， /opt/dockerfile/nginx/ 则代表Dockerfile存放位置，如果是当前目录，则用 .(点)表示 快速入门 # 接下来我们快速的使用Dockerfile来基于ubuntu创建一个定制化的镜像:nginx。
-#创建Dockerfile专用目录 $ mkdir ./docker/images/nginx -p $ cd docker/images/nginx/ #创建Dockerfile文件 :~/docker/images/nginx$ vim Dockerfile # 构建一个基于ubuntu的docker定制镜像 # 基础镜像 FROM ubuntu # 镜像作者 MAINTAINER panda kstwoak47@163.</description>
+首行注释信息 指令(大写) 参数 #构建镜像命令格式:docker build -t [镜像名]:[版本号][Dockerfile所在目录] #构建样例:docker build -t nginx:v0.2 /opt/dockerfile/nginx/ #参数详解:-t 指定构建后的镜像信息，/opt/dockerfile/nginx/ 则代表Dockerfile存放位置，如果是当前目录，则用 .(点)表示 快速入门 # 接下来我们快速的使用Dockerfile来基于ubuntu创建一个定制化的镜像:nginx。
+#创建Dockerfile专用目录$ mkdir ./docker/images/nginx -p$ cd docker/images/nginx/ #创建Dockerfile文件 :~/docker/images/nginx$ vim Dockerfile # 构建一个基于ubuntu的docker定制镜像 # 基础镜像FROM ubuntu# 镜像作者MAINTAINER panda kstwoak47@163.</description>
     </item>
     
     <item>
@@ -53,7 +53,7 @@ Dockerfile的作用：
       <pubDate>Fri, 30 Apr 2021 19:43:22 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</guid>
-      <description>docker常用基础命令 # docker rmi -f $(docker images -q) 删除镜像 docker rm -f .... 删除容器 docker exec -it ca.org1.example.com bash 进入容器 docker exec -it peer0.org1.example.com sh exit 退出容器 control+P+Q 退出容器 docker stop $(docker ps -q) 停止所有容器 docker rm $(docker ps -aq) 删除所有容器 sudo docker volume prune sudo docker network prune docker logs id 查看docker容器日志 docker文件管理 # docker cp 容器 ID 或名称: 容器目录 物理机目录 docker目录拷贝到物理机 docker cp 物理机目录 容器 ID 或名称: 容器目录 物理机目录拷贝到docker docker cp /home/lishuma b2860e937844:/home/ 如果是把上一条命令结尾斜杠去掉，那么意思就变成了将物理机/home/lishuma 目录拷贝到容器根目录中，并且拷贝进去的目录重命名为 home。 docker cp b2860e937844:/home/lishuma /home/lishuma/test/ 反过来容器向外拷贝的命令如果去掉最后一个斜杠，那么意思同样是变成拷贝出来后，重命名为 test。 docker文件挂载 # docker run -v /home/tianzhiwei/hyperledger/catest/crypto-config/peerOrganizations/:/etc/hyperledger/fabric-ca-server-config/msp hyperledger/fabric-ca:1.</description>
+      <description>docker常用基础命令 # docker rmi -f $(docker images -q) 删除镜像docker rm -f .... 删除容器docker exec -it ca.org1.example.com bash 进入容器docker exec -it peer0.org1.example.com shexit 退出容器control+P+Q 退出容器docker stop $(docker ps -q) 停止所有容器docker rm $(docker ps -aq) 删除所有容器sudo docker volume prune sudo docker network prunedocker logs id 查看docker容器日志 docker文件管理 # docker cp 容器 ID 或名称: 容器目录 物理机目录 docker目录拷贝到物理机docker cp 物理机目录 容器 ID 或名称: 容器目录 物理机目录拷贝到dockerdocker cp /home/lishuma b2860e937844:/home/如果是把上一条命令结尾斜杠去掉，那么意思就变成了将物理机/home/lishuma 目录拷贝到容器根目录中，并且拷贝进去的目录重命名为 home。docker cp b2860e937844:/home/lishuma /home/lishuma/test/反过来容器向外拷贝的命令如果去掉最后一个斜杠，那么意思同样是变成拷贝出来后，重命名为 test。 docker文件挂载 # docker run -v /home/tianzhiwei/hyperledger/catest/crypto-config/peerOrganizations/:/etc/hyperledger/fabric-ca-server-config/msp hyperledger/fabric-ca:1.</description>
     </item>
     
   </channel>

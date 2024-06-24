@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="# flag # 概述 # flag包提供了一系列解析命令行参数的功能接口，官方教程的地址为：https://golang.org/pkg/flag/#pkg-overview
 命令行语法 # 命令行语法主要有以下几种形式
--flag //只支持bool类型 -flag=x -flag x //只支持非bool类型 以上语法对于一个或两个‘－’号，效果是一样的，但是要注意对于第三种情况，只支持非bool类型，原因是碰到如下情况时
+-flag //只支持bool类型-flag=x-flag x //只支持非bool类型 以上语法对于一个或两个‘－’号，效果是一样的，但是要注意对于第三种情况，只支持非bool类型，原因是碰到如下情况时
 cmd -x * *为0，false有可能表示一个文件名或文件，也有可能表示x标签的值为0或false，会产生二义性，因此规定第三种只支持非bool类型。对于整形flag，合法的值可以为1234, 0664,0x1234或负数等。对于布尔型flag，可以为1, 0, t, f, T, F, true, false, TRUE, FALSE, True, False等
 命令行参数解析 # flag.Parse() 解析函数将会在碰到第一个非flag命令行参数时停止，非flag命令行参数是指不满足命令行语法的参数，如命令行参数为cmd --flag=true abc则第一个非flag命令行参数为“abc”
 调用Parse解析后，就可以直接使用flag本身(指针类型)或者绑定的变量了(值类型) fmt.Println(&#34;ip has value &#34;, *ip) fmt.Println(&#34;flagvar has value &#34;, flagvar) 12 还可通过flag.Args(), flag.Arg(i)来获取非flag命令行参数
@@ -18,7 +18,7 @@ cmd -x * *为0，false有可能表示一个文件名或文件，也有可能表�
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="Flag" />
 <meta property="og:description" content="# flag # 概述 # flag包提供了一系列解析命令行参数的功能接口，官方教程的地址为：https://golang.org/pkg/flag/#pkg-overview
 命令行语法 # 命令行语法主要有以下几种形式
--flag //只支持bool类型 -flag=x -flag x //只支持非bool类型 以上语法对于一个或两个‘－’号，效果是一样的，但是要注意对于第三种情况，只支持非bool类型，原因是碰到如下情况时
+-flag //只支持bool类型-flag=x-flag x //只支持非bool类型 以上语法对于一个或两个‘－’号，效果是一样的，但是要注意对于第三种情况，只支持非bool类型，原因是碰到如下情况时
 cmd -x * *为0，false有可能表示一个文件名或文件，也有可能表示x标签的值为0或false，会产生二义性，因此规定第三种只支持非bool类型。对于整形flag，合法的值可以为1234, 0664,0x1234或负数等。对于布尔型flag，可以为1, 0, t, f, T, F, true, false, TRUE, FALSE, True, False等
 命令行参数解析 # flag.Parse() 解析函数将会在碰到第一个非flag命令行参数时停止，非flag命令行参数是指不满足命令行语法的参数，如命令行参数为cmd --flag=true abc则第一个非flag命令行参数为“abc”
 调用Parse解析后，就可以直接使用flag本身(指针类型)或者绑定的变量了(值类型) fmt.Println(&#34;ip has value &#34;, *ip) fmt.Println(&#34;flagvar has value &#34;, flagvar) 12 还可通过flag.Args(), flag.Arg(i)来获取非flag命令行参数
@@ -35,7 +35,7 @@ cmd -x * *为0，false有可能表示一个文件名或文件，也有可能表�
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.60252bc34db4d46d516dcfe214d6b19f168bc7f9ed6588456f313a4b23826525.js" integrity="sha256-YCUrw0201G1Rbc/iFNaxnxaLx/ntZYhFbzE6SyOCZSU=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.d9972125f1de7676263ba0a9be835364cca3589c701aeb82bd4760c4ac705734.js" integrity="sha256-2ZchJfHednYmO6CpvoNTZMyjWJxwGuuCvUdgxKxwVzQ=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -116,7 +116,59 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/crontab%E4%BD%BF%E7%94%A8/" class="">crontab使用</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/libewf%E5%BA%93%E7%BC%96%E8%AF%91/" class="">libewf库编译</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/localhost%E4%B8%8E127.0.0.1/" class="">localhost与127.0.0.1</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="">Vim编程常用快捷键</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E4%BB%A3%E7%A0%81%E6%95%B4%E6%B4%81%E4%B9%8B%E9%81%93/" class="">代码整洁之道</a>
   
 
         </li>
@@ -143,6 +195,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8github%E5%92%8Cgitlab/" class="">同时使用github和gitlab</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%8E%B7%E5%8F%96%E5%86%85%E7%BD%91%E6%B4%BB%E8%B7%83ip/" class="">获取内网活跃IP</a>
   
 
         </li>
@@ -195,6 +260,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%99%9A%E6%8B%9F%E7%BB%84%E7%BD%91/" class="">虚拟组网</a>
   
 
         </li>
@@ -280,19 +358,6 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/cgo/" class="">CGo</a>
-  
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
   
 
@@ -319,6 +384,32 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/golang%E6%8E%A7%E6%B5%81/" class="">Golang控流</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E6%B3%9B%E5%9E%8B%E4%BB%8B%E7%BB%8D/" class="">go泛型介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/grpc/" class="">Grpc</a>
   
 
@@ -333,6 +424,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/pprof/" class="">pprof</a>
   
 
         </li>
@@ -937,40 +1041,6 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
-  
-
-        </li>
-      
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li class="book-section-flat" >
-          
-  
-  
-
-  
-    <input type="checkbox" id="section-ac8e4e2fda641053d78fc10cbbde236e" class="toggle"  />
-    <label for="section-ac8e4e2fda641053d78fc10cbbde236e" class="flex justify-between">
-      <a role="button" class="">C</a>
-    </label>
-  
-
-          
-  <ul>
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
   
 
         </li>
@@ -1613,6 +1683,66 @@ https://github.com/alex-shpak/hugo-book
       
     
   </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ac8e4e2fda641053d78fc10cbbde236e" class="toggle"  />
+    <label for="section-ac8e4e2fda641053d78fc10cbbde236e" class="flex justify-between">
+      <a role="button" class="">C</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/cgo/" class="">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/cgo%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/" class="">CGO遇到的问题解决</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
 
         </li>
       

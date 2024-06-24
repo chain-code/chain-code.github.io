@@ -14,15 +14,15 @@
       
       <guid>https://chain-code.github.io/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/</guid>
       <description>基于Macbook M2芯片（主要原因是换电脑了，同时自己主学go语言，于是打算将Hexo换成Hugo，练练手)
-https://copyfuture.com/blogs-details/20191229203259169ljtxcq9vmlzjyvf http://scarletsky.github.io/2019/05/02/migrate-hexo-to-hugo/ https://www.tomczhen.com/2019/06/04/getting-start-blog-with-hugo/ https://lequ7.com/guan-yu-hugo-bo-ke-qian-yi-zhi-lu-cong-hexo-huan-cheng-hugo.html https://blog.csdn.net/hqweay/article/details/101233371 搭建过程从头开始
+https://copyfuture.com/blogs-details/20191229203259169ljtxcq9vmlzjyvfhttp://scarletsky.github.io/2019/05/02/migrate-hexo-to-hugo/https://www.tomczhen.com/2019/06/04/getting-start-blog-with-hugo/https://lequ7.com/guan-yu-hugo-bo-ke-qian-yi-zhi-lu-cong-hexo-huan-cheng-hugo.htmlhttps://blog.csdn.net/hqweay/article/details/101233371 搭建过程从头开始
 环境安装 # 安装Homebrew # /bin/zsh -c &amp;#34;$(curl -fsSL https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&amp;#34; 根据提示安装Git
 根据提示往下选择
-运行 source /Users/wangb/.zprofile 运行brew doctor根据提示处理现有的问题
+运行source /Users/wangb/.zprofile 运行brew doctor根据提示处理现有的问题
 brew doctor 安装Golang # 查看可安装的golang版本
 brew search go //最好使用手动安装，m2系列brew安装的go会出一些小问题 没找到什么原因 安装go环境：
 brew install go@1.18//改成你喜欢的版本号 在.zshrc 文件中追加配置
 vim ~/.zshrc 在文件最后输入一下内容：
-export GOROOT=/usr/local/go export GOPATH=$HOME/go export GOBIN=$GOPATH/bin export PATH=$PATH:$GOROOT/bin:$GOBIN export GO111MODULE=on 按 Esc 键退回一般模式，然后输入 :wq 命令并回车保存退出文件。再使用以下命令使变量立即生效。
+export GOROOT=/usr/local/goexport GOPATH=$HOME/goexport GOBIN=$GOPATH/binexport PATH=$PATH:$GOROOT/bin:$GOBINexport GO111MODULE=on 按 Esc 键退回一般模式，然后输入 :wq 命令并回车保存退出文件。再使用以下命令使变量立即生效。
 source .zshrc 由于Golang的官方代理源速度慢有时候会出现包不能下载的情况，我们使用以下命令把代理源设置为国内的代理源。
 go env -w GOPROXY=https://goproxy.cn,direct 使用以下命令查看Golang版本信息。
 go version go1.16.4 linux/amd64 使用以下命令查看Golang环境变量配置。</description>
@@ -34,7 +34,7 @@ go version go1.16.4 linux/amd64 使用以下命令查看Golang环境变量配置
       <pubDate>Mon, 11 Jan 2021 16:15:02 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/</guid>
-      <description>基于Mac # 所需环境 # 一 安装git # 二 安装node.js # # 首先检查时候安装了git和node.js，终端输入一下命令， node -v #是否出现安装版本信息，出现说明已经安装了 git --version #同上述情况 # 如果没有安装，则进行安装,都可以通过直接下载安装测序进行安装，这里不演示，提供下载网址： [git]: https://sourceforge.net/projects/git-osx-installer/ [node.js]: https://nodejs.org/en/ 三 安装hexo # npm install -g hexo-cli 创建blog文件夹，并初始化建立博客框架 # 在你的家目录下创建一个blog文件夹 mkdir blog # 进入目录 cd blog # 初始化目录 hexo init 开启本地服务 # hexo s 出现 http://localhost:4000 可以在浏览器输入网址访问查看效果
+      <description>基于Mac # 所需环境 # 一 安装git # 二 安装node.js # # 首先检查时候安装了git和node.js，终端输入一下命令，node -v #是否出现安装版本信息，出现说明已经安装了git --version #同上述情况# 如果没有安装，则进行安装,都可以通过直接下载安装测序进行安装，这里不演示，提供下载网址：[git]: https://sourceforge.net/projects/git-osx-installer/[node.js]: https://nodejs.org/en/ 三 安装hexo # npm install -g hexo-cli 创建blog文件夹，并初始化建立博客框架 # 在你的家目录下创建一个blog文件夹mkdir blog# 进入目录cd blog# 初始化目录hexo init开启本地服务 # hexo s 出现 http://localhost:4000 可以在浏览器输入网址访问查看效果
 现在 整个hexo 博客已经部署完成
 设置主题 # 一 克隆GitHub文件到blog/themes文件夹下
 git clone -b master https://github.com/jerryc127/hexo-theme-butterfly.git themes/butterfly 二 在 Hexo 网站根目录中输入

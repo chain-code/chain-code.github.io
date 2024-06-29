@@ -92,6 +92,16 @@ localhost在IPv6中通常解析为::1，这是IPv6下的环回地址。直接使
     </item>
     
     <item>
+      <title>schtask使用</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/schtasks%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/schtasks%E4%BD%BF%E7%94%A8/</guid>
+      <description>简介 # SCHTASKS 允许管理员创建、删除、查询、更改、运行和中止本地或远程系统上的计划任务。
+语法 # SCHTASKS /parameter [arguments]描述:允许管理员创建、删除、查询、更改、运行和中止本地或远程系统上的计划任务。参数列表:/Create 创建新计划任务。/Delete 删除计划任务。/Query 显示所有计划任务。/Change 更改计划任务属性。/Run 按需运行计划任务。/End 中止当前正在运行的计划任务。/ShowSid 显示与计划的任务名称相应的安全标识符。/? 显示此帮助消息。Examples:SCHTASKSSCHTASKS /?SCHTASKS /Run /?SCHTASKS /End /?SCHTASKS /Create /?SCHTASKS /Delete /?SCHTASKS /Query /?SCHTASKS /Change /?SCHTASKS /ShowSid /? 格式 # /SC schedule 指定计划频率：MINUTE、 HOURLY、DAILY、WEEKLY、MONTHLY, ONCE, ONSTART, ONLOGON, ONIDLE, ONEVENT./MO MINUTE: 1 到 1439 分钟。 HOURLY: 1 - 23 小时。 DAILY: 1 到 365 天。 WEEKLY: 1 到 52 周。 MONTHLY: 1 到 12，或 FIRST, SECOND, THIRD, FOURTH, LAST, LASTDAY。/ST starttime 指定运行任务的开始时间：时间格式为 HH:mm (24 小时时间)，例如 14:30 表示 2:30 PM。如果未指定 /ST，则默认值为当前时间。/ET endtime 指定运行任务的结束时间：时间格式为 HH:mm (24 小时时间)，例如 14:50 表示 2:50 PM。/TN taskname 指定唯一识别这个计划任务的名称。/TR taskrun 指定在这个计划时间运行的程序的路径和文件名。例如: C:\windows\system32\calc.</description>
+    </item>
+    
+    <item>
       <title>Vim编程常用快捷键</title>
       <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

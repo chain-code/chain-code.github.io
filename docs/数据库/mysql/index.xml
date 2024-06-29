@@ -6,7 +6,24 @@
     <description>Recent content in MySql on Soulmate</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 20 Apr 2021 18:07:08 +0000</lastBuildDate><atom:link href="https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 30 Apr 2024 16:16:50 +0800</lastBuildDate><atom:link href="https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>MySql相关问题</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Tue, 30 Apr 2024 16:16:50 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/</guid>
+      <description>联合索引 和 mysql 调优的关系 # mysql 调优 的一个核心动作，就是 通过 联合索引 实现 索引覆盖。
+在MySQL中，合理使用联合索引可以提高查询效率，通过 联合索引 实现 索引覆盖 ，常常需要注意一些技巧：
+选择合适的列：联合索引的列顺序非常重要。应该优先选择最频繁用于查询条件的列，以提高索引效率。其次考虑选择性高的列，这样可以过滤出更少的数据。 避免冗余列：联合索引的列应该尽量避免包含冗余列，即多个索引的前缀相同。这样会增加索引的维护成本，并占用更多的存储空间。 避免过度索引：不要为每个查询都创建一个新的联合索引。应该根据实际情况，分析那些查询是最频繁的，然后创建针对这些查询的索引。 覆盖索引：如果查询的列都包含在联合索引中，并且不需要访问表的其他列，那么MySql可以直接使用索引来执行查询，不必访问表，这种索引称为覆盖索引，可以提高查询性能。 使用EXPLAIN进行查询计划分析： 使用MySQL的EXPLAIN语句可以查看MySQL执行查询的执行计划，以便优化查询语句和索引的使用。 定期优化索引： 随着数据库的使用，索引的效率可能会下降，因此需要定期进行索引的优化和重建，以保持查询性能的稳定性。 分析查询日志： 监控数据库的查询日志，分析哪些查询是最频繁的，以及它们的查询模式，可以帮助确定需要创建的联合索引。 避免过度索引更新： 避免频繁地更新索引列，因为每次更新索引都会增加数据库的负载和IO操作。 综上所述，联合索引是mysql 调优的一个核心动作， 通过 联合索引进行mysql 调优时，需要综合考虑列的选择、索引的覆盖、查询的频率和模式等因素，以提高MySQL数据库的查询性能。
+MySQL索引机制 # 数据库索引，官方定义如下
+在关系型数据库中，索引是一种单独的、物理的数据，对数据库表中一列或多列的值进行排序的一种存储结构，它是某个表中一列或若干列值的集合，以及相应的指向表中物理标识这些值的数据页的逻辑指针清单。
+通俗的理解为
+在关系型数据库中，索引是一种用来帮助快速检索目标数据的存储结构。
+索引的创建 # MySQL可以通过CREATE、ALTER、DDL三种方式创建一个索引。
+使用CREATE语句创建 CREATE INDEX indexName ON tableName (columnName(length) [ASC|DESC]); 使用ALTER语句创建 ALTER TABLE tableName ADD INDEX indexName(columnName(length) [ASC|DESC]); 建表时DDL语句中创建 CREATE TABLE tableName( columnName1 INT(8) NOT NULL, columnName2 ....,.</description>
+    </item>
+    
     <item>
       <title>MySql基础总结</title>
       <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/</link>

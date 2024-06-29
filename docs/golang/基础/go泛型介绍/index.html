@@ -27,7 +27,7 @@ func AddFloat32(a float32, b float32) float32 {return a &#43; b}func AddStrin
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.d9972125f1de7676263ba0a9be835364cca3589c701aeb82bd4760c4ac705734.js" integrity="sha256-2ZchJfHednYmO6CpvoNTZMyjWJxwGuuCvUdgxKxwVzQ=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.8db2655b9045817763dc01ad431383bc541a2c982525b6589e51677baa4d38ae.js" integrity="sha256-jbJlW5BFgXdj3AGtQxODvFQaLJglJbZYnlFne6pNOK4=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -135,6 +135,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/localhost%E4%B8%8E127.0.0.1/" class="">localhost与127.0.0.1</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/schtasks%E4%BD%BF%E7%94%A8/" class="">schtask使用</a>
   
 
         </li>
@@ -886,6 +899,19 @@ https://github.com/alex-shpak/hugo-book
 
           
   <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/" class="">MySql相关问题</a>
+  
+
+        </li>
+      
     
       
         <li>
@@ -1930,6 +1956,7 @@ https://github.com/alex-shpak/hugo-book
             <li><a href="#为什么需要泛型">为什么需要泛型</a></li>
             <li><a href="#泛型语法">泛型语法</a></li>
             <li><a href="#参考文档">参考文档</a></li>
+            <li><a href="#示例">示例</a></li>
           </ul>
         </li>
       </ul>
@@ -2109,7 +2136,46 @@ m = min(a, b) // 无需指定类型实参
 <li><a href="https://go.dev/blog/intro-generics">https://go.dev/blog/intro-generics</a></li>
 <li><a href="https://go.dev/doc/tutorial/generics">https://go.dev/doc/tutorial/generics</a></li>
 </ul>
-</article>
+<h3 id="示例">
+  示例
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b">#</a>
+</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Filter</span>[<span style="color:#a6e22e">T</span> <span style="color:#a6e22e">AllowedData</span>] <span style="color:#66d9ef">map</span>[<span style="color:#a6e22e">T</span>]<span style="color:#66d9ef">bool</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">AllowedData</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">constraints</span>.<span style="color:#a6e22e">Ordered</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Test_fx</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">data</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>}     <span style="color:#75715e">// sample array
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">data32</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int32</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>} <span style="color:#75715e">// sample array
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">data64</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int64</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Duplicate found %t\n&#34;</span>, <span style="color:#a6e22e">FindDuplicate</span>(<span style="color:#a6e22e">data</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Duplicate found %t\n&#34;</span>, <span style="color:#a6e22e">FindDuplicate</span>(<span style="color:#a6e22e">data32</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Duplicate found %t\n&#34;</span>, <span style="color:#a6e22e">FindDuplicate</span>(<span style="color:#a6e22e">data64</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#a6e22e">Filter</span>[<span style="color:#a6e22e">T</span>]) <span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">datum</span> <span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">r</span>[<span style="color:#a6e22e">datum</span>] = <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#a6e22e">Filter</span>[<span style="color:#a6e22e">T</span>]) <span style="color:#a6e22e">has</span>(<span style="color:#a6e22e">datum</span> <span style="color:#a6e22e">T</span>) <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">r</span>[<span style="color:#a6e22e">datum</span>]
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">ok</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">FindDuplicate</span>[<span style="color:#a6e22e">T</span> <span style="color:#a6e22e">AllowedData</span>](<span style="color:#a6e22e">data</span> []<span style="color:#a6e22e">T</span>) <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">inArray</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Filter</span>[<span style="color:#a6e22e">T</span>]{}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">datum</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">data</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">inArray</span>.<span style="color:#a6e22e">has</span>(<span style="color:#a6e22e">datum</span>) {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">inArray</span>.<span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">datum</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></article>
  
       
 
@@ -2158,6 +2224,7 @@ m = min(a, b) // 无需指定类型实参
             <li><a href="#为什么需要泛型">为什么需要泛型</a></li>
             <li><a href="#泛型语法">泛型语法</a></li>
             <li><a href="#参考文档">参考文档</a></li>
+            <li><a href="#示例">示例</a></li>
           </ul>
         </li>
       </ul>

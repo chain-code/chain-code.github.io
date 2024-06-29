@@ -6,7 +6,7 @@
     <description>Recent content in Home on Soulmate</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 05 May 2023 11:51:49 +0800</lastBuildDate><atom:link href="https://chain-code.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 30 Apr 2024 16:16:50 +0800</lastBuildDate><atom:link href="https://chain-code.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Docker基础</title>
       <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/</link>
@@ -373,6 +373,16 @@ protoBuf的优点 # Protobuf 有如 XML，不过它更小、更快、也更简�
 Protobuf 语义更清晰，无需类似 XML 解析器的东西（因为 Protobuf 编译器会将 .proto 文件编译生成对应的数据 访问类以对 Protobuf 数据进行序列化、反序列化操作）。使用 Protobuf 无需学习复杂的文档对象模型， Protobuf 的编程模式比较友好，简单易学，同时它拥有良好的文档和示例，对于喜欢简单事物的人们而言， Protobuf 比其他的技术更加有吸引力。
 ProtoBuf 的不足 # Protobuf 与 XML 相比也有不足之处。它功能简单，无法用来表示复杂的概念。
 XML 已经成为多种行业标准的编写工具，Protobuf 只是 Google 公司内部使用的工具，在通用性上还差很多。 由 于文本并不适合用来描述数据结构，所以 Protobuf 也不适合用来对基于文本的标记文档（如 HTML）建模。另 外，由于 XML 具有某种程度上的自解释性，它可以被人直接读取编辑，在这一点上 Protobuf 不行，它以二进制的 方式存储，除非你有 .</description>
+    </item>
+    
+    <item>
+      <title>schtask使用</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/schtasks%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/schtasks%E4%BD%BF%E7%94%A8/</guid>
+      <description>简介 # SCHTASKS 允许管理员创建、删除、查询、更改、运行和中止本地或远程系统上的计划任务。
+语法 # SCHTASKS /parameter [arguments]描述:允许管理员创建、删除、查询、更改、运行和中止本地或远程系统上的计划任务。参数列表:/Create 创建新计划任务。/Delete 删除计划任务。/Query 显示所有计划任务。/Change 更改计划任务属性。/Run 按需运行计划任务。/End 中止当前正在运行的计划任务。/ShowSid 显示与计划的任务名称相应的安全标识符。/? 显示此帮助消息。Examples:SCHTASKSSCHTASKS /?SCHTASKS /Run /?SCHTASKS /End /?SCHTASKS /Create /?SCHTASKS /Delete /?SCHTASKS /Query /?SCHTASKS /Change /?SCHTASKS /ShowSid /? 格式 # /SC schedule 指定计划频率：MINUTE、 HOURLY、DAILY、WEEKLY、MONTHLY, ONCE, ONSTART, ONLOGON, ONIDLE, ONEVENT./MO MINUTE: 1 到 1439 分钟。 HOURLY: 1 - 23 小时。 DAILY: 1 到 365 天。 WEEKLY: 1 到 52 周。 MONTHLY: 1 到 12，或 FIRST, SECOND, THIRD, FOURTH, LAST, LASTDAY。/ST starttime 指定运行任务的开始时间：时间格式为 HH:mm (24 小时时间)，例如 14:30 表示 2:30 PM。如果未指定 /ST，则默认值为当前时间。/ET endtime 指定运行任务的结束时间：时间格式为 HH:mm (24 小时时间)，例如 14:50 表示 2:50 PM。/TN taskname 指定唯一识别这个计划任务的名称。/TR taskrun 指定在这个计划时间运行的程序的路径和文件名。例如: C:\windows\system32\calc.</description>
     </item>
     
     <item>
@@ -876,6 +886,23 @@ beego网址 MVC架构 # Beego是MVC架构。MVC 是一种应用非常广泛的�
       <guid>https://chain-code.github.io/docs/golang/package/atomic/</guid>
       <description>Go语言中的 sync/atomic 包提供了一组原子操作函数，用于在多线程或并发环境下执行对共享变量的原子操作。这些操作是原子的，不会受到其他并发操作的干扰，从而避免了竞态条件和数据竞争问题。sync/atomic 包通常用于同步和管理共享资源，以确保线程安全。
 原子加载（Load）： Load 函数用于原子地加载变量的值。例如，atomic.LoadInt32(&amp;amp;myVariable) 会原子地获取 myVariable 的值。 原子存储（Store）： Store 函数用于原子地存储一个值到变量中。例如，atomic.StoreInt32(&amp;amp;myVariable, newValue) 会原子地将 newValue 存储到 myVariable 中。 原子交换（Swap）： Swap 函数用于原子地交换变量的值，并返回之前的值。例如，atomic.SwapInt32(&amp;amp;myVariable, newValue) 会原子地将 newValue 存储到 myVariable 中，并返回之前的值。 原子增减（Add/Sub）： Add 和 Sub 函数用于原子地增加或减少变量的值。例如，atomic.AddInt32(&amp;amp;myVariable, delta) 会原子地将 myVariable 的值增加 delta。 原子比较并交换（CompareAndSwap）： CompareAndSwap 函数用于原子地比较变量的当前值与期望值，如果相等则交换成新值。这通常用于实现乐观锁定机制。例如，atomic.CompareAndSwapInt32(&amp;amp;myVariable, expectedValue, newValue) 会比较 myVariable 的当前值是否等于 expectedValue，如果是，则将其替换为 newValue。 原子增减并返回新值（AddInt32, AddInt64, SubInt32, SubInt64）： 这些函数用于原子地增加或减少变量的值，并返回新的值。例如，atomic.AddInt32(&amp;amp;myVariable, delta) 会原子地将 myVariable 的值增加 delta，并返回新的值。 </description>
+    </item>
+    
+    <item>
+      <title>MySql相关问题</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Tue, 30 Apr 2024 16:16:50 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/</guid>
+      <description>联合索引 和 mysql 调优的关系 # mysql 调优 的一个核心动作，就是 通过 联合索引 实现 索引覆盖。
+在MySQL中，合理使用联合索引可以提高查询效率，通过 联合索引 实现 索引覆盖 ，常常需要注意一些技巧：
+选择合适的列：联合索引的列顺序非常重要。应该优先选择最频繁用于查询条件的列，以提高索引效率。其次考虑选择性高的列，这样可以过滤出更少的数据。 避免冗余列：联合索引的列应该尽量避免包含冗余列，即多个索引的前缀相同。这样会增加索引的维护成本，并占用更多的存储空间。 避免过度索引：不要为每个查询都创建一个新的联合索引。应该根据实际情况，分析那些查询是最频繁的，然后创建针对这些查询的索引。 覆盖索引：如果查询的列都包含在联合索引中，并且不需要访问表的其他列，那么MySql可以直接使用索引来执行查询，不必访问表，这种索引称为覆盖索引，可以提高查询性能。 使用EXPLAIN进行查询计划分析： 使用MySQL的EXPLAIN语句可以查看MySQL执行查询的执行计划，以便优化查询语句和索引的使用。 定期优化索引： 随着数据库的使用，索引的效率可能会下降，因此需要定期进行索引的优化和重建，以保持查询性能的稳定性。 分析查询日志： 监控数据库的查询日志，分析哪些查询是最频繁的，以及它们的查询模式，可以帮助确定需要创建的联合索引。 避免过度索引更新： 避免频繁地更新索引列，因为每次更新索引都会增加数据库的负载和IO操作。 综上所述，联合索引是mysql 调优的一个核心动作， 通过 联合索引进行mysql 调优时，需要综合考虑列的选择、索引的覆盖、查询的频率和模式等因素，以提高MySQL数据库的查询性能。
+MySQL索引机制 # 数据库索引，官方定义如下
+在关系型数据库中，索引是一种单独的、物理的数据，对数据库表中一列或多列的值进行排序的一种存储结构，它是某个表中一列或若干列值的集合，以及相应的指向表中物理标识这些值的数据页的逻辑指针清单。
+通俗的理解为
+在关系型数据库中，索引是一种用来帮助快速检索目标数据的存储结构。
+索引的创建 # MySQL可以通过CREATE、ALTER、DDL三种方式创建一个索引。
+使用CREATE语句创建 CREATE INDEX indexName ON tableName (columnName(length) [ASC|DESC]); 使用ALTER语句创建 ALTER TABLE tableName ADD INDEX indexName(columnName(length) [ASC|DESC]); 建表时DDL语句中创建 CREATE TABLE tableName( columnName1 INT(8) NOT NULL, columnName2 ....,.</description>
     </item>
     
     <item>

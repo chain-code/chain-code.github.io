@@ -3,20 +3,37 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="">
+<meta name="description" content="联合索引 和 mysql 调优的关系 # mysql 调优 的一个核心动作，就是 通过 联合索引 实现 索引覆盖。
+在MySQL中，合理使用联合索引可以提高查询效率，通过 联合索引 实现 索引覆盖 ，常常需要注意一些技巧：
+选择合适的列：联合索引的列顺序非常重要。应该优先选择最频繁用于查询条件的列，以提高索引效率。其次考虑选择性高的列，这样可以过滤出更少的数据。 避免冗余列：联合索引的列应该尽量避免包含冗余列，即多个索引的前缀相同。这样会增加索引的维护成本，并占用更多的存储空间。 避免过度索引：不要为每个查询都创建一个新的联合索引。应该根据实际情况，分析那些查询是最频繁的，然后创建针对这些查询的索引。 覆盖索引：如果查询的列都包含在联合索引中，并且不需要访问表的其他列，那么MySql可以直接使用索引来执行查询，不必访问表，这种索引称为覆盖索引，可以提高查询性能。 使用EXPLAIN进行查询计划分析： 使用MySQL的EXPLAIN语句可以查看MySQL执行查询的执行计划，以便优化查询语句和索引的使用。 定期优化索引： 随着数据库的使用，索引的效率可能会下降，因此需要定期进行索引的优化和重建，以保持查询性能的稳定性。 分析查询日志： 监控数据库的查询日志，分析哪些查询是最频繁的，以及它们的查询模式，可以帮助确定需要创建的联合索引。 避免过度索引更新： 避免频繁地更新索引列，因为每次更新索引都会增加数据库的负载和IO操作。 综上所述，联合索引是mysql 调优的一个核心动作， 通过 联合索引进行mysql 调优时，需要综合考虑列的选择、索引的覆盖、查询的频率和模式等因素，以提高MySQL数据库的查询性能。
+MySQL索引机制 # 数据库索引，官方定义如下
+在关系型数据库中，索引是一种单独的、物理的数据，对数据库表中一列或多列的值进行排序的一种存储结构，它是某个表中一列或若干列值的集合，以及相应的指向表中物理标识这些值的数据页的逻辑指针清单。
+通俗的理解为
+在关系型数据库中，索引是一种用来帮助快速检索目标数据的存储结构。
+索引的创建 # MySQL可以通过CREATE、ALTER、DDL三种方式创建一个索引。
+使用CREATE语句创建 CREATE INDEX indexName ON tableName (columnName(length) [ASC|DESC]); 使用ALTER语句创建 ALTER TABLE tableName ADD INDEX indexName(columnName(length) [ASC|DESC]); 建表时DDL语句中创建 CREATE TABLE tableName( columnName1 INT(8) NOT NULL, columnName2 ....,.">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
-<meta name="color-scheme" content="light dark"><meta property="og:title" content="环境测试" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/" />
-<title>环境测试 | Soulmate</title>
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="MySql相关问题" />
+<meta property="og:description" content="联合索引 和 mysql 调优的关系 # mysql 调优 的一个核心动作，就是 通过 联合索引 实现 索引覆盖。
+在MySQL中，合理使用联合索引可以提高查询效率，通过 联合索引 实现 索引覆盖 ，常常需要注意一些技巧：
+选择合适的列：联合索引的列顺序非常重要。应该优先选择最频繁用于查询条件的列，以提高索引效率。其次考虑选择性高的列，这样可以过滤出更少的数据。 避免冗余列：联合索引的列应该尽量避免包含冗余列，即多个索引的前缀相同。这样会增加索引的维护成本，并占用更多的存储空间。 避免过度索引：不要为每个查询都创建一个新的联合索引。应该根据实际情况，分析那些查询是最频繁的，然后创建针对这些查询的索引。 覆盖索引：如果查询的列都包含在联合索引中，并且不需要访问表的其他列，那么MySql可以直接使用索引来执行查询，不必访问表，这种索引称为覆盖索引，可以提高查询性能。 使用EXPLAIN进行查询计划分析： 使用MySQL的EXPLAIN语句可以查看MySQL执行查询的执行计划，以便优化查询语句和索引的使用。 定期优化索引： 随着数据库的使用，索引的效率可能会下降，因此需要定期进行索引的优化和重建，以保持查询性能的稳定性。 分析查询日志： 监控数据库的查询日志，分析哪些查询是最频繁的，以及它们的查询模式，可以帮助确定需要创建的联合索引。 避免过度索引更新： 避免频繁地更新索引列，因为每次更新索引都会增加数据库的负载和IO操作。 综上所述，联合索引是mysql 调优的一个核心动作， 通过 联合索引进行mysql 调优时，需要综合考虑列的选择、索引的覆盖、查询的频率和模式等因素，以提高MySQL数据库的查询性能。
+MySQL索引机制 # 数据库索引，官方定义如下
+在关系型数据库中，索引是一种单独的、物理的数据，对数据库表中一列或多列的值进行排序的一种存储结构，它是某个表中一列或若干列值的集合，以及相应的指向表中物理标识这些值的数据页的逻辑指针清单。
+通俗的理解为
+在关系型数据库中，索引是一种用来帮助快速检索目标数据的存储结构。
+索引的创建 # MySQL可以通过CREATE、ALTER、DDL三种方式创建一个索引。
+使用CREATE语句创建 CREATE INDEX indexName ON tableName (columnName(length) [ASC|DESC]); 使用ALTER语句创建 ALTER TABLE tableName ADD INDEX indexName(columnName(length) [ASC|DESC]); 建表时DDL语句中创建 CREATE TABLE tableName( columnName1 INT(8) NOT NULL, columnName2 ....,." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/" /><meta property="article:section" content="docs" />
+<meta property="article:published_time" content="2024-04-30T16:16:50+08:00" />
+<meta property="article:modified_time" content="2024-04-30T16:16:50+08:00" />
+<title>MySql相关问题 | Soulmate</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
   <script defer src="/en.search.min.8db2655b9045817763dc01ad431383bc541a2c982525b6589e51677baa4d38ae.js" integrity="sha256-jbJlW5BFgXdj3AGtQxODvFQaLJglJbZYnlFne6pNOK4=" crossorigin="anonymous"></script>
-<link rel="alternate" type="application/rss+xml" href="https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/index.xml" title="Soulmate" />
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -880,7 +897,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle"  />
+    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle" checked />
     <label for="section-94f26238d1ca3b5bcd40eadc7a88d726" class="flex justify-between">
       <a role="button" class="">MySql</a>
     </label>
@@ -896,7 +913,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/" class="">MySql相关问题</a>
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/" class="active">MySql相关问题</a>
   
 
         </li>
@@ -1078,7 +1095,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle" checked />
+    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle"  />
     <label for="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="flex justify-between">
       <a role="button" class="">Fabric</a>
     </label>
@@ -1146,9 +1163,9 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle" checked />
+    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle"  />
     <label for="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="flex justify-between">
-      <a role="button" class="active">环境测试</a>
+      <a role="button" class="">环境测试</a>
     </label>
   
 
@@ -1921,7 +1938,7 @@ https://github.com/alex-shpak/hugo-book
     <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
   </label>
 
-  <strong>环境测试</strong>
+  <strong>MySql相关问题</strong>
 
   <label for="toc-control">
     
@@ -1935,7 +1952,32 @@ https://github.com/alex-shpak/hugo-book
   <aside class="hidden clearfix">
     
   
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#联合索引-和-mysql-调优的关系">联合索引 和 mysql 调优的关系</a></li>
+            <li><a href="#mysql索引机制">MySQL索引机制</a></li>
+            <li><a href="#mysql联合索引">MySQL联合索引</a></li>
+          </ul>
+        </li>
+        <li><a href="#最左前缀匹配原则">最左前缀匹配原则</a>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+        <li><a href="#为什么要遵循最左前缀匹配">为什么要遵循最左前缀匹配？</a>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+        <li><a href="#联合索引注意事项">联合索引注意事项</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
 
 
 
@@ -1946,7 +1988,242 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown"></article>
+  <article class="markdown"><h3 id="联合索引-和-mysql-调优的关系">
+  联合索引 和 mysql 调优的关系
+  <a class="anchor" href="#%e8%81%94%e5%90%88%e7%b4%a2%e5%bc%95-%e5%92%8c-mysql-%e8%b0%83%e4%bc%98%e7%9a%84%e5%85%b3%e7%b3%bb">#</a>
+</h3>
+<p>mysql 调优 的一个核心动作，就是 通过 联合索引 实现 索引覆盖。</p>
+<p>在MySQL中，合理使用联合索引可以提高查询效率，通过 联合索引 实现 索引覆盖 ，常常需要注意一些技巧：</p>
+<ul>
+<li>选择合适的列：联合索引的列顺序非常重要。应该优先选择最频繁用于查询条件的列，以提高索引效率。其次考虑选择性高的列，这样可以过滤出更少的数据。</li>
+<li>避免冗余列：联合索引的列应该尽量避免包含冗余列，即多个索引的前缀相同。这样会增加索引的维护成本，并占用更多的存储空间。</li>
+<li>避免过度索引：不要为每个查询都创建一个新的联合索引。应该根据实际情况，分析那些查询是最频繁的，然后创建针对这些查询的索引。</li>
+<li>覆盖索引：如果查询的列都包含在联合索引中，并且不需要访问表的其他列，那么MySql可以直接使用索引来执行查询，不必访问表，这种索引称为覆盖索引，可以提高查询性能。</li>
+<li><strong>使用EXPLAIN进行查询计划分析：</strong> 使用MySQL的EXPLAIN语句可以查看MySQL执行查询的执行计划，以便优化查询语句和索引的使用。</li>
+<li><strong>定期优化索引：</strong> 随着数据库的使用，索引的效率可能会下降，因此需要定期进行索引的优化和重建，以保持查询性能的稳定性。</li>
+<li><strong>分析查询日志：</strong> 监控数据库的查询日志，分析哪些查询是最频繁的，以及它们的查询模式，可以帮助确定需要创建的联合索引。</li>
+<li><strong>避免过度索引更新：</strong> 避免频繁地更新索引列，因为每次更新索引都会增加数据库的负载和IO操作。</li>
+</ul>
+<p>综上所述，联合索引是mysql 调优的一个核心动作， 通过 联合索引进行mysql 调优时，需要综合考虑列的选择、索引的覆盖、查询的频率和模式等因素，以提高MySQL数据库的查询性能。</p>
+<h3 id="mysql索引机制">
+  MySQL索引机制
+  <a class="anchor" href="#mysql%e7%b4%a2%e5%bc%95%e6%9c%ba%e5%88%b6">#</a>
+</h3>
+<p><strong>数据库索引，官方定义如下</strong></p>
+<blockquote>
+<p>在关系型数据库中，索引是一种单独的、物理的数据，对数据库表中一列或多列的值进行排序的一种存储结构，它是某个表中一列或若干列值的集合，以及相应的指向表中物理标识这些值的数据页的逻辑指针清单。</p>
+</blockquote>
+<p><strong>通俗的理解为</strong></p>
+<blockquote>
+<p>在关系型数据库中，索引是一种用来帮助快速检索目标数据的存储结构。</p>
+</blockquote>
+<h4 id="索引的创建">
+  索引的创建
+  <a class="anchor" href="#%e7%b4%a2%e5%bc%95%e7%9a%84%e5%88%9b%e5%bb%ba">#</a>
+</h4>
+<p>MySQL可以通过CREATE、ALTER、DDL三种方式创建一个索引。</p>
+<ol>
+<li>使用CREATE语句创建</li>
+</ol>
+<pre tabindex="0"><code> CREATE INDEX indexName ON tableName (columnName(length) [ASC|DESC]);
+</code></pre><ol>
+<li>使用ALTER语句创建</li>
+</ol>
+<pre tabindex="0"><code>ALTER TABLE tableName ADD INDEX indexName(columnName(length) [ASC|DESC]);
+</code></pre><ol>
+<li>建表时DDL语句中创建</li>
+</ol>
+<pre tabindex="0"><code>CREATE TABLE tableName(  
+     columnName1 INT(8) NOT NULL,   
+     columnName2 ....,
+     .....,
+     INDEX [indexName] (columnName(length))  
+   );
+</code></pre><h4 id="索引的查询">
+  索引的查询
+  <a class="anchor" href="#%e7%b4%a2%e5%bc%95%e7%9a%84%e6%9f%a5%e8%af%a2">#</a>
+</h4>
+<pre tabindex="0"><code>  SHOW INDEX from tableName;
+</code></pre><h4 id="索引的删除">
+  索引的删除
+  <a class="anchor" href="#%e7%b4%a2%e5%bc%95%e7%9a%84%e5%88%a0%e9%99%a4">#</a>
+</h4>
+<pre tabindex="0"><code>  ALTER  TABLE  table_name   DROP  INDEX  index_name;
+  DROP   INDEX  index_name   ON  table_name;
+</code></pre><h3 id="mysql联合索引">
+  MySQL联合索引
+  <a class="anchor" href="#mysql%e8%81%94%e5%90%88%e7%b4%a2%e5%bc%95">#</a>
+</h3>
+<h4 id="什么是联合索引">
+  什么是联合索引
+  <a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%af%e8%81%94%e5%90%88%e7%b4%a2%e5%bc%95">#</a>
+</h4>
+<p>联合索引（Composite Index）是一种索引类型，它由多个列组成。</p>
+<p>MySQL的联合索引（也称为复合索引）是建立在多个字段上的索引。这种索引类型允许数据库在查询时同时考虑多个列的值，从而提高查询效率和性能。</p>
+<ul>
+<li>联合索引：也称复合索引，就是建立在多个字段上的索引。联合索引的数据结构依然是 B+ Tree。</li>
+<li>当使用(col1, col2, col3)创建一个联合索引时，创建的只是一颗B+ Tree，在这棵树中，会先按照最左的字段col1排序，在col1相同时再按照col2排序，col2相同时再按照col3排序。</li>
+</ul>
+<h4 id="联合索引存储结构">
+  联合索引存储结构
+  <a class="anchor" href="#%e8%81%94%e5%90%88%e7%b4%a2%e5%bc%95%e5%ad%98%e5%82%a8%e7%bb%93%e6%9e%84">#</a>
+</h4>
+<p>联合索引是一种特殊类型的索引，它包含两个或更多列。</p>
+<p>在MySQL中，联合索引的数据结构通常是B+Tree，这与单列索引使用的数据结构相同。</p>
+<p>当创建联合索引时，需要注意列的顺序，因为这将影响到索引的使用方式。</p>
+<p>如下图所示，表的数据如右图，ID 为主键，创建的联合索引为 (a，b)，注意联合索引顺序，下图是模拟的联合索引的 B+ Tree 存储结构</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202406241752081.webp" alt="" /></p>
+<h2 id="最左前缀匹配原则">
+  最左前缀匹配原则
+  <a class="anchor" href="#%e6%9c%80%e5%b7%a6%e5%89%8d%e7%bc%80%e5%8c%b9%e9%85%8d%e5%8e%9f%e5%88%99">#</a>
+</h2>
+<p>联合索引还是一颗B+树，只不过联合索引的健 数量不是一个，而是多个。</p>
+<p>构建一颗B+树只能根据一个值来构建，因此数据库依据联合索引最左的字段来构建B+树。</p>
+<p>假如创建一个（a,b)的联合索引，联合索引B+ Tree结构如下：</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202406241753292.webp" alt="" /></p>
+<p>结合上述联合索引B+ Tree结构，可以得出如下结论：</p>
+<p>1.a的值是有顺序的，1，1，2，2，3，3，而b的值是没有顺序的1，2，1，4，1，2。</p>
+<p>所以b = 2这种查询条件没有办法利用索引，因为联合索引首先是按a排序的，b是无序的。</p>
+<p>2.当a值相等的情况下，b值又是按顺序排列的，但是这种顺序是相对的。</p>
+<p>所以最左匹配原则遇上范围查询就会停止，剩下的字段都无法使用索引。</p>
+<p>例如a = 1 and b = 2 ，a,b字段都可以使用索引，因为在a值确定的情况下b是相对有序的，而a&gt;1and b=2，a字段可以匹配上索引，但b值不可以，因为a的值是一个范围，在这个范围中b是无序的。</p>
+<p><strong>最左匹配原则：</strong></p>
+<p>最左优先，以最左边的为起点任何连续的索引都能匹配上。同时遇到范围查询(&gt;、&lt;、between、like)就会停止匹配。</p>
+<p>下面我们以建立联合索引（a,b,c）为例，进行详细说明</p>
+<h4 id="1-全值匹配查询时">
+  1 全值匹配查询时
+  <a class="anchor" href="#1-%e5%85%a8%e5%80%bc%e5%8c%b9%e9%85%8d%e6%9f%a5%e8%af%a2%e6%97%b6">#</a>
+</h4>
+<blockquote>
+<p>下述SQL会用到索引，因为where子句中，几个搜索条件顺序调换不影响查询结果，因为MySQL中有查询优化器，会自动优化查询顺序。</p>
+</blockquote>
+<pre tabindex="0"><code>select * from table_name where a = &#39;1&#39; and b = &#39;2&#39; and c = &#39;3&#39; 
+select * from table_name where b = &#39;2&#39; and a = &#39;1&#39; and c = &#39;3&#39; 
+select * from table_name where c = &#39;3&#39; and b = &#39;2&#39; and a = &#39;1&#39; 
+</code></pre><h4 id="2-匹配左边的列时">
+  2 匹配左边的列时
+  <a class="anchor" href="#2-%e5%8c%b9%e9%85%8d%e5%b7%a6%e8%be%b9%e7%9a%84%e5%88%97%e6%97%b6">#</a>
+</h4>
+<blockquote>
+<p>下述SQL，都从最左边开始<strong>连续</strong>匹配，用到了索引。</p>
+</blockquote>
+<pre tabindex="0"><code>select * from table_name where a = &#39;1&#39; 
+select * from table_name where a = &#39;1&#39; and b = &#39;2&#39;  
+select * from table_name where a = &#39;1&#39; and b = &#39;2&#39; and c = &#39;3&#39;  
+</code></pre><blockquote>
+<p>下述SQL中，没有从最左边开始，最后查询没有用到索引，用的是全表扫描。</p>
+</blockquote>
+<pre tabindex="0"><code>select * from table_name where  b = &#39;2&#39; 
+select * from table_name where  c = &#39;3&#39;
+select * from table_name where  b = &#39;1&#39; and c = &#39;3&#39; 
+</code></pre><blockquote>
+<p>下述SQL中，如果不连续时，只用到了a列的索引，b列和c列都没有用到</p>
+</blockquote>
+<pre tabindex="0"><code>select * from table_name where  a = &#39;1&#39; and c = &#39;3&#39; 
+</code></pre><h4 id="3-匹配列前缀">
+  3 匹配列前缀
+  <a class="anchor" href="#3-%e5%8c%b9%e9%85%8d%e5%88%97%e5%89%8d%e7%bc%80">#</a>
+</h4>
+<p>如果列是字符型的话它的比较规则是先比较字符串的第一个字符，第一个字符小的哪个字符串就比较小，如果两个字符串第一个字符相通，那就再比较第二个字符，第二个字符比较小的那个字符串就比较小，依次类推，比较字符串。</p>
+<p>如果a是字符类型，那么前缀匹配用的是索引，后缀和中缀只能全表扫描了</p>
+<pre tabindex="0"><code>select * from table_name where  a like &#39;As%&#39;;   //前缀都是排好序的，走索引查询
+select * from table_name where  a like &#39;%As&#39;;   //全表查询
+select * from table_name where  a like &#39;%As%&#39;;  //全表查询
+</code></pre><h4 id="4-匹配范围值">
+  4 匹配范围值
+  <a class="anchor" href="#4-%e5%8c%b9%e9%85%8d%e8%8c%83%e5%9b%b4%e5%80%bc">#</a>
+</h4>
+<blockquote>
+<p>下述SQL，可以对最左边的列进行范围查询</p>
+</blockquote>
+<pre tabindex="0"><code>select * from table_name where  a &gt; 1 and a &lt; 3
+</code></pre><blockquote>
+<p>多个列同时进行范围查找时，只有对索引最左边的那个列进行范围查找才用到B+树索引，也就是只有a用到索引。</p>
+<p>在1&lt;a&lt;3的范围内b是无序的，不能用索引，找到1&lt;a&lt;3的记录后，只能根据条件 b &gt; 1继续逐条过滤。</p>
+</blockquote>
+<pre tabindex="0"><code>select * from table_name where  a &gt; 1 and a &lt; 3 and b &gt; 1;
+</code></pre><h4 id="5-精确匹配某一列并范围匹配另外一列">
+  5 精确匹配某一列并范围匹配另外一列
+  <a class="anchor" href="#5-%e7%b2%be%e7%a1%ae%e5%8c%b9%e9%85%8d%e6%9f%90%e4%b8%80%e5%88%97%e5%b9%b6%e8%8c%83%e5%9b%b4%e5%8c%b9%e9%85%8d%e5%8f%a6%e5%a4%96%e4%b8%80%e5%88%97">#</a>
+</h4>
+<p>如果左边的列是精确查找的，右边的列可以进行范围查找，如下SQL中，a=1的情况下b是有序的，进行范围查找走的是联合索引</p>
+<pre tabindex="0"><code>select * from table_name where  a = 1 and b &gt; 3;
+</code></pre><h4 id="6-排序">
+  6 排序
+  <a class="anchor" href="#6-%e6%8e%92%e5%ba%8f">#</a>
+</h4>
+<p>一般情况下，我们只能把记录加载到内存中，再用一些排序算法，比如快速排序，归并排序等在内存中对这些记录进行排序，有时候查询的结果集太大不能在内存中进行排序的话，还可能暂时借助磁盘空间存放中间结果，排序操作完成后再把排好序的结果返回客户端。</p>
+<p>Mysql中把这种再内存中或磁盘上进行排序的方式统称为文件排序。文件排序非常慢，但如果order子句用到了索引列，就有可能省去文件排序的步骤</p>
+<pre tabindex="0"><code>select * from table_name order by b,c,a limit 10;
+</code></pre><p>因为b+树索引本身就是按照上述规则排序的，所以可以直接从索引中提取数据，然后进行回表操作取出该索引中不包含的列就好了，order by的子句后面的顺序也必须按照索引列的顺序给出，比如下SQL：</p>
+<pre tabindex="0"><code>select * from table_name order by b,c,a limit 10;
+</code></pre><blockquote>
+<p>在以下SQL中颠倒顺序，没有用到索引</p>
+</blockquote>
+<pre tabindex="0"><code>select * from table_name order by a limit 10;
+select * from table_name order by a,b limit 10;
+</code></pre><blockquote>
+<p>以下SQL中会用到部分索引，联合索引左边列为常量，后边的列排序可以用到索引</p>
+</blockquote>
+<pre tabindex="0"><code>select * from table_name where a =1 order by b,c limit 10;
+</code></pre><h2 id="为什么要遵循最左前缀匹配">
+  为什么要遵循最左前缀匹配？
+  <a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e8%a6%81%e9%81%b5%e5%be%aa%e6%9c%80%e5%b7%a6%e5%89%8d%e7%bc%80%e5%8c%b9%e9%85%8d">#</a>
+</h2>
+<p><strong>最左前缀匹配原则</strong>：在MySQL建立联合索引时会遵守最左前缀匹配原则，即最左优先，在检索数据时从联合索引的最左边开始匹配。</p>
+<p>如下，我们以age，name两个字段建立一个联合索引，非叶子节点中记录age，name两个字段的值，而叶子节点中记录的是age，name两个字段值及主键Id的值，在MySQL中B+ Tree 索引结构如下：</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202406241753091.webp" alt="" /></p>
+<p>在上述联合索引存储数据过程中，首先会按照age排序，当age相同时则按照name排序。</p>
+<ol>
+<li>结合上述索引结构，可以看出联合索引底层也是一颗B+Tree，在联合索引中构造B+Tree的时候，会先以最左边的key进行排序，如果左边的key相同时，则再依次按照右边的key进行排序。</li>
+<li>所以在通过索引查询的时候，也需要遵守最左前缀匹配的原则，也就是需要从联合索引的最左边开始进行匹配，这时候就要求查询语句的where条件中，包含最左边的索引的值。</li>
+</ol>
+<h4 id="一定要遵循最左前缀匹配吗">
+  一定要遵循最左前缀匹配吗？
+  <a class="anchor" href="#%e4%b8%80%e5%ae%9a%e8%a6%81%e9%81%b5%e5%be%aa%e6%9c%80%e5%b7%a6%e5%89%8d%e7%bc%80%e5%8c%b9%e9%85%8d%e5%90%97">#</a>
+</h4>
+<p>最左前缀匹配原则，也就是SQL的查询条件中必须要包含联合索引的第一个字段，这样才能命中联合索引查询，但实际上这条规则也并不是100%遵循的。</p>
+<p>因为在MySQL8.x版本中加入了一个新的优化机制，也就是索引跳跃式扫描，这种机制使得咱们即使查询条件中，没有使用联合索引的第一个字段，也依旧可以使用联合索引，看起来就像跳过了联合索引中的第一个字段一样，这也是跳跃扫描的名称由来。</p>
+<p>我们来看如下例子，理解一下索引跳跃式扫描如何实现的。</p>
+<p>比如此时通过(A、B、C)三个列建立了一个联合索引，此时有如下一条SQL：</p>
+<pre tabindex="0"><code>SELECT * FROM table_name WHERE B = `xxx` AND C = `xxx`;
+</code></pre><p>按正常情况来看，这条SQL既不符合最左前缀原则，也不具备使用索引覆盖的条件，因此绝对是不会走联合索引查询的。</p>
+<p>但这条SQL中都已经使用了联合索引中的两个字段，结果还不能使用索引，这似乎有点亏啊？</p>
+<p>因此MySQL8.x推出了跳跃扫描机制，但跳跃扫描并不是真正的“跳过了”第一个字段，而是优化器为你重构了SQL，比如上述这条SQL则会重构成如下情况：</p>
+<pre tabindex="0"><code>SELECT * FROM `table_name ` WHERE B = `xxx` AND C = `xxx`
+UNION ALL
+SELECT * FROM `table_name ` WHERE B = `xxx` AND C = `xxx` AND A = &#34;yyy&#34;
+......
+SELECT * FROM `table_name ` WHERE B = `xxx` AND C = `xxx` AND A = &#34;zzz&#34;;
+</code></pre><p>通过MySQL优化器处理后，虽然你没用第一个字段，但我（优化器）给你加上去，今天这个联合索引你就得用，不用也得给我用。</p>
+<blockquote>
+<p>但是跳跃扫描机制也有很多限制，比如多表联查时无法触发、SQL条件中有分组操作也无法触发、SQL中用了DISTINCT去重也无法触发等等，总之有很多限制条件，具体的可以参考《MySQL官网8.0-跳跃扫描》。</p>
+</blockquote>
+<p>最后，可以通过通过如下命令来选择开启或关闭跳跃式扫描机制。</p>
+<pre tabindex="0"><code>set @@optimizer_switch = &#39;skip_scan=off|on&#39;;
+</code></pre><h2 id="联合索引注意事项">
+  联合索引注意事项
+  <a class="anchor" href="#%e8%81%94%e5%90%88%e7%b4%a2%e5%bc%95%e6%b3%a8%e6%84%8f%e4%ba%8b%e9%a1%b9">#</a>
+</h2>
+<ol>
+<li>
+<p><strong>选择合适的列</strong>：应选择那些经常用于查询条件的列来创建联合索引。</p>
+</li>
+<li>
+<p><strong>考虑列的顺序</strong>：在创建联合索引时，应该根据实际的查询需求来安排列的顺序，以确保索引能够被有效利用。</p>
+</li>
+<li>
+<p><strong>避免过长的索引</strong>：虽然联合索引可以包含多个列，但过长的索引可能会增加维护成本，并且在某些情况下可能不会带来预期的性能提升。</p>
+</li>
+<li>
+<p><strong>避免范围查询</strong>：如果查询中包含范围操作符（如BETWEEN, &lt;, &gt;, LIKE），则MySQL可能无法有效地利用联合索引，因为它需要检查索引中的每个范围边界。</p>
+</li>
+<li>
+<p><strong>考虑索引的区分度</strong>：如果某个列的值重复率很高，那么该列作为联合索引的一部分可能不会提供太大的性能提升，因为它不能有效地区分不同的记录。</p>
+<p>联合索引作为数据库中的一种索引类型，它由多个列组成，在使用时，一般遵循最左匹配原则，以加速数据库查询操作。</p>
+</li>
+</ol>
+</article>
  
       
 
@@ -1971,6 +2248,10 @@ https://github.com/alex-shpak/hugo-book
 
       
   
+  <div class="book-comments">
+
+</div>
+  
  
 
       <label for="menu-control" class="hidden book-menu-overlay"></label>
@@ -1981,7 +2262,32 @@ https://github.com/alex-shpak/hugo-book
       <div class="book-toc-content">
         
   
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#联合索引-和-mysql-调优的关系">联合索引 和 mysql 调优的关系</a></li>
+            <li><a href="#mysql索引机制">MySQL索引机制</a></li>
+            <li><a href="#mysql联合索引">MySQL联合索引</a></li>
+          </ul>
+        </li>
+        <li><a href="#最左前缀匹配原则">最左前缀匹配原则</a>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+        <li><a href="#为什么要遵循最左前缀匹配">为什么要遵循最左前缀匹配？</a>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+        <li><a href="#联合索引注意事项">联合索引注意事项</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
 
 
  

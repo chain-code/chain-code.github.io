@@ -111,19 +111,28 @@ if implStruct, ok := valueOf.Interface().(model.TypeCheckSelf); ok { implStruct.
     </item>
     
     <item>
+      <title>filepath</title>
+      <link>https://chain-code.github.io/docs/golang/package/filepath/</link>
+      <pubDate>Wed, 19 Apr 2023 20:05:22 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/filepath/</guid>
+      <description>filepath # Base返回路径的最后一个元素 # func main() { path := filepath.Base(&amp;#34;/path/to/file.txt&amp;#34;) fmt.Println(path) // 输出: file.txt } Clean清理路径，去掉冗余元素 # func main() { path := filepath.Clean(&amp;#34;/path/../to/file.txt&amp;#34;) fmt.Println(path) // 输出: /to/file.txt } Abs返回路径的绝对路径 # func main() { path, err := filepath.Abs(&amp;#34;relative/path/to/file&amp;#34;) if err != nil { log.Fatal(err) } fmt.Println(path) //C:\Users\...\go\src\VideoForensic\test\relative\path\to\file } Dir除去最后一个元素 # func main() { path := filepath.Dir(&amp;#34;/path/to/file.txt&amp;#34;) fmt.Println(path) // 输出: /path/to } Ext返回路径的扩展名 # func main() { ext := filepath.Ext(&amp;#34;/path/to/file.txt&amp;#34;) fmt.Println(ext) // 输出: .</description>
+    </item>
+    
+    <item>
       <title>Time</title>
       <link>https://chain-code.github.io/docs/golang/package/time/</link>
       <pubDate>Wed, 19 Apr 2023 20:05:22 +0800</pubDate>
       
       <guid>https://chain-code.github.io/docs/golang/package/time/</guid>
-      <description>Time # After # After(d Duration) &amp;lt;-chan Time：返回一个通道，该通道将在指定的时间间隔后发送当前时间。可以用它来实现定时器
+      <description>Time # After 在指定的时间间隔后发送当前时间 # After(d Duration) &amp;lt;-chan Time：返回一个通道，该通道将在指定的时间间隔后发送当前时间。可以用它来实现定时器
 例如，程序需要等待一段时间后再执行某个操作，可以使用After()函数来实现。示例代码：
-select { case &amp;lt;-time.After(5 * time.Second): fmt.Println(&amp;#34;5秒后执行&amp;#34;) } AfterFunc # func AfterFunc(d Duration, f func()) *Timer创建一个新的定时器，并在定时器触发时调用指定的回调函数f。参数d是一个time.Duration类型的值，表示定时器的持续时间。返回值是一个指向Timer结构体的指针。
-func main() { t := time.AfterFunc(3*time.Second, func() { fmt.Println(&amp;#34;定时器已触发&amp;#34;) }) fmt.Println(&amp;#34;定时器已启动&amp;#34;) time.Sleep(4 * time.Second) t.Stop() fmt.Println(&amp;#34;定时器已停止&amp;#34;) } Sleep # Sleep(d Duration)：使当前程序暂停指定的时间间隔。可以用它来实现程序的延迟操作，例如，程序需要在某个操作之后暂停一段时间再继续执行，可以使用Sleep()函数来实现。
+select { case &amp;lt;-time.After(5 * time.Second): fmt.Println(&amp;#34;5秒后执行&amp;#34;) } AfterFunc 定时器 # func AfterFunc(d Duration, f func()) *Timer创建一个新的定时器，并在定时器触发时调用指定的回调函数f。参数d是一个time.Duration类型的值，表示定时器的持续时间。返回值是一个指向Timer结构体的指针。
+func main() { t := time.AfterFunc(3*time.Second, func() { fmt.Println(&amp;#34;定时器已触发&amp;#34;) }) fmt.Println(&amp;#34;定时器已启动&amp;#34;) time.Sleep(4 * time.Second) t.Stop() fmt.Println(&amp;#34;定时器已停止&amp;#34;) } Sleep 延迟 # Sleep(d Duration)：使当前程序暂停指定的时间间隔。可以用它来实现程序的延迟操作，例如，程序需要在某个操作之后暂停一段时间再继续执行，可以使用Sleep()函数来实现。
 示例代码：
 fmt.Println(&amp;#34;开始执行&amp;#34;) time.Sleep(2 * time.Second) fmt.Println(&amp;#34;暂停2秒后继续执行&amp;#34;) Tick # Tick(d Duration) &amp;lt;-chan Time：返回一个通道，该通道会定期发送时间，每个时间间隔为指定的时间间隔。可以用它来实现定时器，例如，程序需要每隔一段时间执行某个操作，可以使用Tick()函数来实现。
 示例代码：
-for t := range time.Tick(2 * time.Second) { fmt.Println(&amp;#34;每隔2秒执行一次，当前时间为：&amp;#34;, t) } NewTicker # NewTicker(d Duration) *Ticker是 Go 编程语言time包中的一个函数，它创建一个新的自动收报机，以指定的时间间隔在通道上发送信号。</description>
+for t := range time.Tick(2 * time.Second) { fmt.</description>
     </item>
     
     <item>

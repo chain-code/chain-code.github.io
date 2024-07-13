@@ -8,6 +8,16 @@
     <language>zh-cn</language>
     <lastBuildDate>Tue, 30 Apr 2024 16:16:50 +0800</lastBuildDate><atom:link href="https://chain-code.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>创建型设计模式</title>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E5%88%9B%E5%BB%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E5%88%9B%E5%BB%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
+      <description>创建型设计模式 # 单例模式 # 单例模式提供了一种访问其唯一对象的方法，该对象可以直接被访问，无需实例化
+双重检查 # var lock = &amp;amp;sync.Mutex{} type singleton struct { } var instance *singleton //获取实例 func GetInstance() *singleton { if instance == nil { lock.Lock() if instance == nil { fmt.Println(&amp;#34;创建单个实例&amp;#34;) instance = new(singleton) } lock.Unlock() } return instance } sync.Once # var once sync.Once //只执行一次 func GetInstance() *singleton { once.Do(func() { instance = new(singleton) fmt.Println(&amp;#34;创建单个实例&amp;#34;) }) return instance } 优点 # 对于内存中只存在一个对象，且需要频繁创建和销毁对象的系统，使用单例模式可以提升系统性能 缺点 # 可扩展性较低 若用于数据库连接池对象，则可能会导致共享连接池对象过多且没有释放的场景，从而出现连接池溢出问题。 如果创建的对象长时间不使用，可能会被操作系统垃圾回收，导致对象丢失 工厂模式 # 介绍 # 工厂方法模式定义了一个用于创建对象的接口，但让子类决定实例化那个类</description>
+    </item>
+    
+    <item>
       <title>Docker基础</title>
       <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/</link>
       <pubDate>Mon, 19 Sep 2022 21:02:07 +0800</pubDate>
@@ -591,6 +601,15 @@ Go语言提供了一种机制在运行时更新变量和检查它们的值、调
     </item>
     
     <item>
+      <title>结构型设计模式</title>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%BB%93%E6%9E%84%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%BB%93%E6%9E%84%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
+      <description> 结构型设计模式 # </description>
+    </item>
+    
+    <item>
       <title>计算机网络基础</title>
       <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/</link>
       <pubDate>Fri, 16 Sep 2022 10:03:35 +0800</pubDate>
@@ -688,6 +707,15 @@ M thread线程
 Processor 它包含了运行goroutine的资源，如果线程想运行goroutine,必须先获取P，P中还包含了可运行的G队列。
 在Go中，线程是运行goroutine的实体，调度器的功能是把可运行的goroutine分配到工作线程上。
 全局队列：存放等待运行的G P的本地队列：同全局队列类似，存放的也是等待运行的G，存的数量有限，不超过256个。新建 G’时，G’优先加入到 P 的本地队列，如果队列满了，则会把本地队列中一半的 G 移动到全局队列。 P列表：所有的P都在程序启动时创建，并保存在数组中，最多有 GOMAXPROCS(可配置) 个。 M：线程想运行任务就得获取P，从P的本地队列获取G，P队列为空时，M 也会尝试从全局队列拿一批 G 放到 P 的本地队列，或从其他 P 的本地队列偷一半放到自己 P 的本地队列。M 运行 G，G 执行之后，M 会从 P 获取下一个 G，不断重复下去。 Goroutine 调度器和 OS 调度器是通过 M 结合起来的，每个 M 都代表了 1 个内核线程，OS 调度器负责把内核线程分配到 CPU 的核上执行。</description>
+    </item>
+    
+    <item>
+      <title>行为型设计模式</title>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
+      <description> 行为型设计模式 # </description>
     </item>
     
     <item>
@@ -808,6 +836,15 @@ cryptogen generate --config=crypto-config.yaml 生成证书 在fixtures路径下
 sudo apt-get update 使用apt-get命令安装依赖包，用于通过HTTPS来获取仓库。
 sudo apt-get install \ apt-transport-https \ ca-certificates \ curl \ git \ gnupg-agent \ software-properties-common 使用curl命令添加 Docker 的官方 GPG 密钥。
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - 9DC8 5822 9FC7 DD38 854A E2D8 8D81 803C 0EBF CD88 使用以下命令通过搜索指纹的后8个字符，验证您现在是否拥有带有指纹的密钥。</description>
+    </item>
+    
+    <item>
+      <title>设计模式扩展</title>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%89%A9%E5%B1%95/</link>
+      <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%89%A9%E5%B1%95/</guid>
+      <description> 设计模式扩展 # </description>
     </item>
     
     <item>
@@ -1041,19 +1078,28 @@ if implStruct, ok := valueOf.Interface().(model.TypeCheckSelf); ok { implStruct.
     </item>
     
     <item>
+      <title>filepath</title>
+      <link>https://chain-code.github.io/docs/golang/package/filepath/</link>
+      <pubDate>Wed, 19 Apr 2023 20:05:22 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/filepath/</guid>
+      <description>filepath # Base返回路径的最后一个元素 # func main() { path := filepath.Base(&amp;#34;/path/to/file.txt&amp;#34;) fmt.Println(path) // 输出: file.txt } Clean清理路径，去掉冗余元素 # func main() { path := filepath.Clean(&amp;#34;/path/../to/file.txt&amp;#34;) fmt.Println(path) // 输出: /to/file.txt } Abs返回路径的绝对路径 # func main() { path, err := filepath.Abs(&amp;#34;relative/path/to/file&amp;#34;) if err != nil { log.Fatal(err) } fmt.Println(path) //C:\Users\...\go\src\VideoForensic\test\relative\path\to\file } Dir除去最后一个元素 # func main() { path := filepath.Dir(&amp;#34;/path/to/file.txt&amp;#34;) fmt.Println(path) // 输出: /path/to } Ext返回路径的扩展名 # func main() { ext := filepath.Ext(&amp;#34;/path/to/file.txt&amp;#34;) fmt.Println(ext) // 输出: .</description>
+    </item>
+    
+    <item>
       <title>Time</title>
       <link>https://chain-code.github.io/docs/golang/package/time/</link>
       <pubDate>Wed, 19 Apr 2023 20:05:22 +0800</pubDate>
       
       <guid>https://chain-code.github.io/docs/golang/package/time/</guid>
-      <description>Time # After # After(d Duration) &amp;lt;-chan Time：返回一个通道，该通道将在指定的时间间隔后发送当前时间。可以用它来实现定时器
+      <description>Time # After 在指定的时间间隔后发送当前时间 # After(d Duration) &amp;lt;-chan Time：返回一个通道，该通道将在指定的时间间隔后发送当前时间。可以用它来实现定时器
 例如，程序需要等待一段时间后再执行某个操作，可以使用After()函数来实现。示例代码：
-select { case &amp;lt;-time.After(5 * time.Second): fmt.Println(&amp;#34;5秒后执行&amp;#34;) } AfterFunc # func AfterFunc(d Duration, f func()) *Timer创建一个新的定时器，并在定时器触发时调用指定的回调函数f。参数d是一个time.Duration类型的值，表示定时器的持续时间。返回值是一个指向Timer结构体的指针。
-func main() { t := time.AfterFunc(3*time.Second, func() { fmt.Println(&amp;#34;定时器已触发&amp;#34;) }) fmt.Println(&amp;#34;定时器已启动&amp;#34;) time.Sleep(4 * time.Second) t.Stop() fmt.Println(&amp;#34;定时器已停止&amp;#34;) } Sleep # Sleep(d Duration)：使当前程序暂停指定的时间间隔。可以用它来实现程序的延迟操作，例如，程序需要在某个操作之后暂停一段时间再继续执行，可以使用Sleep()函数来实现。
+select { case &amp;lt;-time.After(5 * time.Second): fmt.Println(&amp;#34;5秒后执行&amp;#34;) } AfterFunc 定时器 # func AfterFunc(d Duration, f func()) *Timer创建一个新的定时器，并在定时器触发时调用指定的回调函数f。参数d是一个time.Duration类型的值，表示定时器的持续时间。返回值是一个指向Timer结构体的指针。
+func main() { t := time.AfterFunc(3*time.Second, func() { fmt.Println(&amp;#34;定时器已触发&amp;#34;) }) fmt.Println(&amp;#34;定时器已启动&amp;#34;) time.Sleep(4 * time.Second) t.Stop() fmt.Println(&amp;#34;定时器已停止&amp;#34;) } Sleep 延迟 # Sleep(d Duration)：使当前程序暂停指定的时间间隔。可以用它来实现程序的延迟操作，例如，程序需要在某个操作之后暂停一段时间再继续执行，可以使用Sleep()函数来实现。
 示例代码：
 fmt.Println(&amp;#34;开始执行&amp;#34;) time.Sleep(2 * time.Second) fmt.Println(&amp;#34;暂停2秒后继续执行&amp;#34;) Tick # Tick(d Duration) &amp;lt;-chan Time：返回一个通道，该通道会定期发送时间，每个时间间隔为指定的时间间隔。可以用它来实现定时器，例如，程序需要每隔一段时间执行某个操作，可以使用Tick()函数来实现。
 示例代码：
-for t := range time.Tick(2 * time.Second) { fmt.Println(&amp;#34;每隔2秒执行一次，当前时间为：&amp;#34;, t) } NewTicker # NewTicker(d Duration) *Ticker是 Go 编程语言time包中的一个函数，它创建一个新的自动收报机，以指定的时间间隔在通道上发送信号。</description>
+for t := range time.Tick(2 * time.Second) { fmt.</description>
     </item>
     
     <item>

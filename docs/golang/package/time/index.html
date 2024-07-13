@@ -3,25 +3,25 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Time # After # After(d Duration) &lt;-chan Time：返回一个通道，该通道将在指定的时间间隔后发送当前时间。可以用它来实现定时器
+<meta name="description" content="Time # After 在指定的时间间隔后发送当前时间 # After(d Duration) &lt;-chan Time：返回一个通道，该通道将在指定的时间间隔后发送当前时间。可以用它来实现定时器
 例如，程序需要等待一段时间后再执行某个操作，可以使用After()函数来实现。示例代码：
-select { case &lt;-time.After(5 * time.Second): fmt.Println(&#34;5秒后执行&#34;) } AfterFunc # func AfterFunc(d Duration, f func()) *Timer创建一个新的定时器，并在定时器触发时调用指定的回调函数f。参数d是一个time.Duration类型的值，表示定时器的持续时间。返回值是一个指向Timer结构体的指针。
-func main() { t := time.AfterFunc(3*time.Second, func() { fmt.Println(&#34;定时器已触发&#34;) }) fmt.Println(&#34;定时器已启动&#34;) time.Sleep(4 * time.Second) t.Stop() fmt.Println(&#34;定时器已停止&#34;) } Sleep # Sleep(d Duration)：使当前程序暂停指定的时间间隔。可以用它来实现程序的延迟操作，例如，程序需要在某个操作之后暂停一段时间再继续执行，可以使用Sleep()函数来实现。
+select { case &lt;-time.After(5 * time.Second): fmt.Println(&#34;5秒后执行&#34;) } AfterFunc 定时器 # func AfterFunc(d Duration, f func()) *Timer创建一个新的定时器，并在定时器触发时调用指定的回调函数f。参数d是一个time.Duration类型的值，表示定时器的持续时间。返回值是一个指向Timer结构体的指针。
+func main() { t := time.AfterFunc(3*time.Second, func() { fmt.Println(&#34;定时器已触发&#34;) }) fmt.Println(&#34;定时器已启动&#34;) time.Sleep(4 * time.Second) t.Stop() fmt.Println(&#34;定时器已停止&#34;) } Sleep 延迟 # Sleep(d Duration)：使当前程序暂停指定的时间间隔。可以用它来实现程序的延迟操作，例如，程序需要在某个操作之后暂停一段时间再继续执行，可以使用Sleep()函数来实现。
 示例代码：
 fmt.Println(&#34;开始执行&#34;) time.Sleep(2 * time.Second) fmt.Println(&#34;暂停2秒后继续执行&#34;) Tick # Tick(d Duration) &lt;-chan Time：返回一个通道，该通道会定期发送时间，每个时间间隔为指定的时间间隔。可以用它来实现定时器，例如，程序需要每隔一段时间执行某个操作，可以使用Tick()函数来实现。
 示例代码：
-for t := range time.Tick(2 * time.Second) { fmt.Println(&#34;每隔2秒执行一次，当前时间为：&#34;, t) } NewTicker # NewTicker(d Duration) *Ticker是 Go 编程语言time包中的一个函数，它创建一个新的自动收报机，以指定的时间间隔在通道上发送信号。">
+for t := range time.Tick(2 * time.Second) { fmt.">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="Time" />
-<meta property="og:description" content="Time # After # After(d Duration) &lt;-chan Time：返回一个通道，该通道将在指定的时间间隔后发送当前时间。可以用它来实现定时器
+<meta property="og:description" content="Time # After 在指定的时间间隔后发送当前时间 # After(d Duration) &lt;-chan Time：返回一个通道，该通道将在指定的时间间隔后发送当前时间。可以用它来实现定时器
 例如，程序需要等待一段时间后再执行某个操作，可以使用After()函数来实现。示例代码：
-select { case &lt;-time.After(5 * time.Second): fmt.Println(&#34;5秒后执行&#34;) } AfterFunc # func AfterFunc(d Duration, f func()) *Timer创建一个新的定时器，并在定时器触发时调用指定的回调函数f。参数d是一个time.Duration类型的值，表示定时器的持续时间。返回值是一个指向Timer结构体的指针。
-func main() { t := time.AfterFunc(3*time.Second, func() { fmt.Println(&#34;定时器已触发&#34;) }) fmt.Println(&#34;定时器已启动&#34;) time.Sleep(4 * time.Second) t.Stop() fmt.Println(&#34;定时器已停止&#34;) } Sleep # Sleep(d Duration)：使当前程序暂停指定的时间间隔。可以用它来实现程序的延迟操作，例如，程序需要在某个操作之后暂停一段时间再继续执行，可以使用Sleep()函数来实现。
+select { case &lt;-time.After(5 * time.Second): fmt.Println(&#34;5秒后执行&#34;) } AfterFunc 定时器 # func AfterFunc(d Duration, f func()) *Timer创建一个新的定时器，并在定时器触发时调用指定的回调函数f。参数d是一个time.Duration类型的值，表示定时器的持续时间。返回值是一个指向Timer结构体的指针。
+func main() { t := time.AfterFunc(3*time.Second, func() { fmt.Println(&#34;定时器已触发&#34;) }) fmt.Println(&#34;定时器已启动&#34;) time.Sleep(4 * time.Second) t.Stop() fmt.Println(&#34;定时器已停止&#34;) } Sleep 延迟 # Sleep(d Duration)：使当前程序暂停指定的时间间隔。可以用它来实现程序的延迟操作，例如，程序需要在某个操作之后暂停一段时间再继续执行，可以使用Sleep()函数来实现。
 示例代码：
 fmt.Println(&#34;开始执行&#34;) time.Sleep(2 * time.Second) fmt.Println(&#34;暂停2秒后继续执行&#34;) Tick # Tick(d Duration) &lt;-chan Time：返回一个通道，该通道会定期发送时间，每个时间间隔为指定的时间间隔。可以用它来实现定时器，例如，程序需要每隔一段时间执行某个操作，可以使用Tick()函数来实现。
 示例代码：
-for t := range time.Tick(2 * time.Second) { fmt.Println(&#34;每隔2秒执行一次，当前时间为：&#34;, t) } NewTicker # NewTicker(d Duration) *Ticker是 Go 编程语言time包中的一个函数，它创建一个新的自动收报机，以指定的时间间隔在通道上发送信号。" />
+for t := range time.Tick(2 * time.Second) { fmt." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chain-code.github.io/docs/golang/package/time/" /><meta property="article:section" content="docs" />
 <meta property="article:published_time" content="2023-04-19T20:05:22+08:00" />
@@ -31,7 +31,7 @@ for t := range time.Tick(2 * time.Second) { fmt.Println(&#34;每隔2秒执行一
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.1527d424b2e6daf70a185e8d1144b5037dbc2a4516b150b4d5702bb85fdb3ec7.js" integrity="sha256-FSfUJLLm2vcKGF6NEUS1A328KkUWsVC01XAruF/bPsc=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.f7b84fb61bdb15b9aedece9af62a731e7aedb93c2ef25a5b32d4d05d94ba7c10.js" integrity="sha256-97hPthvbFbmu3s6a9ipzHnrtuTwu8lpbMtTQXZS6fBA=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -825,6 +825,19 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/golang/package/filepath/" class="">filepath</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/golang/package/time/" class="active">Time</a>
   
 
@@ -1115,6 +1128,235 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>系统架构</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-083ca86fd1b56cca1f76a6d6b34dc093" class="toggle"  />
+    <label for="section-083ca86fd1b56cca1f76a6d6b34dc093" class="flex justify-between">
+      <a role="button" class="">设计模式</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E5%88%9B%E5%BB%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">创建型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%BB%93%E6%9E%84%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">结构型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">行为型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%89%A9%E5%B1%95/" class="">设计模式扩展</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>前端</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ac8e4e2fda641053d78fc10cbbde236e" class="toggle"  />
+    <label for="section-ac8e4e2fda641053d78fc10cbbde236e" class="flex justify-between">
+      <a role="button" class="">C</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/cgo/" class="">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/cgo%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/" class="">CGO遇到的问题解决</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
+    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
+      <a role="button" class="">博客</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
   
 
         </li>
@@ -1773,144 +2015,6 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <input type="checkbox" id="section-ac8e4e2fda641053d78fc10cbbde236e" class="toggle"  />
-    <label for="section-ac8e4e2fda641053d78fc10cbbde236e" class="flex justify-between">
-      <a role="button" class="">C</a>
-    </label>
-  
-
-          
-  <ul>
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/docs/c/cgo/" class="">CGo</a>
-  
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/docs/c/cgo%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/" class="">CGO遇到的问题解决</a>
-  
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
-  
-
-        </li>
-      
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li class="book-section-flat" >
-          
-  
-  
-
-  
-    <span>前端</span>
-  
-
-          
-  <ul>
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
-  
-
-        </li>
-      
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li class="book-section-flat" >
-          
-  
-  
-
-  
-    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
-    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
-      <a role="button" class="">博客</a>
-    </label>
-  
-
-          
-  <ul>
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
-  
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
-  
-
-        </li>
-      
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li class="book-section-flat" >
-          
-  
-  
-
-  
     <a href="/docs/%E5%9B%BE%E4%B9%A6/" class="">图书</a>
   
 
@@ -2008,31 +2112,31 @@ https://github.com/alex-shpak/hugo-book
       <ul>
         <li><a href="#time">Time</a>
           <ul>
-            <li><a href="#after">After</a></li>
-            <li><a href="#afterfunc">AfterFunc</a></li>
-            <li><a href="#sleep">Sleep</a></li>
+            <li><a href="#after-在指定的时间间隔后发送当前时间">After 在指定的时间间隔后发送当前时间</a></li>
+            <li><a href="#afterfunc-定时器">AfterFunc 定时器</a></li>
+            <li><a href="#sleep-延迟">Sleep 延迟</a></li>
             <li><a href="#tick">Tick</a></li>
-            <li><a href="#newticker">NewTicker</a></li>
-            <li><a href="#data">Data</a></li>
-            <li><a href="#parse">Parse</a></li>
-            <li><a href="#format">Format</a></li>
-            <li><a href="#parseduration">ParseDuration</a></li>
-            <li><a href="#add">Add</a></li>
-            <li><a href="#sub">Sub</a></li>
-            <li><a href="#since">Since</a></li>
-            <li><a href="#truncate">Truncate</a></li>
-            <li><a href="#unix">Unix</a></li>
-            <li><a href="#loadlocation">LoadLocation</a></li>
-            <li><a href="#round">Round</a></li>
-            <li><a href="#utc">UTC</a></li>
+            <li><a href="#newticker-自动收报机">NewTicker 自动收报机</a></li>
+            <li><a href="#data-创建指定时间">Data 创建指定时间</a></li>
+            <li><a href="#parse-字符串解析为时间">Parse 字符串解析为时间</a></li>
+            <li><a href="#format-时间转换为字符串">Format 时间转换为字符串</a></li>
+            <li><a href="#parseduration-字符串解析为持续时间">ParseDuration 字符串解析为持续时间</a></li>
+            <li><a href="#add-时间值添加">Add 时间值添加</a></li>
+            <li><a href="#sub-计算时间差">Sub 计算时间差</a></li>
+            <li><a href="#since-当前时间与时间t之间的持续时间值">Since 当前时间与时间t之间的持续时间值</a></li>
+            <li><a href="#truncate-将时间值精确到指定的时间间隔">Truncate 将时间值精确到指定的时间间隔</a></li>
+            <li><a href="#unix-将unix时间转换为时间值">Unix 将Unix时间转换为时间值</a></li>
+            <li><a href="#loadlocation-返回指定时区">LoadLocation 返回指定时区</a></li>
+            <li><a href="#round-将时间值t四舍五入到指定的时间间隔">Round 将时间值t四舍五入到指定的时间间隔</a></li>
+            <li><a href="#utc-生成位置">UTC 生成位置</a></li>
           </ul>
         </li>
         <li><a href="#timer结构体">Timer结构体</a>
           <ul>
-            <li><a href="#newtimer">NewTimer</a></li>
-            <li><a href="#reset">Reset</a></li>
-            <li><a href="#stop">Stop</a></li>
-            <li><a href="#判断为空iszero">判断为空IsZero</a></li>
+            <li><a href="#newtimer-在其通道上发送当前时间">NewTimer 在其通道上发送当前时间</a></li>
+            <li><a href="#reset-重置定时器t的时间间隔">Reset 重置定时器t的时间间隔</a></li>
+            <li><a href="#stop-停止定时器">Stop 停止定时器</a></li>
+            <li><a href="#iszero-判断为空">IsZero 判断为空</a></li>
             <li><a href="#时间对象timetime的比较">时间对象（time.Time)的比较</a></li>
           </ul>
         </li>
@@ -2054,9 +2158,9 @@ https://github.com/alex-shpak/hugo-book
   Time
   <a class="anchor" href="#time">#</a>
 </h2>
-<h3 id="after">
-  After
-  <a class="anchor" href="#after">#</a>
+<h3 id="after-在指定的时间间隔后发送当前时间">
+  After 在指定的时间间隔后发送当前时间
+  <a class="anchor" href="#after-%e5%9c%a8%e6%8c%87%e5%ae%9a%e7%9a%84%e6%97%b6%e9%97%b4%e9%97%b4%e9%9a%94%e5%90%8e%e5%8f%91%e9%80%81%e5%bd%93%e5%89%8d%e6%97%b6%e9%97%b4">#</a>
 </h3>
 <p><code>After(d Duration) &lt;-chan Time</code>：返回一个通道，该通道将在指定的时间间隔后发送当前时间。可以用它来实现定时器</p>
 <p>例如，程序需要等待一段时间后再执行某个操作，可以使用<code>After()</code>函数来实现。示例代码：</p>
@@ -2064,9 +2168,9 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">After</span>(<span style="color:#ae81ff">5</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>):
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;5秒后执行&#34;</span>)
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="afterfunc">
-  AfterFunc
-  <a class="anchor" href="#afterfunc">#</a>
+</span></span></code></pre></div><h3 id="afterfunc-定时器">
+  AfterFunc 定时器
+  <a class="anchor" href="#afterfunc-%e5%ae%9a%e6%97%b6%e5%99%a8">#</a>
 </h3>
 <p><code>func AfterFunc(d Duration, f func()) *Timer</code>创建一个新的定时器，并在定时器触发时调用指定的回调函数<code>f</code>。参数<code>d</code>是一个<code>time.Duration</code>类型的值，表示定时器的持续时间。返回值是一个指向<code>Timer</code>结构体的指针。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
@@ -2078,9 +2182,9 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Stop</span>()
 </span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;定时器已停止&#34;</span>)
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="sleep">
-  Sleep
-  <a class="anchor" href="#sleep">#</a>
+</span></span></code></pre></div><h3 id="sleep-延迟">
+  Sleep 延迟
+  <a class="anchor" href="#sleep-%e5%bb%b6%e8%bf%9f">#</a>
 </h3>
 <p><code>Sleep(d Duration)</code>：使当前程序暂停指定的时间间隔。可以用它来实现程序的延迟操作，例如，程序需要在某个操作之后暂停一段时间再继续执行，可以使用<code>Sleep()</code>函数来实现。</p>
 <p>示例代码：</p>
@@ -2096,9 +2200,9 @@ https://github.com/alex-shpak/hugo-book
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">for</span> <span style="color:#a6e22e">t</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Tick</span>(<span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>) {
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;每隔2秒执行一次，当前时间为：&#34;</span>, <span style="color:#a6e22e">t</span>)
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="newticker">
-  NewTicker
-  <a class="anchor" href="#newticker">#</a>
+</span></span></code></pre></div><h3 id="newticker-自动收报机">
+  NewTicker 自动收报机
+  <a class="anchor" href="#newticker-%e8%87%aa%e5%8a%a8%e6%94%b6%e6%8a%a5%e6%9c%ba">#</a>
 </h3>
 <p><code>NewTicker(d Duration) *Ticker</code>是 Go 编程语言<code>time</code>包中的一个函数，它创建一个新的自动收报机，以指定的时间间隔在通道上发送信号。</p>
 <p>使用<code>time.NewTicker</code>对于运行周期性任务或在 Go 程序中以特定时间间隔安排事件很有用。</p>
@@ -2112,17 +2216,17 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="data">
-  Data
-  <a class="anchor" href="#data">#</a>
+</span></span></code></pre></div><h3 id="data-创建指定时间">
+  Data 创建指定时间
+  <a class="anchor" href="#data-%e5%88%9b%e5%bb%ba%e6%8c%87%e5%ae%9a%e6%97%b6%e9%97%b4">#</a>
 </h3>
 <p><code>Date(year int, month Month, day, hour, min, sec, nsec int, loc *Location) Time</code>：返回一个时间值，表示指定的日期和时间。可以用它来创建一个指定时间的<code>time.Time</code>类型变量。</p>
 <p>示例代码：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">t</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2023</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">April</span>, <span style="color:#ae81ff">18</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>)
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">t</span>)
-</span></span></code></pre></div><h3 id="parse">
-  Parse
-  <a class="anchor" href="#parse">#</a>
+</span></span></code></pre></div><h3 id="parse-字符串解析为时间">
+  Parse 字符串解析为时间
+  <a class="anchor" href="#parse-%e5%ad%97%e7%ac%a6%e4%b8%b2%e8%a7%a3%e6%9e%90%e4%b8%ba%e6%97%b6%e9%97%b4">#</a>
 </h3>
 <p><code>Parse(layout, value string) (Time, error)</code>：将指定的字符串解析为时间值。layout参数指定字符串的格式，value参数是要解析的字符串。可以用它来将字符串转换为时间类型。</p>
 <p>示例代码：</p>
@@ -2132,17 +2236,17 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span>
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">t</span>)
-</span></span></code></pre></div><h3 id="format">
-  Format
-  <a class="anchor" href="#format">#</a>
+</span></span></code></pre></div><h3 id="format-时间转换为字符串">
+  Format 时间转换为字符串
+  <a class="anchor" href="#format-%e6%97%b6%e9%97%b4%e8%bd%ac%e6%8d%a2%e4%b8%ba%e5%ad%97%e7%ac%a6%e4%b8%b2">#</a>
 </h3>
 <p><code>Format(t Time, layout string) string</code>：将时间值t格式化为指定的字符串格式layout。可以用它来将时间类型转换为字符串类型。</p>
 <p>示例代码：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">t</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Format</span>(<span style="color:#e6db74">&#34;2006-01-02 15:04:05&#34;</span>))
-</span></span></code></pre></div><h3 id="parseduration">
-  ParseDuration
-  <a class="anchor" href="#parseduration">#</a>
+</span></span></code></pre></div><h3 id="parseduration-字符串解析为持续时间">
+  ParseDuration 字符串解析为持续时间
+  <a class="anchor" href="#parseduration-%e5%ad%97%e7%ac%a6%e4%b8%b2%e8%a7%a3%e6%9e%90%e4%b8%ba%e6%8c%81%e7%bb%ad%e6%97%b6%e9%97%b4">#</a>
 </h3>
 <p><code>ParseDuration(s string) (Duration, error)</code>：将字符串解析为持续时间值。可以用它来将字符串类型的时间转换为持续时间类型。</p>
 <p>示例代码：</p>
@@ -2153,9 +2257,9 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">d</span>)
 </span></span><span style="display:flex;"><span><span style="color:#75715e">//1h30m0s
-</span></span></span></code></pre></div><h3 id="add">
-  Add
-  <a class="anchor" href="#add">#</a>
+</span></span></span></code></pre></div><h3 id="add-时间值添加">
+  Add 时间值添加
+  <a class="anchor" href="#add-%e6%97%b6%e9%97%b4%e5%80%bc%e6%b7%bb%e5%8a%a0">#</a>
 </h3>
 <p><code>Add(d Duration) Time</code>：将持续时间值d添加到时间值t上，并返回结果。可以用它来实现时间的加减运算。</p>
 <p>示例代码：</p>
@@ -2163,9 +2267,9 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">d</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">ParseDuration</span>(<span style="color:#e6db74">&#34;2h&#34;</span>)
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">t2</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">d</span>)
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">t2</span>)
-</span></span></code></pre></div><h3 id="sub">
-  Sub
-  <a class="anchor" href="#sub">#</a>
+</span></span></code></pre></div><h3 id="sub-计算时间差">
+  Sub 计算时间差
+  <a class="anchor" href="#sub-%e8%ae%a1%e7%ae%97%e6%97%b6%e9%97%b4%e5%b7%ae">#</a>
 </h3>
 <p><code>Sub(t Time) Duration</code>：计算时间t与当前时间之间的持续时间值，并返回结果。可以用它来计算两个时间之间的时间差。</p>
 <p>示例代码：</p>
@@ -2174,9 +2278,9 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">t2</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">d</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">t2</span>.<span style="color:#a6e22e">Sub</span>(<span style="color:#a6e22e">t1</span>)
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">d</span>)
-</span></span></code></pre></div><h3 id="since">
-  Since
-  <a class="anchor" href="#since">#</a>
+</span></span></code></pre></div><h3 id="since-当前时间与时间t之间的持续时间值">
+  Since 当前时间与时间t之间的持续时间值
+  <a class="anchor" href="#since-%e5%bd%93%e5%89%8d%e6%97%b6%e9%97%b4%e4%b8%8e%e6%97%b6%e9%97%b4t%e4%b9%8b%e9%97%b4%e7%9a%84%e6%8c%81%e7%bb%ad%e6%97%b6%e9%97%b4%e5%80%bc">#</a>
 </h3>
 <p><code>Since(t Time) Duration</code>：计算当前时间与时间t之间的持续时间值，并返回结果。可以用它来计算当前时间与指定时间之间的时间差。</p>
 <p>示例代码：</p>
@@ -2185,9 +2289,9 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">d</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Since</span>(<span style="color:#a6e22e">t</span>)
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">d</span>)
 </span></span></code></pre></div><p><strong>注意看与上面的区别</strong></p>
-<h3 id="truncate">
-  Truncate
-  <a class="anchor" href="#truncate">#</a>
+<h3 id="truncate-将时间值精确到指定的时间间隔">
+  Truncate 将时间值精确到指定的时间间隔
+  <a class="anchor" href="#truncate-%e5%b0%86%e6%97%b6%e9%97%b4%e5%80%bc%e7%b2%be%e7%a1%ae%e5%88%b0%e6%8c%87%e5%ae%9a%e7%9a%84%e6%97%b6%e9%97%b4%e9%97%b4%e9%9a%94">#</a>
 </h3>
 <p><code>Truncate(d Duration) Time</code>：将时间值t截断到指定的时间间隔d。可以用它来将时间值精确到指定的时间间隔。</p>
 <p>示例代码：</p>
@@ -2196,17 +2300,17 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">t2</span>)
 </span></span></code></pre></div><pre tabindex="0"><code>2023-04-18 19:33:56.3565825 +0800 CST m=+0.001535201
 2023-04-18 19:30:00 +0800 CST
-</code></pre><h3 id="unix">
-  Unix
-  <a class="anchor" href="#unix">#</a>
+</code></pre><h3 id="unix-将unix时间转换为时间值">
+  Unix 将Unix时间转换为时间值
+  <a class="anchor" href="#unix-%e5%b0%86unix%e6%97%b6%e9%97%b4%e8%bd%ac%e6%8d%a2%e4%b8%ba%e6%97%b6%e9%97%b4%e5%80%bc">#</a>
 </h3>
 <p><code>Unix(sec int64, nsec int64) Time</code>：将Unix时间转换为时间值。可以用它来将Unix时间戳转换为时间类型。</p>
 <p>示例代码：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">t</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Unix</span>(<span style="color:#ae81ff">1619158800</span>, <span style="color:#ae81ff">0</span>)
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">t</span>)
-</span></span></code></pre></div><h3 id="loadlocation">
-  LoadLocation
-  <a class="anchor" href="#loadlocation">#</a>
+</span></span></code></pre></div><h3 id="loadlocation-返回指定时区">
+  LoadLocation 返回指定时区
+  <a class="anchor" href="#loadlocation-%e8%bf%94%e5%9b%9e%e6%8c%87%e5%ae%9a%e6%97%b6%e5%8c%ba">#</a>
 </h3>
 <p><code>LoadLocation(name string) (*Location, error)</code>：返回指定时区的Location值。可以用它来获取指定时区的Location值。</p>
 <p>示例代码：</p>
@@ -2217,18 +2321,18 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">t</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">In</span>(<span style="color:#a6e22e">loc</span>)
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">t</span>)
-</span></span></code></pre></div><h3 id="round">
-  Round
-  <a class="anchor" href="#round">#</a>
+</span></span></code></pre></div><h3 id="round-将时间值t四舍五入到指定的时间间隔">
+  Round 将时间值t四舍五入到指定的时间间隔
+  <a class="anchor" href="#round-%e5%b0%86%e6%97%b6%e9%97%b4%e5%80%bct%e5%9b%9b%e8%88%8d%e4%ba%94%e5%85%a5%e5%88%b0%e6%8c%87%e5%ae%9a%e7%9a%84%e6%97%b6%e9%97%b4%e9%97%b4%e9%9a%94">#</a>
 </h3>
 <p><code>Time.Round(d Duration) Time</code>：将时间值t四舍五入到指定的时间间隔d。可以用它来将时间值舍入到指定的时间间隔。</p>
 <p>示例代码：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">t</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">t2</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Round</span>(<span style="color:#ae81ff">10</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Minute</span>)
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">t2</span>)
-</span></span></code></pre></div><h3 id="utc">
-  UTC
-  <a class="anchor" href="#utc">#</a>
+</span></span></code></pre></div><h3 id="utc-生成位置">
+  UTC 生成位置
+  <a class="anchor" href="#utc-%e7%94%9f%e6%88%90%e4%bd%8d%e7%bd%ae">#</a>
 </h3>
 <p><code>Time.UTC()</code>函数用于生成位置设置为<code>UTC</code>的<code>t</code>。此外，此函数在时间包下定义。在这里，您需要导入“time”包才能使用这些函数。</p>
 <blockquote>
@@ -2242,9 +2346,9 @@ https://github.com/alex-shpak/hugo-book
   Timer结构体
   <a class="anchor" href="#timer%e7%bb%93%e6%9e%84%e4%bd%93">#</a>
 </h2>
-<h3 id="newtimer">
-  NewTimer
-  <a class="anchor" href="#newtimer">#</a>
+<h3 id="newtimer-在其通道上发送当前时间">
+  NewTimer 在其通道上发送当前时间
+  <a class="anchor" href="#newtimer-%e5%9c%a8%e5%85%b6%e9%80%9a%e9%81%93%e4%b8%8a%e5%8f%91%e9%80%81%e5%bd%93%e5%89%8d%e6%97%b6%e9%97%b4">#</a>
 </h3>
 <p><code>NewTimer</code>包中的函数创建<code>time</code>一个新的 Timer 对象，该对象将在指定的持续时间后在其通道上发送当前时间。</p>
 <pre tabindex="0"><code>func NewTimer(d Duration) *Timer
@@ -2259,9 +2363,9 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>	<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">timer</span>.<span style="color:#a6e22e">C</span>
 </span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Timer expired&#34;</span>)
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="reset">
-  Reset
-  <a class="anchor" href="#reset">#</a>
+</span></span></code></pre></div><h3 id="reset-重置定时器t的时间间隔">
+  Reset 重置定时器t的时间间隔
+  <a class="anchor" href="#reset-%e9%87%8d%e7%bd%ae%e5%ae%9a%e6%97%b6%e5%99%a8t%e7%9a%84%e6%97%b6%e9%97%b4%e9%97%b4%e9%9a%94">#</a>
 </h3>
 <p><code>Timer.Reset(d Duration) bool</code>：重置定时器t的时间间隔为d，并返回是否成功。可以用它来重置定时器的时间间隔。如果定时器已经触发过了，则会取消之前的时间事件，并重新计时。</p>
 <p>示例代码：</p>
@@ -2270,9 +2374,9 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Reset</span>(<span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;重置定时器结果：&#34;</span>, <span style="color:#a6e22e">ok</span>)
 </span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">C</span>
-</span></span></code></pre></div><h3 id="stop">
-  Stop
-  <a class="anchor" href="#stop">#</a>
+</span></span></code></pre></div><h3 id="stop-停止定时器">
+  Stop 停止定时器
+  <a class="anchor" href="#stop-%e5%81%9c%e6%ad%a2%e5%ae%9a%e6%97%b6%e5%99%a8">#</a>
 </h3>
 <p><code>func (t *Timer) Stop() bool</code>停止定时器，并返回定时器是否成功停止。如果定时器已经触发过了，则该方法不会有任何效果。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
@@ -2283,12 +2387,17 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>	<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">C</span>
 </span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;定时器已触发&#34;</span>)
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="判断为空iszero">
-  判断为空IsZero
-  <a class="anchor" href="#%e5%88%a4%e6%96%ad%e4%b8%ba%e7%a9%baiszero">#</a>
+</span></span></code></pre></div><h3 id="iszero-判断为空">
+  IsZero 判断为空
+  <a class="anchor" href="#iszero-%e5%88%a4%e6%96%ad%e4%b8%ba%e7%a9%ba">#</a>
 </h3>
+<p><code>0001-01-01 00:00:00+00:00</code>在 Go 中，<code>time.Time</code> 类型的零值表示公元 1 年 1 月 1 日的午夜，UTC 时间。这是 Go 的 <code>time</code> 包在未设置或未初始化时间变量时使用的默认值。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">isEmptyTime</span>(<span style="color:#a6e22e">t</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>) <span style="color:#66d9ef">bool</span> {
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">IsZero</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>//判断是否是Unix 时间戳的起点  <code>1970-01-01 08:00:00+08:00</code> UTC 时间下，这个起点是 <code>1970-01-01 00:00:00</code>。但是，在东八区（+08:00）的时区，这个时间显示为 <code>1970-01-01 08:00:00+08:00</code>。这意味着时间值为 <code>0</code> 的 Unix 时间戳在东八区被转换为这个本地时间。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">t1</span>.<span style="color:#a6e22e">Equal</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">1970</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">FixedZone</span>(<span style="color:#e6db74">&#34;CST&#34;</span>, <span style="color:#ae81ff">8</span><span style="color:#f92672">*</span><span style="color:#ae81ff">3600</span>))){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> 
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h3 id="时间对象timetime的比较">
   时间对象（time.Time)的比较
@@ -2343,31 +2452,31 @@ https://github.com/alex-shpak/hugo-book
       <ul>
         <li><a href="#time">Time</a>
           <ul>
-            <li><a href="#after">After</a></li>
-            <li><a href="#afterfunc">AfterFunc</a></li>
-            <li><a href="#sleep">Sleep</a></li>
+            <li><a href="#after-在指定的时间间隔后发送当前时间">After 在指定的时间间隔后发送当前时间</a></li>
+            <li><a href="#afterfunc-定时器">AfterFunc 定时器</a></li>
+            <li><a href="#sleep-延迟">Sleep 延迟</a></li>
             <li><a href="#tick">Tick</a></li>
-            <li><a href="#newticker">NewTicker</a></li>
-            <li><a href="#data">Data</a></li>
-            <li><a href="#parse">Parse</a></li>
-            <li><a href="#format">Format</a></li>
-            <li><a href="#parseduration">ParseDuration</a></li>
-            <li><a href="#add">Add</a></li>
-            <li><a href="#sub">Sub</a></li>
-            <li><a href="#since">Since</a></li>
-            <li><a href="#truncate">Truncate</a></li>
-            <li><a href="#unix">Unix</a></li>
-            <li><a href="#loadlocation">LoadLocation</a></li>
-            <li><a href="#round">Round</a></li>
-            <li><a href="#utc">UTC</a></li>
+            <li><a href="#newticker-自动收报机">NewTicker 自动收报机</a></li>
+            <li><a href="#data-创建指定时间">Data 创建指定时间</a></li>
+            <li><a href="#parse-字符串解析为时间">Parse 字符串解析为时间</a></li>
+            <li><a href="#format-时间转换为字符串">Format 时间转换为字符串</a></li>
+            <li><a href="#parseduration-字符串解析为持续时间">ParseDuration 字符串解析为持续时间</a></li>
+            <li><a href="#add-时间值添加">Add 时间值添加</a></li>
+            <li><a href="#sub-计算时间差">Sub 计算时间差</a></li>
+            <li><a href="#since-当前时间与时间t之间的持续时间值">Since 当前时间与时间t之间的持续时间值</a></li>
+            <li><a href="#truncate-将时间值精确到指定的时间间隔">Truncate 将时间值精确到指定的时间间隔</a></li>
+            <li><a href="#unix-将unix时间转换为时间值">Unix 将Unix时间转换为时间值</a></li>
+            <li><a href="#loadlocation-返回指定时区">LoadLocation 返回指定时区</a></li>
+            <li><a href="#round-将时间值t四舍五入到指定的时间间隔">Round 将时间值t四舍五入到指定的时间间隔</a></li>
+            <li><a href="#utc-生成位置">UTC 生成位置</a></li>
           </ul>
         </li>
         <li><a href="#timer结构体">Timer结构体</a>
           <ul>
-            <li><a href="#newtimer">NewTimer</a></li>
-            <li><a href="#reset">Reset</a></li>
-            <li><a href="#stop">Stop</a></li>
-            <li><a href="#判断为空iszero">判断为空IsZero</a></li>
+            <li><a href="#newtimer-在其通道上发送当前时间">NewTimer 在其通道上发送当前时间</a></li>
+            <li><a href="#reset-重置定时器t的时间间隔">Reset 重置定时器t的时间间隔</a></li>
+            <li><a href="#stop-停止定时器">Stop 停止定时器</a></li>
+            <li><a href="#iszero-判断为空">IsZero 判断为空</a></li>
             <li><a href="#时间对象timetime的比较">时间对象（time.Time)的比较</a></li>
           </ul>
         </li>

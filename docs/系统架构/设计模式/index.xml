@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>设计模式 on Soulmate</title>
+    <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+    <description>Recent content in 设计模式 on Soulmate</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 03 Nov 2022 13:46:08 +0800</lastBuildDate><atom:link href="https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>创建型设计模式</title>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E5%88%9B%E5%BB%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E5%88%9B%E5%BB%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
+      <description>创建型设计模式 # 单例模式 # 单例模式提供了一种访问其唯一对象的方法，该对象可以直接被访问，无需实例化
+双重检查 # var lock = &amp;amp;sync.Mutex{} type singleton struct { } var instance *singleton //获取实例 func GetInstance() *singleton { if instance == nil { lock.Lock() if instance == nil { fmt.Println(&amp;#34;创建单个实例&amp;#34;) instance = new(singleton) } lock.Unlock() } return instance } sync.Once # var once sync.Once //只执行一次 func GetInstance() *singleton { once.Do(func() { instance = new(singleton) fmt.Println(&amp;#34;创建单个实例&amp;#34;) }) return instance } 优点 # 对于内存中只存在一个对象，且需要频繁创建和销毁对象的系统，使用单例模式可以提升系统性能 缺点 # 可扩展性较低 若用于数据库连接池对象，则可能会导致共享连接池对象过多且没有释放的场景，从而出现连接池溢出问题。 如果创建的对象长时间不使用，可能会被操作系统垃圾回收，导致对象丢失 工厂模式 # 介绍 # 工厂方法模式定义了一个用于创建对象的接口，但让子类决定实例化那个类</description>
+    </item>
+    
+    <item>
+      <title>结构型设计模式</title>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%BB%93%E6%9E%84%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%BB%93%E6%9E%84%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
+      <description> 结构型设计模式 # </description>
+    </item>
+    
+    <item>
+      <title>行为型设计模式</title>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
+      <description> 行为型设计模式 # </description>
+    </item>
+    
+    <item>
+      <title>设计模式扩展</title>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%89%A9%E5%B1%95/</link>
+      <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%89%A9%E5%B1%95/</guid>
+      <description> 设计模式扩展 # </description>
+    </item>
+    
+  </channel>
+</rss>

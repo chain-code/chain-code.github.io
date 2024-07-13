@@ -1,0 +1,3164 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="创建型设计模式 # 单例模式 # 单例模式提供了一种访问其唯一对象的方法，该对象可以直接被访问，无需实例化
+双重检查 # var lock = &amp;sync.Mutex{} type singleton struct { } var instance *singleton //获取实例 func GetInstance() *singleton { if instance == nil { lock.Lock() if instance == nil { fmt.Println(&#34;创建单个实例&#34;) instance = new(singleton) } lock.Unlock() } return instance } sync.Once # var once sync.Once //只执行一次 func GetInstance() *singleton { once.Do(func() { instance = new(singleton) fmt.Println(&#34;创建单个实例&#34;) }) return instance } 优点 # 对于内存中只存在一个对象，且需要频繁创建和销毁对象的系统，使用单例模式可以提升系统性能 缺点 # 可扩展性较低 若用于数据库连接池对象，则可能会导致共享连接池对象过多且没有释放的场景，从而出现连接池溢出问题。 如果创建的对象长时间不使用，可能会被操作系统垃圾回收，导致对象丢失 工厂模式 # 介绍 # 工厂方法模式定义了一个用于创建对象的接口，但让子类决定实例化那个类">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="创建型设计模式" />
+<meta property="og:description" content="创建型设计模式 # 单例模式 # 单例模式提供了一种访问其唯一对象的方法，该对象可以直接被访问，无需实例化
+双重检查 # var lock = &amp;sync.Mutex{} type singleton struct { } var instance *singleton //获取实例 func GetInstance() *singleton { if instance == nil { lock.Lock() if instance == nil { fmt.Println(&#34;创建单个实例&#34;) instance = new(singleton) } lock.Unlock() } return instance } sync.Once # var once sync.Once //只执行一次 func GetInstance() *singleton { once.Do(func() { instance = new(singleton) fmt.Println(&#34;创建单个实例&#34;) }) return instance } 优点 # 对于内存中只存在一个对象，且需要频繁创建和销毁对象的系统，使用单例模式可以提升系统性能 缺点 # 可扩展性较低 若用于数据库连接池对象，则可能会导致共享连接池对象过多且没有释放的场景，从而出现连接池溢出问题。 如果创建的对象长时间不使用，可能会被操作系统垃圾回收，导致对象丢失 工厂模式 # 介绍 # 工厂方法模式定义了一个用于创建对象的接口，但让子类决定实例化那个类" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E5%88%9B%E5%BB%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" /><meta property="article:section" content="docs" />
+<meta property="article:published_time" content="2022-11-03T13:46:08+08:00" />
+<meta property="article:modified_time" content="2022-11-03T13:46:08+08:00" />
+<title>创建型设计模式 | Soulmate</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" >
+<link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.f7b84fb61bdb15b9aedece9af62a731e7aedb93c2ef25a5b32d4d05d94ba7c10.js" integrity="sha256-97hPthvbFbmu3s6a9ipzHnrtuTwu8lpbMtTQXZS6fBA=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo.png" alt="Logo" /><span>Soulmate</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>计算机基础</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e99d92668627838818961f696faae00" class="toggle"  />
+    <label for="section-1e99d92668627838818961f696faae00" class="flex justify-between">
+      <a role="button" class="">八股文</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="">计算机网络基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/linux%E5%9F%BA%E7%A1%80/" class="">Linux基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/git%E5%9F%BA%E7%A1%80/" class="">Git基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-00c75bd1eabdaaae0cac73d13168e71f" class="toggle"  />
+    <label for="section-00c75bd1eabdaaae0cac73d13168e71f" class="flex justify-between">
+      <a role="button" class="">其他</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/crontab%E4%BD%BF%E7%94%A8/" class="">crontab使用</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/libewf%E5%BA%93%E7%BC%96%E8%AF%91/" class="">libewf库编译</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/localhost%E4%B8%8E127.0.0.1/" class="">localhost与127.0.0.1</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/schtasks%E4%BD%BF%E7%94%A8/" class="">schtask使用</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="">Vim编程常用快捷键</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E4%BB%A3%E7%A0%81%E6%95%B4%E6%B4%81%E4%B9%8B%E9%81%93/" class="">代码整洁之道</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8github%E5%92%8Cgitlab/" class="">同时使用github和gitlab</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E8%8E%B7%E5%8F%96%E5%86%85%E7%BD%91%E6%B4%BB%E8%B7%83ip/" class="">获取内网活跃IP</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E9%80%9A%E8%BF%87%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81%E8%AE%A1%E7%AE%97ip%E5%9C%B0%E5%9D%80%E8%8C%83%E5%9B%B4/" class="">通过子网掩码计算IP地址范围</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E9%85%8D%E7%BD%AEkylinv10/" class="">配置 Kylin V10</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E8%99%9A%E6%8B%9F%E7%BB%84%E7%BD%91/" class="">虚拟组网</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Golang</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-670eda717a06f31447c52422ec93a159" class="toggle"  />
+    <label for="section-670eda717a06f31447c52422ec93a159" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/" class="">go语言基础（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/golang%E6%8E%A7%E6%B5%81/" class="">Golang控流</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E6%B3%9B%E5%9E%8B%E4%BB%8B%E7%BB%8D/" class="">go泛型介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/grpc/" class="">Grpc</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/pprof/" class="">pprof</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/" class="">ProtoBuf</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">常用业务代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/" class="">go语言基础（三）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/" class="">go语言底层基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/" class="">benchmark测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/" class="">Goland常用技巧</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle"  />
+    <label for="section-c453881a62c640f6a4cceec99c02477e" class="flex justify-between">
+      <a role="button" class="">高阶</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" class="">Go高阶-语言基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f235e88e751d2cb18d527c1784763605" class="toggle"  />
+    <label for="section-f235e88e751d2cb18d527c1784763605" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/flag/" class="">Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/atomic/" class="">Atomic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/os/" class="">Os</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strconv/" class="">Strconv</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sort/" class="">Sort</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strings/" class="">Strings</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/reflect/" class="">Reflect</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/filepath/" class="">filepath</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/time/" class="">Time</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sync/" class="">Sync</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ee53da12118bfd3e9b35f3e9494ab55b" class="toggle"  />
+    <label for="section-ee53da12118bfd3e9b35f3e9494ab55b" class="flex justify-between">
+      <a role="button" class="">LeetCode</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/" class="">golang力扣刷题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/" class="">golang力扣刷题（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/%E5%BF%85%E5%88%B7top101/" class="">必刷top101</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" class="">LeetCode算法总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>数据库</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle"  />
+    <label for="section-94f26238d1ca3b5bcd40eadc7a88d726" class="flex justify-between">
+      <a role="button" class="">MySql</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/" class="">MySql相关问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" class="">MySql基础总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="">Mac连接数据库所遇到的问题</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="toggle"  />
+    <label for="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="flex justify-between">
+      <a role="button" class="">Redis</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="">Redis集群搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/" class="">Redis基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="">redis面试总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8be9c2251abd1fe110e3c1520cac6177" class="toggle"  />
+    <label for="section-8be9c2251abd1fe110e3c1520cac6177" class="flex justify-between">
+      <a role="button" class="">SQLite</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/" class="">Sqlite</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/" class="">Xorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>系统架构</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-083ca86fd1b56cca1f76a6d6b34dc093" class="toggle" checked />
+    <label for="section-083ca86fd1b56cca1f76a6d6b34dc093" class="flex justify-between">
+      <a role="button" class="">设计模式</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E5%88%9B%E5%BB%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="active">创建型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%BB%93%E6%9E%84%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">结构型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">行为型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%89%A9%E5%B1%95/" class="">设计模式扩展</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>前端</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ac8e4e2fda641053d78fc10cbbde236e" class="toggle"  />
+    <label for="section-ac8e4e2fda641053d78fc10cbbde236e" class="flex justify-between">
+      <a role="button" class="">C</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/cgo/" class="">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/cgo%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/" class="">CGO遇到的问题解决</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
+    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
+      <a role="button" class="">博客</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>区块链</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle"  />
+    <label for="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="flex justify-between">
+      <a role="button" class="">Fabric</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">fabric相关机制与原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/" class="">智能合约</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/" class="">fabric-sdk-go详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/" class="">fabric-ca详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle"  />
+    <label for="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="flex justify-between">
+      <a role="button" class="">环境测试</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/" class="">fabric网络中的报错（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/" class="">fabric网络中的报错（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">fabric环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/" class="">solo节点测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/" class="">fabric多机搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/" class="">部署tape测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/" class="">手动生成ca证书搭建fabric网络</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/" class="">centos安装fabric1.2</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-25aef1d59a561fcefcaecb043ef8afd2" class="toggle"  />
+    <label for="section-25aef1d59a561fcefcaecb043ef8afd2" class="flex justify-between">
+      <a role="button" class="">配置文件</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/" class="">cryptogen生成的证书详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">docker-compose.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">configtx.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">crypto-config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/" class="">升级链码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/" class="">区块链网络添加组织</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/" class="">fabric浏览器搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/" class="">如何在已有组织中增加节点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/" class="">Fabric1.4多通道实验</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b07621083aa30b12de4c0333941e479f" class="toggle"  />
+    <label for="section-b07621083aa30b12de4c0333941e479f" class="flex justify-between">
+      <a role="button" class="">比特币</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">比特币相关机制与原理</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle"  />
+    <label for="section-ff5477999ef29208270c84e8b56b2758" class="flex justify-between">
+      <a role="button" class="">IPFS</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/" class="">go-ipfs-api</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" class="">ipfs-webui可视化工具搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/" class="">IPFS基本原理（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/" class="">IPFS私有网络搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-77a0a17b06e8d04cfb0fba9952941706" class="toggle"  />
+    <label for="section-77a0a17b06e8d04cfb0fba9952941706" class="flex justify-between">
+      <a role="button" class="">密码学</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" class="">区块链安全基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/" class="">椭圆曲线加密</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/" class="">密码学基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2e4d10b323fd668021dbd532575d8790" class="toggle"  />
+    <label for="section-2e4d10b323fd668021dbd532575d8790" class="flex justify-between">
+      <a role="button" class="">Docker</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/" class="">Docker基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/" class="">Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" class="">docker常用知识总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-70383d7f28a7ae4bf840a844eb61aa16" class="toggle"  />
+    <label for="section-70383d7f28a7ae4bf840a844eb61aa16" class="flex justify-between">
+      <a role="button" class="">共识算法</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">共识算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" class="">Raft共识算法</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%9B%BE%E4%B9%A6/" class="">图书</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/" class="">工具库</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="https://gitee.com/chaincode"  target="_blank" rel="noopener">
+        Gitee
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>创建型设计模式</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#创建型设计模式">创建型设计模式</a>
+          <ul>
+            <li><a href="#单例模式">单例模式</a></li>
+            <li><a href="#工厂模式">工厂模式</a></li>
+            <li><a href="#抽象工厂模式">抽象工厂模式</a></li>
+            <li><a href="#生成器模式">生成器模式</a></li>
+            <li><a href="#原型模式">原型模式</a></li>
+            <li><a href="#对象池模式">对象池模式</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h2 id="创建型设计模式">
+  创建型设计模式
+  <a class="anchor" href="#%e5%88%9b%e5%bb%ba%e5%9e%8b%e8%ae%be%e8%ae%a1%e6%a8%a1%e5%bc%8f">#</a>
+</h2>
+<h3 id="单例模式">
+  单例模式
+  <a class="anchor" href="#%e5%8d%95%e4%be%8b%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<p>单例模式提供了一种访问其唯一对象的方法，该对象可以直接被访问，无需实例化</p>
+<h4 id="双重检查">
+  双重检查
+  <a class="anchor" href="#%e5%8f%8c%e9%87%8d%e6%a3%80%e6%9f%a5">#</a>
+</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">lock</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">Mutex</span>{}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">singleton</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">instance</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">singleton</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//获取实例
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">GetInstance</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">singleton</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">instance</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">lock</span>.<span style="color:#a6e22e">Lock</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">instance</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;创建单个实例&#34;</span>)
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">instance</span> = new(<span style="color:#a6e22e">singleton</span>)
+</span></span><span style="display:flex;"><span>		} 
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">lock</span>.<span style="color:#a6e22e">Unlock</span>()
+</span></span><span style="display:flex;"><span>	} 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">instance</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="synconce">
+  sync.Once
+  <a class="anchor" href="#synconce">#</a>
+</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">once</span> <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">Once</span>  <span style="color:#75715e">//只执行一次
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">GetInstance</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">singleton</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">once</span>.<span style="color:#a6e22e">Do</span>(<span style="color:#66d9ef">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">instance</span> = new(<span style="color:#a6e22e">singleton</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;创建单个实例&#34;</span>)
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">instance</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="优点">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9">#</a>
+</h4>
+<ul>
+<li>对于内存中只存在一个对象，且需要频繁创建和销毁对象的系统，使用单例模式可以提升系统性能</li>
+</ul>
+<h4 id="缺点">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9">#</a>
+</h4>
+<ul>
+<li>可扩展性较低</li>
+<li>若用于数据库连接池对象，则可能会导致共享连接池对象过多且没有释放的场景，从而出现连接池溢出问题。</li>
+<li>如果创建的对象长时间不使用，可能会被操作系统垃圾回收，导致对象丢失</li>
+</ul>
+<h3 id="工厂模式">
+  工厂模式
+  <a class="anchor" href="#%e5%b7%a5%e5%8e%82%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<h4 id="介绍">
+  介绍
+  <a class="anchor" href="#%e4%bb%8b%e7%bb%8d">#</a>
+</h4>
+<p>工厂方法模式定义了一个用于创建对象的接口，但让子类决定实例化那个类</p>
+<ul>
+<li>如果开发这无法预知对象的具体类型及依赖关系，则可以使用工厂方法模式</li>
+<li>如果开发者希望其他开发者可以扩展软件库或框架的内部组件，则可以使用工厂方法模式</li>
+<li>如果一个类需要通过子类指定其创建的对象，则可以使用工厂方法模式</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 工厂接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Factory</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">FactoryMethod</span>(<span style="color:#a6e22e">owner</span> <span style="color:#66d9ef">string</span>) <span style="color:#a6e22e">Product</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 具体工厂
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">ConcreteFactory</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 具体工厂的工厂方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">cf</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">ConcreteFactory</span>) <span style="color:#a6e22e">FactoryMethod</span>(<span style="color:#a6e22e">owner</span> <span style="color:#66d9ef">string</span>) <span style="color:#a6e22e">Product</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">owner</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;shirdon&#34;</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">ConcreteProduct</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">p</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">ConcreteProduct</span>{}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">p</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 产品
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Product</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Use</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 具体产品
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">ConcreteProduct</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 具体产品的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">ConcreteProduct</span>) <span style="color:#a6e22e">Use</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;This is a concrete product&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//声明具体工厂对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">factory</span> <span style="color:#a6e22e">Factory</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">factory</span> = new(<span style="color:#a6e22e">ConcreteFactory</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//生产产品
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">product</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">factory</span>.<span style="color:#a6e22e">FactoryMethod</span>(<span style="color:#e6db74">&#34;shirdon&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//使用产品
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">product</span>.<span style="color:#a6e22e">Use</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="优点-1">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9-1">#</a>
+</h4>
+<ul>
+<li>可扩展</li>
+<li>可单独测试</li>
+</ul>
+<h4 id="缺点-1">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9-1">#</a>
+</h4>
+<ul>
+<li>品牌越多，越复杂</li>
+<li>引入抽象层，增加理解难度</li>
+</ul>
+<h4 id="示例">
+  示例
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b">#</a>
+</h4>
+<p>假设你有一款服装工厂的品牌管理程序，最初只有一款服装 ANTA，想增加一个品牌，则使用工厂模式</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//定义服装产品接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">IClothes</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">setName</span>(<span style="color:#a6e22e">name</span> <span style="color:#66d9ef">string</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">setSize</span>(<span style="color:#a6e22e">size</span> <span style="color:#66d9ef">int</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">GetName</span>() <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">GetSize</span>() <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//定义产品类及其方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">clothes</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">size</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">clothes</span>) <span style="color:#a6e22e">setName</span>(<span style="color:#a6e22e">name</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">name</span> = <span style="color:#a6e22e">name</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">clothes</span>) <span style="color:#a6e22e">GetName</span>() <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">name</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">clothes</span>) <span style="color:#a6e22e">setSize</span>(<span style="color:#a6e22e">size</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">size</span> = <span style="color:#a6e22e">size</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">clothes</span>) <span style="color:#a6e22e">GetSize</span>() <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">size</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//定义具体服装产品类及初始化函数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">ANTA</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">clothes</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">newANTA</span>() <span style="color:#a6e22e">IClothes</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">ANTA</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">clothes</span>: <span style="color:#a6e22e">clothes</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">name</span>: <span style="color:#e6db74">&#34;ANTA clothes&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">size</span>: <span style="color:#ae81ff">4</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">PEAK</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">clothes</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">newPEAK</span>() <span style="color:#a6e22e">IClothes</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">PEAK</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">clothes</span>: <span style="color:#a6e22e">clothes</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">name</span>: <span style="color:#e6db74">&#34;PEAK clothes&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">size</span>: <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//根据实参类型生产不同品牌服装
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">MakeClothes</span>(<span style="color:#a6e22e">clothesType</span> <span style="color:#66d9ef">string</span>) (<span style="color:#a6e22e">IClothes</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">clothesType</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;ANTA&#34;</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">newANTA</span>(), <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">clothesType</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;PEAK&#34;</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">newPEAK</span>(), <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;Wrong clothes type passed&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ANTAs</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">MakeClothes</span>(<span style="color:#e6db74">&#34;ANTA&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">PEAKs</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">MakeClothes</span>(<span style="color:#e6db74">&#34;PEAK&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">PrintDetails</span>(<span style="color:#a6e22e">ANTAs</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">PrintDetails</span>(<span style="color:#a6e22e">PEAKs</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">PrintDetails</span>(<span style="color:#a6e22e">c</span> <span style="color:#a6e22e">IClothes</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Clothes: %s&#34;</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">GetName</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Size: %d&#34;</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">GetSize</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="抽象工厂模式">
+  抽象工厂模式
+  <a class="anchor" href="#%e6%8a%bd%e8%b1%a1%e5%b7%a5%e5%8e%82%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<h4 id="介绍-1">
+  介绍
+  <a class="anchor" href="#%e4%bb%8b%e7%bb%8d-1">#</a>
+</h4>
+<p>工厂方法模式的另一层抽象</p>
+<ul>
+<li>如果开发者不希望代码基于具体产品进行构建，则可以使用抽象工厂模式</li>
+<li>如果某个类中具有一组抽象方法，并且这个类的功能不够明确，则可以考虑使用抽象工厂模式</li>
+<li>如果一个类要与多种类型的产品交互，则可以考虑将工厂方法抽象到具备完整功能的抽象工厂接口中</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 抽象产品接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">AbstractProduct</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">GetName</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 具体产品类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">ConcreteProduct</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 具体产品的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">ConcreteProduct</span>) <span style="color:#a6e22e">GetName</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;具体产品 ConcreteProduct&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 抽象工厂接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">AbstractFactory</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">CreateProduct</span>() <span style="color:#a6e22e">ConcreteProduct</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 具体工厂
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">ConcreteFactory</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 初始化具体工厂对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewConcreteFactory</span>() <span style="color:#a6e22e">ConcreteFactory</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">ConcreteFactory</span>{}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 具体工厂创建具体产品
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">ConcreteFactory</span>) <span style="color:#a6e22e">CreateProduct</span>() <span style="color:#a6e22e">ConcreteProduct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">ConcreteProduct</span>{}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">abstractFactory</span> <span style="color:#a6e22e">AbstractFactory</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">abstractFactory</span> = new(<span style="color:#a6e22e">ConcreteFactory</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">a</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">abstractFactory</span>.<span style="color:#a6e22e">CreateProduct</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">a</span>.<span style="color:#a6e22e">GetName</span>()
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">factory</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewConcreteFactory</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">product</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">factory</span>.<span style="color:#a6e22e">CreateProduct</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">product</span>.<span style="color:#a6e22e">GetName</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="优点-2">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9-2">#</a>
+</h4>
+<ul>
+<li>当客户端不知道要创建什么类型的对象时</li>
+<li>抽象工厂模式实现了具体类的隔离</li>
+<li>可以轻松改变产品系列</li>
+<li>保证产品一致性</li>
+</ul>
+<h4 id="缺点-2">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9-2">#</a>
+</h4>
+<ul>
+<li>不利于后期添加新产品，抽象工厂模式难以扩展新型产品，如果要支持新型产品，则需要扩展工厂接口，这涉及更改抽象工厂对象及其所有子对象</li>
+</ul>
+<h4 id="示例-1">
+  示例
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b-1">#</a>
+</h4>
+<p>假设一个代工厂可以组装生产多种手机和计算机，分为生产小米产品的小米工厂和生产联想产品的联想工厂，小米工厂和联想工厂都可以生产各自品牌的手机和计算机，也可以生产其他产品。</p>
+<p>定义抽象工厂接口</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//电子产品工厂
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">InterfaceElectronicFactory</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">MakePhone</span>() <span style="color:#a6e22e">AbstractPhone</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">MakeComputer</span>() <span style="color:#a6e22e">AbstractComputer</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//获取电子产品工厂对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">GetElectronicFactory</span>(<span style="color:#a6e22e">brand</span> <span style="color:#66d9ef">string</span>) (<span style="color:#a6e22e">InterfaceElectronicFactory</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">brand</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;Xiaomi&#34;</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">XiaomiFactory</span>{}, <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">brand</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;Lenovo&#34;</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">LenovoFactory</span>{}, <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;%s&#34;</span>, <span style="color:#e6db74">&#34;error brand type&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>定义具体工厂类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//联想品牌工厂
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">LenovoFactory</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//生产手机
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">n</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">LenovoFactory</span>) <span style="color:#a6e22e">MakePhone</span>() <span style="color:#a6e22e">AbstractPhone</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">LenovoPhone</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Phone</span>: <span style="color:#a6e22e">Phone</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">color</span>: <span style="color:#e6db74">&#34;Black&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">size</span>:  <span style="color:#ae81ff">5</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//生产电脑
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">n</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">LenovoFactory</span>) <span style="color:#a6e22e">MakeComputer</span>() <span style="color:#a6e22e">AbstractComputer</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">LenovoComputer</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Computer</span>: <span style="color:#a6e22e">Computer</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">color</span>: <span style="color:#e6db74">&#34;White&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">size</span>:  <span style="color:#ae81ff">14</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//小米品牌工厂
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">XiaomiFactory</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//生产手机
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">a</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">XiaomiFactory</span>) <span style="color:#a6e22e">MakePhone</span>() <span style="color:#a6e22e">AbstractPhone</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">XiaomiPhone</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Phone</span>: <span style="color:#a6e22e">Phone</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">color</span>: <span style="color:#e6db74">&#34;White&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">size</span>:  <span style="color:#ae81ff">5</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//生产电脑
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">a</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">XiaomiFactory</span>) <span style="color:#a6e22e">MakeComputer</span>() <span style="color:#a6e22e">AbstractComputer</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">XiaomiComputer</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Computer</span>: <span style="color:#a6e22e">Computer</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">color</span>: <span style="color:#e6db74">&#34;Black&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">size</span>:  <span style="color:#ae81ff">14</span>,
+</span></span><span style="display:flex;"><span>		},
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>定义抽象产品接口</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//定义电脑接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">AbstractComputer</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">SetColor</span>(<span style="color:#a6e22e">color</span> <span style="color:#66d9ef">string</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">SetSize</span>(<span style="color:#a6e22e">size</span> <span style="color:#66d9ef">int</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">GetColor</span>() <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">GetSize</span>() <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Computer</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">color</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">size</span>  <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Computer</span>) <span style="color:#a6e22e">SetColor</span>(<span style="color:#a6e22e">color</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">color</span> = <span style="color:#a6e22e">color</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Computer</span>) <span style="color:#a6e22e">GetColor</span>() <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">color</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Computer</span>) <span style="color:#a6e22e">SetSize</span>(<span style="color:#a6e22e">size</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">size</span> = <span style="color:#a6e22e">size</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Computer</span>) <span style="color:#a6e22e">GetSize</span>() <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">size</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>定义手机接口</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//定义手机接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">AbstractPhone</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">SetColor</span>(<span style="color:#a6e22e">color</span> <span style="color:#66d9ef">string</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">SetSize</span>(<span style="color:#a6e22e">size</span> <span style="color:#66d9ef">int</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">GetColor</span>() <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">GetSize</span>() <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Phone</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">color</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">size</span>  <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Phone</span>) <span style="color:#a6e22e">SetColor</span>(<span style="color:#a6e22e">color</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">color</span> = <span style="color:#a6e22e">color</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Phone</span>) <span style="color:#a6e22e">GetColor</span>() <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">color</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Phone</span>) <span style="color:#a6e22e">SetSize</span>(<span style="color:#a6e22e">size</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">size</span> = <span style="color:#a6e22e">size</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Phone</span>) <span style="color:#a6e22e">GetSize</span>() <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">size</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>定义具体产品类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//联想电脑
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">LenovoComputer</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Computer</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//联想手机
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">LenovoPhone</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Phone</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//小米电脑
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">XiaomiComputer</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Computer</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//小米手机
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">XiaomiPhone</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Phone</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//声明小米工厂
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">xiaomiFactory</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">actualCombat</span>.<span style="color:#a6e22e">GetElectronicFactory</span>(<span style="color:#e6db74">&#34;Xiaomi&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//声明联想工厂
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">lenovoFactory</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">actualCombat</span>.<span style="color:#a6e22e">GetElectronicFactory</span>(<span style="color:#e6db74">&#34;Lenovo&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//联想工厂生产联想手机
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">lenovoPhone</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">lenovoFactory</span>.<span style="color:#a6e22e">MakePhone</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//联想电脑生产联想电脑
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">lenovoComputer</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">lenovoFactory</span>.<span style="color:#a6e22e">MakeComputer</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//小米工厂生产小米手机
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">xiaomiPhone</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">xiaomiFactory</span>.<span style="color:#a6e22e">MakePhone</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//小米电脑生产小米电脑
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">xiaomiComputer</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">xiaomiFactory</span>.<span style="color:#a6e22e">MakeComputer</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">printPhoneDetails</span>(<span style="color:#a6e22e">lenovoPhone</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">printComputerDetails</span>(<span style="color:#a6e22e">lenovoComputer</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">printPhoneDetails</span>(<span style="color:#a6e22e">xiaomiPhone</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">printComputerDetails</span>(<span style="color:#a6e22e">xiaomiComputer</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">printPhoneDetails</span>(<span style="color:#a6e22e">s</span> <span style="color:#a6e22e">actualCombat</span>.<span style="color:#a6e22e">AbstractPhone</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Color: %s&#34;</span>, <span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">GetColor</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Size: %d inch&#34;</span>, <span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">GetSize</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">printComputerDetails</span>(<span style="color:#a6e22e">s</span> <span style="color:#a6e22e">actualCombat</span>.<span style="color:#a6e22e">AbstractComputer</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Color: %s&#34;</span>, <span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">GetColor</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Size: %d inch&#34;</span>, <span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">GetSize</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="生成器模式">
+  生成器模式
+  <a class="anchor" href="#%e7%94%9f%e6%88%90%e5%99%a8%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<h4 id="介绍-2">
+  介绍
+  <a class="anchor" href="#%e4%bb%8b%e7%bb%8d-2">#</a>
+</h4>
+<p>目标是将复杂对象的构造与其实现分离，以相同的构造过程可以创建不同的实现</p>
+<ul>
+<li>当开发者希望创建不同形式的产品时</li>
+<li>当开发者需要创建各种形式的产品，这些产品的制造过程相似且产品之间的差别不大（如红色钢笔和黑色钢笔）</li>
+<li>如果需要使用构造函数，并且构造函数的参数很多，则可以使用生成器模式</li>
+<li>当需要构建同一个对象的不同表示时，可以使用生成器模式</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 主管
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Director</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">builder</span> <span style="color:#a6e22e">Builder</span> <span style="color:#75715e">//接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 初始化主管对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewDirector</span>(<span style="color:#a6e22e">builder</span> <span style="color:#a6e22e">Builder</span>) <span style="color:#a6e22e">Director</span> {<span style="color:#75715e">//入参接口类型，相当于接口赋值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Director</span>{<span style="color:#a6e22e">builder</span>}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 通过一系列步骤生成产品
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Director</span>) <span style="color:#a6e22e">Construct</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">builder</span>.<span style="color:#a6e22e">Build</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 生成器接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Builder</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Build</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//具体生成器，用于构建产品的生成器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">ConcreteBuilder</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">result</span> <span style="color:#a6e22e">Product</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 初始化具体生成器对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewConcreteBuilder</span>() <span style="color:#a6e22e">ConcreteBuilder</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">ConcreteBuilder</span>{<span style="color:#a6e22e">result</span>: <span style="color:#a6e22e">Product</span>{}}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 生成产品
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">b</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">ConcreteBuilder</span>) <span style="color:#a6e22e">Build</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">result</span> = <span style="color:#a6e22e">Product</span>{}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 返回在生成步骤中生成的产品
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">b</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">ConcreteBuilder</span>) <span style="color:#a6e22e">GetResult</span>() <span style="color:#a6e22e">Product</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Product</span>{<span style="color:#66d9ef">true</span>}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 产品
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Product</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Built</span> <span style="color:#66d9ef">bool</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">builder</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">NewConcreteBuilder</span>()    <span style="color:#75715e">//生成结构体，结构体中嵌套产品结构体
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">director</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">NewDirector</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">builder</span>)  <span style="color:#75715e">//得到一个结构体里面带接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">director</span>.<span style="color:#a6e22e">Construct</span>()         <span style="color:#75715e">//执行结构体方法 里面执行接口方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">product</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">builder</span>.<span style="color:#a6e22e">GetResult</span>() <span style="color:#75715e">//执行结构体方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">product</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="优点-3">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9-3">#</a>
+</h4>
+<ul>
+<li>在生成器模式中，产品内部组成的细节对客户端不可见，将产品的创建过程和产品解耦，使相同的创建过程可以创建不同的产品对象</li>
+<li>每个具体的生成器都相对独立，因此可以十分方便地替换具体生成器或增加新的具体生成器，无须修改原有类库的代码，系统扩展方便，符合开闭原则，设计灵活性和代码可读性较高。</li>
+<li>生成器模式可以将复杂产品的创建步骤分解在不同的方法中，使创建过程更加清晰，更易于使用程序控制创建过程</li>
+</ul>
+<h4 id="缺点-3">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9-3">#</a>
+</h4>
+<ul>
+<li>使用范围有限，不适合产品之间差异很大的情况</li>
+<li>代码量大，需要为不同类型的产品创建单独的具体生成器</li>
+</ul>
+<h4 id="示例-2">
+  示例
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b-2">#</a>
+</h4>
+<p>介绍如何使用生成器模式生产MPV和SUV两种类型的汽车</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 生成器接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">InterfaceBuilder</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">SetSeatsType</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">SetEngineType</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">SetNumber</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">GetCar</span>() <span style="color:#a6e22e">Car</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 获取生成器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">GetBuilder</span>(<span style="color:#a6e22e">BuilderType</span> <span style="color:#66d9ef">string</span>) <span style="color:#a6e22e">InterfaceBuilder</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">BuilderType</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;mpv&#34;</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">MpvBuilder</span>{}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">BuilderType</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;suv&#34;</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">SuvBuilder</span>{}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// MPV生成器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">MpvBuilder</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">SeatsType</span>  <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">EngineType</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Number</span>     <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewMpvBuilder</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">MpvBuilder</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">MpvBuilder</span>{}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">b</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">MpvBuilder</span>) <span style="color:#a6e22e">SetSeatsType</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">SeatsType</span> = <span style="color:#e6db74">&#34;MPV型座椅&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">b</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">MpvBuilder</span>) <span style="color:#a6e22e">SetEngineType</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">EngineType</span> = <span style="color:#e6db74">&#34;MPV型引擎&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">b</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">MpvBuilder</span>) <span style="color:#a6e22e">SetNumber</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">Number</span> = <span style="color:#ae81ff">8</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">b</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">MpvBuilder</span>) <span style="color:#a6e22e">GetCar</span>() <span style="color:#a6e22e">Car</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Car</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">EngineType</span>: <span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">EngineType</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">SeatsType</span>:  <span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">SeatsType</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Number</span>:     <span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">Number</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// SUV生成器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">SuvBuilder</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">SeatsType</span>  <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">EngineType</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Number</span>     <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">newSuvBuilder</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">SuvBuilder</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">SuvBuilder</span>{}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">b</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">SuvBuilder</span>) <span style="color:#a6e22e">SetSeatsType</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">SeatsType</span> = <span style="color:#e6db74">&#34;SUV型座椅&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">b</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">SuvBuilder</span>) <span style="color:#a6e22e">SetEngineType</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">EngineType</span> = <span style="color:#e6db74">&#34;SUV型引擎&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">b</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">SuvBuilder</span>) <span style="color:#a6e22e">SetNumber</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">Number</span> = <span style="color:#ae81ff">6</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">b</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">SuvBuilder</span>) <span style="color:#a6e22e">GetCar</span>() <span style="color:#a6e22e">Car</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Car</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">EngineType</span>: <span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">EngineType</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">SeatsType</span>:  <span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">SeatsType</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Number</span>:     <span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">Number</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Car</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">SeatsType</span>  <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">EngineType</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Number</span>     <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 主管类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Director</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Builder</span> <span style="color:#a6e22e">InterfaceBuilder</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewDirector</span>(<span style="color:#a6e22e">b</span> <span style="color:#a6e22e">InterfaceBuilder</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">Director</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Director</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Builder</span>: <span style="color:#a6e22e">b</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Director</span>) <span style="color:#a6e22e">SetBuilder</span>(<span style="color:#a6e22e">b</span> <span style="color:#a6e22e">InterfaceBuilder</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">Builder</span> = <span style="color:#a6e22e">b</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Director</span>) <span style="color:#a6e22e">BuildCar</span>() <span style="color:#a6e22e">Car</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">Builder</span>.<span style="color:#a6e22e">SetEngineType</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">Builder</span>.<span style="color:#a6e22e">SetSeatsType</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">Builder</span>.<span style="color:#a6e22e">SetNumber</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">Builder</span>.<span style="color:#a6e22e">GetCar</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//声明MPV生成器对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">MpvBuilder</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">GetBuilder</span>(<span style="color:#e6db74">&#34;mpv&#34;</span>) <span style="color:#75715e">//得到接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">//声明SUV生成器对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">SuvBuilder</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">GetBuilder</span>(<span style="color:#e6db74">&#34;suv&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//声明主管对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Director</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewDirector</span>(<span style="color:#a6e22e">MpvBuilder</span>) <span style="color:#75715e">//把接口给结构体的子类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">//生产MPV类型汽车
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">mpvCar</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Director</span>.<span style="color:#a6e22e">BuildCar</span>() <span style="color:#75715e">//调接口体方法 里面执行接口方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;MPV类型引擎: %s\n&#34;</span>, <span style="color:#a6e22e">mpvCar</span>.<span style="color:#a6e22e">EngineType</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;MPV类型座椅: %s\n&#34;</span>, <span style="color:#a6e22e">mpvCar</span>.<span style="color:#a6e22e">SeatsType</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;MPV类型数量: %d\n&#34;</span>, <span style="color:#a6e22e">mpvCar</span>.<span style="color:#a6e22e">Number</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//设置生成器对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Director</span>.<span style="color:#a6e22e">SetBuilder</span>(<span style="color:#a6e22e">SuvBuilder</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//生产SUV类型汽车
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">suvCar</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Director</span>.<span style="color:#a6e22e">BuildCar</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;\nSUV类型引擎: %s\n&#34;</span>, <span style="color:#a6e22e">suvCar</span>.<span style="color:#a6e22e">EngineType</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;SUV类型座椅: %s\n&#34;</span>, <span style="color:#a6e22e">suvCar</span>.<span style="color:#a6e22e">SeatsType</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;SUV类型数量: %d\n&#34;</span>, <span style="color:#a6e22e">suvCar</span>.<span style="color:#a6e22e">Number</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="原型模式">
+  原型模式
+  <a class="anchor" href="#%e5%8e%9f%e5%9e%8b%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<p>原型模式能够复制对象，并且代码不依赖对象所属的类。原型模式可以为开发者节省资源和时间，尤其在对象创建过程较为复杂时。</p>
+<ul>
+<li>比较常见</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 原型接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Prototype</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">GetName</span>() <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Clone</span>() <span style="color:#a6e22e">Prototype</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 具体原型类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">ConcretePrototype</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 返回具体原型的名称
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">ConcretePrototype</span>) <span style="color:#a6e22e">GetName</span>() <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Name</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Clone 创建一个ConcretePrototype类的克隆新实例
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">ConcretePrototype</span>) <span style="color:#a6e22e">Clone</span>() <span style="color:#a6e22e">Prototype</span> {  <span style="color:#75715e">//返回的是一个接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">ConcretePrototype</span>{<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Name</span>}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cp</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">ConcretePrototype</span>{<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;Shirdon&#34;</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">a</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">cp</span>.<span style="color:#a6e22e">Clone</span>() <span style="color:#75715e">//返回一个接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">a</span>.<span style="color:#a6e22e">GetName</span>()) <span style="color:#75715e">//可以直接调方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">res</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">cp</span>.<span style="color:#a6e22e">GetName</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">res</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="优点-4">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9-4">#</a>
+</h4>
+<ul>
+<li>比其他模式更灵活</li>
+<li>可以通过改变值指定新对象</li>
+<li>可以通过改变结构指定新对象</li>
+<li>可以减少子类</li>
+</ul>
+<h4 id="缺点-4">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9-4">#</a>
+</h4>
+<ul>
+<li>向客户端隐藏了具体的产品类别</li>
+<li>当克隆的类已经存在时，原型接口的每个子类都必须实现Clone()方法</li>
+</ul>
+<h3 id="对象池模式">
+  对象池模式
+  <a class="anchor" href="#%e5%af%b9%e8%b1%a1%e6%b1%a0%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<p>在对象池模式中，对象被预先初始化并存储于对象池中，当需要时，客户端可以从对象池中请求一个对象并使用，然后将其返回对象池中。对象池模式可以减少频繁创建对象造成的资源浪费。</p>
+<ul>
+<li>当系统资源受限时，如果需要提高内存管理效率时</li>
+<li>需要创建大量对象时，如数据库连接</li>
+<li>当对象时不可变对象时，如数据库连接</li>
+<li>当需要提升性能时</li>
+<li>需要在短时间内连续创建和销毁大量对象时</li>
+<li>当需要使用相似对象，不加选择和不受控制的初始化新对象时</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 对象池
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Pool</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">Mutex</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Inuse</span>     []<span style="color:#66d9ef">interface</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Available</span> []<span style="color:#66d9ef">interface</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">new</span>       <span style="color:#66d9ef">func</span>() <span style="color:#66d9ef">interface</span>{}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 创建一个新对象池
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewPool</span>(<span style="color:#a6e22e">new</span> <span style="color:#66d9ef">func</span>() <span style="color:#66d9ef">interface</span>{}) <span style="color:#f92672">*</span><span style="color:#a6e22e">Pool</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Pool</span>{<span style="color:#a6e22e">new</span>: <span style="color:#a6e22e">new</span>}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 从池中获取要使用的新池对象。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 如果没有可用，则获取创建1个池对象的新实例
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Pool</span>) <span style="color:#a6e22e">Acquire</span>() <span style="color:#66d9ef">interface</span>{} {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Lock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">object</span> <span style="color:#66d9ef">interface</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Available</span>) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">object</span> = <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Available</span>[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Available</span> = append(<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Available</span>[:<span style="color:#ae81ff">0</span>], <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Available</span>[<span style="color:#ae81ff">1</span>:]<span style="color:#f92672">...</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Inuse</span> = append(<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Inuse</span>, <span style="color:#a6e22e">object</span>)
+</span></span><span style="display:flex;"><span>	} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">object</span> = <span style="color:#a6e22e">p</span>.new()                  <span style="color:#75715e">//执行new函数 返回10
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Inuse</span> = append(<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Inuse</span>, <span style="color:#a6e22e">object</span>) <span style="color:#75715e">//将10插入切片
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Unlock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">object</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 将对象释放回对象池
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Pool</span>) <span style="color:#a6e22e">Release</span>(<span style="color:#a6e22e">object</span> <span style="color:#66d9ef">interface</span>{}) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Lock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Available</span> = append(<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Available</span>, <span style="color:#a6e22e">object</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Inuse</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">v</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">object</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Inuse</span> = append(<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Inuse</span>[:<span style="color:#a6e22e">i</span>], <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Inuse</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>:]<span style="color:#f92672">...</span>) <span style="color:#75715e">//移除
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Unlock</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">num</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">func</span>() <span style="color:#66d9ef">interface</span>{} { <span style="color:#75715e">//定义一个返回interface的函数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">10.0</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">pool</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewPool</span>(<span style="color:#a6e22e">num</span>)     <span style="color:#75715e">//返回结构体指针，将上个interface给结构体里面的一个new字段
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">object</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">pool</span>.<span style="color:#a6e22e">Acquire</span>() <span style="color:#75715e">//执行方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">pool</span>.<span style="color:#a6e22e">Inuse</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">pool</span>.<span style="color:#a6e22e">Available</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">pool</span>.<span style="color:#a6e22e">Release</span>(<span style="color:#a6e22e">object</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">pool</span>.<span style="color:#a6e22e">Inuse</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">pool</span>.<span style="color:#a6e22e">Available</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//$ go run main.go
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//[10]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//[]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//[]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//[10]
+</span></span></span></code></pre></div><h4 id="优点-5">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9-5">#</a>
+</h4>
+<ul>
+<li>有助于提高整体性能</li>
+<li>有助于在某些情况下提高对象初始化速度</li>
+<li>有助于更好的管理连接，并且提供重用和共享这些连接的方法</li>
+<li>有助于限制对象的最大创建数量</li>
+</ul>
+<h4 id="缺点-5">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9-5">#</a>
+</h4>
+<ul>
+<li>会增加分配/释放对象的资源开销</li>
+<li>多个对象长期存在于对象池而不销毁他们，造成资源浪费</li>
+<li>对象池数量难以把控</li>
+</ul>
+<h4 id="示例-3">
+  示例
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b-3">#</a>
+</h4>
+<p>初始化一个指定大小的资源池，用于避免通过通道的资源竞争问题，并且在资源池为空的情况下设置获取超时处理，用于防止客户端等待太久。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ErrPoolNotExist</span>  = <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;pool not exist&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ErrGetResTimeout</span> = <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;get resource time out&#34;</span>)
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 资源类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Resource</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">reusable</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 初始化资源对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 模拟缓慢的资源访问，例如，TCP 连接等
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewResource</span>(<span style="color:#a6e22e">id</span> <span style="color:#66d9ef">int</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">Resource</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">500</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Millisecond</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Resource</span>{<span style="color:#a6e22e">reusable</span>: <span style="color:#a6e22e">id</span>}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 模拟资源耗时
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Resource</span>) <span style="color:#a6e22e">Do</span>(<span style="color:#a6e22e">workId</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Intn</span>(<span style="color:#ae81ff">5</span>)) <span style="color:#f92672">*</span> <span style="color:#ae81ff">1000</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Millisecond</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;using resource #%d finished work %d finish\n&#34;</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">reusable</span>, <span style="color:#a6e22e">workId</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 对象池
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Pool</span> <span style="color:#66d9ef">chan</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Resource</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 并发创建资源对象，节省资源对象初始化时间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">New</span>(<span style="color:#a6e22e">size</span> <span style="color:#66d9ef">int</span>) <span style="color:#a6e22e">Pool</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">p</span> <span style="color:#f92672">:=</span> make(<span style="color:#a6e22e">Pool</span>, <span style="color:#a6e22e">size</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">wg</span> <span style="color:#f92672">:=</span> new(<span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">WaitGroup</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">wg</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">size</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">size</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">reusable</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">p</span> <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">NewResource</span>(<span style="color:#a6e22e">reusable</span>)
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">wg</span>.<span style="color:#a6e22e">Done</span>()
+</span></span><span style="display:flex;"><span>		}(<span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">wg</span>.<span style="color:#a6e22e">Wait</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">p</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 从获取对象池获取对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#a6e22e">Pool</span>) <span style="color:#a6e22e">GetResource</span>() (<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Resource</span>, <span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">deadline</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Add</span>(<span style="color:#ae81ff">3</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Before</span>(<span style="color:#a6e22e">deadline</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">select</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">r</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">p</span>:
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">r</span>, <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>			<span style="color:#75715e">// 如果通道为空,等待 100 毫秒后再尝试
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">100</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Millisecond</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">ErrGetResTimeout</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//	func (p Pool) GetResource() (r *Resource, err error) {
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//		timer := time.NewTimer(3 * time.Second)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//		defer timer.Stop()
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//		for {
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//			select {
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//			case r := &lt;-p:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//				return r, nil
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//			case &lt;-timer.C:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//				return nil, ErrGetResTimeout
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//			default:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//				// 如果通道为空,等待 100 毫秒后再尝试
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//				time.Sleep(100 * time.Millisecond)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//			}
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//		}
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//	}
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 将资源返回到资源池
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#a6e22e">Pool</span>) <span style="color:#a6e22e">GiveBackResource</span>(<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Resource</span>) <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">p</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">ErrPoolNotExist</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">p</span> <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">r</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 初始化一个包含五个资源的资源池
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// 可以调整为 1 或 10 以查看差异
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">size</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">p</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">New</span>(<span style="color:#a6e22e">size</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 调用资源池
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">doWork</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">workId</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">wg</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">WaitGroup</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">wg</span>.<span style="color:#a6e22e">Done</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 从资源池中获取资源对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">res</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">GetResource</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//返回的资源对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">GiveBackResource</span>(<span style="color:#a6e22e">res</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 使用资源处理工作
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">Do</span>(<span style="color:#a6e22e">workId</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 模拟100个并发进程从资产池中获取资源对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">num</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">wg</span> <span style="color:#f92672">:=</span> new(<span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">WaitGroup</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">wg</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">num</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">num</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">doWork</span>(<span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">wg</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">wg</span>.<span style="color:#a6e22e">Wait</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#创建型设计模式">创建型设计模式</a>
+          <ul>
+            <li><a href="#单例模式">单例模式</a></li>
+            <li><a href="#工厂模式">工厂模式</a></li>
+            <li><a href="#抽象工厂模式">抽象工厂模式</a></li>
+            <li><a href="#生成器模式">生成器模式</a></li>
+            <li><a href="#原型模式">原型模式</a></li>
+            <li><a href="#对象池模式">对象池模式</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

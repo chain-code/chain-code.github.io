@@ -102,12 +102,16 @@ func main() { elems := []string{&amp;#34;I&amp;#34;, &amp;#34;like&amp;#34;, &am
       
       <guid>https://chain-code.github.io/docs/golang/package/reflect/</guid>
       <description>Reflect # reflect包是Go语言标准库中的一个包，它提供了一组功能，允许我们在运行时动态地查看和操作Go程序中的变量、函数和类型。通过使用reflect包，我们可以以一种通用的方式处理和操作各种类型的值，而无需知道它们的具体类型。
-TypeOf()和ValueOf() # TypeOf()和ValueOf()函数是reflect包中最常用的两个函数之一。TypeOf()函数可以返回任何变量的类型，而ValueOf()函数可以返回变量的值。这两个函数都接受一个interface{}类型的参数，并返回一个reflect.Type和reflect.Value类型的结果。
-lessCopy codevar x int = 42 fmt.Println(reflect.TypeOf(x)) // 输出：int fmt.Println(reflect.ValueOf(x)) // 输出：42 IsZero() # IsZero() 方法检查该反射值是否为零值。
-IsZero() 方法则返回一个布尔值，表示该反射值是否为其类型的零值。对于大部分类型来说，零值就是其类型的默认值，例如 int 类型的零值是 0，string 类型的零值是空字符串 &amp;quot;&amp;quot;。
-func (v Value) IsZero() bool valueOf := reflect.ValueOf(data) //获取数据 if valueOf.IsZero() { //判断是否为其类型的零值 panic(&amp;#34;WriteData data is zero&amp;#34;) } Interface() # 可以使用 Interface() 方法将其转换为对应的接口类型值。
-在将反射值转换为接口类型值时需要使用断言操作符 .(interface{}) 显式地将其转换为 interface{} 类型。
-if implStruct, ok := valueOf.Interface().(model.TypeCheckSelf); ok { implStruct.TypeCheckSelf() } Indirect() # reflect.Indirect(v)函数用于获取v指向的值，即，如果v是nil指针，则Indirect返回零值。如果v不是指针，则Indirect返回v。</description>
+反射三大定律 # Go 语言中的反射，其归根究底都是在实现三大定律：
+Reflection goes from interface value to reflection object. Reflection goes from reflection object to interface value. To modify a reflection object, the value must be settable. 我们将针对这核心的三大定律进行介绍和说明，以此来理解 Go 反射里的各种方法是基于什么理念实现的。
+第一定律 # 反射的第一定律是：“反射可以从接口值（interface）得到反射对象”。
+示例代码：
+func main() {var x float64 = 3.4fmt.Println(&amp;#34;type:&amp;#34;, reflect.TypeOf(x))} 输出结果：
+type: float64 可能有读者就迷糊了，我明明在代码中传入的变量 x，他的类型是 float64。怎么就成从接口值得到反射对象了。
+其实不然，虽然在代码中我们所传入的变量基本类型是 float64，但是 reflect.TypeOf 方法入参是 interface{}，本质上 Go 语言内部对其是做了类型转换的。这一块会在后面会进一步展开说明。
+第二定律 # 反射的第二定律是：“可以从反射对象得到接口值（interface）”。其与第一条定律是相反的定律，可以是互相补充了。
+示例代码：
+func main() {vo := reflect.</description>
     </item>
     
     <item>

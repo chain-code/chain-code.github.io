@@ -17,7 +17,7 @@
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.f7b84fb61bdb15b9aedece9af62a731e7aedb93c2ef25a5b32d4d05d94ba7c10.js" integrity="sha256-97hPthvbFbmu3s6a9ipzHnrtuTwu8lpbMtTQXZS6fBA=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.08de7a4944fe11557d8e02c1c396308bc7e5f6fd41517230bfa28399a1e729c0.js" integrity="sha256-CN56SUT&#43;EVV9jgLBw5Ywi8fl9v1BUXIwv6KDmaHnKcA=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -497,6 +497,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="">单元测试</a>
   
 
         </li>
@@ -1144,6 +1157,19 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%9F%BA%E7%A1%80/" class="">系统架构基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <input type="checkbox" id="section-083ca86fd1b56cca1f76a6d6b34dc093" class="toggle"  />
     <label for="section-083ca86fd1b56cca1f76a6d6b34dc093" class="flex justify-between">
       <a role="button" class="">设计模式</a>
@@ -1296,6 +1322,53 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8ca541663a7d7fd63c79c6ce40ab5b81" class="toggle"  />
+    <label for="section-8ca541663a7d7fd63c79c6ce40ab5b81" class="flex justify-between">
+      <a role="button" class="">Python</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/venv%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/" class="">venv虚拟环境</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/" class="">Yolov8快速上手 实践</a>
   
 
         </li>
@@ -2105,6 +2178,7 @@ https://github.com/alex-shpak/hugo-book
             <li><a href="#获取电脑睡眠状态">获取电脑睡眠状态</a></li>
             <li><a href="#自动填充空格-以格式化输出字符串">自动填充空格 以格式化输出字符串</a></li>
             <li><a href="#逐行读取文件">逐行读取文件</a></li>
+            <li><a href="#判断windows系统版本">判断windows系统版本</a></li>
             <li><a href="#逐字节读取文件">逐字节读取文件</a></li>
           </ul>
         </li>
@@ -2527,7 +2601,35 @@ func main() {
 </span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="逐字节读取文件">
+</span></span></code></pre></div><h3 id="判断windows系统版本">
+  判断windows系统版本
+  <a class="anchor" href="#%e5%88%a4%e6%96%adwindows%e7%b3%bb%e7%bb%9f%e7%89%88%e6%9c%ac">#</a>
+</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;github.com/elastic/go-sysinfo&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestGetVer</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sysinfo</span>.<span style="color:#a6e22e">Host</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Error getting host info:&#34;</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">info</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">host</span>.<span style="color:#a6e22e">Info</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Operating System:&#34;</span>, <span style="color:#a6e22e">info</span>.<span style="color:#a6e22e">OS</span>.<span style="color:#a6e22e">Name</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Family:&#34;</span>, <span style="color:#a6e22e">info</span>.<span style="color:#a6e22e">OS</span>.<span style="color:#a6e22e">Family</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Version:&#34;</span>, <span style="color:#a6e22e">info</span>.<span style="color:#a6e22e">OS</span>.<span style="color:#a6e22e">Version</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Platform:&#34;</span>, <span style="color:#a6e22e">info</span>.<span style="color:#a6e22e">OS</span>.<span style="color:#a6e22e">Platform</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Kernel Version:&#34;</span>, <span style="color:#a6e22e">info</span>.<span style="color:#a6e22e">KernelVersion</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Arch:&#34;</span>, <span style="color:#a6e22e">info</span>.<span style="color:#a6e22e">Architecture</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>Operating System:Windows 7 Home Basic
+Family: windows
+Uersion: 6.1
+Platform: windows
+Kernel version:6.1.2601.17514(win7sp1_rtm.101119-1850)
+Arch:x86_64
+0perating System: windows
+Version: Windows 6.1&lt;Build 761&gt;
+</code></pre><h3 id="逐字节读取文件">
   逐字节读取文件
   <a class="anchor" href="#%e9%80%90%e5%ad%97%e8%8a%82%e8%af%bb%e5%8f%96%e6%96%87%e4%bb%b6">#</a>
 </h3>
@@ -2619,6 +2721,7 @@ func main() {
             <li><a href="#获取电脑睡眠状态">获取电脑睡眠状态</a></li>
             <li><a href="#自动填充空格-以格式化输出字符串">自动填充空格 以格式化输出字符串</a></li>
             <li><a href="#逐行读取文件">逐行读取文件</a></li>
+            <li><a href="#判断windows系统版本">判断windows系统版本</a></li>
             <li><a href="#逐字节读取文件">逐字节读取文件</a></li>
           </ul>
         </li>

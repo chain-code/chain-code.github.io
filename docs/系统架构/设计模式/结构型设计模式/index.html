@@ -3,11 +3,23 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content=" 结构型设计模式 # ">
+<meta name="description" content="结构型设计模式 # 组合模式 # 介绍 # 组合模式是指将一组相似的对象当作一个单一对象的设计模式。
+组合模式描述了一组对象，这些对象被视为相同类型对象的单个实例。组合模式可以将对象组合成树形结构，从而表示部分或整体的层次结构。
+组合模式允许开发者拥有一个树形结构，并且要求树形结构中的每个节点都执行一项任务。组合模式的主要功能是在整个树形结构中递归调用方法并对结果进行汇总。
+使用场景：
+当客户需要忽略组合对象和单个对象之间的差异时。如果开发者以相同的方式使用多个对象，并且用几乎相同的代码处理每个对象。 如果需要实现树形结构。只需要通过请求树的顶层对象，就可以对整棵树进行统一操作。在组合模式中，添加和删除数的节点非常方便，并且遵循开闭原则。 如果开发者希望客户端可以以统一的方式处理简单或复杂的元素。 接口隔离原则要求开发者尽量将臃肿庞大的接口拆分成更小、更具体的接口，使接口中只包含客户端感兴趣的方法。
+// 组件接口 type Component interface { Execute() } // 叶节点，用于描述层次结构中的原始叶节点对象 type Leaf struct { value int } // 创建一个新的叶节点对象 func NewLeaf(value int) *Leaf { return &amp;Leaf{value} } // 打印叶节点对象的值 func (l *Leaf) Execute() { fmt.Printf(&#34;%v &#34;, l.value) } 定义组件类，用于表示复杂元素。该数组必须能同时存储叶节点和组合，因此需要确保将其声明为组件接口类型。在实现组件接口中的方法时，组合应该将大部分工作交给其子元素完成。
+// 组件的组合 type Composite struct { children []Component } // 创建一个新的组合对象 func NewComposite() *Composite { return &amp;Composite{make([]Component, 0)} } // 将一个新组件添加到组合中 func (c *Composite) Add(component Component) { //传入就将结构体赋值给接口 c.">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="结构型设计模式" />
-<meta property="og:description" content=" 结构型设计模式 # " />
+<meta property="og:description" content="结构型设计模式 # 组合模式 # 介绍 # 组合模式是指将一组相似的对象当作一个单一对象的设计模式。
+组合模式描述了一组对象，这些对象被视为相同类型对象的单个实例。组合模式可以将对象组合成树形结构，从而表示部分或整体的层次结构。
+组合模式允许开发者拥有一个树形结构，并且要求树形结构中的每个节点都执行一项任务。组合模式的主要功能是在整个树形结构中递归调用方法并对结果进行汇总。
+使用场景：
+当客户需要忽略组合对象和单个对象之间的差异时。如果开发者以相同的方式使用多个对象，并且用几乎相同的代码处理每个对象。 如果需要实现树形结构。只需要通过请求树的顶层对象，就可以对整棵树进行统一操作。在组合模式中，添加和删除数的节点非常方便，并且遵循开闭原则。 如果开发者希望客户端可以以统一的方式处理简单或复杂的元素。 接口隔离原则要求开发者尽量将臃肿庞大的接口拆分成更小、更具体的接口，使接口中只包含客户端感兴趣的方法。
+// 组件接口 type Component interface { Execute() } // 叶节点，用于描述层次结构中的原始叶节点对象 type Leaf struct { value int } // 创建一个新的叶节点对象 func NewLeaf(value int) *Leaf { return &amp;Leaf{value} } // 打印叶节点对象的值 func (l *Leaf) Execute() { fmt.Printf(&#34;%v &#34;, l.value) } 定义组件类，用于表示复杂元素。该数组必须能同时存储叶节点和组合，因此需要确保将其声明为组件接口类型。在实现组件接口中的方法时，组合应该将大部分工作交给其子元素完成。
+// 组件的组合 type Composite struct { children []Component } // 创建一个新的组合对象 func NewComposite() *Composite { return &amp;Composite{make([]Component, 0)} } // 将一个新组件添加到组合中 func (c *Composite) Add(component Component) { //传入就将结构体赋值给接口 c." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%BB%93%E6%9E%84%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" /><meta property="article:section" content="docs" />
 <meta property="article:published_time" content="2022-11-03T13:46:08+08:00" />
@@ -17,7 +29,7 @@
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.f7b84fb61bdb15b9aedece9af62a731e7aedb93c2ef25a5b32d4d05d94ba7c10.js" integrity="sha256-97hPthvbFbmu3s6a9ipzHnrtuTwu8lpbMtTQXZS6fBA=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.08de7a4944fe11557d8e02c1c396308bc7e5f6fd41517230bfa28399a1e729c0.js" integrity="sha256-CN56SUT&#43;EVV9jgLBw5Ywi8fl9v1BUXIwv6KDmaHnKcA=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -497,6 +509,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="">单元测试</a>
   
 
         </li>
@@ -1144,6 +1169,19 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%9F%BA%E7%A1%80/" class="">系统架构基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <input type="checkbox" id="section-083ca86fd1b56cca1f76a6d6b34dc093" class="toggle" checked />
     <label for="section-083ca86fd1b56cca1f76a6d6b34dc093" class="flex justify-between">
       <a role="button" class="">设计模式</a>
@@ -1296,6 +1334,53 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8ca541663a7d7fd63c79c6ce40ab5b81" class="toggle"  />
+    <label for="section-8ca541663a7d7fd63c79c6ce40ab5b81" class="flex justify-between">
+      <a role="button" class="">Python</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/venv%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/" class="">venv虚拟环境</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/" class="">Yolov8快速上手 实践</a>
   
 
         </li>
@@ -2096,7 +2181,17 @@ https://github.com/alex-shpak/hugo-book
   <ul>
     <li>
       <ul>
-        <li><a href="#结构型设计模式">结构型设计模式</a></li>
+        <li><a href="#结构型设计模式">结构型设计模式</a>
+          <ul>
+            <li><a href="#组合模式">组合模式</a></li>
+            <li><a href="#适配器模式">适配器模式</a></li>
+            <li><a href="#桥接模式">桥接模式</a></li>
+            <li><a href="#装饰器模式">装饰器模式</a></li>
+            <li><a href="#外观模式">外观模式</a></li>
+            <li><a href="#享元模式">享元模式</a></li>
+            <li><a href="#代理模式">代理模式</a></li>
+          </ul>
+        </li>
       </ul>
     </li>
   </ul>
@@ -2115,6 +2210,188 @@ https://github.com/alex-shpak/hugo-book
   结构型设计模式
   <a class="anchor" href="#%e7%bb%93%e6%9e%84%e5%9e%8b%e8%ae%be%e8%ae%a1%e6%a8%a1%e5%bc%8f">#</a>
 </h2>
+<h3 id="组合模式">
+  组合模式
+  <a class="anchor" href="#%e7%bb%84%e5%90%88%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<h4 id="介绍">
+  介绍
+  <a class="anchor" href="#%e4%bb%8b%e7%bb%8d">#</a>
+</h4>
+<p>组合模式是指将一组相似的对象当作一个单一对象的设计模式。</p>
+<p>组合模式描述了一组对象，这些对象被视为相同类型对象的单个实例。组合模式可以将对象组合成树形结构，从而表示部分或整体的层次结构。</p>
+<p>组合模式允许开发者拥有一个树形结构，并且要求树形结构中的每个节点都执行一项任务。<u>组合模式的主要功能是在整个树形结构中递归调用方法并对结果进行汇总。</u></p>
+<p>使用场景：</p>
+<ul>
+<li>当客户需要忽略组合对象和单个对象之间的差异时。如果开发者以相同的方式使用多个对象，并且用几乎相同的代码处理每个对象。</li>
+<li>如果需要实现树形结构。只需要通过请求树的顶层对象，就可以对整棵树进行统一操作。在组合模式中，添加和删除数的节点非常方便，并且遵循开闭原则。</li>
+<li>如果开发者希望客户端可以以统一的方式处理简单或复杂的元素。</li>
+</ul>
+<p><strong>接口隔离原则要求开发者尽量将臃肿庞大的接口拆分成更小、更具体的接口，使接口中只包含客户端感兴趣的方法。</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 组件接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Component</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Execute</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 叶节点，用于描述层次结构中的原始叶节点对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Leaf</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">value</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 创建一个新的叶节点对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewLeaf</span>(<span style="color:#a6e22e">value</span> <span style="color:#66d9ef">int</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">Leaf</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Leaf</span>{<span style="color:#a6e22e">value</span>}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 打印叶节点对象的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">l</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Leaf</span>) <span style="color:#a6e22e">Execute</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%v  &#34;</span>, <span style="color:#a6e22e">l</span>.<span style="color:#a6e22e">value</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>定义组件类，用于表示复杂元素。该数组必须能同时存储叶节点和组合，因此需要确保将其声明为组件接口类型。在实现组件接口中的方法时，组合应该将大部分工作交给其子元素完成。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 组件的组合
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Composite</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">children</span> []<span style="color:#a6e22e">Component</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 创建一个新的组合对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewComposite</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">Composite</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Composite</span>{make([]<span style="color:#a6e22e">Component</span>, <span style="color:#ae81ff">0</span>)}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 将一个新组件添加到组合中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Composite</span>) <span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">component</span> <span style="color:#a6e22e">Component</span>) { <span style="color:#75715e">//传入就将结构体赋值给接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">children</span> = append(<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">children</span>, <span style="color:#a6e22e">component</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 遍历复合子对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Composite</span>) <span style="color:#a6e22e">Execute</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; len(<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">children</span>); <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">children</span>[<span style="color:#a6e22e">i</span>].<span style="color:#a6e22e">Execute</span>()
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">composite</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewComposite</span>() <span style="color:#75715e">//获取一个结构体，里面是一个接口数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">leaf1</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewLeaf</span>(<span style="color:#ae81ff">99</span>)  <span style="color:#75715e">//获得一个叶子节点结构体，将99 赋值到里面
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">composite</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">leaf1</span>)  <span style="color:#75715e">//将结构体放入接口数组中，传入的时候就将结构体给接口了
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">leaf2</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewLeaf</span>(<span style="color:#ae81ff">100</span>)  <span style="color:#75715e">//同样的
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">composite</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">leaf2</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">leaf3</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewComposite</span>() <span style="color:#75715e">//获取一个结构体，里面是一个接口数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">composite</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">leaf3</span>)  <span style="color:#75715e">//接口数组，加入到接口数组，可递归   相当于把主节点放入，递归执行叶子节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">composite</span>.<span style="color:#a6e22e">Execute</span>()  <span style="color:#75715e">//遍历接口数组，执行相应的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><h4 id="优点">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9">#</a>
+</h4>
+<ul>
+<li>开发者无需了解构成树形结构的对象的具体类，也无需了解对象是简明的文件，还是复杂的文件夹，只需要调用通用接口中的方法，并且以相同的方式对其进行处理。在开发者调用该方法后，对象会将请求沿着树形结构传递下去。</li>
+<li>客户端可以使用组件对象与复合结构体中的对象进行交互。</li>
+<li>如果调用的是叶节点对象，则直接处理请求。</li>
+<li>如果调用的是组合对象，那么组合模式会将请求转发给它的子组件。</li>
+</ul>
+<h4 id="缺点">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9">#</a>
+</h4>
+<ul>
+<li>组合模式一旦定义了树形结构，复合设计就会使树过于笼统。</li>
+<li>组合模式很难将树的组件限制为特定的类型。</li>
+<li>为了强制执行这种约束，程序必须依赖运行时检查，因为组合模式不能使用编程语言的类型系统。</li>
+</ul>
+<h4 id="示例">
+  示例
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b">#</a>
+</h4>
+<p>一个文件存储系统，系统中有两类对象，分别是文件和文件夹。一个文件夹可以包含多个文件和文件夹，这些内嵌文件夹中同样可以包含多个文件或文件夹，以此类推。如何计算每个用户存储的文件总数量和总存储空间的大小？</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">File</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">f</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">File</span>) <span style="color:#a6e22e">Search</span>(<span style="color:#a6e22e">keyword</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;在文件 %s 中递归搜索关键 %s \n&#34;</span>, <span style="color:#a6e22e">f</span>.<span style="color:#a6e22e">Name</span>, <span style="color:#a6e22e">keyword</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">f</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">File</span>) <span style="color:#a6e22e">GetName</span>() <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">f</span>.<span style="color:#a6e22e">Name</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Folder</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Components</span> []<span style="color:#a6e22e">Component</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Name</span>       <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">f</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Folder</span>) <span style="color:#a6e22e">Search</span>(<span style="color:#a6e22e">keyword</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;在文件夹 %s 中递归搜索关键 %s \n&#34;</span>, <span style="color:#a6e22e">f</span>.<span style="color:#a6e22e">Name</span>, <span style="color:#a6e22e">keyword</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">composite</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">f</span>.<span style="color:#a6e22e">Components</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">composite</span>.<span style="color:#a6e22e">Search</span>(<span style="color:#a6e22e">keyword</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">f</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Folder</span>) <span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">c</span> <span style="color:#a6e22e">Component</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">f</span>.<span style="color:#a6e22e">Components</span> = append(<span style="color:#a6e22e">f</span>.<span style="color:#a6e22e">Components</span>, <span style="color:#a6e22e">c</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Component</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Search</span>(<span style="color:#66d9ef">string</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">File1</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">File</span>{<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;File1&#34;</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">File2</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">File</span>{<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;File2&#34;</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">File3</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">File</span>{<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;File3&#34;</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Folder1</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Folder</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;Folder1&#34;</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Folder1</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">File1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Folder2</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Folder</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;Folder2&#34;</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Folder2</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">File2</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Folder2</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">File3</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Folder2</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">Folder1</span>)   <span style="color:#75715e">//构造文件夹
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Folder2</span>.<span style="color:#a6e22e">Search</span>(<span style="color:#e6db74">&#34;keyword&#34;</span>)  <span style="color:#75715e">//递归执行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//在文件夹 Folder2 中递归搜索关键 keyword
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//在文件 File2 中递归搜索关键 keyword
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//在文件 File3 中递归搜索关键 keyword
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//在文件夹 Folder1 中递归搜索关键 keyword
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//在文件 File1 中递归搜索关键 keyword
+</span></span></span></code></pre></div><h3 id="适配器模式">
+  适配器模式
+  <a class="anchor" href="#%e9%80%82%e9%85%8d%e5%99%a8%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<h4 id="对象适配器模式">
+  对象适配器模式
+  <a class="anchor" href="#%e5%af%b9%e8%b1%a1%e9%80%82%e9%85%8d%e5%99%a8%e6%a8%a1%e5%bc%8f">#</a>
+</h4>
+<h4 id="类适配器模式">
+  类适配器模式
+  <a class="anchor" href="#%e7%b1%bb%e9%80%82%e9%85%8d%e5%99%a8%e6%a8%a1%e5%bc%8f">#</a>
+</h4>
+<h3 id="桥接模式">
+  桥接模式
+  <a class="anchor" href="#%e6%a1%a5%e6%8e%a5%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<h3 id="装饰器模式">
+  装饰器模式
+  <a class="anchor" href="#%e8%a3%85%e9%a5%b0%e5%99%a8%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<h3 id="外观模式">
+  外观模式
+  <a class="anchor" href="#%e5%a4%96%e8%a7%82%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<h3 id="享元模式">
+  享元模式
+  <a class="anchor" href="#%e4%ba%ab%e5%85%83%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<h3 id="代理模式">
+  代理模式
+  <a class="anchor" href="#%e4%bb%a3%e7%90%86%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
 </article>
  
       
@@ -2158,7 +2435,17 @@ https://github.com/alex-shpak/hugo-book
   <ul>
     <li>
       <ul>
-        <li><a href="#结构型设计模式">结构型设计模式</a></li>
+        <li><a href="#结构型设计模式">结构型设计模式</a>
+          <ul>
+            <li><a href="#组合模式">组合模式</a></li>
+            <li><a href="#适配器模式">适配器模式</a></li>
+            <li><a href="#桥接模式">桥接模式</a></li>
+            <li><a href="#装饰器模式">装饰器模式</a></li>
+            <li><a href="#外观模式">外观模式</a></li>
+            <li><a href="#享元模式">享元模式</a></li>
+            <li><a href="#代理模式">代理模式</a></li>
+          </ul>
+        </li>
       </ul>
     </li>
   </ul>

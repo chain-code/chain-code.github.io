@@ -1,0 +1,3190 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="系统架构基础 # 系统架构 # 简介 # 系统架构描述了设计和构应用程序的模式和技术。是构建应用程序的起点或路线图，但开发者需要根据自己的实际情况，选择对应的编程语言实现。
+在决定为新的应用程序适应那种架构或评估当前架构时，软件开发者或架构师应该先确定战略目标，再设计支持该目标的系统架构，不应先选择系统架构，再尝试使应用程序适用于该软件架构。
+如何选择 # 选择标准
+结合具体产品的功能需求进行选择
+每个软件架构都包含一个用于完成常见软件任务的基本结构。开发者需要选择一种能够解决所需问题的架构，而非容易实现的架构
+结合开发者的实际情况
+不好的架构
+不好的架构会使软件开发项目复杂化，增加软件开发工作的工作量，不利于公司节省成本 在选择架构前，需要考虑软件产品顶级组件的整体视图，以及是否符合开发者的实际要求 MVC架构 # 简介 # MVC架构通常用于开发用户界面，将相关的程序逻辑划分为相互关联的3部分，从而将信息的内部表示与向用户呈现信息、接收信息的方式分开。
+模型：主要用于管理数据和业务逻辑。模型对应于用户使用的所有数据相关逻辑。模型可以在视图和控制器之间传输数据。 视图：主要用于处理布局和显示相关的业务，以及处理与应用程序有关的UI逻辑。 控制器：主要用于将命令路由到模型和视图。将控制器作为模型和视图之间的接口，用于处理所有业务逻辑和传入的请求，使用模型操作数据并与视图进行交互，从而呈现最终输出。 注意事项 # 包名不一定是模型、视图或控制器 不要将应用程序分解成太多的包 实现 # 创建模型包models及其代码 package modelsimport (&#34;database/sql&#34;&#34;fmt&#34;_ &#34;github.com/go-sql-driver/mysql&#34;)var db *sql.DB//用户模型type User struct {Id intName stringPhone string}//定义一个全局变量var u User//初始化数据库连接func init() {db, _ = sql.Open(&#34;mysql&#34;,&#34;root:a123456@tcp(127.0.0.1:3306)/goDesignPattern&#34;)}//获取用户信息func GetUserInfo(id int) *User {var param intif id &gt; 0 {param = id} else {param = 1}// 非常重要：确保QueryRow之后调用Scan方法，否则持有的数据库链接不会被释放err := db.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="系统架构基础" />
+<meta property="og:description" content="系统架构基础 # 系统架构 # 简介 # 系统架构描述了设计和构应用程序的模式和技术。是构建应用程序的起点或路线图，但开发者需要根据自己的实际情况，选择对应的编程语言实现。
+在决定为新的应用程序适应那种架构或评估当前架构时，软件开发者或架构师应该先确定战略目标，再设计支持该目标的系统架构，不应先选择系统架构，再尝试使应用程序适用于该软件架构。
+如何选择 # 选择标准
+结合具体产品的功能需求进行选择
+每个软件架构都包含一个用于完成常见软件任务的基本结构。开发者需要选择一种能够解决所需问题的架构，而非容易实现的架构
+结合开发者的实际情况
+不好的架构
+不好的架构会使软件开发项目复杂化，增加软件开发工作的工作量，不利于公司节省成本 在选择架构前，需要考虑软件产品顶级组件的整体视图，以及是否符合开发者的实际要求 MVC架构 # 简介 # MVC架构通常用于开发用户界面，将相关的程序逻辑划分为相互关联的3部分，从而将信息的内部表示与向用户呈现信息、接收信息的方式分开。
+模型：主要用于管理数据和业务逻辑。模型对应于用户使用的所有数据相关逻辑。模型可以在视图和控制器之间传输数据。 视图：主要用于处理布局和显示相关的业务，以及处理与应用程序有关的UI逻辑。 控制器：主要用于将命令路由到模型和视图。将控制器作为模型和视图之间的接口，用于处理所有业务逻辑和传入的请求，使用模型操作数据并与视图进行交互，从而呈现最终输出。 注意事项 # 包名不一定是模型、视图或控制器 不要将应用程序分解成太多的包 实现 # 创建模型包models及其代码 package modelsimport (&#34;database/sql&#34;&#34;fmt&#34;_ &#34;github.com/go-sql-driver/mysql&#34;)var db *sql.DB//用户模型type User struct {Id intName stringPhone string}//定义一个全局变量var u User//初始化数据库连接func init() {db, _ = sql.Open(&#34;mysql&#34;,&#34;root:a123456@tcp(127.0.0.1:3306)/goDesignPattern&#34;)}//获取用户信息func GetUserInfo(id int) *User {var param intif id &gt; 0 {param = id} else {param = 1}// 非常重要：确保QueryRow之后调用Scan方法，否则持有的数据库链接不会被释放err := db." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%9F%BA%E7%A1%80/" /><meta property="article:section" content="docs" />
+<meta property="article:published_time" content="2022-11-03T13:46:08+08:00" />
+<meta property="article:modified_time" content="2022-11-03T13:46:08+08:00" />
+<title>系统架构基础 | Soulmate</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" >
+<link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.08de7a4944fe11557d8e02c1c396308bc7e5f6fd41517230bfa28399a1e729c0.js" integrity="sha256-CN56SUT&#43;EVV9jgLBw5Ywi8fl9v1BUXIwv6KDmaHnKcA=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo.png" alt="Logo" /><span>Soulmate</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>计算机基础</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e99d92668627838818961f696faae00" class="toggle"  />
+    <label for="section-1e99d92668627838818961f696faae00" class="flex justify-between">
+      <a role="button" class="">八股文</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="">计算机网络基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/linux%E5%9F%BA%E7%A1%80/" class="">Linux基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/git%E5%9F%BA%E7%A1%80/" class="">Git基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-00c75bd1eabdaaae0cac73d13168e71f" class="toggle"  />
+    <label for="section-00c75bd1eabdaaae0cac73d13168e71f" class="flex justify-between">
+      <a role="button" class="">其他</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/crontab%E4%BD%BF%E7%94%A8/" class="">crontab使用</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/libewf%E5%BA%93%E7%BC%96%E8%AF%91/" class="">libewf库编译</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/localhost%E4%B8%8E127.0.0.1/" class="">localhost与127.0.0.1</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/schtasks%E4%BD%BF%E7%94%A8/" class="">schtask使用</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="">Vim编程常用快捷键</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E4%BB%A3%E7%A0%81%E6%95%B4%E6%B4%81%E4%B9%8B%E9%81%93/" class="">代码整洁之道</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8github%E5%92%8Cgitlab/" class="">同时使用github和gitlab</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E8%8E%B7%E5%8F%96%E5%86%85%E7%BD%91%E6%B4%BB%E8%B7%83ip/" class="">获取内网活跃IP</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E9%80%9A%E8%BF%87%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81%E8%AE%A1%E7%AE%97ip%E5%9C%B0%E5%9D%80%E8%8C%83%E5%9B%B4/" class="">通过子网掩码计算IP地址范围</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E9%85%8D%E7%BD%AEkylinv10/" class="">配置 Kylin V10</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E8%99%9A%E6%8B%9F%E7%BB%84%E7%BD%91/" class="">虚拟组网</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Golang</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-670eda717a06f31447c52422ec93a159" class="toggle"  />
+    <label for="section-670eda717a06f31447c52422ec93a159" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/" class="">go语言基础（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/golang%E6%8E%A7%E6%B5%81/" class="">Golang控流</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E6%B3%9B%E5%9E%8B%E4%BB%8B%E7%BB%8D/" class="">go泛型介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/grpc/" class="">Grpc</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/pprof/" class="">pprof</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/" class="">ProtoBuf</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="">单元测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">常用业务代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/" class="">go语言基础（三）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/" class="">go语言底层基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/" class="">benchmark测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/" class="">Goland常用技巧</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle"  />
+    <label for="section-c453881a62c640f6a4cceec99c02477e" class="flex justify-between">
+      <a role="button" class="">高阶</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" class="">Go高阶-语言基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f235e88e751d2cb18d527c1784763605" class="toggle"  />
+    <label for="section-f235e88e751d2cb18d527c1784763605" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/flag/" class="">Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/atomic/" class="">Atomic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/os/" class="">Os</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strconv/" class="">Strconv</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sort/" class="">Sort</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strings/" class="">Strings</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/reflect/" class="">Reflect</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/filepath/" class="">filepath</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/time/" class="">Time</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sync/" class="">Sync</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ee53da12118bfd3e9b35f3e9494ab55b" class="toggle"  />
+    <label for="section-ee53da12118bfd3e9b35f3e9494ab55b" class="flex justify-between">
+      <a role="button" class="">LeetCode</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/" class="">golang力扣刷题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/" class="">golang力扣刷题（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/%E5%BF%85%E5%88%B7top101/" class="">必刷top101</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" class="">LeetCode算法总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>数据库</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle"  />
+    <label for="section-94f26238d1ca3b5bcd40eadc7a88d726" class="flex justify-between">
+      <a role="button" class="">MySql</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/" class="">MySql相关问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" class="">MySql基础总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="">Mac连接数据库所遇到的问题</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="toggle"  />
+    <label for="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="flex justify-between">
+      <a role="button" class="">Redis</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="">Redis集群搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/" class="">Redis基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="">redis面试总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8be9c2251abd1fe110e3c1520cac6177" class="toggle"  />
+    <label for="section-8be9c2251abd1fe110e3c1520cac6177" class="flex justify-between">
+      <a role="button" class="">SQLite</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/" class="">Sqlite</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/" class="">Xorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>系统架构</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%9F%BA%E7%A1%80/" class="active">系统架构基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-083ca86fd1b56cca1f76a6d6b34dc093" class="toggle"  />
+    <label for="section-083ca86fd1b56cca1f76a6d6b34dc093" class="flex justify-between">
+      <a role="button" class="">设计模式</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E5%88%9B%E5%BB%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">创建型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%BB%93%E6%9E%84%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">结构型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">行为型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%89%A9%E5%B1%95/" class="">设计模式扩展</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>前端</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ac8e4e2fda641053d78fc10cbbde236e" class="toggle"  />
+    <label for="section-ac8e4e2fda641053d78fc10cbbde236e" class="flex justify-between">
+      <a role="button" class="">C</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/cgo/" class="">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/cgo%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/" class="">CGO遇到的问题解决</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8ca541663a7d7fd63c79c6ce40ab5b81" class="toggle"  />
+    <label for="section-8ca541663a7d7fd63c79c6ce40ab5b81" class="flex justify-between">
+      <a role="button" class="">Python</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/venv%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/" class="">venv虚拟环境</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/" class="">Yolov8快速上手 实践</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
+    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
+      <a role="button" class="">博客</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>区块链</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle"  />
+    <label for="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="flex justify-between">
+      <a role="button" class="">Fabric</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">fabric相关机制与原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/" class="">智能合约</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/" class="">fabric-sdk-go详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/" class="">fabric-ca详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle"  />
+    <label for="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="flex justify-between">
+      <a role="button" class="">环境测试</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/" class="">fabric网络中的报错（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/" class="">fabric网络中的报错（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">fabric环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/" class="">solo节点测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/" class="">fabric多机搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/" class="">部署tape测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/" class="">手动生成ca证书搭建fabric网络</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/" class="">centos安装fabric1.2</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-25aef1d59a561fcefcaecb043ef8afd2" class="toggle"  />
+    <label for="section-25aef1d59a561fcefcaecb043ef8afd2" class="flex justify-between">
+      <a role="button" class="">配置文件</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/" class="">cryptogen生成的证书详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">docker-compose.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">configtx.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">crypto-config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/" class="">升级链码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/" class="">区块链网络添加组织</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/" class="">fabric浏览器搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/" class="">如何在已有组织中增加节点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/" class="">Fabric1.4多通道实验</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b07621083aa30b12de4c0333941e479f" class="toggle"  />
+    <label for="section-b07621083aa30b12de4c0333941e479f" class="flex justify-between">
+      <a role="button" class="">比特币</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">比特币相关机制与原理</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle"  />
+    <label for="section-ff5477999ef29208270c84e8b56b2758" class="flex justify-between">
+      <a role="button" class="">IPFS</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/" class="">go-ipfs-api</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" class="">ipfs-webui可视化工具搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/" class="">IPFS基本原理（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/" class="">IPFS私有网络搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-77a0a17b06e8d04cfb0fba9952941706" class="toggle"  />
+    <label for="section-77a0a17b06e8d04cfb0fba9952941706" class="flex justify-between">
+      <a role="button" class="">密码学</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" class="">区块链安全基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/" class="">椭圆曲线加密</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/" class="">密码学基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2e4d10b323fd668021dbd532575d8790" class="toggle"  />
+    <label for="section-2e4d10b323fd668021dbd532575d8790" class="flex justify-between">
+      <a role="button" class="">Docker</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/" class="">Docker基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/" class="">Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" class="">docker常用知识总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-70383d7f28a7ae4bf840a844eb61aa16" class="toggle"  />
+    <label for="section-70383d7f28a7ae4bf840a844eb61aa16" class="flex justify-between">
+      <a role="button" class="">共识算法</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">共识算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" class="">Raft共识算法</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%9B%BE%E4%B9%A6/" class="">图书</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/" class="">工具库</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="https://gitee.com/chaincode"  target="_blank" rel="noopener">
+        Gitee
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>系统架构基础</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#系统架构基础">系统架构基础</a>
+          <ul>
+            <li><a href="#系统架构">系统架构</a></li>
+            <li><a href="#mvc架构">MVC架构</a></li>
+            <li><a href="#rpc架构">RPC架构</a></li>
+            <li><a href="#三层架构">三层架构</a></li>
+            <li><a href="#微服务架构">微服务架构</a></li>
+            <li><a href="#事件驱动架构">事件驱动架构</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h2 id="系统架构基础">
+  系统架构基础
+  <a class="anchor" href="#%e7%b3%bb%e7%bb%9f%e6%9e%b6%e6%9e%84%e5%9f%ba%e7%a1%80">#</a>
+</h2>
+<h3 id="系统架构">
+  系统架构
+  <a class="anchor" href="#%e7%b3%bb%e7%bb%9f%e6%9e%b6%e6%9e%84">#</a>
+</h3>
+<h4 id="简介">
+  简介
+  <a class="anchor" href="#%e7%ae%80%e4%bb%8b">#</a>
+</h4>
+<p>系统架构描述了设计和构应用程序的模式和技术。是构建应用程序的起点或路线图，但开发者需要根据自己的实际情况，选择对应的编程语言实现。</p>
+<p>在决定为新的应用程序适应那种架构或评估当前架构时，软件开发者或架构师应该先确定战略目标，再设计支持该目标的系统架构，不应先选择系统架构，再尝试使应用程序适用于该软件架构。</p>
+<h4 id="如何选择">
+  如何选择
+  <a class="anchor" href="#%e5%a6%82%e4%bd%95%e9%80%89%e6%8b%a9">#</a>
+</h4>
+<ul>
+<li>
+<p>选择标准</p>
+<ul>
+<li>
+<p>结合具体产品的功能需求进行选择</p>
+<p>每个软件架构都包含一个用于完成常见软件任务的基本结构。开发者需要选择一种能够解决所需问题的架构，而非容易实现的架构</p>
+</li>
+<li>
+<p>结合开发者的实际情况</p>
+</li>
+</ul>
+</li>
+<li>
+<p>不好的架构</p>
+<ul>
+<li>不好的架构会使软件开发项目复杂化，增加软件开发工作的工作量，不利于公司节省成本</li>
+<li>在选择架构前，需要考虑软件产品顶级组件的整体视图，以及是否符合开发者的实际要求</li>
+</ul>
+</li>
+</ul>
+<h3 id="mvc架构">
+  MVC架构
+  <a class="anchor" href="#mvc%e6%9e%b6%e6%9e%84">#</a>
+</h3>
+<h4 id="简介-1">
+  简介
+  <a class="anchor" href="#%e7%ae%80%e4%bb%8b-1">#</a>
+</h4>
+<p>MVC架构通常用于开发用户界面，将相关的程序逻辑划分为相互关联的3部分，从而将信息的内部表示与向用户呈现信息、接收信息的方式分开。</p>
+<ul>
+<li>模型：主要用于管理数据和业务逻辑。模型对应于用户使用的所有数据相关逻辑。模型可以在视图和控制器之间传输数据。</li>
+<li>视图：主要用于处理布局和显示相关的业务，以及处理与应用程序有关的UI逻辑。</li>
+<li>控制器：主要用于将命令路由到模型和视图。将控制器作为模型和视图之间的接口，用于处理所有业务逻辑和传入的请求，使用模型操作数据并与视图进行交互，从而呈现最终输出。</li>
+</ul>
+<h5 id="注意事项">
+  注意事项
+  <a class="anchor" href="#%e6%b3%a8%e6%84%8f%e4%ba%8b%e9%a1%b9">#</a>
+</h5>
+<ul>
+<li>包名不一定是模型、视图或控制器</li>
+<li>不要将应用程序分解成太多的包</li>
+</ul>
+<h4 id="实现">
+  实现
+  <a class="anchor" href="#%e5%ae%9e%e7%8e%b0">#</a>
+</h4>
+<ul>
+<li>创建模型包models及其代码</li>
+</ul>
+<pre tabindex="0"><code>package models
+
+import (
+	&#34;database/sql&#34;
+	&#34;fmt&#34;
+	_ &#34;github.com/go-sql-driver/mysql&#34;
+)
+
+var db *sql.DB
+
+//用户模型
+type User struct {
+	Id    int
+	Name  string
+	Phone string
+}
+
+//定义一个全局变量
+var u User
+
+//初始化数据库连接
+func init() {
+	db, _ = sql.Open(&#34;mysql&#34;,
+		&#34;root:a123456@tcp(127.0.0.1:3306)/goDesignPattern&#34;)
+}
+
+//获取用户信息
+func GetUserInfo(id int) *User {
+	var param int
+	if id &gt; 0 {
+		param = id
+	} else {
+		param = 1
+	}
+	// 非常重要：确保QueryRow之后调用Scan方法，否则持有的数据库链接不会被释放
+	err := db.QueryRow(&#34;select id,name,phone from `user` where id=?&#34;, param).Scan(&amp;u.Id, &amp;u.Name, &amp;u.Phone)
+	if err != nil {
+		fmt.Printf(&#34;scan failed, err:%v\n&#34;, err)
+		return nil
+	}
+	return &amp;u
+}
+</code></pre><ul>
+<li>创建视图包views及其代码</li>
+</ul>
+<pre tabindex="0"><code>&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;{{.Name}}-mvc&lt;/title&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+&lt;h2&gt;Hello,{{.Name}}, This is a mvc userInfo:&lt;/h2&gt;
+&lt;p&gt;{{.Name}}&lt;/p&gt;
+&lt;p&gt;{{.Phone}}&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><ul>
+<li>创建控制器包cotrollers及其代码</li>
+</ul>
+<pre tabindex="0"><code>package controllers
+
+import (
+	&#34;fmt&#34;
+	&#34;models&#34;
+	&#34;html/template&#34;
+	&#34;net/http&#34;
+	&#34;os&#34;
+	&#34;strconv&#34;
+)
+
+//定义控制器函数
+func Index(w http.ResponseWriter, r *http.Request) {
+	param := r.URL.Query().Get(&#34;id&#34;)
+	id, err := strconv.Atoi(param)
+	userInfo := models.GetUserInfo(id)
+
+	type PageData struct {
+		Name  string
+		Phone string
+	}
+
+	pageData := PageData{
+		Name:  userInfo.Name,
+		Phone: userInfo.Phone,
+	}
+
+	fmt.Fprintf(os.Stdout, &#34;[+] from %s Method is %s.\n&#34;, r.URL.Path, r.Method)
+	//指定模版
+	tpl, err := template.ParseFiles(&#34;views/html/index/index.html&#34;)
+	if err != nil {
+		fmt.Fprintf(w, fmt.Sprintf(&#34;%s&#34;, err))
+	}
+	//解析模版
+	tpl.Execute(w, pageData)
+}
+</code></pre><h4 id="优点">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9">#</a>
+</h4>
+<ul>
+<li>MVC架构降低了代码的耦合度。通过将模型层、视图层和控制器层分开，更改其中一层的代码不会影响另外两层，从而降低代码的耦合度。</li>
+<li>提高了代码的重用性</li>
+<li>降低了软件维护成本</li>
+<li>架构部署更快</li>
+<li>有利于代码工程化管理</li>
+</ul>
+<h4 id="缺点">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9">#</a>
+</h4>
+<ul>
+<li>因为没有明确的边界含义，更难理解</li>
+<li>不适合小规模、中等规模开发</li>
+<li>提高系统结构和实现的复杂性</li>
+<li>视图与控制器之间的连接过于紧密</li>
+<li>降低视图对模型数据的访问效率</li>
+</ul>
+<h3 id="rpc架构">
+  RPC架构
+  <a class="anchor" href="#rpc%e6%9e%b6%e6%9e%84">#</a>
+</h3>
+<h4 id="简介-2">
+  简介
+  <a class="anchor" href="#%e7%ae%80%e4%bb%8b-2">#</a>
+</h4>
+<p>RPC是一种用于构建基于客户端-服务端的分布式应用程序的技术。RPC基于对传统本地过程调用的扩展，其被调用进程不必与调用进程存在于同一个地址空间中。这两个进程可能在同一个系统上，也可能在不同的系统上，它们通过网络进行连接。</p>
+<p>RPC架构主要分为3部分：</p>
+<ul>
+<li>服务器端：提供服务接口定义与服务实现类</li>
+<li>注册中心：运行在服务器端，负责将本地服务发布为远程服务，管理远程服务，以供服务消费者使用</li>
+<li>客户端：通过远程代理对象调用远程服务</li>
+</ul>
+<h4 id="实现-1">
+  实现
+  <a class="anchor" href="#%e5%ae%9e%e7%8e%b0-1">#</a>
+</h4>
+<p>net/rpc包提供了通过网络或其他I/O连接对一个对象的导出方法的访问方法。</p>
+<ul>
+<li>创建服务器端</li>
+</ul>
+<pre tabindex="0"><code>package server
+
+import (
+	&#34;errors&#34;
+	&#34;net&#34;
+	&#34;net/http&#34;
+	&#34;net/rpc&#34;
+	&#34;net/rpc/jsonrpc&#34;
+	&#34;strconv&#34;
+	&#34;time&#34;
+
+	&#34;common&#34;
+)
+
+// Server 持有用于启动的配置 一个 RPC 服务器
+type Server struct {
+	Port     uint
+	UseHttp  bool
+	UseJson  bool
+	Sleep    time.Duration
+	listener net.Listener
+}
+
+// Close 优雅地终止服务器侦听器
+func (s *Server) Close() (err error) {
+	if s.listener != nil {
+		err = s.listener.Close()
+	}
+
+	return
+}
+
+// 初始化 RPC 服务器
+func (s *Server) Start() (err error) {
+	if s.Port &lt;= 0 {
+		err = errors.New(&#34;port must be specified&#34;)
+		return
+	}
+
+	rpc.Register(&amp;common.Handler{
+		Sleep: s.Sleep,
+	})
+
+	s.listener, err = net.Listen(&#34;tcp&#34;, &#34;:&#34;+strconv.Itoa(int(s.Port)))
+	if err != nil {
+		return
+	}
+
+	if s.UseHttp {
+		rpc.HandleHTTP()
+		http.Serve(s.listener, nil)
+	} else if s.UseJson {
+		var conn net.Conn
+
+		for {
+			conn, err = s.listener.Accept()
+			if err != nil {
+				return
+			}
+
+			jsonrpc.ServeConn(conn)
+		}
+
+	} else {
+		rpc.Accept(s.listener)
+	}
+
+	return
+}
+</code></pre><ul>
+<li>创建核心处理公共包common</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">common</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;errors&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;time&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//响应
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Response</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Message</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Ok</span>      <span style="color:#66d9ef">bool</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//请求
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Request</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// HandlerName 提供者的唯一名称
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">HandlerName</span> = <span style="color:#e6db74">&#34;Handler.Execute&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//Handler是一个处理器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Handler</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Sleep 用于模拟一个耗时的方法执行操作
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Sleep</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Execute() 是 RPC 客户端可以调用的方法，通过使用 HandlerName 调用 RPC 服务器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 如果没有错误，则它接受一个请求并产生一个响应发生；如果Sleep不为0，则服务器端和客户端处于休眠状态
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">h</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Handler</span>) <span style="color:#a6e22e">Execute</span>(<span style="color:#a6e22e">req</span> <span style="color:#a6e22e">Request</span>, <span style="color:#a6e22e">res</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Response</span>) (<span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">Name</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;&#34;</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;A name must be specified&#34;</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">h</span>.<span style="color:#a6e22e">Sleep</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#a6e22e">h</span>.<span style="color:#a6e22e">Sleep</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">Ok</span> = <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">Message</span> = <span style="color:#e6db74">&#34;Hello &#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">Name</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>创建客户端</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">client</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;context&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;errors&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;common&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;net/rpc&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;net/rpc/jsonrpc&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;strconv&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Client 包含以下配置选项与 RPC 服务器通信
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Client</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Port</span>    <span style="color:#66d9ef">uint</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">UseHttp</span> <span style="color:#66d9ef">bool</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">UseJson</span> <span style="color:#66d9ef">bool</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">client</span>  <span style="color:#f92672">*</span><span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">Client</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//Init 初始化底层 RPC 客户端
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//负责获取编解码器并编写 RPC服务器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Client</span>) <span style="color:#a6e22e">Init</span>() (<span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Port</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;client: port must be specified&#34;</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">addr</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;127.0.0.1:&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Itoa</span>(int(<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Port</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">UseHttp</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">client</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">DialHTTP</span>(<span style="color:#e6db74">&#34;tcp&#34;</span>, <span style="color:#a6e22e">addr</span>)
+</span></span><span style="display:flex;"><span>	} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">UseJson</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">client</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">jsonrpc</span>.<span style="color:#a6e22e">Dial</span>(<span style="color:#e6db74">&#34;tcp&#34;</span>, <span style="color:#a6e22e">addr</span>)
+</span></span><span style="display:flex;"><span>	} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">client</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">Dial</span>(<span style="color:#e6db74">&#34;tcp&#34;</span>, <span style="color:#a6e22e">addr</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Close 优雅地终止底层客户端
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Client</span>) <span style="color:#a6e22e">Close</span>() (<span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">client</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Close</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 通过client.Call()方法进行RPC调用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Client</span>) <span style="color:#a6e22e">Execute</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">name</span> <span style="color:#66d9ef">string</span>) (<span style="color:#a6e22e">msg</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> (
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">request</span>  = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">common</span>.<span style="color:#a6e22e">Request</span>{<span style="color:#a6e22e">Name</span>: <span style="color:#a6e22e">name</span>}
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">response</span> = new(<span style="color:#a6e22e">common</span>.<span style="color:#a6e22e">Response</span>)
+</span></span><span style="display:flex;"><span>	)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Call</span>(<span style="color:#a6e22e">common</span>.<span style="color:#a6e22e">HandlerName</span>, <span style="color:#a6e22e">request</span>, <span style="color:#a6e22e">response</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">msg</span> = <span style="color:#a6e22e">response</span>.<span style="color:#a6e22e">Message</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>创建一个根据命令行运行服务器端和客户端的main()函数</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;context&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;flag&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cli</span> <span style="color:#e6db74">&#34;client&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">serv</span> <span style="color:#e6db74">&#34;server&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;log&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;os&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;os/signal&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;syscall&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">port</span>        = <span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">Uint</span>(<span style="color:#e6db74">&#34;port&#34;</span>, <span style="color:#ae81ff">1337</span>, <span style="color:#e6db74">&#34;port to listen or connect to for rpc calls&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">isServer</span>    = <span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">Bool</span>(<span style="color:#e6db74">&#34;server&#34;</span>, <span style="color:#66d9ef">false</span>, <span style="color:#e6db74">&#34;activates server mode&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">json</span>        = <span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">Bool</span>(<span style="color:#e6db74">&#34;json&#34;</span>, <span style="color:#66d9ef">false</span>, <span style="color:#e6db74">&#34;whether it should use json-rpc&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">serverSleep</span> = <span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">Duration</span>(<span style="color:#e6db74">&#34;server.sleep&#34;</span>, <span style="color:#ae81ff">0</span>, <span style="color:#e6db74">&#34;time for the server to sleep on requests&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">http</span>        = <span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">Bool</span>(<span style="color:#e6db74">&#34;http&#34;</span>, <span style="color:#66d9ef">false</span>, <span style="color:#e6db74">&#34;whether it should use HTTP&#34;</span>)
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// handleSignals 是一个等待终止或中断的阻塞函数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">handleSignals</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">signals</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Signal</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">signal</span>.<span style="color:#a6e22e">Notify</span>(<span style="color:#a6e22e">signals</span>, <span style="color:#a6e22e">syscall</span>.<span style="color:#a6e22e">SIGINT</span>, <span style="color:#a6e22e">syscall</span>.<span style="color:#a6e22e">SIGTERM</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">signals</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;signal received&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// must 在错误的情况下记录
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">must</span>(<span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Panicln</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//启动服务器，进行服务器监听
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">runServer</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">server</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">serv</span>.<span style="color:#a6e22e">Server</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">UseHttp</span>: <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">UseJson</span>: <span style="color:#f92672">*</span><span style="color:#a6e22e">json</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Sleep</span>:   <span style="color:#f92672">*</span><span style="color:#a6e22e">serverSleep</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Port</span>:    <span style="color:#f92672">*</span><span style="color:#a6e22e">port</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">server</span>.<span style="color:#a6e22e">Close</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">handleSignals</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">server</span>.<span style="color:#a6e22e">Close</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Exit</span>(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">must</span>(<span style="color:#a6e22e">server</span>.<span style="color:#a6e22e">Start</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//解析命令行标志，然后启动客户端执行RPC调用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">runClient</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">client</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">cli</span>.<span style="color:#a6e22e">Client</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">UseHttp</span>: <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">UseJson</span>: <span style="color:#f92672">*</span><span style="color:#a6e22e">json</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Port</span>:    <span style="color:#f92672">*</span><span style="color:#a6e22e">port</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Close</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">must</span>(<span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Init</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">con</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">response</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Execute</span>(<span style="color:#a6e22e">con</span>, <span style="color:#e6db74">&#34;Shirdon&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">must</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">response</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">Parse</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">isServer</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;starting server&#34;</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;will listen on port %d\n&#34;</span>, <span style="color:#f92672">*</span><span style="color:#a6e22e">port</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">runServer</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;starting client&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;will connect to port %d\n&#34;</span>, <span style="color:#f92672">*</span><span style="color:#a6e22e">port</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">runClient</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="优点-1">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9-1">#</a>
+</h4>
+<ul>
+<li>开发者可以获得唯一的传输地址（端口）。服务器可以绑定到任意一个端口并将该端口注册到其他RPC服务器，客户端会联系这个RPC服务器并请求与其需要的程序相对应的端口号。</li>
+<li>在RPC架构中，客户端的应用程序只需要知道一个传输地址：RPC服务器的传输地址。</li>
+<li>可以使用函数调用接口代替套接字提供的发送/接收接口</li>
+<li>RPC架构提升了系统的可扩展性、可维护性和持续交付能力</li>
+<li>RPC架构可以帮助客户端通过传统的高级编程语言中的过程调用与服务端进行通信</li>
+<li>可以在分布式环境中使用</li>
+</ul>
+<h4 id="缺点-1">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9-1">#</a>
+</h4>
+<ul>
+<li>客户端和服务器端各自使用不同的执行环境，不太适合传输大量数据</li>
+<li>极易发生故障</li>
+<li>没有统一的标准</li>
+<li>基于交互的，在硬件架构方面不具有灵活性</li>
+<li>对初学者来说难度较高</li>
+</ul>
+<h3 id="三层架构">
+  三层架构
+  <a class="anchor" href="#%e4%b8%89%e5%b1%82%e6%9e%b6%e6%9e%84">#</a>
+</h3>
+<h4 id="简介-3">
+  简介
+  <a class="anchor" href="#%e7%ae%80%e4%bb%8b-3">#</a>
+</h4>
+<p>三层架构将应用程序组织成3个架构层次，分别是表示层、业务逻辑层、数据访问层。</p>
+<ul>
+<li>表示层是应用程序的用户界面和通信层，可以使用户与应用程序进行交互，主要用于向用户显示信息并收集用户信息。</li>
+<li>业务逻辑层主要用于对具体问题进行逻辑判断与执行操作，在接收到表示层的用户指令后，会连接数据访问层。</li>
+<li>数据访问层是数据库的主要操控系统层，主要用于对数据进行添加、删除、修改和查询的地方，并将操作结构反馈到业务逻辑层。</li>
+</ul>
+<h4 id="实现-2">
+  实现
+  <a class="anchor" href="#%e5%ae%9e%e7%8e%b0-2">#</a>
+</h4>
+<ul>
+<li>创建基础部分</li>
+</ul>
+<p>（1）编写SQL语句，插入数据库</p>
+<pre tabindex="0"><code>SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for users
+-- ----------------------------
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  `age` int(10) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of users
+-- ----------------------------
+BEGIN;
+INSERT INTO `users` VALUES (1, &#39;Barry&#39;, 18);
+INSERT INTO `users` VALUES (2, &#39;Eric&#39;, 20);
+COMMIT;
+
+SET FOREIGN_KEY_CHECKS = 1;
+</code></pre><p>（2）创建实体包entities</p>
+<pre tabindex="0"><code>//用户实体
+type User struct {
+	ID   int
+	Name string
+	Age  int
+}
+</code></pre><p>（3）创建程序驱动包driver</p>
+<pre tabindex="0"><code>type MySQLConfig struct {
+	Host     string
+	User     string
+	Password string
+	Port     string
+	Db       string
+}
+
+// 接受 MySQL 配置，形成连接字符串并连接到 MySQL
+func ConnectToMySQL(conf MySQLConfig) (*sql.DB, error) {
+	connectionString := fmt.Sprintf(&#34;%v:%v@tcp(%v:%v)/%v&#34;, conf.User, conf.Password, conf.Host, conf.Port, conf.Db)
+
+	db, err := sql.Open(&#34;mysql&#34;, connectionString)
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
+}
+</code></pre><ul>
+<li>创建表示层</li>
+</ul>
+<p>（1） 创建index.html文件</p>
+<pre tabindex="0"><code>&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;{{.Name}}-threeTier&lt;/title&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+&lt;h2&gt;Hello,{{.Name}}, This is a threeTier user info:&lt;/h2&gt;
+&lt;p&gt;{{.Name}}&lt;/p&gt;
+&lt;p&gt;{{.Age}}&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p>（2）创建notfound.html文件</p>
+<pre tabindex="0"><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&#34;en&#34;&gt;
+&lt;head&gt;
+    &lt;meta charset=&#34;UTF-8&#34;&gt;
+    &lt;title&gt;not found&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+404 Not Found
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><ul>
+<li>创建数据访问层</li>
+</ul>
+<p>（1）创建数据访问层接口</p>
+<pre tabindex="0"><code>type User interface {
+	Get(id int) (entities.User, error)
+	Create(entities.User) (entities.User, error)
+}
+</code></pre><p>（2）创建数据访问层用户存储对象</p>
+<pre tabindex="0"><code>//用户存储
+type UserStore struct {
+	db *sql.DB
+}
+
+//创建用户存储对象
+func New(db *sql.DB) UserStore {
+	return UserStore{db: db}
+}
+
+//根据ID从数据库获取用户数据
+func (a UserStore) Get(id int) ([]entities.User, error) {
+	var (
+		rows *sql.Rows
+		err  error
+	)
+
+	if id != 0 {
+		rows, err = a.db.Query(&#34;SELECT * FROM users where id = ?&#34;, id)
+	} else {
+		rows, err = a.db.Query(&#34;SELECT * FROM users&#34;)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var users []entities.User
+
+	for rows.Next() {
+		var a entities.User
+		_ = rows.Scan(&amp;a.ID, &amp;a.Name, &amp;a.Age)
+		users = append(users, a)
+	}
+	return users, nil
+}
+
+//根据用户对象插入数据到数据库
+func (a UserStore) Create(user entities.User) (entities.User, error) {
+	res, err := a.db.Exec(&#34;INSERT INTO users (name,age) VALUES(?,?)&#34;, user.Name, user.Age)
+	if err != nil {
+		return entities.User{}, err
+	}
+
+	id, _ := res.LastInsertId()
+	user.ID = int(id)
+
+	return user, nil
+}
+</code></pre><ul>
+<li>创建业务逻辑层</li>
+</ul>
+<pre tabindex="0"><code>
+//用户处理器
+type UserHandler struct {
+	dataAccess user.UserStore
+}
+
+//创建用户处理器实例
+func New(user user.UserStore) UserHandler {
+	return UserHandler{dataAccess: user}
+}
+
+//处理HTTP请求，根据不同的请求类型调用不同的处理器函数
+func (u UserHandler) Handler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		u.get(w, r)
+	case http.MethodPost:
+		u.create(w, r)
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+}
+
+//根据id获取用户信息
+func (u UserHandler) get(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Query().Get(&#34;id&#34;)
+
+	i, err := strconv.Atoi(id)
+	if err != nil {
+		_, _ = w.Write([]byte(&#34;no or invalid parameter id&#34;))
+		w.WriteHeader(http.StatusBadRequest)
+
+		return
+	}
+
+	resp, err := u.dataAccess.Get(i)
+	if err != nil {
+		_, _ = w.Write([]byte(&#34;could not find the user&#34;))
+		w.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+
+	type PageData struct {
+		Name string
+		Age  int
+	}
+
+	if len(resp) &gt; 0 {
+		pageData := PageData{
+			Name: resp[0].Name,
+			Age:  resp[0].Age,
+		}
+		//指定模版
+		tpl, err := template.ParseFiles(&#34;presentation/html/index/index.html&#34;)
+		if err != nil {
+			fmt.Fprintf(w, fmt.Sprintf(&#34;%s&#34;, err))
+		}
+		//解析模版
+		tpl.Execute(w, pageData)
+	}
+	//返回JSON格式的数据
+	body, _ := json.Marshal(resp)
+	_, _ = w.Write(body)
+}
+
+func (u UserHandler) create(w http.ResponseWriter, r *http.Request) {
+	var user entities.User
+
+	body, _ := ioutil.ReadAll(r.Body)
+
+	err := json.Unmarshal(body, &amp;user)
+	if err != nil {
+		fmt.Println(err)
+		_, _ = w.Write([]byte(&#34;invalid body&#34;))
+		w.WriteHeader(http.StatusBadRequest)
+
+		return
+	}
+
+	resp, err := u.dataAccess.Create(user)
+	if err != nil {
+		_, _ = w.Write([]byte(&#34;could not create user&#34;))
+		w.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+
+	body, _ = json.Marshal(resp)
+	_, _ = w.Write(body)
+}
+</code></pre><ul>
+<li>创建服务器</li>
+</ul>
+<pre tabindex="0"><code>func main() {
+	// 设置配置文件
+	conf := driver.MySQLConfig{
+		Host:     &#34;127.0.0.1&#34;,
+		User:     &#34;root&#34;,
+		Password: &#34;a123456&#34;,
+		Port:     &#34;3306&#34;,
+		Db:       &#34;chapter4&#34;,
+	}
+	var err error
+
+	db, err := driver.ConnectToMySQL(conf)
+	if err != nil {
+		log.Println(&#34;could not connect to sql, err:&#34;, err)
+		return
+	}
+
+	userStore := user.New(db)
+	handler := handlerUser.New(userStore)
+
+	http.HandleFunc(&#34;/user&#34;, handler.Handler)
+	fmt.Println(http.ListenAndServe(&#34;:8099&#34;, nil))
+}
+</code></pre><h4 id="优点-2">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9-2">#</a>
+</h4>
+<ul>
+<li>有利于系统分散开发</li>
+<li>可以很容易的用新的实现替代原有层的实现，有利于标准化</li>
+<li>有利于各层逻辑的代码复用，降低层与层之间的依赖</li>
+<li>避免表示层直接访问数据访问层，提高数据安全性</li>
+<li>可以很方便的进行系统移植</li>
+<li>项目结构清除、分工明确，极大的降低了后期的维护成本</li>
+<li>代码更容易维护</li>
+<li>具有独立的层，写单元测试比较简单</li>
+</ul>
+<h4 id="缺点-2">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9-2">#</a>
+</h4>
+<ul>
+<li>有时会导致级联修改，这种修改尤其是体现在自上而下的方向</li>
+<li>使用三层或多层的应用程序运行效率低、代码量大、难度高</li>
+<li>降低了系统性能</li>
+</ul>
+<h3 id="微服务架构">
+  微服务架构
+  <a class="anchor" href="#%e5%be%ae%e6%9c%8d%e5%8a%a1%e6%9e%b6%e6%9e%84">#</a>
+</h3>
+<h4 id="简介-4">
+  简介
+  <a class="anchor" href="#%e7%ae%80%e4%bb%8b-4">#</a>
+</h4>
+<p>微服务架构是一种可以独立开发、部署和维护一系列服务的软件架构，每个微服务都是独立的服务，每个微服务都可以通过简单的接口与其他服务通信，用于解决业务问题</p>
+<p>特征：</p>
+<ul>
+<li>微服务体积小、独立且松耦合，即使小型开发团队，也可以编写和维护服务</li>
+<li>每个服务都是一个单独的代码库</li>
+<li>服务可以独立部署</li>
+<li>服务负责存储自己的数据或外部状态，这与传统模型不同</li>
+<li>服务通过使用API进行通信</li>
+<li>支持多语言编程</li>
+</ul>
+<p>在微服务架构中，除了使用服务，还包含一些其他组件</p>
+<ul>
+<li>管理软件组件</li>
+<li>API网关</li>
+</ul>
+<p>使用API网关的优点</p>
+<ul>
+<li>API网关可以将客户端与微服务端分离，无须更新所有客户端，即可对服务进行版本控制或重构</li>
+<li>服务可以使用对web不友好的消息传递协议</li>
+<li>API网关可以实现其他横切功能，如身份验证、日志记录、ssl终止、负载平衡</li>
+<li>采用开箱即用 的策略</li>
+</ul>
+<p>微服务的优势：</p>
+<ul>
+<li>敏捷：由于微服务是独立部署的，因此更容易进行错误修复和功能发布</li>
+<li>小而专注的开发团队：</li>
+<li>小代码库</li>
+<li>混合技术，开发者可以选择最适合其服务的技术，并且酌情使用技术堆栈组合</li>
+<li>故障隔离</li>
+<li>可扩展性</li>
+<li>数据隔离</li>
+</ul>
+<p>微服务的挑战</p>
+<ul>
+<li>复杂性</li>
+<li>开发和测试</li>
+<li>缺乏治理</li>
+<li>网络拥塞和延迟</li>
+<li>数据一致性</li>
+<li>管理</li>
+<li>版本控制</li>
+<li>团队对技术要求更高</li>
+</ul>
+<h4 id="实现-3">
+  实现
+  <a class="anchor" href="#%e5%ae%9e%e7%8e%b0-3">#</a>
+</h4>
+<p>用Go kit实现一个简单微服务</p>
+<h4 id="优点-3">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9-3">#</a>
+</h4>
+<h4 id="缺点-3">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9-3">#</a>
+</h4>
+<h3 id="事件驱动架构">
+  事件驱动架构
+  <a class="anchor" href="#%e4%ba%8b%e4%bb%b6%e9%a9%b1%e5%8a%a8%e6%9e%b6%e6%9e%84">#</a>
+</h3>
+<h4 id="简介-5">
+  简介
+  <a class="anchor" href="#%e7%ae%80%e4%bb%8b-5">#</a>
+</h4>
+<h4 id="实现-4">
+  实现
+  <a class="anchor" href="#%e5%ae%9e%e7%8e%b0-4">#</a>
+</h4>
+<h4 id="优点-4">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9-4">#</a>
+</h4>
+<h4 id="缺点-4">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9-4">#</a>
+</h4>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#系统架构基础">系统架构基础</a>
+          <ul>
+            <li><a href="#系统架构">系统架构</a></li>
+            <li><a href="#mvc架构">MVC架构</a></li>
+            <li><a href="#rpc架构">RPC架构</a></li>
+            <li><a href="#三层架构">三层架构</a></li>
+            <li><a href="#微服务架构">微服务架构</a></li>
+            <li><a href="#事件驱动架构">事件驱动架构</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

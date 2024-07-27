@@ -23,7 +23,13 @@
       <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%BB%93%E6%9E%84%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
-      <description> 结构型设计模式 # </description>
+      <description>结构型设计模式 # 组合模式 # 介绍 # 组合模式是指将一组相似的对象当作一个单一对象的设计模式。
+组合模式描述了一组对象，这些对象被视为相同类型对象的单个实例。组合模式可以将对象组合成树形结构，从而表示部分或整体的层次结构。
+组合模式允许开发者拥有一个树形结构，并且要求树形结构中的每个节点都执行一项任务。组合模式的主要功能是在整个树形结构中递归调用方法并对结果进行汇总。
+使用场景：
+当客户需要忽略组合对象和单个对象之间的差异时。如果开发者以相同的方式使用多个对象，并且用几乎相同的代码处理每个对象。 如果需要实现树形结构。只需要通过请求树的顶层对象，就可以对整棵树进行统一操作。在组合模式中，添加和删除数的节点非常方便，并且遵循开闭原则。 如果开发者希望客户端可以以统一的方式处理简单或复杂的元素。 接口隔离原则要求开发者尽量将臃肿庞大的接口拆分成更小、更具体的接口，使接口中只包含客户端感兴趣的方法。
+// 组件接口 type Component interface { Execute() } // 叶节点，用于描述层次结构中的原始叶节点对象 type Leaf struct { value int } // 创建一个新的叶节点对象 func NewLeaf(value int) *Leaf { return &amp;amp;Leaf{value} } // 打印叶节点对象的值 func (l *Leaf) Execute() { fmt.Printf(&amp;#34;%v &amp;#34;, l.value) } 定义组件类，用于表示复杂元素。该数组必须能同时存储叶节点和组合，因此需要确保将其声明为组件接口类型。在实现组件接口中的方法时，组合应该将大部分工作交给其子元素完成。
+// 组件的组合 type Composite struct { children []Component } // 创建一个新的组合对象 func NewComposite() *Composite { return &amp;amp;Composite{make([]Component, 0)} } // 将一个新组件添加到组合中 func (c *Composite) Add(component Component) { //传入就将结构体赋值给接口 c.</description>
     </item>
     
     <item>

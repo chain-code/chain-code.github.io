@@ -7,5 +7,22 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Thu, 03 Nov 2022 13:46:08 +0800</lastBuildDate><atom:link href="https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>系统架构基础</title>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%9F%BA%E7%A1%80/</guid>
+      <description>系统架构基础 # 系统架构 # 简介 # 系统架构描述了设计和构应用程序的模式和技术。是构建应用程序的起点或路线图，但开发者需要根据自己的实际情况，选择对应的编程语言实现。
+在决定为新的应用程序适应那种架构或评估当前架构时，软件开发者或架构师应该先确定战略目标，再设计支持该目标的系统架构，不应先选择系统架构，再尝试使应用程序适用于该软件架构。
+如何选择 # 选择标准
+结合具体产品的功能需求进行选择
+每个软件架构都包含一个用于完成常见软件任务的基本结构。开发者需要选择一种能够解决所需问题的架构，而非容易实现的架构
+结合开发者的实际情况
+不好的架构
+不好的架构会使软件开发项目复杂化，增加软件开发工作的工作量，不利于公司节省成本 在选择架构前，需要考虑软件产品顶级组件的整体视图，以及是否符合开发者的实际要求 MVC架构 # 简介 # MVC架构通常用于开发用户界面，将相关的程序逻辑划分为相互关联的3部分，从而将信息的内部表示与向用户呈现信息、接收信息的方式分开。
+模型：主要用于管理数据和业务逻辑。模型对应于用户使用的所有数据相关逻辑。模型可以在视图和控制器之间传输数据。 视图：主要用于处理布局和显示相关的业务，以及处理与应用程序有关的UI逻辑。 控制器：主要用于将命令路由到模型和视图。将控制器作为模型和视图之间的接口，用于处理所有业务逻辑和传入的请求，使用模型操作数据并与视图进行交互，从而呈现最终输出。 注意事项 # 包名不一定是模型、视图或控制器 不要将应用程序分解成太多的包 实现 # 创建模型包models及其代码 package modelsimport (&amp;#34;database/sql&amp;#34;&amp;#34;fmt&amp;#34;_ &amp;#34;github.com/go-sql-driver/mysql&amp;#34;)var db *sql.DB//用户模型type User struct {Id intName stringPhone string}//定义一个全局变量var u User//初始化数据库连接func init() {db, _ = sql.Open(&amp;#34;mysql&amp;#34;,&amp;#34;root:a123456@tcp(127.0.0.1:3306)/goDesignPattern&amp;#34;)}//获取用户信息func GetUserInfo(id int) *User {var param intif id &amp;gt; 0 {param = id} else {param = 1}// 非常重要：确保QueryRow之后调用Scan方法，否则持有的数据库链接不会被释放err := db.</description>
+    </item>
+    
   </channel>
 </rss>

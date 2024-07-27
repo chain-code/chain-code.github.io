@@ -18,6 +18,23 @@
     </item>
     
     <item>
+      <title>系统架构基础</title>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%9F%BA%E7%A1%80/</guid>
+      <description>系统架构基础 # 系统架构 # 简介 # 系统架构描述了设计和构应用程序的模式和技术。是构建应用程序的起点或路线图，但开发者需要根据自己的实际情况，选择对应的编程语言实现。
+在决定为新的应用程序适应那种架构或评估当前架构时，软件开发者或架构师应该先确定战略目标，再设计支持该目标的系统架构，不应先选择系统架构，再尝试使应用程序适用于该软件架构。
+如何选择 # 选择标准
+结合具体产品的功能需求进行选择
+每个软件架构都包含一个用于完成常见软件任务的基本结构。开发者需要选择一种能够解决所需问题的架构，而非容易实现的架构
+结合开发者的实际情况
+不好的架构
+不好的架构会使软件开发项目复杂化，增加软件开发工作的工作量，不利于公司节省成本 在选择架构前，需要考虑软件产品顶级组件的整体视图，以及是否符合开发者的实际要求 MVC架构 # 简介 # MVC架构通常用于开发用户界面，将相关的程序逻辑划分为相互关联的3部分，从而将信息的内部表示与向用户呈现信息、接收信息的方式分开。
+模型：主要用于管理数据和业务逻辑。模型对应于用户使用的所有数据相关逻辑。模型可以在视图和控制器之间传输数据。 视图：主要用于处理布局和显示相关的业务，以及处理与应用程序有关的UI逻辑。 控制器：主要用于将命令路由到模型和视图。将控制器作为模型和视图之间的接口，用于处理所有业务逻辑和传入的请求，使用模型操作数据并与视图进行交互，从而呈现最终输出。 注意事项 # 包名不一定是模型、视图或控制器 不要将应用程序分解成太多的包 实现 # 创建模型包models及其代码 package modelsimport (&amp;#34;database/sql&amp;#34;&amp;#34;fmt&amp;#34;_ &amp;#34;github.com/go-sql-driver/mysql&amp;#34;)var db *sql.DB//用户模型type User struct {Id intName stringPhone string}//定义一个全局变量var u User//初始化数据库连接func init() {db, _ = sql.Open(&amp;#34;mysql&amp;#34;,&amp;#34;root:a123456@tcp(127.0.0.1:3306)/goDesignPattern&amp;#34;)}//获取用户信息func GetUserInfo(id int) *User {var param intif id &amp;gt; 0 {param = id} else {param = 1}// 非常重要：确保QueryRow之后调用Scan方法，否则持有的数据库链接不会被释放err := db.</description>
+    </item>
+    
+    <item>
       <title>Docker基础</title>
       <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/</link>
       <pubDate>Mon, 19 Sep 2022 21:02:07 +0800</pubDate>
@@ -412,6 +429,19 @@ var v interface{} v = Person{ Name: &amp;#34;Alice&amp;#34;, Age: 30, Email: &am
     </item>
     
     <item>
+      <title>venv虚拟环境</title>
+      <link>https://chain-code.github.io/docs/python/venv%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/venv%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/</guid>
+      <description>venv &amp;mdash; 虚拟环境的创建 # venv 模块支持创建轻量的“虚拟环境”，每个虚拟环境将拥有它们自己独立的安装在其 site 目录中的 Python 软件包集合。 虚拟环境是在现有的 Python 安装版基础之上创建的，这被称为虚拟环境的“基础”Python，并且还可选择与基础环境中的软件包隔离开来，这样只有在虚拟环境中显式安装的软件包才是可用的。
+当在虚拟环境中使用时，常见安装工具如 pip 将把 Python 软件包安装到虚拟环境而无需显式地指明这一点。
+虚拟环境是（主要的特性）：
+用来包含支持一个项目（库或应用程序）所需的特定 Python 解释器、软件库和二进制文件。 它们在默认情况下与其他虚拟环境中的软件以及操作系统中安装的 Python 解释器和库保持隔离。 包含在一个目录中，根据惯例被命名为项目目录下的venv 或 .venv，或是有许多虚拟环境的容器目录下，如 ~/.virtualenvs。 不可签入 Git 等源代码控制系统。 被视为是可丢弃性的 —— 应当能够简单地删除并从头开始重建。 你不应在虚拟环境中放置任何项目代码。 不被视为是可移动或可复制的 —— 你只能在目标位置重建相同的环境。 创建虚拟环境 # 通过执行 venv 指令来创建一个 虚拟环境:
+python -m venv /path/to/new/virtual/environment 运行此命令将创建目标目录（父目录若不存在也将创建），并放置一个 pyvenv.cfg 文件在其中，文件中有一个 home 键，它的值指向运行此命令的 Python 安装（目标目录的常用名称是 .venv）。它还会创建一个 bin 子目录（在 Windows 上是 Scripts），其中包含 Python 二进制文件的副本或符号链接（视创建环境时使用的平台或参数而定）。它还会创建一个（初始为空的） lib/pythonX.Y/site-packages 子目录（在 Windows 上是 Lib\site-packages）。如果指定了一个现有的目录，这个目录就将被重新使用。</description>
+    </item>
+    
+    <item>
       <title>Vim编程常用快捷键</title>
       <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -459,6 +489,16 @@ generationTimestamp要比genymdhms要好的多，即使前一个比较长一点�
       
       <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/</guid>
       <description>/***　*　瓦瓦　十　*　十齱龠己　亅瓦車己　*　乙龍龠毋日丶　丶乙己毋毋丶　*　十龠馬鬼車瓦　己十瓦毋毋　*　鬼馬龠馬龠十　己己毋車毋瓦　*　毋龠龠龍龠鬼乙丶丶乙車乙毋鬼車己　*　乙龠龍龍鬼龍瓦　十瓦毋乙瓦龠瓦亅　*　馬齱龍馬鬼十丶日己己己毋車乙丶　*　己齱馬鬼車十十毋日乙己己乙乙　*　車馬齱齱日乙毋瓦己乙瓦日亅　*　亅車齺龖瓦乙車龖龍乙乙十　*　日龠龠十亅車龍毋十十　*　日毋己亅　己己十亅亅　*　丶己十十乙　丶丶丶丶丶　*　亅己十龍龖瓦　丶　丶　乙十　*　亅己十龠龖毋　丶丶　丶己鬼鬼瓦亅　*　十日十十日亅丶亅丶　丶十日毋鬼馬馬車乙　*　十日乙十亅亅亅丶　十乙己毋鬼鬼鬼龍齺馬乙　*　丶瓦己乙十十亅丶亅乙乙乙己毋鬼鬼鬼龍齱齺齺鬼十　*　乙乙十十十亅乙瓦瓦己日瓦毋鬼鬼龠齱齱龍龍齱齱毋丶　*　亅十十十十乙瓦車毋瓦瓦日車馬龠龍龍龍龍龍龠龠龠馬亅*　十十十十己毋車瓦瓦瓦瓦鬼馬龠龍龠龠龍龠龠龠馬龠車*　亅十十日毋瓦日日瓦鬼鬼鬼龠龠馬馬龠龍龍龠馬馬車*　亅亅亅乙瓦瓦毋車車車馬龍龠鬼鬼馬龠龍龍龠馬馬鬼*　丶丶乙亅亅乙車鬼鬼鬼毋車龍龍龠鬼馬馬龠龍齱齱龍馬鬼*　亅己十十己十日鬼鬼車瓦毋龠龍龠馬馬龠龠龠齱齺齺齱龠鬼*　亅乙乙乙十車馬車毋馬齱齱龍龠龠龠馬龠龍齱龍龠龠鬼瓦*　丶毋龠鬼車瓦車馬龠龍龠龠龍齱齱龠馬馬鬼毋日*　十乙己日十　丶己鬼龍齱齺齱龍馬馬馬車毋己*　丶十己乙亅丶　亅瓦馬龠龍龠龠馬毋瓦乙*　丶十十乙亅十　亅己瓦車馬龠鬼車瓦乙*　丶十乙十十丶　丶丶亅十瓦鬼車瓦己*　丶亅亅丶　亅日瓦日*　丶*/ /*** * .</description>
+    </item>
+    
+    <item>
+      <title>单元测试</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/</guid>
+      <description> 单元测试 # 单独运行某个测试用例
+go test -run ^TestGetVer$ </description>
     </item>
     
     <item>
@@ -606,7 +646,13 @@ Go语言提供了一种机制在运行时更新变量和检查它们的值、调
       <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%BB%93%E6%9E%84%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
-      <description> 结构型设计模式 # </description>
+      <description>结构型设计模式 # 组合模式 # 介绍 # 组合模式是指将一组相似的对象当作一个单一对象的设计模式。
+组合模式描述了一组对象，这些对象被视为相同类型对象的单个实例。组合模式可以将对象组合成树形结构，从而表示部分或整体的层次结构。
+组合模式允许开发者拥有一个树形结构，并且要求树形结构中的每个节点都执行一项任务。组合模式的主要功能是在整个树形结构中递归调用方法并对结果进行汇总。
+使用场景：
+当客户需要忽略组合对象和单个对象之间的差异时。如果开发者以相同的方式使用多个对象，并且用几乎相同的代码处理每个对象。 如果需要实现树形结构。只需要通过请求树的顶层对象，就可以对整棵树进行统一操作。在组合模式中，添加和删除数的节点非常方便，并且遵循开闭原则。 如果开发者希望客户端可以以统一的方式处理简单或复杂的元素。 接口隔离原则要求开发者尽量将臃肿庞大的接口拆分成更小、更具体的接口，使接口中只包含客户端感兴趣的方法。
+// 组件接口 type Component interface { Execute() } // 叶节点，用于描述层次结构中的原始叶节点对象 type Leaf struct { value int } // 创建一个新的叶节点对象 func NewLeaf(value int) *Leaf { return &amp;amp;Leaf{value} } // 打印叶节点对象的值 func (l *Leaf) Execute() { fmt.Printf(&amp;#34;%v &amp;#34;, l.value) } 定义组件类，用于表示复杂元素。该数组必须能同时存储叶节点和组合，因此需要确保将其声明为组件接口类型。在实现组件接口中的方法时，组合应该将大部分工作交给其子元素完成。
+// 组件的组合 type Composite struct { children []Component } // 创建一个新的组合对象 func NewComposite() *Composite { return &amp;amp;Composite{make([]Component, 0)} } // 将一个新组件添加到组合中 func (c *Composite) Add(component Component) { //传入就将结构体赋值给接口 c.</description>
     </item>
     
     <item>
@@ -1069,12 +1115,16 @@ main.go # package main import ( &amp;#34;flag&amp;#34; &amp;#34;log&amp;#34; &am
       
       <guid>https://chain-code.github.io/docs/golang/package/reflect/</guid>
       <description>Reflect # reflect包是Go语言标准库中的一个包，它提供了一组功能，允许我们在运行时动态地查看和操作Go程序中的变量、函数和类型。通过使用reflect包，我们可以以一种通用的方式处理和操作各种类型的值，而无需知道它们的具体类型。
-TypeOf()和ValueOf() # TypeOf()和ValueOf()函数是reflect包中最常用的两个函数之一。TypeOf()函数可以返回任何变量的类型，而ValueOf()函数可以返回变量的值。这两个函数都接受一个interface{}类型的参数，并返回一个reflect.Type和reflect.Value类型的结果。
-lessCopy codevar x int = 42 fmt.Println(reflect.TypeOf(x)) // 输出：int fmt.Println(reflect.ValueOf(x)) // 输出：42 IsZero() # IsZero() 方法检查该反射值是否为零值。
-IsZero() 方法则返回一个布尔值，表示该反射值是否为其类型的零值。对于大部分类型来说，零值就是其类型的默认值，例如 int 类型的零值是 0，string 类型的零值是空字符串 &amp;quot;&amp;quot;。
-func (v Value) IsZero() bool valueOf := reflect.ValueOf(data) //获取数据 if valueOf.IsZero() { //判断是否为其类型的零值 panic(&amp;#34;WriteData data is zero&amp;#34;) } Interface() # 可以使用 Interface() 方法将其转换为对应的接口类型值。
-在将反射值转换为接口类型值时需要使用断言操作符 .(interface{}) 显式地将其转换为 interface{} 类型。
-if implStruct, ok := valueOf.Interface().(model.TypeCheckSelf); ok { implStruct.TypeCheckSelf() } Indirect() # reflect.Indirect(v)函数用于获取v指向的值，即，如果v是nil指针，则Indirect返回零值。如果v不是指针，则Indirect返回v。</description>
+反射三大定律 # Go 语言中的反射，其归根究底都是在实现三大定律：
+Reflection goes from interface value to reflection object. Reflection goes from reflection object to interface value. To modify a reflection object, the value must be settable. 我们将针对这核心的三大定律进行介绍和说明，以此来理解 Go 反射里的各种方法是基于什么理念实现的。
+第一定律 # 反射的第一定律是：“反射可以从接口值（interface）得到反射对象”。
+示例代码：
+func main() {var x float64 = 3.4fmt.Println(&amp;#34;type:&amp;#34;, reflect.TypeOf(x))} 输出结果：
+type: float64 可能有读者就迷糊了，我明明在代码中传入的变量 x，他的类型是 float64。怎么就成从接口值得到反射对象了。
+其实不然，虽然在代码中我们所传入的变量基本类型是 float64，但是 reflect.TypeOf 方法入参是 interface{}，本质上 Go 语言内部对其是做了类型转换的。这一块会在后面会进一步展开说明。
+第二定律 # 反射的第二定律是：“可以从反射对象得到接口值（interface）”。其与第一条定律是相反的定律，可以是互相补充了。
+示例代码：
+func main() {vo := reflect.</description>
     </item>
     
     <item>
@@ -1900,6 +1950,32 @@ npm i hexo-theme-butterfly 三 在hexo工作文件夹的根配置文件_config.<
 以上，问题就解决啦！！！
 现在你再输入：mysql -u root -p
 回车后就会显示：Enter password:</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://chain-code.github.io/docs/python/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/</guid>
+      <description>title: &amp;#34;YOLOv8快速上手+实践&amp;#34; weight: 2 # bookFlatSection: false # bookToc: true # bookHidden: false # bookCollapseSection: false # bookComments: false # bookSearchExclude: false YOLOv8快速上手+实践 # 前言 # 本文旨在快速上手并不涉及细致的训练超参数调优和YOLO源码层面的解析。
+YOLOv8是YOLO家族中流行的实时目标检测系统，以其快速、准确和高效的特性在计算机视觉领域中广泛应用（目前YOLO的发展很快，YOLOv10就在前不久也已经正式发布）。本文将详细介绍如何在NVIDIA GPU环境下部署YOLOv8，从环境配置、库安装，到模型训练和应用的全流程操作，并在其中结合实际的火焰特征识别的实践。
+环境部署（N卡） # 需要提前准备好要使用的Python环境，此步骤不再赘述
+安装和配置CUDA # 前往nvidia的开发者网站，选择下载CUDA toolkit
+先检查一下本地环境显卡驱动支持的最高CUDA版本，查看的CUDA toolkit 版本不能高于显卡驱动支持的最高版本
+方式一：打开N卡的控制面板，在系统信息的组件里
+方式二：使用命令nvidia-smi查看CUDA版本
+其次建议要下载前先确认下准备使用的Pytorch版本，尽量CUDA toolkit的版本和Pytorch支持的保持一致，起码不能使用低版本
+最新版的CUDA：https://developer.nvidia.com/cuda-downloads 历史版本：https://developer.nvidia.com/cuda-toolkit-archive 跟着安装程序走即可，最后检查一下安装是否成功：
+nvcc --version 成功输出版本信息即为成功
+【可选】下载&amp;amp;安装CUDNN库 # cuDNN 是用于深度神经网络的 GPU 加速库
+继续回到之前的N卡开发者网站上，需要注册登录后才能下载
+最新版本：https://developer.nvidia.com/cudnn 历史版本：https://developer.nvidia.com/rdp/cudnn-archive 下载的版本也需要和CUDA的大版本一一对应
+下载下来的CUDNN库包括bin、include和lib目录，将目录下对应的所有文件复制到之前CUDA toolkit
+的安装目录下即可
+安装PyTorch # 官网：https://pytorch.org/get-started/locally/
+选择自己环境的配置项，复制pip或者conda的命令来安装即可
+pip3 install torch torchvision torchaudio --index-url https://download.</description>
     </item>
     
     <item>

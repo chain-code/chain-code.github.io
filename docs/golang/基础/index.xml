@@ -163,6 +163,16 @@ var v interface{} v = Person{ Name: &amp;#34;Alice&amp;#34;, Age: 30, Email: &am
     </item>
     
     <item>
+      <title>单元测试</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/</guid>
+      <description> 单元测试 # 单独运行某个测试用例
+go test -run ^TestGetVer$ </description>
+    </item>
+    
+    <item>
       <title>常用业务代码</title>
       <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

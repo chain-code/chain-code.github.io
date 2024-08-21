@@ -37,7 +37,7 @@ func main() {vo := reflect." />
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.08de7a4944fe11557d8e02c1c396308bc7e5f6fd41517230bfa28399a1e729c0.js" integrity="sha256-CN56SUT&#43;EVV9jgLBw5Ywi8fl9v1BUXIwv6KDmaHnKcA=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.eb3dab4935e0216e4305a1438b3237e31dde9b6c5a76436a6cbfdf9132118923.js" integrity="sha256-6z2rSTXgIW5DBaFDizI34x3em2xadkNqbL/fkTIRiSM=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -555,19 +555,6 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
-  
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
   
 
@@ -595,32 +582,6 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
-  
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
-  
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
   
 
         </li>
@@ -1252,6 +1213,45 @@ https://github.com/alex-shpak/hugo-book
       
     
   </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
 
         </li>
       
@@ -2196,6 +2196,11 @@ https://github.com/alex-shpak/hugo-book
             <li><a href="#第三定律">第三定律</a></li>
           </ul>
         </li>
+        <li><a href="#函数">函数</a>
+          <ul>
+            <li><a href="#new创建指向指定类型的指针">New()创建指向指定类型的指针</a></li>
+          </ul>
+        </li>
         <li><a href="#type-type">type Type</a>
           <ul>
             <li><a href="#typeof-回任何变量的类型"><code>TypeOf() </code>回任何变量的类型</a></li>
@@ -2205,7 +2210,10 @@ https://github.com/alex-shpak/hugo-book
         </li>
         <li><a href="#valueof-返回变量的值">ValueOf() 返回变量的值</a>
           <ul>
+            <li><a href="#type获取-value-的类型信息">Type()获取 <code>Value</code> 的类型信息</a></li>
             <li><a href="#elem-获取其指向的值的反射值">Elem() 获取其指向的值的反射值</a></li>
+            <li><a href="#canset值是否可以被设置">CanSet()值是否可以被设置</a></li>
+            <li><a href="#set设置值">Set()设置值</a></li>
             <li><a href="#kind-获取该反射值的类型">Kind() 获取该反射值的类型</a></li>
             <li><a href="#interface-将其转换为对应的接口类型值">Interface() 将其转换为对应的接口类型值</a></li>
             <li><a href="#iszero-检查该反射值是否为零值">IsZero() 检查该反射值是否为零值</a></li>
@@ -2213,11 +2221,13 @@ https://github.com/alex-shpak/hugo-book
             <li><a href="#index-获取其指定索引位置的元素的反射值">Index() 获取其指定索引位置的元素的反射值</a></li>
             <li><a href="#fieldbynamename-string通过字段名称获取结构体中的字段值">FieldByName(name string)通过字段名称获取结构体中的字段值</a></li>
             <li><a href="#fieldbynamefunc-通过一个匹配函数获取结构体中的字段值"><code>FieldByNameFunc</code> 通过一个匹配函数获取结构体中的字段值</a></li>
+            <li><a href="#isvalid检查-reflectvalue-是否有效">IsValid(）检查 <code>reflect.Value</code> 是否有效</a></li>
           </ul>
         </li>
         <li><a href="#业务实例">业务实例</a>
           <ul>
             <li><a href="#获取size字段大小">获取Size字段大小</a></li>
+            <li><a href="#通过结构体interface类型得到结构体并查询数据库">通过结构体interface类型，得到结构体，并查询数据库</a></li>
           </ul>
         </li>
       </ul>
@@ -2320,7 +2330,30 @@ main.main()
 </code></pre><p>根据上述提示可知，由于使用 “使用不可寻址的值”，因此示例程序无法正常的运作下去。并且这是一个 <code>reflect</code> 标准库本身就加以防范了的硬性要求。</p>
 <p>这么做的原因在于，Go 语言的函数调用的传递都是值拷贝的，因此若不传指针引用，单纯值传递，那么肯定是无法变动反射对象的源值的。因此 Go 标准库就对其进行了逻辑判断，避免出现问题。</p>
 <p>因此期望变更反射对象的源值时，我们必须主动传入对应变量的指针引用，并且调用 <code>reflect</code> 标准库的 <code>Elem</code> 方法来获取指针所指向的源变量，并且最后调用 <code>Set</code> 相关方法来进行设置。</p>
-<h2 id="type-type">
+<h2 id="函数">
+  函数
+  <a class="anchor" href="#%e5%87%bd%e6%95%b0">#</a>
+</h2>
+<h3 id="new创建指向指定类型的指针">
+  New()创建指向指定类型的指针
+  <a class="anchor" href="#new%e5%88%9b%e5%bb%ba%e6%8c%87%e5%90%91%e6%8c%87%e5%ae%9a%e7%b1%bb%e5%9e%8b%e7%9a%84%e6%8c%87%e9%92%88">#</a>
+</h3>
+<p><code>reflect.New</code> 函数用于创建一个新的指向指定类型的指针。它返回一个 <code>reflect.Value</code>，这个值持有一个指向新分配的零值的指针。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">varType</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">TypeOf</span>(<span style="color:#ae81ff">0</span>) <span style="color:#75715e">// 例如，创建一个 int 类型的指针
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">newValue</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">New</span>(<span style="color:#a6e22e">varType</span>)
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 获取指针指向的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">originalValue</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">newValue</span>.<span style="color:#a6e22e">Elem</span>()
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Type:&#34;</span>, <span style="color:#a6e22e">newValue</span>.<span style="color:#a6e22e">Type</span>())         <span style="color:#75715e">// *int
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Original Value:&#34;</span>, <span style="color:#a6e22e">originalValue</span>) <span style="color:#75715e">// 0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 修改指针指向的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">originalValue</span>.<span style="color:#a6e22e">SetInt</span>(<span style="color:#ae81ff">42</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Updated Value:&#34;</span>, <span style="color:#a6e22e">newValue</span>.<span style="color:#a6e22e">Elem</span>()) <span style="color:#75715e">// 42
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><h2 id="type-type">
   type Type
   <a class="anchor" href="#type-type">#</a>
 </h2>
@@ -2361,7 +2394,30 @@ func main() {
   <a class="anchor" href="#valueof-%e8%bf%94%e5%9b%9e%e5%8f%98%e9%87%8f%e7%9a%84%e5%80%bc">#</a>
 </h2>
 <p><code>reflect.ValueOf()</code> 获取数据信息，返回 Value 类型。</p>
-<h3 id="elem-获取其指向的值的反射值">
+<h3 id="type获取-value-的类型信息">
+  Type()获取 <code>Value</code> 的类型信息
+  <a class="anchor" href="#type%e8%8e%b7%e5%8f%96-value-%e7%9a%84%e7%b1%bb%e5%9e%8b%e4%bf%a1%e6%81%af">#</a>
+</h3>
+<p><code>Type()</code> 函数在 Go 的反射中用于获取 <code>reflect.Value</code> 的类型信息。</p>
+<p><strong>用法</strong></p>
+<ul>
+<li><strong>获取类型</strong>：返回一个 <code>reflect.Type</code>，表示该值的类型。</li>
+<li><strong>常用场景</strong>：检查变量的类型，比较类型是否匹配。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">age</span> <span style="color:#66d9ef">int</span> = <span style="color:#ae81ff">30</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">ValueOf</span>(<span style="color:#a6e22e">age</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 获取类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">t</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">v</span>.<span style="color:#a6e22e">Type</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Type:&#34;</span>, <span style="color:#a6e22e">t</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 检查类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Kind</span>() <span style="color:#f92672">==</span> <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">Int</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;The type is int&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="elem-获取其指向的值的反射值">
   Elem() 获取其指向的值的反射值
   <a class="anchor" href="#elem-%e8%8e%b7%e5%8f%96%e5%85%b6%e6%8c%87%e5%90%91%e7%9a%84%e5%80%bc%e7%9a%84%e5%8f%8d%e5%b0%84%e5%80%bc">#</a>
 </h3>
@@ -2375,6 +2431,30 @@ func main() {
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">valueOf</span>.<span style="color:#a6e22e">Kind</span>() <span style="color:#f92672">==</span> <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">Ptr</span> {
 </span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">valueOf</span> = <span style="color:#a6e22e">valueOf</span>.<span style="color:#a6e22e">Elem</span>()
 </span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="canset值是否可以被设置">
+  CanSet()值是否可以被设置
+  <a class="anchor" href="#canset%e5%80%bc%e6%98%af%e5%90%a6%e5%8f%af%e4%bb%a5%e8%a2%ab%e8%ae%be%e7%bd%ae">#</a>
+</h3>
+<p><code>CanSet()</code> 方法用于检查一个 <code>reflect.Value</code> 是否可以被设置。只有当该值是可以寻址的（例如，通过指针访问）时，它才返回 <code>true</code>。</p>
+<pre tabindex="0"><code></code></pre><h3 id="set设置值">
+  Set()设置值
+  <a class="anchor" href="#set%e8%ae%be%e7%bd%ae%e5%80%bc">#</a>
+</h3>
+<p>在 Go 中，<code>reflect.Value</code> 的 <code>Set</code> 方法用于设置一个值。要使用 <code>Set</code> 方法，值必须是可设置的（可寻址）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 定义一个整数变量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">x</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 获取变量的反射值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">value</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">ValueOf</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">x</span>).<span style="color:#a6e22e">Elem</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 使用 Set 方法设置新值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">value</span>.<span style="color:#a6e22e">CanSet</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">value</span>.<span style="color:#a6e22e">SetInt</span>(<span style="color:#ae81ff">42</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Updated x:&#34;</span>, <span style="color:#a6e22e">x</span>) <span style="color:#75715e">// 输出: Updated x: 42
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
 </span></span></code></pre></div><h3 id="kind-获取该反射值的类型">
   Kind() 获取该反射值的类型
   <a class="anchor" href="#kind-%e8%8e%b7%e5%8f%96%e8%af%a5%e5%8f%8d%e5%b0%84%e5%80%bc%e7%9a%84%e7%b1%bb%e5%9e%8b">#</a>
@@ -2517,6 +2597,40 @@ indirectI  value: [1 2 3 4]
 </span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;No matching field found&#34;</span>)
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="isvalid检查-reflectvalue-是否有效">
+  IsValid(）检查 <code>reflect.Value</code> 是否有效
+  <a class="anchor" href="#isvalid%e6%a3%80%e6%9f%a5-reflectvalue-%e6%98%af%e5%90%a6%e6%9c%89%e6%95%88">#</a>
+</h3>
+<p><code>IsValid()</code> 函数在 Go 的反射中用于检查 <code>reflect.Value</code> 是否有效。以下是其主要用途：</p>
+<ul>
+<li><strong>无效值</strong>：如果 <code>reflect.Value</code> 是无效的，通常表示反射操作失败，比如访问了不存在的字段。</li>
+<li><strong>返回值</strong>：<code>IsValid()</code> 返回 <code>false</code> 表示该值无效，<code>true</code> 表示有效。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Person</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Age</span>  <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">p</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Person</span>{<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;Alice&#34;</span>, <span style="color:#a6e22e">Age</span>: <span style="color:#ae81ff">30</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">ValueOf</span>(<span style="color:#a6e22e">p</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 尝试获取存在的字段
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">nameField</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">v</span>.<span style="color:#a6e22e">FieldByName</span>(<span style="color:#e6db74">&#34;Name&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">nameField</span>.<span style="color:#a6e22e">IsValid</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Name field is valid&#34;</span>)
+</span></span><span style="display:flex;"><span>	} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Name field is invalid&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 尝试获取不存在的字段
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">invalidField</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">v</span>.<span style="color:#a6e22e">FieldByName</span>(<span style="color:#e6db74">&#34;NonExistentField&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">invalidField</span>.<span style="color:#a6e22e">IsValid</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;NonExistentField is valid&#34;</span>)
+</span></span><span style="display:flex;"><span>	} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;NonExistentField is invalid&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h2 id="业务实例">
   业务实例
   <a class="anchor" href="#%e4%b8%9a%e5%8a%a1%e5%ae%9e%e4%be%8b">#</a>
@@ -2539,6 +2653,59 @@ indirectI  value: [1 2 3 4]
 </span></span><span style="display:flex;"><span>			}
 </span></span><span style="display:flex;"><span>		}
 </span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">totalSize</span> <span style="color:#f92672">+=</span> <span style="color:#a6e22e">fieldVal</span>.<span style="color:#a6e22e">Int</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="通过结构体interface类型得到结构体并查询数据库">
+  通过结构体interface类型，得到结构体，并查询数据库
+  <a class="anchor" href="#%e9%80%9a%e8%bf%87%e7%bb%93%e6%9e%84%e4%bd%93interface%e7%b1%bb%e5%9e%8b%e5%be%97%e5%88%b0%e7%bb%93%e6%9e%84%e4%bd%93%e5%b9%b6%e6%9f%a5%e8%af%a2%e6%95%b0%e6%8d%ae%e5%ba%93">#</a>
+</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">dp</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">DataProxy</span>) <span style="color:#a6e22e">DeleteDatas</span>(<span style="color:#a6e22e">dataType</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">cid</span>, <span style="color:#a6e22e">eid</span>, <span style="color:#a6e22e">nid</span> <span style="color:#66d9ef">int64</span>) (<span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">data</span>, <span style="color:#a6e22e">found</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">vmodel</span>.<span style="color:#a6e22e">DataType</span>[<span style="color:#a6e22e">dataType</span>]
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">found</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;data type not found: %s&#34;</span>, <span style="color:#a6e22e">dataType</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">tableName</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">GetDataTableName</span>(<span style="color:#a6e22e">eid</span>, <span style="color:#a6e22e">dataType</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">engine</span>, <span style="color:#a6e22e">found</span>, <span style="color:#a6e22e">errTemp</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">GetDBInstance</span>().<span style="color:#a6e22e">GetDataEngine</span>(<span style="color:#a6e22e">cid</span>, <span style="color:#a6e22e">eid</span>, <span style="color:#a6e22e">dataType</span>, <span style="color:#66d9ef">false</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">found</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">errTemp</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">errTemp</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">found</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;table not found: %s&#34;</span>, <span style="color:#a6e22e">tableName</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">vp</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">New</span>(<span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">TypeOf</span>(<span style="color:#a6e22e">data</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">v</span> <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">Value</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">vp</span>.<span style="color:#a6e22e">Kind</span>() <span style="color:#f92672">==</span> <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">Ptr</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">v</span> = <span style="color:#a6e22e">vp</span>.<span style="color:#a6e22e">Elem</span>()
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">field</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">v</span>.<span style="color:#a6e22e">FieldByName</span>(<span style="color:#e6db74">&#34;Pid&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">field</span>.<span style="color:#a6e22e">IsValid</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;no such field: %s in struct&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">field</span>.<span style="color:#a6e22e">CanSet</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;cannot set field %s&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">val</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">ValueOf</span>(<span style="color:#a6e22e">nid</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">field</span>.<span style="color:#a6e22e">Type</span>() <span style="color:#f92672">!=</span> <span style="color:#a6e22e">val</span>.<span style="color:#a6e22e">Type</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;provided value type doesn&#39;t match field type&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">field</span>.<span style="color:#a6e22e">Set</span>(<span style="color:#a6e22e">val</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">engine</span>.<span style="color:#a6e22e">DeleteByStruct</span>(<span style="color:#a6e22e">tableName</span>, <span style="color:#a6e22e">vp</span>.<span style="color:#a6e22e">Interface</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;delete by struct err:%s&#34;</span>, <span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>())
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div></article>
  
@@ -2590,6 +2757,11 @@ indirectI  value: [1 2 3 4]
             <li><a href="#第三定律">第三定律</a></li>
           </ul>
         </li>
+        <li><a href="#函数">函数</a>
+          <ul>
+            <li><a href="#new创建指向指定类型的指针">New()创建指向指定类型的指针</a></li>
+          </ul>
+        </li>
         <li><a href="#type-type">type Type</a>
           <ul>
             <li><a href="#typeof-回任何变量的类型"><code>TypeOf() </code>回任何变量的类型</a></li>
@@ -2599,7 +2771,10 @@ indirectI  value: [1 2 3 4]
         </li>
         <li><a href="#valueof-返回变量的值">ValueOf() 返回变量的值</a>
           <ul>
+            <li><a href="#type获取-value-的类型信息">Type()获取 <code>Value</code> 的类型信息</a></li>
             <li><a href="#elem-获取其指向的值的反射值">Elem() 获取其指向的值的反射值</a></li>
+            <li><a href="#canset值是否可以被设置">CanSet()值是否可以被设置</a></li>
+            <li><a href="#set设置值">Set()设置值</a></li>
             <li><a href="#kind-获取该反射值的类型">Kind() 获取该反射值的类型</a></li>
             <li><a href="#interface-将其转换为对应的接口类型值">Interface() 将其转换为对应的接口类型值</a></li>
             <li><a href="#iszero-检查该反射值是否为零值">IsZero() 检查该反射值是否为零值</a></li>
@@ -2607,11 +2782,13 @@ indirectI  value: [1 2 3 4]
             <li><a href="#index-获取其指定索引位置的元素的反射值">Index() 获取其指定索引位置的元素的反射值</a></li>
             <li><a href="#fieldbynamename-string通过字段名称获取结构体中的字段值">FieldByName(name string)通过字段名称获取结构体中的字段值</a></li>
             <li><a href="#fieldbynamefunc-通过一个匹配函数获取结构体中的字段值"><code>FieldByNameFunc</code> 通过一个匹配函数获取结构体中的字段值</a></li>
+            <li><a href="#isvalid检查-reflectvalue-是否有效">IsValid(）检查 <code>reflect.Value</code> 是否有效</a></li>
           </ul>
         </li>
         <li><a href="#业务实例">业务实例</a>
           <ul>
             <li><a href="#获取size字段大小">获取Size字段大小</a></li>
+            <li><a href="#通过结构体interface类型得到结构体并查询数据库">通过结构体interface类型，得到结构体，并查询数据库</a></li>
           </ul>
         </li>
       </ul>

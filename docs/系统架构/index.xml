@@ -24,5 +24,74 @@
 模型：主要用于管理数据和业务逻辑。模型对应于用户使用的所有数据相关逻辑。模型可以在视图和控制器之间传输数据。 视图：主要用于处理布局和显示相关的业务，以及处理与应用程序有关的UI逻辑。 控制器：主要用于将命令路由到模型和视图。将控制器作为模型和视图之间的接口，用于处理所有业务逻辑和传入的请求，使用模型操作数据并与视图进行交互，从而呈现最终输出。 注意事项 # 包名不一定是模型、视图或控制器 不要将应用程序分解成太多的包 实现 # 创建模型包models及其代码 package modelsimport (&amp;#34;database/sql&amp;#34;&amp;#34;fmt&amp;#34;_ &amp;#34;github.com/go-sql-driver/mysql&amp;#34;)var db *sql.DB//用户模型type User struct {Id intName stringPhone string}//定义一个全局变量var u User//初始化数据库连接func init() {db, _ = sql.Open(&amp;#34;mysql&amp;#34;,&amp;#34;root:a123456@tcp(127.0.0.1:3306)/goDesignPattern&amp;#34;)}//获取用户信息func GetUserInfo(id int) *User {var param intif id &amp;gt; 0 {param = id} else {param = 1}// 非常重要：确保QueryRow之后调用Scan方法，否则持有的数据库链接不会被释放err := db.</description>
     </item>
     
+    <item>
+      <title>微服务</title>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</guid>
+      <description>微服务 # 微服务框架是将复杂的系统使用组件化的方式进行拆分，并使用轻量级通讯方式进行整合的一种设计方法。
+微服务是通过这种架构设计方法拆分出来的一个独立的组件化的小应用。
+微服务架构和整体式架构的区别？ # 开发单体式（整体式）应用的不足之处 # 三层架构（MVC）的具体内容如下：
+表示层（view）： 用户使用应用程序时，看到的、听见的、输入的或者交互的部分。
+业务逻辑层（controller）： 根据用户输入的信息，进行逻辑计算或者业务处理的部分。
+数据访问层（model）： 关注有效地操作原始数据的部分，如将数据存储到存储介质（如数据库、文件系统）及从存储介质中读取数据等。
+虽然现在程序被分成了三层，但只是逻辑上的分层，并不是物理上的分层。也就是说，对不同层的代码而言，经过编译、打包和部署后，所有的代码最终还是运行在同一个进程中。而这，就是所谓的单块架构。
+单体架构在规模比较小的情况下工作情况良好，但是随着系统规模的扩大，它暴露出来的问题也越来越多，主要有 以下几点：
+复杂性逐渐变高
+比如有的项目有几十万行代码，各个模块之间区别比较模糊，逻辑比较混乱，代码越多复杂性越高，越难解决遇到的问题。
+技术债务逐渐上升
+公司的人员流动是再正常不过的事情，有的员工在离职之前，疏于代码质量的自我管束，导致留下来很多坑，由于单体项目代码量庞大的惊人，留下的坑很难被发觉，这就给新来的员工带来很大的烦恼，人员流动越大所留下的坑 越多，也就是所谓的技术债务越来越多。
+维护成本大
+当应用程序的功能越来越多、团队越来越大时，沟通成本、管理成本显著增加。当出现 bug 时，可能引起 bug 的原因组合越来越多，导致分析、定位和修复的成本增加；并且在对全局功能缺乏深度理解的情况下，容易在修复 bug 时引入新的 bug。
+持续交付周期长
+构建和部署时间会随着功能的增多而增加，任何细微的修改都会触发部署流水线。新人培养周期长：新成员了解背景、熟悉业务和配置环境的时间越来越长。 技术选型成本高 单块架构倾向于采用统一的技术平台或方案来解决所有问题，如果后续想引入新的技术或框架，成本和风险都很 大。
+可扩展性差
+随着功能的增加，垂直扩展的成本将会越来越大；而对于水平扩展而言，因为所有代码都运行在同一个进程，没办法做到针对应用程序的部分功能做独立的扩展。
+微服务架构的特性 # 单一职责
+微服务架构中的每个服务，都是具有业务逻辑的，符合高内聚、低耦合原则以及单一职责原则的单元，不同的服务通过“管道”的方式灵活组合，从而构建出庞大的系统。
+轻量级通信
+服务之间通过轻量级的通信机制实现互通互联，而所谓的轻量级，通常指语言无关、平台无关的交互方式。
+对于轻量级通信的格式而言，我们熟悉的 XML 和 JSON，它们是语言无关、平台无关的；对于通信的协议而言，通 常基于 HTTP，能让服务间的通信变得标准化、无状态化。目前大家熟悉的 REST（Representational State Transfer）是实现服务间互相协作的轻量级通信机制之一。使用轻量级通信机制，可以让团队选择更适合的语言、 工具或者平台来开发服务本身。
+问：REST是什么和restful一样吗？
+答：REST 指的是一组架构约束条件和原则。满足这些约束条件和原则的应用程序或设计就是 RESTful。
+独立性
+每个服务在应用交付过程中，独立地开发、测试和部署。
+在单块架构中所有功能都在同一个代码库，功能的开发不具有独立性；当不同小组完成多个功能后，需要经过集成 和回归测试，测试过程也不具有独立性；当测试完成后，应用被构建成一个包，如果某个功能存在 bug，将导致整 个部署失败或者回滚。
+在微服务架构中，每个服务都是独立的业务单元，与其他服务高度解耦，只需要改变当前服务本身，就可以完成独立的开发、测试和部署。
+进程隔离
+单块架构中，整个系统运行在同一个进程中，当应用进行部署时，必须停掉当前正在运行的应用，部署完成后再重启进程，无法做到独立部署。
+有时候我们会将重复的代码抽取出来封装成组件，在单块架构中，组件通常的形态叫做共享库（如 jar 包或者 DLL），但是当程序运行时，所有组件最终也会被加载到同一进程中运行.</description>
+    </item>
+    
+    <item>
+      <title>gin框架</title>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/gin%E6%A1%86%E6%9E%B6/</link>
+      <pubDate>Mon, 27 Dec 2021 21:22:31 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/gin%E6%A1%86%E6%9E%B6/</guid>
+      <description>简介 # 介绍 # Gin是一个golang的微框架，封装比较优雅，API友好，源码注释比较明确，具有快速灵活，容错方便等特点 对于golang而言，web框架的依赖要远比Python，Java之类的要小。自身的net/http足够简单，性能也非常不错 借助框架开发，不仅可以省去很多常用的封装带来的时间，也有助于团队的编码风格和形成规范 安装 # 要安装Gin软件包，您需要安装Go并首先设置Go工作区。
+1.首先需要安装Go（需要1.10+版本），然后可以使用下面的Go命令安装Gin。
+go get -u github.com/gin-gonic/gin
+2.将其导入您的代码中：
+import &amp;ldquo;github.com/gin-gonic/gin&amp;rdquo;
+3.（可选）导入net/http。例如，如果使用常量，则需要这样做http.StatusOK。
+import &amp;ldquo;net/http&amp;rdquo;
+hello word # package main import ( &amp;#34;net/http&amp;#34; &amp;#34;github.com/gin-gonic/gin&amp;#34; ) func main() { // 1.创建路由 r := gin.Default() // 2.绑定路由规则，执行的函数 // gin.Context，封装了request和response r.GET(&amp;#34;/&amp;#34;, func(c *gin.Context) { c.String(http.StatusOK, &amp;#34;hello World!&amp;#34;) }) // 3.监听端口，默认在8080 // Run(&amp;#34;里面不指定端口号默认为8080&amp;#34;) r.Run(&amp;#34;:8000&amp;#34;) } GORM # 特性 # 全功能 ORM 关联 (Has One，Has Many，Belongs To，Many To Many，多态，单表继承) Create，Save，Update，Delete，Find 中钩子方法 支持 Preload、Joins 的预加载 事务，嵌套事务，Save Point，Rollback To Saved Point Context、预编译模式、DryRun 模式 批量插入，FindInBatches，Find/Create with Map，使用 SQL 表达式、Context Valuer 进行 CRUD SQL 构建器，Upsert，数据库锁，Optimizer/Index/Comment Hint，命名参数，子查询 复合主键，索引，约束 Auto Migration 自定义 Logger 灵活的可扩展插件 API：Database Resolver（多数据库，读写分离）、Prometheus… 每个特性都经过了测试的重重考验 开发者友好 安装 # go get -u gorm.</description>
+    </item>
+    
+    <item>
+      <title>Beego框架</title>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/beego%E6%A1%86%E6%9E%B6/</link>
+      <pubDate>Sun, 07 Mar 2021 13:48:22 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/beego%E6%A1%86%E6%9E%B6/</guid>
+      <description>beego框架 # beego框架了解 # Beego框架是go语言开发的web框架。
+beego是中国人开发的，开发文档比较详细
+beego网址 MVC架构 # Beego是MVC架构。MVC 是一种应用非常广泛的体系架构，几乎所有的编程语言都会使用到，而且所有的程序员在工作中都会遇到！用 MVC 的方式开发程序，可以让程序的结构更加合理和清晰。 我们画图说明
+环境搭建 # 这里默认大家已经搭建好了go语言的开发环境。
+需要安装Beego go get -u github.com/beego/bee/v2@master go install github.com/beego/bee/v2@master //上面没用就试试这个 而后运行 bee version | ___ \| |_/ / ___ ___| ___ \ / _ \ / _ \| |_/ /| __/| __/\____/ \___| \___| v2.0.2├── Beego : Beego is not installed. Please do consider installing it first: https://github.com/beego/beego/v2. If you are using go mod, and you don&amp;#39;t install the beego under $GOPATH/src/github.</description>
+    </item>
+    
   </channel>
 </rss>

@@ -3,41 +3,29 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="gRPC # gRPC 是一个高性能、开源和通用的 RPC 框架，面向移动和 HTTP/2 设计。
+<meta name="description" content="GRPC # 介绍 # gRPC 是一个高性能、开源和通用的 RPC 框架，面向移动和 HTTP/2 设计。
 gRPC基于 HTTP/2标准设计，带来诸如双向流、流控、头部压缩、单 TCP连接上的多复用请求等特。这些特性使得 其在移动设备上表现更好，更省电和节省空间占用。
-RPC # RPC（Remote Procedure Call Protocol）——远程过程调用协议，它是一种通过网络从远程计算机程序上请求 服务，而不需要了解底层网络技术的协议。
-简单来说，就是跟远程访问或者web请求差不多，都是一个client向远端服务器请求服务返回结果，但是web请求 使用的网络协议是http高层协议，而rpc所使用的协议多为TCP，是网络层协议，减少了信息的包装，加快了处理速 度。
-golang本身有rpc包，可以方便的使用，来构建自己的rpc服务，下边是一个简单是实例，可以加深我们的理解
-1.调用客户端句柄；执行传送参数
-2.调用本地系统内核发送网络消息
-3.消息传送到远程主机
-4.服务器句柄得到消息并取得参数
-5.执行远程过程
-6.执行的过程将结果返回服务器句柄
-7.服务器句柄返回结果，调用远程系统内核
-8.消息传回本地主机
-9.客户句柄由内核接收消息
-10.客户接收句柄返回的数据
-服务端 # package main import ( &#34;net/http&#34; &#34;net/rpc&#34; &#34;net&#34; &#34;github.com/astaxie/beego&#34; &#34;io&#34; ) //- 方法是导出的 //- 方法有两个参数，都是导出类型或内建类型 //- 方法的第二个参数是指针 //- 方法只有一个error接口类型的返回值 //func (t *T) MethodName(argType T1, replyType *T2) error type Panda int; func (this *Panda)Getinfo(argType int, replyType *int) error { beego.">
+在 gRPC里客户端应用可以像调用本地对象一样直接调用另一台不同的机器上服务端应用的方法，使得您能够更容 易地创建分布式应用和服务。与许多 RPC系统类似， gRPC也是基于以下理念：
+定义一个服务，指定其能够被远程调用的方法（包含参数和返回类型）。
+在服务端实现这个接口，并运行一个 gRPC服务器来处理客户端调用。
+在客户端拥有一个存根能够像服务端一样的方法。 gRPC客户端和服务端可以在多种环境中运行和交互 -从 google 内部的服务器到你自己的笔记本，并且可以用任何 gRPC支持的语言 来编写。
+所以，你可以很容易地用 Java创建一个 gRPC服务端，用 Go、 Python、Ruby来创建客户端。此外， Google最新 API将有 gRPC版本的接口，使你很容易地将 Google的功能集成到你的应用里。
+gRPC 内置了以下 encryption 机制：
+SSL / TLS：通过证书进行数据加密； ALTS：Google开发的一种双向身份验证和传输加密系统。 只有运行在 Google Cloud Platform 才可用，一般不用考虑。 gRPC 中的连接类型一共有以下3种：
+insecure connection：不使用TLS加密 server-side TLS：仅服务端TLS加密 mutual TLS：客户端、服务端都使用TLS加密 gRPC 与 RESTful API比较 # 特性 gRPC RESTful API 规范 必须.">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="Grpc" />
-<meta property="og:description" content="gRPC # gRPC 是一个高性能、开源和通用的 RPC 框架，面向移动和 HTTP/2 设计。
+<meta property="og:description" content="GRPC # 介绍 # gRPC 是一个高性能、开源和通用的 RPC 框架，面向移动和 HTTP/2 设计。
 gRPC基于 HTTP/2标准设计，带来诸如双向流、流控、头部压缩、单 TCP连接上的多复用请求等特。这些特性使得 其在移动设备上表现更好，更省电和节省空间占用。
-RPC # RPC（Remote Procedure Call Protocol）——远程过程调用协议，它是一种通过网络从远程计算机程序上请求 服务，而不需要了解底层网络技术的协议。
-简单来说，就是跟远程访问或者web请求差不多，都是一个client向远端服务器请求服务返回结果，但是web请求 使用的网络协议是http高层协议，而rpc所使用的协议多为TCP，是网络层协议，减少了信息的包装，加快了处理速 度。
-golang本身有rpc包，可以方便的使用，来构建自己的rpc服务，下边是一个简单是实例，可以加深我们的理解
-1.调用客户端句柄；执行传送参数
-2.调用本地系统内核发送网络消息
-3.消息传送到远程主机
-4.服务器句柄得到消息并取得参数
-5.执行远程过程
-6.执行的过程将结果返回服务器句柄
-7.服务器句柄返回结果，调用远程系统内核
-8.消息传回本地主机
-9.客户句柄由内核接收消息
-10.客户接收句柄返回的数据
-服务端 # package main import ( &#34;net/http&#34; &#34;net/rpc&#34; &#34;net&#34; &#34;github.com/astaxie/beego&#34; &#34;io&#34; ) //- 方法是导出的 //- 方法有两个参数，都是导出类型或内建类型 //- 方法的第二个参数是指针 //- 方法只有一个error接口类型的返回值 //func (t *T) MethodName(argType T1, replyType *T2) error type Panda int; func (this *Panda)Getinfo(argType int, replyType *int) error { beego." />
+在 gRPC里客户端应用可以像调用本地对象一样直接调用另一台不同的机器上服务端应用的方法，使得您能够更容 易地创建分布式应用和服务。与许多 RPC系统类似， gRPC也是基于以下理念：
+定义一个服务，指定其能够被远程调用的方法（包含参数和返回类型）。
+在服务端实现这个接口，并运行一个 gRPC服务器来处理客户端调用。
+在客户端拥有一个存根能够像服务端一样的方法。 gRPC客户端和服务端可以在多种环境中运行和交互 -从 google 内部的服务器到你自己的笔记本，并且可以用任何 gRPC支持的语言 来编写。
+所以，你可以很容易地用 Java创建一个 gRPC服务端，用 Go、 Python、Ruby来创建客户端。此外， Google最新 API将有 gRPC版本的接口，使你很容易地将 Google的功能集成到你的应用里。
+gRPC 内置了以下 encryption 机制：
+SSL / TLS：通过证书进行数据加密； ALTS：Google开发的一种双向身份验证和传输加密系统。 只有运行在 Google Cloud Platform 才可用，一般不用考虑。 gRPC 中的连接类型一共有以下3种：
+insecure connection：不使用TLS加密 server-side TLS：仅服务端TLS加密 mutual TLS：客户端、服务端都使用TLS加密 gRPC 与 RESTful API比较 # 特性 gRPC RESTful API 规范 必须." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/grpc/" /><meta property="article:section" content="docs" />
 
@@ -47,7 +35,7 @@ golang本身有rpc包，可以方便的使用，来构建自己的rpc服务，�
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.08de7a4944fe11557d8e02c1c396308bc7e5f6fd41517230bfa28399a1e729c0.js" integrity="sha256-CN56SUT&#43;EVV9jgLBw5Ywi8fl9v1BUXIwv6KDmaHnKcA=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.eb3dab4935e0216e4305a1438b3237e31dde9b6c5a76436a6cbfdf9132118923.js" integrity="sha256-6z2rSTXgIW5DBaFDizI34x3em2xadkNqbL/fkTIRiSM=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -565,19 +553,6 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
-  
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
   
 
@@ -605,32 +580,6 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
-  
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
-  
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
   
 
         </li>
@@ -1262,6 +1211,45 @@ https://github.com/alex-shpak/hugo-book
       
     
   </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
 
         </li>
       
@@ -2199,12 +2187,19 @@ https://github.com/alex-shpak/hugo-book
   <ul>
     <li>
       <ul>
-        <li><a href="#grpc">gRPC</a>
+        <li><a href="#grpc">GRPC</a>
           <ul>
+            <li><a href="#介绍">介绍</a></li>
             <li><a href="#rpc">RPC</a></li>
-            <li><a href="#grpc是什么">GRPC是什么？</a></li>
-            <li><a href="#安装protoc">安装protoc</a></li>
-            <li><a href="#安装协议编译器的插件">安装协议编译器的插件</a></li>
+            <li><a href="#protocol-buffers">protocol buffers</a></li>
+          </ul>
+        </li>
+        <li><a href="#server-side-tls">server-side TLS</a>
+          <ul>
+            <li></li>
+            <li><a href="#3-mutual-tls">3. mutual TLS</a></li>
+            <li><a href="#4-faq">4. FAQ</a></li>
+            <li><a href="#特殊函数用法">特殊函数用法</a></li>
           </ul>
         </li>
       </ul>
@@ -2222,11 +2217,90 @@ https://github.com/alex-shpak/hugo-book
       
       
   <article class="markdown"><h2 id="grpc">
-  gRPC
+  GRPC
   <a class="anchor" href="#grpc">#</a>
 </h2>
+<h3 id="介绍">
+  介绍
+  <a class="anchor" href="#%e4%bb%8b%e7%bb%8d">#</a>
+</h3>
 <p>gRPC 是一个高性能、开源和通用的 RPC 框架，面向移动和 HTTP/2 设计。</p>
 <p>gRPC基于 HTTP/2标准设计，带来诸如双向流、流控、头部压缩、单 TCP连接上的多复用请求等特。这些特性使得 其在移动设备上表现更好，更省电和节省空间占用。</p>
+<p>在 gRPC里客户端应用可以像调用本地对象一样直接调用另一台不同的机器上服务端应用的方法，使得您能够更容 易地创建分布式应用和服务。与许多 RPC系统类似， gRPC也是基于以下理念：</p>
+<p>定义一个服务，指定其能够被远程调用的方法（包含参数和返回类型）。</p>
+<p>在服务端实现这个接口，并运行一个 gRPC服务器来处理客户端调用。</p>
+<p>在客户端拥有一个存根能够像服务端一样的方法。 gRPC客户端和服务端可以在多种环境中运行和交互 -从 google 内部的服务器到你自己的笔记本，并且可以用任何 gRPC支持的语言 来编写。</p>
+<p>所以，你可以很容易地用 Java创建一个 gRPC服务端，用 Go、 Python、Ruby来创建客户端。此外， Google最新 API将有 gRPC版本的接口，使你很容易地将 Google的功能集成到你的应用里。</p>
+<p>gRPC 内置了以下 encryption 机制：</p>
+<ul>
+<li>SSL / TLS：通过证书进行数据加密；</li>
+<li>ALTS：Google开发的一种双向身份验证和传输加密系统。
+<ul>
+<li>只有运行在 Google Cloud Platform 才可用，一般不用考虑。</li>
+</ul>
+</li>
+</ul>
+<p><strong>gRPC 中的连接类型一共有以下3种</strong>：</p>
+<ul>
+<li>insecure connection：不使用TLS加密</li>
+<li>server-side TLS：仅服务端TLS加密</li>
+<li>mutual TLS：客户端、服务端都使用TLS加密</li>
+</ul>
+<h4 id="grpc-与-restful-api比较">
+  gRPC 与 RESTful API比较
+  <a class="anchor" href="#grpc-%e4%b8%8e-restful-api%e6%af%94%e8%be%83">#</a>
+</h4>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>gRPC</th>
+<th>RESTful API</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>规范</td>
+<td>必须.proto</td>
+<td>可选 OpenAPI</td>
+</tr>
+<tr>
+<td>协议</td>
+<td>HTTP/2 任意版本的</td>
+<td>HTTP 协议</td>
+</tr>
+<tr>
+<td>有效载荷</td>
+<td>Protobuf（小、二进制）</td>
+<td>JSON（大、易读）</td>
+</tr>
+<tr>
+<td>浏览器支持</td>
+<td>否（需要 grpc-web）</td>
+<td>是</td>
+</tr>
+<tr>
+<td>流传输</td>
+<td>客户端、服务端、双向</td>
+<td>客户端、服务端</td>
+</tr>
+<tr>
+<td>代码生成</td>
+<td>是</td>
+<td>OpenAPI + 第三方工具</td>
+</tr>
+</tbody>
+</table>
+<h4 id="使用场景">
+  使用场景
+  <a class="anchor" href="#%e4%bd%bf%e7%94%a8%e5%9c%ba%e6%99%af">#</a>
+</h4>
+<ol>
+<li>低延时、高可用的分布式系统；</li>
+<li>移动端与云服务端的通讯；</li>
+<li>使用protobuf，独立于语言的协议，支持多语言之间的通讯；</li>
+<li>可以分层扩展，如：身份验证，负载均衡，日志记录，监控等；</li>
+</ol>
 <h3 id="rpc">
   RPC
   <a class="anchor" href="#rpc">#</a>
@@ -2245,106 +2319,359 @@ https://github.com/alex-shpak/hugo-book
 <p>8.消息传回本地主机</p>
 <p>9.客户句柄由内核接收消息</p>
 <p>10.客户接收句柄返回的数据</p>
-<h4 id="服务端">
-  服务端
-  <a class="anchor" href="#%e6%9c%8d%e5%8a%a1%e7%ab%af">#</a>
-</h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
-</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;net/http&#34;</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;net/rpc&#34;</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;net&#34;</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;github.com/astaxie/beego&#34;</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;io&#34;</span>
-</span></span><span style="display:flex;"><span>)
-</span></span><span style="display:flex;"><span><span style="color:#75715e">//- 方法是导出的
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//- 方法有两个参数，都是导出类型或内建类型
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//- 方法的第二个参数是指针
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//- 方法只有一个error接口类型的返回值
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//func (t *T) MethodName(argType T1, replyType *T2) error
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Panda</span> <span style="color:#66d9ef">int</span>;
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Panda</span>)<span style="color:#a6e22e">Getinfo</span>(<span style="color:#a6e22e">argType</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">replyType</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">error</span> {
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">beego</span>.<span style="color:#a6e22e">Info</span>(<span style="color:#a6e22e">argType</span>)
-</span></span><span style="display:flex;"><span>	<span style="color:#f92672">*</span><span style="color:#a6e22e">replyType</span> =<span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span><span style="color:#a6e22e">argType</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
-</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//注册1个页面请求
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/panda&#34;</span>,<span style="color:#a6e22e">pandatext</span>)
-</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//new 一个对象
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">pd</span> <span style="color:#f92672">:=</span>new(<span style="color:#a6e22e">Panda</span>)
-</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//注册服务
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">//Register在默认服务中注册并公布 接收服务 pd对象 的方法
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">Register</span>(<span style="color:#a6e22e">pd</span>)
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">HandleHTTP</span>()
-</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//建立网络监听
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">ln</span> , <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span><span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Listen</span>(<span style="color:#e6db74">&#34;tcp&#34;</span>,<span style="color:#e6db74">&#34;127.0.0.1:10086&#34;</span>)
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span>{
-</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">beego</span>.<span style="color:#a6e22e">Info</span>(<span style="color:#e6db74">&#34;网络连接失败&#34;</span>)
-</span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">beego</span>.<span style="color:#a6e22e">Info</span>(<span style="color:#e6db74">&#34;正在监听10086&#34;</span>)
-</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//service接受侦听器l上传入的HTTP连接，
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Serve</span>(<span style="color:#a6e22e">ln</span>,<span style="color:#66d9ef">nil</span>)
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span><span style="color:#75715e">//用来现实网页的web函数
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">pandatext</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">WriteString</span>(<span style="color:#a6e22e">w</span>,<span style="color:#e6db74">&#34;panda&#34;</span>)
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h4 id="客户端">
-  客户端
-  <a class="anchor" href="#%e5%ae%a2%e6%88%b7%e7%ab%af">#</a>
-</h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
-</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;net/rpc&#34;</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;github.com/astaxie/beego&#34;</span>
-</span></span><span style="display:flex;"><span>)
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
-</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//rpc的与服务端建立网络连接
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">cli</span>,<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">DialHTTP</span>(<span style="color:#e6db74">&#34;tcp&#34;</span>,<span style="color:#e6db74">&#34;127.0.0.1:10086&#34;</span>)
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span> {
-</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">beego</span>.<span style="color:#a6e22e">Info</span>(<span style="color:#e6db74">&#34;网络连接失败&#34;</span>)
-</span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">val</span> <span style="color:#66d9ef">int</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//远程调用函数（被调用的方法，传入的参数 ，返回的参数）
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">err</span> =<span style="color:#a6e22e">cli</span>.<span style="color:#a6e22e">Call</span>(<span style="color:#e6db74">&#34;Panda.Getinfo&#34;</span>,<span style="color:#ae81ff">123</span>,<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">val</span>)
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
-</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">beego</span>.<span style="color:#a6e22e">Info</span>(<span style="color:#e6db74">&#34;打call失败&#34;</span>)
-</span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">beego</span>.<span style="color:#a6e22e">Info</span>(<span style="color:#e6db74">&#34;返回结果&#34;</span>,<span style="color:#a6e22e">val</span>)
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="grpc是什么">
-  GRPC是什么？
-  <a class="anchor" href="#grpc%e6%98%af%e4%bb%80%e4%b9%88">#</a>
+<h3 id="protocol-buffers">
+  protocol buffers
+  <a class="anchor" href="#protocol-buffers">#</a>
 </h3>
-<p>在 gRPC里客户端应用可以像调用本地对象一样直接调用另一台不同的机器上服务端应用的方法，使得您能够更容 易地创建分布式应用和服务。与许多 RPC系统类似， gRPC也是基于以下理念：</p>
-<p>定义一个服务，指定其能够被远程调用的方法（包含参数和返回类型）。</p>
-<p>在服务端实现这个接口，并运行一个 gRPC服务器来处理客户端调用。</p>
-<p>在客户端拥有一个存根能够像服务端一样的方法。 gRPC客户端和服务端可以在多种环境中运行和交互 -从 google 内部的服务器到你自己的笔记本，并且可以用任何 gRPC支持的语言 来编写。</p>
-<p>所以，你可以很容易地用 Java创建一个 gRPC服务端，用 Go、 Python、Ruby来创建客户端。此外， Google最新 API将有 gRPC版本的接口，使你很容易地将 Google的功能集成到你的应用里。</p>
-<h4 id="grpc使用-protocol-buffers">
-  GRPC使用 protocol buffers
-  <a class="anchor" href="#grpc%e4%bd%bf%e7%94%a8-protocol-buffers">#</a>
-</h4>
 <p>gRPC默认使用protoBuf，这是 Google开源的一套成熟的结构数据序列化机制（当然也可以使用其他数据格式如 JSON）。正如你将在下方例子里所看到的，你用 proto files创建 gRPC服务，用 protoBuf消息类型来定义方法参 数和返回类型。你可以在 Protocol Buffers文档找到更多关于 protoBuf的资料。 虽然你可以使用 proto2 (当前默 认的 protocol buffers版本 )，我们通常建议你在 gRPC里使用 proto3，因为这样你可以使用 gRPC支持全部范围的 的语言，并且能避免 proto2客户端与 proto3服务端交互时出现的兼容性问题，反之亦然。</p>
-<h3 id="安装protoc">
+<h4 id="安装protoc">
   安装protoc
   <a class="anchor" href="#%e5%ae%89%e8%a3%85protoc">#</a>
-</h3>
+</h4>
 <pre tabindex="0"><code>//https://github.com/protocolbuffers/protobuf/releases  下载安装
 </code></pre><p>并将bin文件夹下的protoc应用程序复制到../go/bin</p>
-<h3 id="安装协议编译器的插件">
+<h4 id="安装协议编译器的插件">
   安装协议编译器的插件
   <a class="anchor" href="#%e5%ae%89%e8%a3%85%e5%8d%8f%e8%ae%ae%e7%bc%96%e8%af%91%e5%99%a8%e7%9a%84%e6%8f%92%e4%bb%b6">#</a>
-</h3>
+</h4>
 <pre tabindex="0"><code>$ go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
 $ go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 </code></pre><p>更新你的<code>PATH</code>，以便<code>protoc</code>编译器可以找到插件：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ export PATH<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$PATH<span style="color:#e6db74">:</span><span style="color:#66d9ef">$(</span>go env GOPATH<span style="color:#66d9ef">)</span><span style="color:#e6db74">/bin&#34;</span>
-</span></span></code></pre></div><p><a href="https://blog.csdn.net/hu_feng903/article/details/123439613">go grpc 完整实例</a></p>
-<p><a href="https://www.lixueduan.com/posts/grpc/04-encryption-tls/">gRPC(Go)教程(四)&mdash;通过SSL/TLS建立安全连接</a></p>
-<p><a href="https://www.cnblogs.com/zhangmingcheng/p/16329237.html">[Golang gRPC概述及入门示例]</a></p>
-</article>
+</span></span></code></pre></div><h4 id="生成grpc代码">
+  生成grpc代码
+  <a class="anchor" href="#%e7%94%9f%e6%88%90grpc%e4%bb%a3%e7%a0%81">#</a>
+</h4>
+<pre tabindex="0"><code>protoc --go_out=. --go-grpc_out=. demo.proto
+//下面是原始示例
+protoc user.proto --go_out=./protobuf --go-grpc_out=./protobuf --go-grpc_opt=require_unimplemented_servers=false
+//require_unimplemented_servers=false 这个配置不加，会存在兼容问题，有个接口需要实现
+</code></pre><h4 id="demo">
+  demo
+  <a class="anchor" href="#demo">#</a>
+</h4>
+<p><a href="https://github.com/hufeng903/go-demo/tree/master/grpc">demo</a></p>
+<h2 id="server-side-tls">
+  server-side TLS
+  <a class="anchor" href="#server-side-tls">#</a>
+</h2>
+<h4 id="1-流程">
+  1. 流程
+  <a class="anchor" href="#1-%e6%b5%81%e7%a8%8b">#</a>
+</h4>
+<p>服务端 TLS 具体包含以下几个步骤：</p>
+<ul>
+<li>1）制作证书，包含服务端证书和 CA 证书；</li>
+<li>2）服务端启动时加载证书；</li>
+<li>3）客户端连接时使用CA 证书校验服务端证书有效性。</li>
+</ul>
+<blockquote>
+<p>也可以不使用 CA证书，即服务端证书自签名。</p>
+</blockquote>
+<h4 id="2-制作证书">
+  2. 制作证书
+  <a class="anchor" href="#2-%e5%88%b6%e4%bd%9c%e8%af%81%e4%b9%a6">#</a>
+</h4>
+<blockquote>
+<p>具体证书相关，点击查看<a href="https://www.lixueduan.com/posts/grpc/04-encryption-tls/">证书制作章节</a>，实在不行可以直接使用本教程 Github 仓库中提供的证书文件。</p>
+</blockquote>
+<h5 id="ca-证书">
+  CA 证书
+  <a class="anchor" href="#ca-%e8%af%81%e4%b9%a6">#</a>
+</h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># 生成.key  私钥文件</span>
+</span></span><span style="display:flex;"><span>$ openssl genrsa -out ca.key <span style="color:#ae81ff">2048</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 生成.csr 证书签名请求文件</span>
+</span></span><span style="display:flex;"><span>$ openssl req -new -key ca.key -out ca.csr  -subj <span style="color:#e6db74">&#34;/C=GB/L=China/O=lixd/CN=www.lixueduan.com&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 自签名生成.crt 证书文件</span>
+</span></span><span style="display:flex;"><span>$ openssl req -new -x509 -days <span style="color:#ae81ff">3650</span> -key ca.key -out ca.crt  -subj <span style="color:#e6db74">&#34;/C=GB/L=China/O=lixd/CN=www.lixueduan.com&#34;</span>
+</span></span></code></pre></div><h5 id="服务端证书">
+  服务端证书
+  <a class="anchor" href="#%e6%9c%8d%e5%8a%a1%e7%ab%af%e8%af%81%e4%b9%a6">#</a>
+</h5>
+<p>和生成 CA证书类似，不过最后一步由 CA 证书进行签名，而不是自签名。</p>
+<p>然后openssl 配置文件可能位置不同，需要自己修改一下。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ find / -name <span style="color:#e6db74">&#34;openssl.cnf&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 生成.key  私钥文件</span>
+</span></span><span style="display:flex;"><span>$ openssl genrsa -out server.key <span style="color:#ae81ff">2048</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 生成.csr 证书签名请求文件</span>
+</span></span><span style="display:flex;"><span>$ openssl req -new -key server.key -out server.csr <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>	-subj <span style="color:#e6db74">&#34;/C=GB/L=China/O=lixd/CN=www.lixueduan.com&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>	-reqexts SAN <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>	-config &lt;<span style="color:#f92672">(</span>cat /etc/ssl/openssl.cnf &lt;<span style="color:#f92672">(</span>printf <span style="color:#e6db74">&#34;\n[SAN]\nsubjectAltName=DNS:*.lixueduan.com,DNS:*.refersmoon.com&#34;</span><span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 签名生成.crt 证书文件</span>
+</span></span><span style="display:flex;"><span>$ openssl x509 -req -days <span style="color:#ae81ff">3650</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>   -in server.csr -out server.crt <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>   -CA ca.crt -CAkey ca.key -CAcreateserial <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>   -extensions SAN <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>   -extfile &lt;<span style="color:#f92672">(</span>cat /etc/ssl/openssl.cnf &lt;<span style="color:#f92672">(</span>printf <span style="color:#e6db74">&#34;\n[SAN]\nsubjectAltName=DNS:*.lixueduan.com,DNS:*.refersmoon.com&#34;</span><span style="color:#f92672">))</span>
+</span></span></code></pre></div><p>到此会生成以下 6 个文件：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>ca.crt  
+</span></span><span style="display:flex;"><span>ca.csr  
+</span></span><span style="display:flex;"><span>ca.key   
+</span></span><span style="display:flex;"><span>server.crt  
+</span></span><span style="display:flex;"><span>server.csr  
+</span></span><span style="display:flex;"><span>server.key
+</span></span></code></pre></div><p><strong>会用到的有下面这3个</strong>：</p>
+<ul>
+<li>1）ca.crt</li>
+<li>2）server.key</li>
+<li>3）server.crt</li>
+</ul>
+<h4 id="3-服务端">
+  3. 服务端
+  <a class="anchor" href="#3-%e6%9c%8d%e5%8a%a1%e7%ab%af">#</a>
+</h4>
+<p>服务端代码修改点如下：</p>
+<ul>
+<li>1）NewServerTLSFromFile 加载证书</li>
+<li>2）NewServer 时指定 Creds。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">Parse</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lis</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Listen</span>(<span style="color:#e6db74">&#34;tcp&#34;</span>, <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;:%d&#34;</span>, <span style="color:#f92672">*</span><span style="color:#a6e22e">port</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatalf</span>(<span style="color:#e6db74">&#34;failed to listen: %v&#34;</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 指定使用服务端证书创建一个 TLS credentials。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">creds</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">credentials</span>.<span style="color:#a6e22e">NewServerTLSFromFile</span>(<span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">Path</span>(<span style="color:#e6db74">&#34;x509/server.crt&#34;</span>), <span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">Path</span>(<span style="color:#e6db74">&#34;x509/server.key&#34;</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatalf</span>(<span style="color:#e6db74">&#34;failed to create credentials: %v&#34;</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 指定使用 TLS credentials。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">grpc</span>.<span style="color:#a6e22e">NewServer</span>(<span style="color:#a6e22e">grpc</span>.<span style="color:#a6e22e">Creds</span>(<span style="color:#a6e22e">creds</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ecpb</span>.<span style="color:#a6e22e">RegisterEchoServer</span>(<span style="color:#a6e22e">s</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">ecServer</span>{})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Serve</span>(<span style="color:#a6e22e">lis</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatalf</span>(<span style="color:#e6db74">&#34;failed to serve: %v&#34;</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="4-客户端">
+  4. 客户端
+  <a class="anchor" href="#4-%e5%ae%a2%e6%88%b7%e7%ab%af">#</a>
+</h4>
+<p>客户端代码主要修改点：</p>
+<ul>
+<li>1）NewClientTLSFromFile 指定使用 CA 证书来校验服务端的证书有效性。
+<ul>
+<li>注意：第二个参数域名就是前面生成服务端证书时指定的CN参数。</li>
+</ul>
+</li>
+<li>2）建立连接时 指定建立安全连接 WithTransportCredentials。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">Parse</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 客户端通过ca证书来验证服务的提供的证书
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">creds</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">credentials</span>.<span style="color:#a6e22e">NewClientTLSFromFile</span>(<span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">Path</span>(<span style="color:#e6db74">&#34;x509/ca.crt&#34;</span>), <span style="color:#e6db74">&#34;www.lixueduan.com&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatalf</span>(<span style="color:#e6db74">&#34;failed to load credentials: %v&#34;</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 建立连接时指定使用 TLS
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">conn</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">grpc</span>.<span style="color:#a6e22e">Dial</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">addr</span>, <span style="color:#a6e22e">grpc</span>.<span style="color:#a6e22e">WithTransportCredentials</span>(<span style="color:#a6e22e">creds</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatalf</span>(<span style="color:#e6db74">&#34;did not connect: %v&#34;</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">conn</span>.<span style="color:#a6e22e">Close</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">rgc</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ecpb</span>.<span style="color:#a6e22e">NewEchoClient</span>(<span style="color:#a6e22e">conn</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">callUnaryEcho</span>(<span style="color:#a6e22e">rgc</span>, <span style="color:#e6db74">&#34;hello world&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="5-test">
+  5. Test
+  <a class="anchor" href="#5-test">#</a>
+</h4>
+<p>Server</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>lixd@17x:~/17x/projects/grpc-go-example/features/encryption/server-side-TLS/server$ go run main.go 
+</span></span><span style="display:flex;"><span>2021/01/24 18:00:25 Server gRPC on 0.0.0.0:50051
+</span></span></code></pre></div><p>Client</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>lixd@17x:~/17x/projects/grpc-go-example/features/encryption/server-side-TLS/client$ go run main.go 
+</span></span><span style="display:flex;"><span>UnaryEcho:  hello world
+</span></span></code></pre></div><p>可以看到成功开启了 TLS。</p>
+<h3 id="3-mutual-tls">
+  3. mutual TLS
+  <a class="anchor" href="#3-mutual-tls">#</a>
+</h3>
+<p>server-side TLS 中虽然服务端使用了证书，但是客户端却没有使用证书，本章节会给客户端也生成一个证书，并完成 mutual TLS。</p>
+<h4 id="1-制作证书">
+  1. 制作证书
+  <a class="anchor" href="#1-%e5%88%b6%e4%bd%9c%e8%af%81%e4%b9%a6">#</a>
+</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># 生成.key  私钥文件</span>
+</span></span><span style="display:flex;"><span>$ openssl genrsa -out server.key <span style="color:#ae81ff">2048</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 生成.csr 证书签名请求文件</span>
+</span></span><span style="display:flex;"><span>$ openssl req -new -key server.key -out server.csr <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>	-subj <span style="color:#e6db74">&#34;/C=GB/L=China/O=lixd/CN=www.lixueduan.com&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>	-reqexts SAN <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>	-config &lt;<span style="color:#f92672">(</span>cat /etc/ssl/openssl.cnf &lt;<span style="color:#f92672">(</span>printf <span style="color:#e6db74">&#34;\n[SAN]\nsubjectAltName=DNS:*.lixueduan.com,DNS:*.refersmoon.com&#34;</span><span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 签名生成.crt 证书文件</span>
+</span></span><span style="display:flex;"><span>$ openssl x509 -req -days <span style="color:#ae81ff">3650</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>   -in server.csr -out server.crt <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>   -CA ca.crt -CAkey ca.key -CAcreateserial <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>   -extensions SAN <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>   -extfile &lt;<span style="color:#f92672">(</span>cat /etc/ssl/openssl.cnf &lt;<span style="color:#f92672">(</span>printf <span style="color:#e6db74">&#34;\n[SAN]\nsubjectAltName=DNS:*.lixueduan.com,DNS:*.refersmoon.com&#34;</span><span style="color:#f92672">))</span>
+</span></span></code></pre></div><p>这里又会生成3个文件，需要的是下面这两个：</p>
+<ul>
+<li>client.crt</li>
+<li>client.key</li>
+</ul>
+<p>到此为止，我们已经有了如下5个文件：</p>
+<ul>
+<li>ca.crt</li>
+<li>client.crt</li>
+<li>client.key</li>
+<li>server.crt</li>
+<li>server.key</li>
+</ul>
+<h4 id="2-服务端">
+  2. 服务端
+  <a class="anchor" href="#2-%e6%9c%8d%e5%8a%a1%e7%ab%af">#</a>
+</h4>
+<p>mutual TLS 中服务端、客户端改动都比较多。</p>
+<p>具体步骤如下：</p>
+<ul>
+<li>1）加载服务端证书</li>
+<li>2）构建用于校验客户端证书的 CertPool</li>
+<li>3）使用上面的参数构建一个 TransportCredentials</li>
+<li>4）newServer 是指定使用前面创建的 creds。</li>
+</ul>
+<p>具体改动如下：</p>
+<blockquote>
+<p>看似改动很大，其实如果你仔细查看了前面 NewServerTLSFromFile 方法做的事的话，就会发现是差不多的，只有极个别参数不同。</p>
+</blockquote>
+<p>修改点如下：</p>
+<ul>
+<li>1）tls.Config的参数ClientAuth，这里改成了tls.RequireAndVerifyClientCert，即服务端也必须校验客户端的证书，之前使用的默认值(即不校验)</li>
+<li>2）tls.Config的参数ClientCAs，由于之前都不校验客户端证书，所以也没有指定用什么证书来校验。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 从证书相关文件中读取和解析信息，得到证书公钥、密钥对
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">certificate</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">tls</span>.<span style="color:#a6e22e">LoadX509KeyPair</span>(<span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">Path</span>(<span style="color:#e6db74">&#34;x509/server.crt&#34;</span>), <span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">Path</span>(<span style="color:#e6db74">&#34;x509/server.key&#34;</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 创建CertPool，后续就用池里的证书来校验客户端证书有效性
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// 所以如果有多个客户端 可以给每个客户端使用不同的 CA 证书，来实现分别校验的目的
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">certPool</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">NewCertPool</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ca</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadFile</span>(<span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">Path</span>(<span style="color:#e6db74">&#34;x509/ca.crt&#34;</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">certPool</span>.<span style="color:#a6e22e">AppendCertsFromPEM</span>(<span style="color:#a6e22e">ca</span>); !<span style="color:#a6e22e">ok</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#e6db74">&#34;failed to append certs&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 构建基于 TLS 的 TransportCredentials
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">creds</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">credentials</span>.<span style="color:#a6e22e">NewTLS</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">tls</span>.<span style="color:#a6e22e">Config</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 设置证书链，允许包含一个或多个
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">Certificates</span>: []<span style="color:#a6e22e">tls</span>.<span style="color:#a6e22e">Certificate</span>{<span style="color:#a6e22e">certificate</span>},
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 要求必须校验客户端的证书 可以根据实际情况选用其他参数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">ClientAuth</span>: <span style="color:#a6e22e">tls</span>.<span style="color:#a6e22e">RequireAndVerifyClientCert</span>, <span style="color:#75715e">// NOTE: this is optional!
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#75715e">// 设置根证书的集合，校验方式使用 ClientAuth 中设定的模式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">ClientCAs</span>: <span style="color:#a6e22e">certPool</span>,
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">grpc</span>.<span style="color:#a6e22e">NewServer</span>(<span style="color:#a6e22e">grpc</span>.<span style="color:#a6e22e">Creds</span>(<span style="color:#a6e22e">creds</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ecpb</span>.<span style="color:#a6e22e">RegisterEchoServer</span>(<span style="color:#a6e22e">s</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">ecServer</span>{})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lis</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Listen</span>(<span style="color:#e6db74">&#34;tcp&#34;</span>, <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;:%d&#34;</span>, <span style="color:#f92672">*</span><span style="color:#a6e22e">port</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatalf</span>(<span style="color:#e6db74">&#34;failed to listen: %v&#34;</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Serving gRPC on 0.0.0.0&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;:%d&#34;</span>, <span style="color:#f92672">*</span><span style="color:#a6e22e">port</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Serve</span>(<span style="color:#a6e22e">lis</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatalf</span>(<span style="color:#e6db74">&#34;failed to serve: %v&#34;</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="3-客户端">
+  3. 客户端
+  <a class="anchor" href="#3-%e5%ae%a2%e6%88%b7%e7%ab%af">#</a>
+</h4>
+<p>客户端改动和前面服务端差不多，具体步骤都一样，除了不能指定校验策略之外基本一样。</p>
+<blockquote>
+<p>大概是因为客户端必校验服务端证书，所以没有提供可选项。</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 加载客户端证书
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">certificate</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">tls</span>.<span style="color:#a6e22e">LoadX509KeyPair</span>(<span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">Path</span>(<span style="color:#e6db74">&#34;x509/client.crt&#34;</span>), <span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">Path</span>(<span style="color:#e6db74">&#34;x509/client.key&#34;</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 构建CertPool以校验服务端证书有效性
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">certPool</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">x509</span>.<span style="color:#a6e22e">NewCertPool</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ca</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadFile</span>(<span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">Path</span>(<span style="color:#e6db74">&#34;x509/ca.crt&#34;</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">certPool</span>.<span style="color:#a6e22e">AppendCertsFromPEM</span>(<span style="color:#a6e22e">ca</span>); !<span style="color:#a6e22e">ok</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#e6db74">&#34;failed to append ca certs&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">creds</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">credentials</span>.<span style="color:#a6e22e">NewTLS</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">tls</span>.<span style="color:#a6e22e">Config</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Certificates</span>: []<span style="color:#a6e22e">tls</span>.<span style="color:#a6e22e">Certificate</span>{<span style="color:#a6e22e">certificate</span>},
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">ServerName</span>:   <span style="color:#e6db74">&#34;www.lixueduan.com&#34;</span>, <span style="color:#75715e">// NOTE: this is required!
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">RootCAs</span>:      <span style="color:#a6e22e">certPool</span>,
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">conn</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">grpc</span>.<span style="color:#a6e22e">Dial</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">addr</span>, <span style="color:#a6e22e">grpc</span>.<span style="color:#a6e22e">WithTransportCredentials</span>(<span style="color:#a6e22e">creds</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatalf</span>(<span style="color:#e6db74">&#34;DialContext error:%v&#34;</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">conn</span>.<span style="color:#a6e22e">Close</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">client</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ecpb</span>.<span style="color:#a6e22e">NewEchoClient</span>(<span style="color:#a6e22e">conn</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">callUnaryEcho</span>(<span style="color:#a6e22e">client</span>, <span style="color:#e6db74">&#34;hello world&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="4-test">
+  4. Test
+  <a class="anchor" href="#4-test">#</a>
+</h4>
+<p>Server</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>lixd@17x:~/17x/projects/grpc-go-example/features/encryption/mutual-TLS/server$ go run main.go 
+</span></span><span style="display:flex;"><span>2021/01/24 18:02:01 Serving gRPC on 0.0.0.0:50051
+</span></span></code></pre></div><p>Client</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>lixd@17x:~/17x/projects/grpc-go-example/features/encryption/mutual-TLS/client$ go run main.go 
+</span></span><span style="display:flex;"><span>UnaryEcho:  hello world
+</span></span></code></pre></div><p>一切正常，大功告成。</p>
+<h3 id="4-faq">
+  4. FAQ
+  <a class="anchor" href="#4-faq">#</a>
+</h3>
+<p><strong>问题</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>error:rpc error: code <span style="color:#f92672">=</span> Unavailable desc <span style="color:#f92672">=</span> connection error: desc <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;transport: authentication handshake failed: x509: certificate relies on legacy Common Name field, use SANs or temporarily enable Common Name matching with GODEBUG=x509ignoreCN=0&#34;</span>
+</span></span></code></pre></div><p>由于之前使用的不是 SAN 证书，在Go版本升级到1.15后出现了该问题。</p>
+<p><strong>原因</strong></p>
+<p>Go 1.15 版本开始废弃 CommonName 并且推荐使用 SAN 证书，导致依赖 CommonName 的证书都无法使用了。</p>
+<p><strong>解决方案</strong></p>
+<ul>
+<li>1）开启兼容：设置环境变量 GODEBUG 为 <code>x509ignoreCN=0</code></li>
+<li>2）使用 SAN 证书</li>
+</ul>
+<p>本教程已经修改成了 SAN 证书，所以不会遇到该问题了。</p>
+<h3 id="特殊函数用法">
+  特殊函数用法
+  <a class="anchor" href="#%e7%89%b9%e6%ae%8a%e5%87%bd%e6%95%b0%e7%94%a8%e6%b3%95">#</a>
+</h3>
+<h4 id="grpcmaxcallrecvmsgsize">
+  grpc.MaxCallRecvMsgSize
+  <a class="anchor" href="#grpcmaxcallrecvmsgsize">#</a>
+</h4>
+<p><code>grpc.MaxCallRecvMsgSize(maxCallRecvMsgSize)</code> 是用于设置 gRPC 调用接收消息的最大大小限制的函数。这个函数允许你限制 gRPC 调用接收消息的最大大小，以防止潜在的内存溢出或拒绝服务攻击。</p>
+<p>这个函数的作用是设置 gRPC 调用接收消息的最大大小限制，以确保接收到的消息大小不超过指定的值 <code>maxCallRecvMsgSize</code>。如果接收到的消息超过了这个限制，gRPC 调用可能会失败并返回相应的错误。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">cancel</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithTimeout</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>(), <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span><span style="color:#f92672">*</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>(<span style="color:#a6e22e">timeoutSec</span>)))
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">cancel</span>()
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">conn</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">grpc</span>.<span style="color:#a6e22e">DialContext</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">port</span>, <span style="color:#a6e22e">grpc</span>.<span style="color:#a6e22e">WithInsecure</span>(), <span style="color:#a6e22e">grpc</span>.<span style="color:#a6e22e">WithDefaultCallOptions</span>(<span style="color:#a6e22e">grpc</span>.<span style="color:#a6e22e">MaxCallRecvMsgSize</span>(<span style="color:#a6e22e">maxCallRecvMsgSize</span>)), <span style="color:#a6e22e">grpc</span>.<span style="color:#a6e22e">WithBlock</span>())
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatalf</span>(<span style="color:#e6db74">&#34;fail to dial: %v&#34;</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></article>
  
       
 
@@ -2387,12 +2714,19 @@ $ go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
   <ul>
     <li>
       <ul>
-        <li><a href="#grpc">gRPC</a>
+        <li><a href="#grpc">GRPC</a>
           <ul>
+            <li><a href="#介绍">介绍</a></li>
             <li><a href="#rpc">RPC</a></li>
-            <li><a href="#grpc是什么">GRPC是什么？</a></li>
-            <li><a href="#安装protoc">安装protoc</a></li>
-            <li><a href="#安装协议编译器的插件">安装协议编译器的插件</a></li>
+            <li><a href="#protocol-buffers">protocol buffers</a></li>
+          </ul>
+        </li>
+        <li><a href="#server-side-tls">server-side TLS</a>
+          <ul>
+            <li></li>
+            <li><a href="#3-mutual-tls">3. mutual TLS</a></li>
+            <li><a href="#4-faq">4. FAQ</a></li>
+            <li><a href="#特殊函数用法">特殊函数用法</a></li>
           </ul>
         </li>
       </ul>

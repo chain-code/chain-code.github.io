@@ -47,7 +47,7 @@ XML 已经成为多种行业标准的编写工具，Protobuf 只是 Google 公�
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.08de7a4944fe11557d8e02c1c396308bc7e5f6fd41517230bfa28399a1e729c0.js" integrity="sha256-CN56SUT&#43;EVV9jgLBw5Ywi8fl9v1BUXIwv6KDmaHnKcA=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.eb3dab4935e0216e4305a1438b3237e31dde9b6c5a76436a6cbfdf9132118923.js" integrity="sha256-6z2rSTXgIW5DBaFDizI34x3em2xadkNqbL/fkTIRiSM=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -565,19 +565,6 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
-  
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
   
 
@@ -605,32 +592,6 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
-  
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
-  
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
   
 
         </li>
@@ -1262,6 +1223,45 @@ https://github.com/alex-shpak/hugo-book
       
     
   </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
 
         </li>
       
@@ -2270,8 +2270,8 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">message</span> <span style="color:#a6e22e">PandaRequest</span> {
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">string</span> <span style="color:#a6e22e">name</span> = <span style="color:#ae81ff">1</span>;
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int32</span> <span style="color:#a6e22e">shengao</span> = <span style="color:#ae81ff">2</span>;
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">repeated</span> <span style="color:#66d9ef">int32</span> <span style="color:#a6e22e">tizhong</span> = <span style="color:#ae81ff">3</span>;
-</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">repeated</span> <span style="color:#66d9ef">int32</span> <span style="color:#a6e22e">tizhong</span> = <span style="color:#ae81ff">3</span>;  <span style="color:#75715e">//重复的  类似于切片
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
 </span></span></code></pre></div><p>文件的第一行指定了你正在使用proto3语法：如果你没有指定这个，编译器会使用proto2。这个指定语法行必须 是文件的非空非注释的第一个行。</p>
 <p>在上面的例子中，所有字段都是标量类型：两个整型（shengao和tizhong），一个string类型（name）。</p>
 <p>Repeated 关键字表示重复的那么在go语言中用切片进行代表</p>
@@ -2418,7 +2418,7 @@ https://github.com/alex-shpak/hugo-book
   默认值
   <a class="anchor" href="#%e9%bb%98%e8%ae%a4%e5%80%bc">#</a>
 </h4>
-<p>当一个消息被解析的时候，如果被编码的信息不包含一个特定的元素，被解析的对象锁对应的域被设置位一个默认 值，对于不同类型指定如下：</p>
+<p>当一个消息被解析的时候，如果被编码的信息不包含一个特定的元素，被解析的对象锁对应的域被设置位一个默认值，对于不同类型指定如下：</p>
 <p>对于strings，默认是一个空string</p>
 <p>对于bytes，默认是一个空的bytes</p>
 <p>对于bools，默认是false</p>
@@ -2482,6 +2482,21 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>	<span style="color:#75715e">//rpc 服务的函数名 （传入参数）返回（返回参数）
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">rpc</span> <span style="color:#a6e22e">Search</span> (<span style="color:#a6e22e">SearchRequest</span>) <span style="color:#a6e22e">returns</span> (<span style="color:#a6e22e">SearchResponse</span>);
 </span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">service</span> <span style="color:#a6e22e">Demo</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 简单模式。一个请求，一个响应。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">rpc</span> <span style="color:#a6e22e">Add</span> (<span style="color:#a6e22e">TwoNum</span>) <span style="color:#a6e22e">returns</span> (<span style="color:#a6e22e">Response</span>) {} <span style="color:#75715e">//客户端发送一个请求，包含两个数字，服务端是返回两个数字的和
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">rpc</span> <span style="color:#a6e22e">SayHello</span> (<span style="color:#a6e22e">HelloRequest</span>) <span style="color:#a6e22e">returns</span> (<span style="color:#a6e22e">HelloReply</span>) {} <span style="color:#75715e">//发送一个name字符串，返回hello name
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//服务端流模式，客户端发送一个请求，服务端返回多次。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">rpc</span> <span style="color:#a6e22e">GetStream</span> (<span style="color:#a6e22e">TwoNum</span>) <span style="color:#a6e22e">returns</span> (<span style="color:#a6e22e">stream</span> <span style="color:#a6e22e">Response</span>) {} <span style="color:#75715e">//请求一次，返回三次，分别是两数子和、两数之积、两数之差
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//客户端流模式，客户端发送多次请求，服务端响应一次。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">rpc</span> <span style="color:#a6e22e">PutStream</span> (<span style="color:#a6e22e">stream</span> <span style="color:#a6e22e">OneNum</span>) <span style="color:#a6e22e">returns</span> (<span style="color:#a6e22e">Response</span>) {}<span style="color:#75715e">//请求中每次都是一个数字，发送完成后，服务端返回所有数字之和
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//双向流，发送和接收同时进行，互不干扰      stream 关键字用于定义流式 RPC 方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">rpc</span> <span style="color:#a6e22e">DoubleStream</span> (<span style="color:#a6e22e">stream</span> <span style="color:#a6e22e">TwoNum</span>) <span style="color:#a6e22e">returns</span> (<span style="color:#a6e22e">stream</span> <span style="color:#a6e22e">Response</span>) {} <span style="color:#75715e">//每次请求都返回两个数字之和
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>} 
 </span></span></code></pre></div><p>最直观的使用protocol buffer的RPC系统是gRPC一个由谷歌开发的语言和平台中的开源的RPC系统，gRPC在使用 protocl buffer时非常有效，如果使用特殊的protocol buffer插件可以直接为您从.proto文件中产生相关的RPC代 码。</p>
 <p>如果你不想使用gRPC，也可以使用protocol buffer用于自己的RPC实现，你可以从proto2语言指南中找到更多信 息</p>
 <h4 id="生成访问类了解">

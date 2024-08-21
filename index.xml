@@ -300,22 +300,16 @@ func AddFloat32(a float32, b float32) float32 {return a + b}func AddString(a 
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/grpc/</guid>
-      <description>gRPC # gRPC 是一个高性能、开源和通用的 RPC 框架，面向移动和 HTTP/2 设计。
+      <description>GRPC # 介绍 # gRPC 是一个高性能、开源和通用的 RPC 框架，面向移动和 HTTP/2 设计。
 gRPC基于 HTTP/2标准设计，带来诸如双向流、流控、头部压缩、单 TCP连接上的多复用请求等特。这些特性使得 其在移动设备上表现更好，更省电和节省空间占用。
-RPC # RPC（Remote Procedure Call Protocol）——远程过程调用协议，它是一种通过网络从远程计算机程序上请求 服务，而不需要了解底层网络技术的协议。
-简单来说，就是跟远程访问或者web请求差不多，都是一个client向远端服务器请求服务返回结果，但是web请求 使用的网络协议是http高层协议，而rpc所使用的协议多为TCP，是网络层协议，减少了信息的包装，加快了处理速 度。
-golang本身有rpc包，可以方便的使用，来构建自己的rpc服务，下边是一个简单是实例，可以加深我们的理解
-1.调用客户端句柄；执行传送参数
-2.调用本地系统内核发送网络消息
-3.消息传送到远程主机
-4.服务器句柄得到消息并取得参数
-5.执行远程过程
-6.执行的过程将结果返回服务器句柄
-7.服务器句柄返回结果，调用远程系统内核
-8.消息传回本地主机
-9.客户句柄由内核接收消息
-10.客户接收句柄返回的数据
-服务端 # package main import ( &amp;#34;net/http&amp;#34; &amp;#34;net/rpc&amp;#34; &amp;#34;net&amp;#34; &amp;#34;github.com/astaxie/beego&amp;#34; &amp;#34;io&amp;#34; ) //- 方法是导出的 //- 方法有两个参数，都是导出类型或内建类型 //- 方法的第二个参数是指针 //- 方法只有一个error接口类型的返回值 //func (t *T) MethodName(argType T1, replyType *T2) error type Panda int; func (this *Panda)Getinfo(argType int, replyType *int) error { beego.</description>
+在 gRPC里客户端应用可以像调用本地对象一样直接调用另一台不同的机器上服务端应用的方法，使得您能够更容 易地创建分布式应用和服务。与许多 RPC系统类似， gRPC也是基于以下理念：
+定义一个服务，指定其能够被远程调用的方法（包含参数和返回类型）。
+在服务端实现这个接口，并运行一个 gRPC服务器来处理客户端调用。
+在客户端拥有一个存根能够像服务端一样的方法。 gRPC客户端和服务端可以在多种环境中运行和交互 -从 google 内部的服务器到你自己的笔记本，并且可以用任何 gRPC支持的语言 来编写。
+所以，你可以很容易地用 Java创建一个 gRPC服务端，用 Go、 Python、Ruby来创建客户端。此外， Google最新 API将有 gRPC版本的接口，使你很容易地将 Google的功能集成到你的应用里。
+gRPC 内置了以下 encryption 机制：
+SSL / TLS：通过证书进行数据加密； ALTS：Google开发的一种双向身份验证和传输加密系统。 只有运行在 Google Cloud Platform 才可用，一般不用考虑。 gRPC 中的连接类型一共有以下3种：
+insecure connection：不使用TLS加密 server-side TLS：仅服务端TLS加密 mutual TLS：客户端、服务端都使用TLS加密 gRPC 与 RESTful API比较 # 特性 gRPC RESTful API 规范 必须.</description>
     </item>
     
     <item>
@@ -497,8 +491,13 @@ generationTimestamp要比genymdhms要好的多，即使前一个比较长一点�
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/</guid>
-      <description> 单元测试 # 单独运行某个测试用例
-go test -run ^TestGetVer$ </description>
+      <description>单元测试 # https://learnku.com/articles/52896
+https://www.topgoer.com/%E5%87%BD%E6%95%B0/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html
+介绍 # 单元测试可以检查我们的代码能否按照预期进行，代码逻辑是否有问题，以此可以提升代码质量。 简单来说单元测试就是针对某一个函数方法进行测试，我们要先测试正确的传值与获取正确的预期结果，然后再添加更多测试用例，得出多种预期结果。尽可能达到该方法逻辑没有问题，或者问题都能被我们预知到。这就是单元测试的好处。
+Go 语言的单元测试默认采用官方自带的测试框架，通过引入 testing 包以及 执行 go test 命令来实现单元测试功能。
+在源代码包目录内，所有以 _test.go 为后缀名的源文件会被 go test 认定为单元测试的文件，这些单元测试的文件不会包含在 go build 的源代码构建中，而是单独通过 go test 来编译并执行。
+规范 # Go 单元测试的基本规范如下：
+每个测试函数都必须导入 testing 包。测试函数的命名类似func TestName(t *testing.T)，入参必须是 *testing.T 测试函数的函数名必须以大写的 Test 开头，后面紧跟的函数名，要么是大写开关，要么就是下划线，比如 func TestName(t *testing.T) 或者 func Test_name(t *testing.T) 都是 ok 的， 但是 func Testname(t *testing.T)不会被检测到 通常情况下，需要将测试文件和源代码放在同一个包内。一般测试文件的命名，都是 {source_filename}_test.go，比如我们的源代码文件是allen.go ，那么就会在 allen.go 的相同目录下，再建立一个 allen_test.go 的单元测试文件去测试 allen.go 文件里的相关方法。 当运行 go test 命令时，go test 会遍历所有的 *_test.</description>
     </item>
     
     <item>
@@ -535,10 +534,10 @@ ssh-keygen -t rsa -C &amp;#34;github邮箱地址&amp;#34; -f ~/.ssh/github_rsa 2
     
     <item>
       <title>微服务</title>
-      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</guid>
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</guid>
       <description>微服务 # 微服务框架是将复杂的系统使用组件化的方式进行拆分，并使用轻量级通讯方式进行整合的一种设计方法。
 微服务是通过这种架构设计方法拆分出来的一个独立的组件化的小应用。
 微服务架构和整体式架构的区别？ # 开发单体式（整体式）应用的不足之处 # 三层架构（MVC）的具体内容如下：
@@ -938,10 +937,10 @@ OrdererOrgs:	- Name: Orderer	Domain: example.com	Specs: - Hostname: orderer - Ho
     
     <item>
       <title>gin框架</title>
-      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/</link>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/gin%E6%A1%86%E6%9E%B6/</link>
       <pubDate>Mon, 27 Dec 2021 21:22:31 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/</guid>
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/gin%E6%A1%86%E6%9E%B6/</guid>
       <description>简介 # 介绍 # Gin是一个golang的微框架，封装比较优雅，API友好，源码注释比较明确，具有快速灵活，容错方便等特点 对于golang而言，web框架的依赖要远比Python，Java之类的要小。自身的net/http足够简单，性能也非常不错 借助框架开发，不仅可以省去很多常用的封装带来的时间，也有助于团队的编码风格和形成规范 安装 # 要安装Gin软件包，您需要安装Go并首先设置Go工作区。
 1.首先需要安装Go（需要1.10+版本），然后可以使用下面的Go命令安装Gin。
 go get -u github.com/gin-gonic/gin
@@ -969,10 +968,10 @@ scp 是 secure copy 的缩写, scp 是 Linux 系统下基于 ssh 登陆进行安
     
     <item>
       <title>Beego框架</title>
-      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/</link>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/beego%E6%A1%86%E6%9E%B6/</link>
       <pubDate>Sun, 07 Mar 2021 13:48:22 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/</guid>
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/beego%E6%A1%86%E6%9E%B6/</guid>
       <description>beego框架 # beego框架了解 # Beego框架是go语言开发的web框架。
 beego是中国人开发的，开发文档比较详细
 beego网址 MVC架构 # Beego是MVC架构。MVC 是一种应用非常广泛的体系架构，几乎所有的编程语言都会使用到，而且所有的程序员在工作中都会遇到！用 MVC 的方式开发程序，可以让程序的结构更加合理和清晰。 我们画图说明
@@ -986,8 +985,8 @@ beego网址 MVC架构 # Beego是MVC架构。MVC 是一种应用非常广泛的�
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/golang/package/atomic/</guid>
-      <description>Go语言中的 sync/atomic 包提供了一组原子操作函数，用于在多线程或并发环境下执行对共享变量的原子操作。这些操作是原子的，不会受到其他并发操作的干扰，从而避免了竞态条件和数据竞争问题。sync/atomic 包通常用于同步和管理共享资源，以确保线程安全。
-原子加载（Load）： Load 函数用于原子地加载变量的值。例如，atomic.LoadInt32(&amp;amp;myVariable) 会原子地获取 myVariable 的值。 原子存储（Store）： Store 函数用于原子地存储一个值到变量中。例如，atomic.StoreInt32(&amp;amp;myVariable, newValue) 会原子地将 newValue 存储到 myVariable 中。 原子交换（Swap）： Swap 函数用于原子地交换变量的值，并返回之前的值。例如，atomic.SwapInt32(&amp;amp;myVariable, newValue) 会原子地将 newValue 存储到 myVariable 中，并返回之前的值。 原子增减（Add/Sub）： Add 和 Sub 函数用于原子地增加或减少变量的值。例如，atomic.AddInt32(&amp;amp;myVariable, delta) 会原子地将 myVariable 的值增加 delta。 原子比较并交换（CompareAndSwap）： CompareAndSwap 函数用于原子地比较变量的当前值与期望值，如果相等则交换成新值。这通常用于实现乐观锁定机制。例如，atomic.CompareAndSwapInt32(&amp;amp;myVariable, expectedValue, newValue) 会比较 myVariable 的当前值是否等于 expectedValue，如果是，则将其替换为 newValue。 原子增减并返回新值（AddInt32, AddInt64, SubInt32, SubInt64）： 这些函数用于原子地增加或减少变量的值，并返回新的值。例如，atomic.AddInt32(&amp;amp;myVariable, delta) 会原子地将 myVariable 的值增加 delta，并返回新的值。 </description>
+      <description>快速 # Go语言中的 sync/atomic 包提供了一组原子操作函数，用于在多线程或并发环境下执行对共享变量的原子操作。这些操作是原子的，不会受到其他并发操作的干扰，从而避免了竞态条件和数据竞争问题。sync/atomic 包通常用于同步和管理共享资源，以确保线程安全。
+Load 操作 读取 # atomic.LoadInt32(&amp;amp;addr int32) int32 原子性地读取一个 int32 值。 atomic.LoadInt64(&amp;amp;addr int64) int64 原子性地读取一个 int64 值。 atomic.LoadUint32(&amp;amp;addr uint32) uint32 原子性地读取一个 uint32 值。 atomic.LoadUint64(&amp;amp;addr uint64) uint64 原子性地读取一个 uint64 值。 atomic.LoadUintptr(&amp;amp;addr uintptr) uintptr 原子性地读取一个 uintptr 值。 atomic.LoadPointer(&amp;amp;addr unsafe.Pointer) unsafe.Pointer 原子性地读取一个指针值。 Store 操作 设置 # atomic.StoreInt32(&amp;amp;addr int32, val int32) 原子性地设置一个 int32 值。 atomic.StoreInt64(&amp;amp;addr int64, val int64) 原子性地设置一个 int64 值。 atomic.StoreUint32(&amp;amp;addr uint32, val uint32) 原子性地设置一个 uint32 值。 atomic.</description>
     </item>
     
     <item>

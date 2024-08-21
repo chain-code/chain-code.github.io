@@ -33,7 +33,7 @@
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.08de7a4944fe11557d8e02c1c396308bc7e5f6fd41517230bfa28399a1e729c0.js" integrity="sha256-CN56SUT&#43;EVV9jgLBw5Ywi8fl9v1BUXIwv6KDmaHnKcA=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.eb3dab4935e0216e4305a1438b3237e31dde9b6c5a76436a6cbfdf9132118923.js" integrity="sha256-6z2rSTXgIW5DBaFDizI34x3em2xadkNqbL/fkTIRiSM=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -551,19 +551,6 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
-  
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
   
 
@@ -591,32 +578,6 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
-  
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-27-gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
-  
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
   
 
         </li>
@@ -1248,6 +1209,45 @@ https://github.com/alex-shpak/hugo-book
       
     
   </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
 
         </li>
       
@@ -3079,15 +3079,235 @@ func (u UserHandler) create(w http.ResponseWriter, r *http.Request) {
   实现
   <a class="anchor" href="#%e5%ae%9e%e7%8e%b0-3">#</a>
 </h4>
-<p>用Go kit实现一个简单微服务</p>
-<h4 id="优点-3">
+<p>用Go kit实现一个简单微服务，业务逻辑是创建一个简易的字符串服务，并且允许开发者操作字符串。</p>
+<p>（1）业务逻辑</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//服务接口提供对字符串的操作
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Service</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">UpperString</span>(<span style="color:#66d9ef">string</span>) (<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">error</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Reverse</span>(<span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">StringService</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">log</span> <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Logger</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//创建字符串服务
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewStringService</span>(<span style="color:#a6e22e">log</span> <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Logger</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">StringService</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">StringService</span>{<span style="color:#a6e22e">log</span>}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//实现UpperString()方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">svc</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">StringService</span>) <span style="color:#a6e22e">UpperString</span>(<span style="color:#a6e22e">s</span> <span style="color:#66d9ef">string</span>) (<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">reverse</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">svc</span>.<span style="color:#a6e22e">Reverse</span>(<span style="color:#a6e22e">s</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">ToLower</span>(<span style="color:#a6e22e">s</span>) <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;&#34;</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;empty string&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">ToUpper</span>(<span style="color:#a6e22e">reverse</span>), <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//实现Reverse()方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">svc</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">StringService</span>) <span style="color:#a6e22e">Reverse</span>(<span style="color:#a6e22e">s</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//转换为 rune
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">rns</span> <span style="color:#f92672">:=</span> []rune(<span style="color:#a6e22e">s</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>, len(<span style="color:#a6e22e">rns</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">j</span>; <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span> = <span style="color:#a6e22e">i</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 交换字符串的字母
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">rns</span>[<span style="color:#a6e22e">i</span>], <span style="color:#a6e22e">rns</span>[<span style="color:#a6e22e">j</span>] = <span style="color:#a6e22e">rns</span>[<span style="color:#a6e22e">j</span>], <span style="color:#a6e22e">rns</span>[<span style="color:#a6e22e">i</span>]
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 返回反转的字符串
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">ToLower</span>(string(<span style="color:#a6e22e">rns</span>))
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（2）创建请求和相应</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//大写字符串请求
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">UpperStringRequest</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Word</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;word&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//逆转字符串请求
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">ReverseRequest</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Word</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;word&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//响应
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">UpperStringResponse</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Message</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;message&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//逆转字符串响应
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">ReverseResponse</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Word</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;reversed_word&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（3）创建端点</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//端点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Endpoints</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">GetUpperStringindrome</span> <span style="color:#a6e22e">endpoint</span>.<span style="color:#a6e22e">Endpoint</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">GetReverse</span>            <span style="color:#a6e22e">endpoint</span>.<span style="color:#a6e22e">Endpoint</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//创建端点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">MakeEndpoints</span>(<span style="color:#a6e22e">svc</span> <span style="color:#a6e22e">Service</span>, <span style="color:#a6e22e">logger</span> <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Logger</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">middlewares</span> []<span style="color:#a6e22e">endpoint</span>.<span style="color:#a6e22e">Middleware</span>) <span style="color:#a6e22e">Endpoints</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Endpoints</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">GetUpperStringindrome</span>: <span style="color:#a6e22e">wrapEndpoint</span>(
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">makeGetUpperStringindromeEndpoint</span>(<span style="color:#a6e22e">svc</span>, <span style="color:#a6e22e">logger</span>), <span style="color:#a6e22e">middlewares</span>),
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">GetReverse</span>: <span style="color:#a6e22e">wrapEndpoint</span>(<span style="color:#a6e22e">makeGetReverseEndpoint</span>(<span style="color:#a6e22e">svc</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">logger</span>), <span style="color:#a6e22e">middlewares</span>),
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//创建获取大写字符串字符串端点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">makeGetUpperStringindromeEndpoint</span>(<span style="color:#a6e22e">svc</span> <span style="color:#a6e22e">Service</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">logger</span> <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Logger</span>) <span style="color:#a6e22e">endpoint</span>.<span style="color:#a6e22e">Endpoint</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">request</span> <span style="color:#66d9ef">interface</span>{}) (<span style="color:#66d9ef">interface</span>{}, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">req</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">request</span>.(<span style="color:#a6e22e">UpperStringRequest</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">req</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">ok</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;invalid request&#34;</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">str</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">svc</span>.<span style="color:#a6e22e">UpperString</span>(<span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">Word</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">str</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">UpperStringResponse</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">Message</span>: <span style="color:#a6e22e">str</span>,
+</span></span><span style="display:flex;"><span>		}, <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//创建获取逆转字符串端点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">makeGetReverseEndpoint</span>(<span style="color:#a6e22e">svc</span> <span style="color:#a6e22e">Service</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">logger</span> <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Logger</span>) <span style="color:#a6e22e">endpoint</span>.<span style="color:#a6e22e">Endpoint</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">request</span> <span style="color:#66d9ef">interface</span>{}) (<span style="color:#66d9ef">interface</span>{}, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">req</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">request</span>.(<span style="color:#a6e22e">ReverseRequest</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">ok</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;invalid request&#34;</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">str</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">svc</span>.<span style="color:#a6e22e">UpperString</span>(<span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">Word</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">ReverseResponse</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">Word</span>: <span style="color:#a6e22e">str</span>,
+</span></span><span style="display:flex;"><span>		}, <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//打包处理端点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">wrapEndpoint</span>(<span style="color:#a6e22e">e</span> <span style="color:#a6e22e">endpoint</span>.<span style="color:#a6e22e">Endpoint</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">middlewares</span> []<span style="color:#a6e22e">endpoint</span>.<span style="color:#a6e22e">Middleware</span>) <span style="color:#a6e22e">endpoint</span>.<span style="color:#a6e22e">Endpoint</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">m</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">middlewares</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">e</span> = <span style="color:#a6e22e">m</span>(<span style="color:#a6e22e">e</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">e</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（4）传输文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//创建大写字符串控制器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">GetUpperStringHandler</span>(<span style="color:#a6e22e">ep</span> <span style="color:#a6e22e">endpoint</span>.<span style="color:#a6e22e">Endpoint</span>, <span style="color:#a6e22e">options</span> []<span style="color:#a6e22e">httptransport</span>.<span style="color:#a6e22e">ServerOption</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">httptransport</span>.<span style="color:#a6e22e">Server</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">httptransport</span>.<span style="color:#a6e22e">NewServer</span>(
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">ep</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">decodeGetUpperStringRequest</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">encodeGetUpperStringResponse</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">options</span><span style="color:#f92672">...</span>,
+</span></span><span style="display:flex;"><span>	)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//解码请求
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">decodeGetUpperStringRequest</span>(<span style="color:#a6e22e">_</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) (<span style="color:#66d9ef">interface</span>{}, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">req</span> <span style="color:#a6e22e">UpperStringRequest</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">NewDecoder</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>).<span style="color:#a6e22e">Decode</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">req</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">req</span>, <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//编码响应
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">encodeGetUpperStringResponse</span>(<span style="color:#a6e22e">_</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">response</span> <span style="color:#66d9ef">interface</span>{}) <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">resp</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">response</span>.(<span style="color:#f92672">*</span><span style="color:#a6e22e">UpperStringResponse</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">ok</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;error decoding&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">NewEncoder</span>(<span style="color:#a6e22e">w</span>).<span style="color:#a6e22e">Encode</span>(<span style="color:#a6e22e">resp</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//创建逆转控制器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">GetReverseHandler</span>(<span style="color:#a6e22e">ep</span> <span style="color:#a6e22e">endpoint</span>.<span style="color:#a6e22e">Endpoint</span>, <span style="color:#a6e22e">options</span> []<span style="color:#a6e22e">httptransport</span>.<span style="color:#a6e22e">ServerOption</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">httptransport</span>.<span style="color:#a6e22e">Server</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">httptransport</span>.<span style="color:#a6e22e">NewServer</span>(
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">ep</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">decodeGetReverseRequest</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">encodeGetReverseResponse</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">options</span><span style="color:#f92672">...</span>,
+</span></span><span style="display:flex;"><span>	)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//解码获取逆转字符串请求
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">decodeGetReverseRequest</span>(<span style="color:#a6e22e">_</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) (<span style="color:#66d9ef">interface</span>{}, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">req</span> <span style="color:#a6e22e">ReverseRequest</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">NewDecoder</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>).<span style="color:#a6e22e">Decode</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">req</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">req</span>, <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//编码获取逆转字符串响应
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">encodeGetReverseResponse</span>(<span style="color:#a6e22e">_</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">response</span> <span style="color:#66d9ef">interface</span>{}) <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">resp</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">response</span>.(<span style="color:#f92672">*</span><span style="color:#a6e22e">ReverseResponse</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">ok</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;error decoding&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">NewEncoder</span>(<span style="color:#a6e22e">w</span>).<span style="color:#a6e22e">Encode</span>(<span style="color:#a6e22e">resp</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（5）创建客户端并进行调用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">logger</span> <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Logger</span>
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">logger</span> = <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">NewLogfmtLogger</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stderr</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">logger</span> = <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">With</span>(<span style="color:#a6e22e">logger</span>, <span style="color:#e6db74">&#34;ts&#34;</span>, <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">DefaultTimestampUTC</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">logger</span> = <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">With</span>(<span style="color:#a6e22e">logger</span>, <span style="color:#e6db74">&#34;caller&#34;</span>, <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">DefaultCaller</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//声明中间件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">middlewares</span> []<span style="color:#a6e22e">endpoint</span>.<span style="color:#a6e22e">Middleware</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//声明服务器可选参数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">options</span> []<span style="color:#a6e22e">httptransport</span>.<span style="color:#a6e22e">ServerOption</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//创建一个字符串服务对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">svc</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">pkg</span>.<span style="color:#a6e22e">NewStringService</span>(<span style="color:#a6e22e">logger</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//创建端点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">eps</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">pkg</span>.<span style="color:#a6e22e">MakeEndpoints</span>(<span style="color:#a6e22e">svc</span>, <span style="color:#a6e22e">logger</span>, <span style="color:#a6e22e">middlewares</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//创建路由器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">mux</span>.<span style="color:#a6e22e">NewRouter</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//指定控制器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Methods</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">MethodGet</span>).<span style="color:#a6e22e">Path</span>(<span style="color:#e6db74">&#34;/upperstring&#34;</span>).
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Handler</span>(<span style="color:#a6e22e">pkg</span>.<span style="color:#a6e22e">GetUpperStringHandler</span>(<span style="color:#a6e22e">eps</span>.<span style="color:#a6e22e">GetUpperStringindrome</span>, <span style="color:#a6e22e">options</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Methods</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">MethodGet</span>).<span style="color:#a6e22e">Path</span>(<span style="color:#e6db74">&#34;/reverse&#34;</span>).
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Handler</span>(<span style="color:#a6e22e">pkg</span>.<span style="color:#a6e22e">GetReverseHandler</span>(<span style="color:#a6e22e">eps</span>.<span style="color:#a6e22e">GetReverse</span>, <span style="color:#a6e22e">options</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">level</span>.<span style="color:#a6e22e">Info</span>(<span style="color:#a6e22e">logger</span>).<span style="color:#a6e22e">Log</span>(<span style="color:#e6db74">&#34;status&#34;</span>, <span style="color:#e6db74">&#34;listening&#34;</span>, <span style="color:#e6db74">&#34;port&#34;</span>, <span style="color:#e6db74">&#34;8082&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">svr</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Server</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Addr</span>:    <span style="color:#e6db74">&#34;127.0.0.1:8082&#34;</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Handler</span>: <span style="color:#a6e22e">r</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">level</span>.<span style="color:#a6e22e">Error</span>(<span style="color:#a6e22e">logger</span>).<span style="color:#a6e22e">Log</span>(<span style="color:#a6e22e">svr</span>.<span style="color:#a6e22e">ListenAndServe</span>())
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="优点-3">
   优点
   <a class="anchor" href="#%e4%bc%98%e7%82%b9-3">#</a>
 </h4>
+<ul>
+<li>可以独立部署</li>
+<li>可以快速启动</li>
+<li>适合敏捷开发</li>
+<li>职责专一，由专门的团队负责专门的服务</li>
+<li>服务可以按需动态扩容</li>
+<li>代码可以复用</li>
+</ul>
 <h4 id="缺点-3">
   缺点
   <a class="anchor" href="#%e7%bc%ba%e7%82%b9-3">#</a>
 </h4>
+<ul>
+<li>分布式部署，调用的复杂性高</li>
+<li>独立的数据库，分布式事务挑战性高</li>
+<li>测试难度提高</li>
+<li>运维难度提高</li>
+</ul>
 <h3 id="事件驱动架构">
   事件驱动架构
   <a class="anchor" href="#%e4%ba%8b%e4%bb%b6%e9%a9%b1%e5%8a%a8%e6%9e%b6%e6%9e%84">#</a>
@@ -3096,18 +3316,195 @@ func (u UserHandler) create(w http.ResponseWriter, r *http.Request) {
   简介
   <a class="anchor" href="#%e7%ae%80%e4%bb%8b-5">#</a>
 </h4>
+<p>对事件驱动架构而言，事件的捕获、通信、处理和持久保留是解决方案的核心结构。</p>
+<p>事件是指系统硬件或软件的状态出现的重大改变，事件的来源可能是内部，也可能是外部。</p>
+<p>事件驱动架构由事件发起者和事件使用者组成。事件的发起者会检测或感知事件，并且以消息的形式表示事件，它并不知道事件使用者或事件引起的结果。</p>
+<p>在检测到事件后，系统会通过事件通道从事件发起者传输给事件使用者，而事件处理平台会在该事件中以异步方式处理事件。</p>
+<p>事件处理平台会对事件做出正确的响应，并且将活动下发给相应的事件使用者。通过这种下发操作，我们可以看到事件的结果。</p>
+<p><strong>事件驱动架构模型：</strong></p>
+<ul>
+<li>
+<p>发布/订阅模型</p>
+</li>
+<li>
+<p>事件流模型</p>
+<p>借助事件流模型，事件会被写入日志。</p>
+</li>
+</ul>
 <h4 id="实现-4">
   实现
   <a class="anchor" href="#%e5%ae%9e%e7%8e%b0-4">#</a>
 </h4>
-<h4 id="优点-4">
+<p>（1）定义事件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">UserCreated</span> <span style="color:#a6e22e">userCreated</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 定义事件所需的有效负载
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">UserCreatedPayload</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Email</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Time</span>  <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">userCreated</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">handlers</span> []<span style="color:#66d9ef">interface</span>{ <span style="color:#a6e22e">Handle</span>(<span style="color:#a6e22e">UserCreatedPayload</span>) }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 为此事件添加事件处理程序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">u</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">userCreated</span>) <span style="color:#a6e22e">Register</span>(<span style="color:#a6e22e">handler</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Handle</span>(<span style="color:#a6e22e">UserCreatedPayload</span>)
+</span></span><span style="display:flex;"><span>}) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">u</span>.<span style="color:#a6e22e">handlers</span> = append(<span style="color:#a6e22e">u</span>.<span style="color:#a6e22e">handlers</span>, <span style="color:#a6e22e">handler</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 触发器发送带有有效负载的事件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">u</span> <span style="color:#a6e22e">userCreated</span>) <span style="color:#a6e22e">Trigger</span>(<span style="color:#a6e22e">payload</span> <span style="color:#a6e22e">UserCreatedPayload</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">u</span>.<span style="color:#a6e22e">handlers</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">handler</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">u</span>.<span style="color:#a6e22e">handlers</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">handler</span>.<span style="color:#a6e22e">Handle</span>(<span style="color:#a6e22e">payload</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Handle</span>(<span style="color:#a6e22e">payload</span> <span style="color:#a6e22e">UserCreatedPayload</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;handle:&#34;</span>, <span style="color:#a6e22e">payload</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">UserCreated</span> <span style="color:#a6e22e">userCreated</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 定义事件所需的有效负载
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">UserCreatedPayload</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Email</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Time</span>  <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">userCreated</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">handlers</span> []<span style="color:#66d9ef">interface</span>{ <span style="color:#a6e22e">Handle</span>(<span style="color:#a6e22e">UserCreatedPayload</span>) }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 为此事件添加事件处理程序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">u</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">userCreated</span>) <span style="color:#a6e22e">Register</span>(<span style="color:#a6e22e">handler</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Handle</span>(<span style="color:#a6e22e">UserCreatedPayload</span>)
+</span></span><span style="display:flex;"><span>}) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">u</span>.<span style="color:#a6e22e">handlers</span> = append(<span style="color:#a6e22e">u</span>.<span style="color:#a6e22e">handlers</span>, <span style="color:#a6e22e">handler</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 触发器发送带有有效负载的事件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">u</span> <span style="color:#a6e22e">userCreated</span>) <span style="color:#a6e22e">Trigger</span>(<span style="color:#a6e22e">payload</span> <span style="color:#a6e22e">UserCreatedPayload</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">u</span>.<span style="color:#a6e22e">handlers</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">handler</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">u</span>.<span style="color:#a6e22e">handlers</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">handler</span>.<span style="color:#a6e22e">Handle</span>(<span style="color:#a6e22e">payload</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Handle</span>(<span style="color:#a6e22e">payload</span> <span style="color:#a6e22e">UserCreatedPayload</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;handle:&#34;</span>, <span style="color:#a6e22e">payload</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（2）监听事件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">init</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">createNotifier</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">UserCreatedNotifier</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">AdminEmail</span>: <span style="color:#e6db74">&#34;test1@example.com&#34;</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">events</span>.<span style="color:#a6e22e">UserCreated</span>.<span style="color:#a6e22e">Register</span>(<span style="color:#a6e22e">createNotifier</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">UserCreatedNotifier</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">AdminEmail</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">u</span> <span style="color:#a6e22e">UserCreatedNotifier</span>) <span style="color:#a6e22e">NotifyAdmin</span>(<span style="color:#a6e22e">email</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">time</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 向管理员发送一条消息，说明用户已创建
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Notify Created Admin Email:&#34;</span>, <span style="color:#a6e22e">email</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Unix</span>())
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">u</span> <span style="color:#a6e22e">UserCreatedNotifier</span>) <span style="color:#a6e22e">Handle</span>(<span style="color:#a6e22e">payload</span> <span style="color:#a6e22e">events</span>.<span style="color:#a6e22e">UserCreatedPayload</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 发送消息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">u</span>.<span style="color:#a6e22e">NotifyAdmin</span>(<span style="color:#a6e22e">payload</span>.<span style="color:#a6e22e">Email</span>, <span style="color:#a6e22e">payload</span>.<span style="color:#a6e22e">Time</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">init</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">deleteNotifier</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">UserDeletedNotifier</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">AdminEmail</span>: <span style="color:#e6db74">&#34;jack@example.com&#34;</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">events</span>.<span style="color:#a6e22e">UserDeleted</span>.<span style="color:#a6e22e">Register</span>(<span style="color:#a6e22e">deleteNotifier</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">UserDeletedNotifier</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">AdminEmail</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">u</span> <span style="color:#a6e22e">UserDeletedNotifier</span>) <span style="color:#a6e22e">NotifyAdmin</span>(<span style="color:#a6e22e">email</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">time</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 向管理员发送一条消息，说明用户已创建
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Notify Deleted Admin Email:&#34;</span>, <span style="color:#a6e22e">email</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Unix</span>())
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">u</span> <span style="color:#a6e22e">UserDeletedNotifier</span>) <span style="color:#a6e22e">Handle</span>(<span style="color:#a6e22e">payload</span> <span style="color:#a6e22e">events</span>.<span style="color:#a6e22e">UserDeletedPayload</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 发送消息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">u</span>.<span style="color:#a6e22e">NotifyAdmin</span>(<span style="color:#a6e22e">payload</span>.<span style="color:#a6e22e">Email</span>, <span style="color:#a6e22e">payload</span>.<span style="color:#a6e22e">Time</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（3）触发事件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">CreateUser</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">//声明通知对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">createNotifier</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">notifier</span>.<span style="color:#a6e22e">UserCreatedNotifier</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">AdminEmail</span>: <span style="color:#e6db74">&#34;shirdon@example.com&#34;</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">////注册通知对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">events</span>.<span style="color:#a6e22e">UserCreated</span>.<span style="color:#a6e22e">Register</span>(<span style="color:#a6e22e">createNotifier</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//触发事件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">events</span>.<span style="color:#a6e22e">UserCreated</span>.<span style="color:#a6e22e">Trigger</span>(<span style="color:#a6e22e">events</span>.<span style="color:#a6e22e">UserCreatedPayload</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Email</span>: <span style="color:#e6db74">&#34;barry@example.com&#34;</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Time</span>:  <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>(),
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">DeleteUser</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">//声明通知对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">deleteNotifier</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">notifier</span>.<span style="color:#a6e22e">UserDeletedNotifier</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">AdminEmail</span>: <span style="color:#e6db74">&#34;jack@example.com&#34;</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//注册通知对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">events</span>.<span style="color:#a6e22e">UserDeleted</span>.<span style="color:#a6e22e">Register</span>(<span style="color:#a6e22e">deleteNotifier</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//触发事件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">events</span>.<span style="color:#a6e22e">UserDeleted</span>.<span style="color:#a6e22e">Trigger</span>(<span style="color:#a6e22e">events</span>.<span style="color:#a6e22e">UserDeletedPayload</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Email</span>: <span style="color:#e6db74">&#34;jack@example.com&#34;</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Time</span>:  <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>(),
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//触发事件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">events</span>.<span style="color:#a6e22e">UserDeleted</span>.<span style="color:#a6e22e">Trigger</span>(<span style="color:#a6e22e">events</span>.<span style="color:#a6e22e">UserDeletedPayload</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Email</span>: <span style="color:#e6db74">&#34;steve@example.com&#34;</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Time</span>:  <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>(),
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>（4）客户端测试</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//创建用户
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">auth</span>.<span style="color:#a6e22e">CreateUser</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//删除用户
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">auth</span>.<span style="color:#a6e22e">DeleteUser</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="优点-4">
   优点
   <a class="anchor" href="#%e4%bc%98%e7%82%b9-4">#</a>
 </h4>
+<ul>
+<li>松耦合，服务不需要相互依赖，这应用了不同的因素，如传输协议、可用性和正在发送的数据。</li>
+<li>可扩展性强。由于服务不再耦合，服务1的吞吐量不再需要满足服务2的吞吐量。</li>
+<li>支持异步性。由于服务不再依赖于同步返回的结果，因此可以即发即弃。</li>
+<li>可以按时间点恢复。如果事件由队列支持或维护某种历史记录，则可以重播事件。</li>
+</ul>
 <h4 id="缺点-4">
   缺点
   <a class="anchor" href="#%e7%bc%ba%e7%82%b9-4">#</a>
 </h4>
+<ul>
+<li>事件驱动架构会导致过度设计流程，有时候从一个服务到另一个服务只需要简单的调用就够了。</li>
+<li>事件驱动架构不支持ACID事务，难以测试和调试：由于流程现在依赖于最终一致性，通常不支持ACID事务，因此重复处理或乱序事件的处理会使服务代码更加复杂，并且难以测试和调试所有情况。</li>
+</ul>
 </article>
  
       

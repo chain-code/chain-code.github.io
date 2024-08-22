@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>web框架 on Soulmate</title>
+    <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/</link>
+    <description>Recent content in web框架 on Soulmate</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 27 Dec 2022 21:22:31 +0000</lastBuildDate><atom:link href="https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>动态路由与静态路由</title>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1/</link>
+      <pubDate>Tue, 27 Dec 2022 21:22:31 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1/</guid>
+      <description>静态路由 # 静态路由：静态路由是在路由器中设置固定的路由表；除非网络管理员进行干预，否则静态路由表不会发生变化。
+动态路由 # 动态路由：由网络中的路由器之间相互通信，传递路由信息，利用收到的路由信息更新路由表的路由方式。
+动态路由是与静态路由相对的一个概念，指路由器能够根据路由器之间交换的特定路由信息自动建立自己的路由表，并且能够根据链路和节点的变化适时地进行自动调整。
+当网络节点或节点间的链路发生故障，或者存在其它可用路由时候，动态路由可以自行选择“最佳”的可用路由。
+换句话说，动态路由就好比我们选择自由行，我们根据目的地和每个景区的情况实时地变更我们的旅行安排。比如深圳遇到交通管控，我们可以选择从广州绕行，不会因为一些意外情况耽误旅行。但是也要承担自由的“代价”，就是需要根据变化实时费心安排。
+相似的，动态路由可以自动根据网络拓扑结构变化进行调整，同时也会占用路由器的CPU、内存和链路带宽。
+常见的动态路由协议有：
+RIP（Routing Information Protocol，路由信息协议）、OSPF（Open Shortest Path First，开放最短路径优先）、IS-IS（Intermediate System-to-Intermediate System，中间系统到中间系统）、BGP（Border Gateway Protocol，边界网关协议）。
+每种动态路由协议的工作方式、选路原则等都有所不同，想要理解它们的工作原理需要更深的专业知识。
+想进一步了解各种动态路由协议的话，请给文档君留言，让我看到你们的双手~动态路由协议虽然有很多，但是有两条通用规则：
+（1）路由器之间需要实时地交换路由信息。你的路由表给我看看，我的路由表给你看看，你好我也好~
+动态路由之所以能够根据网络的情况自动计算路由、选择转发路径，是由于当网络发生变化时，路由器之间彼此交换的路由信息会告知对方网络的这种变化，通过信息扩散使得所有路由器都能得知网络的变化。
+（2）路由器根据路由算法把收集到的路由信息加工成路由表，供路由器在转发IP报文时查阅。
+在网络发生变化时，路由器收集到最新的路由信息后，重新计算路由，从而可以得到最新的路由表。
+需要说明的是， 路由器之间的路由信息在不同路由协议中交换的过程和原则是不同的。交换路由信息的最终目的在于通过路由表找到一条转发IP报文的最佳路径。
+每一种路由算法都有其衡量”最佳“的一套原则，大多数是在综合多个特性的基础上进行计算。
+这些特性有：路径所包含的路由节点数（hop count）、网络传输费用（cost）、带宽（bandwidth）、延迟（delay）、负载（load）、可靠性（reliability）和最大传输单元MTU（maximum transmission unit）。
+特征对比 # 动态路由和静态路由的特点对比如下：
+静态路由 动态路由 配置复杂性 随着网络规模的增大而越趋复杂 通常不受网络规模限制 管理员所需知识 不需要额外的专业知识 需要了解动态路由协议和技能 拓扑结构变化 需要管理员参与 自动根据拓扑变化进行调整 可扩展性 适合简单的网络拓扑结构 简单拓扑结构和复杂拓扑结构都适合 安全性 更安全 没有静态路由安全 资源占用 不需要额外的资源 占用CPU、内存和链路带宽 可预测性 总是通过同一路径到达目的地 根据当前网络拓扑结构确定路径 优点： # 静态路由：简单、高效、可靠、网络安全、转发效率高。
+动态路由：灵活，能够适时适应网络结构的变化，无需管理员手工维护，减轻了管理员的工作负担。
+缺点： # 静态路由：不能灵活的适应网络的动态变化。
+动态路由：占用网络带宽（用于传输路由更新信息）。
+使用场景： # 静态路由：网络规模不大，拓扑结构固定的网络中。</description>
+    </item>
+    
+    <item>
+      <title>gin框架</title>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/gin%E6%A1%86%E6%9E%B6/</link>
+      <pubDate>Mon, 27 Dec 2021 21:22:31 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/gin%E6%A1%86%E6%9E%B6/</guid>
+      <description>简介 # 介绍 # Gin是一个golang的微框架，封装比较优雅，API友好，源码注释比较明确，具有快速灵活，容错方便等特点 对于golang而言，web框架的依赖要远比Python，Java之类的要小。自身的net/http足够简单，性能也非常不错 借助框架开发，不仅可以省去很多常用的封装带来的时间，也有助于团队的编码风格和形成规范 安装 # 要安装Gin软件包，您需要安装Go并首先设置Go工作区。
+1.首先需要安装Go（需要1.10+版本），然后可以使用下面的Go命令安装Gin。
+go get -u github.com/gin-gonic/gin
+2.将其导入您的代码中：
+import &amp;ldquo;github.com/gin-gonic/gin&amp;rdquo;
+3.（可选）导入net/http。例如，如果使用常量，则需要这样做http.StatusOK。
+import &amp;ldquo;net/http&amp;rdquo;
+hello word # package main import ( &amp;#34;net/http&amp;#34; &amp;#34;github.com/gin-gonic/gin&amp;#34; ) func main() { // 1.创建路由 r := gin.Default() // 2.绑定路由规则，执行的函数 // gin.Context，封装了request和response r.GET(&amp;#34;/&amp;#34;, func(c *gin.Context) { c.String(http.StatusOK, &amp;#34;hello World!&amp;#34;) }) // 3.监听端口，默认在8080 // Run(&amp;#34;里面不指定端口号默认为8080&amp;#34;) r.Run(&amp;#34;:8000&amp;#34;) } Gin路由基础 # 1 路由的基本使 # gin 框架中采用的路由库是基于httprouter做的 地址为：https://github.com/julienschmidt/httprouter
+1.1 基本路由 # package main import ( &amp;#34;github.</description>
+    </item>
+    
+    <item>
+      <title>Beego框架</title>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/beego%E6%A1%86%E6%9E%B6/</link>
+      <pubDate>Sun, 07 Mar 2021 13:48:22 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/beego%E6%A1%86%E6%9E%B6/</guid>
+      <description>beego框架 # beego框架了解 # Beego框架是go语言开发的web框架。
+beego是中国人开发的，开发文档比较详细
+beego网址 MVC架构 # Beego是MVC架构。MVC 是一种应用非常广泛的体系架构，几乎所有的编程语言都会使用到，而且所有的程序员在工作中都会遇到！用 MVC 的方式开发程序，可以让程序的结构更加合理和清晰。 我们画图说明
+环境搭建 # 这里默认大家已经搭建好了go语言的开发环境。
+需要安装Beego go get -u github.com/beego/bee/v2@master go install github.com/beego/bee/v2@master //上面没用就试试这个 而后运行 bee version | ___ \| |_/ / ___ ___| ___ \ / _ \ / _ \| |_/ /| __/| __/\____/ \___| \___| v2.0.2├── Beego : Beego is not installed. Please do consider installing it first: https://github.com/beego/beego/v2. If you are using go mod, and you don&amp;#39;t install the beego under $GOPATH/src/github.</description>
+    </item>
+    
+  </channel>
+</rss>

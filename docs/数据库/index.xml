@@ -31,11 +31,7 @@ sqlite3 mysql dsn mymysql postgres 在engine创建完成后可以进行一些设
       <pubDate>Tue, 24 May 2022 15:47:27 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/</guid>
-      <description>字段标签 # 标签是声明模型时可选的标记，标记不区分大小写，GORM 支持以下标记：
-声明model时，tag是可选的，GORM支持以下tag：tag名大小写不敏感，但建议使用camelcase风格
-标签名 说明 column 指定列名 type 列数据类型，推荐使用兼容性好的通用类型，例如：所有数据库都支持bool、int、uint、float、string、time、bytes并且可以和其他标签一起使用，例如：not null、size、autoIncrement&amp;hellip;像varbinary（8）这样指定数据库数据类型也是支持的。在使用指定数据库数据类型时，它需要是完整的数据库数据类型，如：MEDIUMINT、UNSIGNED、not、NULL、AUTO、INSTREMENT size 指定列大小，例如：size: 256 primaryKey 指定列为主键 unique 指定列为唯一 default 指定列的默认值 precision 指定列的精度 scale 指定列大小 not null 不能为空 autolncrement 指定列为自动增长 embedded 嵌套字段 embeddedPrefix 嵌入字段的列名前缀 autoCreateTime 创建时追踪当前时间，对于int字段，它会追踪时间戳秒数，您可以使用nano/milli来追踪纳秒、毫秒时间戳，例如autoCreateTime:nano autoUpdateTime 创建/更新时追踪当前时间，对于int字段，它会追踪时间戳秒数，您可以使用nano/milli来追踪纳秒、毫秒时间戳，例如：autoupdateTime:milli index 根据参数创建索引1，多个字段使用相同的名称则创建复合索引，查看索引获取详情 uniqueindex 与index相同，但创建的是唯一索引 check 创建检查约束，例如check:age＞13查看约束获取详情 &amp;lt;- 设置字段写入的权限，&amp;lt;-:create只创建、&amp;lt;-:update只更新、&amp;lt;-:false无写入权限、「&amp;lt;-创建和更新权限 -&amp;gt; 设置字段读的权限，-&amp;gt;:false无读权限 - 忽略该字段，-无读写权限 gorm使用中遇到的坑点 # 3、Count方法不适合放在raw方法后面，否则将会出错
-count:=0 db.Raw(sql).Count(&amp;amp;count) 正确用法
-db.Model(&amp;amp;User{}).Where(&amp;#34;name = ?&amp;#34;, &amp;#34;jinzhu&amp;#34;).Count(&amp;amp;count) //正确用法result := engine.Raw(querySQL, args...).Find(resultData)if result.Error != nil {err = fmt.</description>
+      <description>GORM # 特性 # 全功能 ORM 关联 (Has One，Has Many，Belongs To，Many To Many，多态，单表继承) Create，Save，Update，Delete，Find 中钩子方法 支持 Preload、Joins 的预加载 事务，嵌套事务，Save Point，Rollback To Saved Point Context、预编译模式、DryRun 模式 批量插入，FindInBatches，Find/Create with Map，使用 SQL 表达式、Context Valuer 进行 CRUD SQL 构建器，Upsert，数据库锁，Optimizer/Index/Comment Hint，命名参数，子查询 复合主键，索引，约束 Auto Migration 自定义 Logger 灵活的可扩展插件 API：Database Resolver（多数据库，读写分离）、Prometheus… 每个特性都经过了测试的重重考验 开发者友好 安装 # go get -u gorm.io/gormgo get -u gorm.io/driver/sqlite 快速入门 # package main import ( &amp;#34;gorm.io/gorm&amp;#34; &amp;#34;gorm.io/driver/sqlite&amp;#34; ) type Product struct { gorm.</description>
     </item>
     
   </channel>

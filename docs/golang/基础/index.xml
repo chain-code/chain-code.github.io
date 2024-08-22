@@ -76,24 +76,6 @@ func AddFloat32(a float32, b float32) float32 {return a + b}func AddString(a 
     </item>
     
     <item>
-      <title>Grpc</title>
-      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/grpc/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/grpc/</guid>
-      <description>GRPC # 介绍 # gRPC 是一个高性能、开源和通用的 RPC 框架，面向移动和 HTTP/2 设计。
-gRPC基于 HTTP/2标准设计，带来诸如双向流、流控、头部压缩、单 TCP连接上的多复用请求等特。这些特性使得 其在移动设备上表现更好，更省电和节省空间占用。
-在 gRPC里客户端应用可以像调用本地对象一样直接调用另一台不同的机器上服务端应用的方法，使得您能够更容 易地创建分布式应用和服务。与许多 RPC系统类似， gRPC也是基于以下理念：
-定义一个服务，指定其能够被远程调用的方法（包含参数和返回类型）。
-在服务端实现这个接口，并运行一个 gRPC服务器来处理客户端调用。
-在客户端拥有一个存根能够像服务端一样的方法。 gRPC客户端和服务端可以在多种环境中运行和交互 -从 google 内部的服务器到你自己的笔记本，并且可以用任何 gRPC支持的语言 来编写。
-所以，你可以很容易地用 Java创建一个 gRPC服务端，用 Go、 Python、Ruby来创建客户端。此外， Google最新 API将有 gRPC版本的接口，使你很容易地将 Google的功能集成到你的应用里。
-gRPC 内置了以下 encryption 机制：
-SSL / TLS：通过证书进行数据加密； ALTS：Google开发的一种双向身份验证和传输加密系统。 只有运行在 Google Cloud Platform 才可用，一般不用考虑。 gRPC 中的连接类型一共有以下3种：
-insecure connection：不使用TLS加密 server-side TLS：仅服务端TLS加密 mutual TLS：客户端、服务端都使用TLS加密 gRPC 与 RESTful API比较 # 特性 gRPC RESTful API 规范 必须.</description>
-    </item>
-    
-    <item>
       <title>Json序列化</title>
       <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

@@ -142,10 +142,10 @@ Hyperledger fabric架构 # 交易流程 # 背书 # 一个示例背书策略可�
     
     <item>
       <title>golang力扣刷题（一）</title>
-      <link>https://chain-code.github.io/docs/golang/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/</link>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/</link>
       <pubDate>Thu, 14 Oct 2021 21:03:50 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/golang/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/</guid>
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/</guid>
       <description>力扣刷题（一） # 力扣刷题 全部题目模块（1～100）
 简单 # 山峰数组 # 符合下列属性的数组 arr 称为 山峰数组（山脉数组） ：arr.length &amp;gt;= 3存在 i（0 &amp;lt; i &amp;lt; arr.length - 1）使得： arr[0] &amp;lt; arr[1] &amp;lt; &amp;hellip; arr[i-1] &amp;lt; arr[i] arr[i] &amp;gt; arr[i+1] &amp;gt; &amp;hellip; &amp;gt; arr[arr.length - 1] 给定由整数组成的山峰数组 arr ，返回任何满足 arr[0] &amp;lt; arr[1] &amp;lt; &amp;hellip; arr[i - 1] &amp;lt; arr[i] &amp;gt; arr[i + 1] &amp;gt; &amp;hellip; &amp;gt; arr[arr.length - 1] 的下标 i ，即山峰顶部。
 示例 1：
@@ -296,10 +296,10 @@ func AddFloat32(a float32, b float32) float32 {return a + b}func AddString(a 
     
     <item>
       <title>Grpc</title>
-      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/grpc/</link>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/grpc/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/grpc/</guid>
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/grpc/</guid>
       <description>GRPC # 介绍 # gRPC 是一个高性能、开源和通用的 RPC 框架，面向移动和 HTTP/2 设计。
 gRPC基于 HTTP/2标准设计，带来诸如双向流、流控、头部压缩、单 TCP连接上的多复用请求等特。这些特性使得 其在移动设备上表现更好，更省电和节省空间占用。
 在 gRPC里客户端应用可以像调用本地对象一样直接调用另一台不同的机器上服务端应用的方法，使得您能够更容 易地创建分布式应用和服务。与许多 RPC系统类似， gRPC也是基于以下理念：
@@ -310,6 +310,26 @@ gRPC基于 HTTP/2标准设计，带来诸如双向流、流控、头部压缩、
 gRPC 内置了以下 encryption 机制：
 SSL / TLS：通过证书进行数据加密； ALTS：Google开发的一种双向身份验证和传输加密系统。 只有运行在 Google Cloud Platform 才可用，一般不用考虑。 gRPC 中的连接类型一共有以下3种：
 insecure connection：不使用TLS加密 server-side TLS：仅服务端TLS加密 mutual TLS：客户端、服务端都使用TLS加密 gRPC 与 RESTful API比较 # 特性 gRPC RESTful API 规范 必须.</description>
+    </item>
+    
+    <item>
+      <title>grpc拦截器retry</title>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/grpc%E6%8B%A6%E6%88%AA%E5%99%A8retry/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/grpc%E6%8B%A6%E6%88%AA%E5%99%A8retry/</guid>
+      <description>为什么要retry # retry很好理解，就是重试，为什么需要重试？首先，grpc常用于移动端和跨机房调用的场景，这两种场景的共同点就是，客户端和服务器之间需要经过一段无法保证质量的网络链路，这时候，为了保证请求到达的成功率，重试就很有必要。另一方面，当某一时刻qps突然很高的时候，服务器可能出现短暂的服务不可用，这时候，设置一个带有随机退避时间的重试，就可以解决问题。
+何谓拦截器 # 重试要怎么实现呢？既然已经用了grpc这种成熟的框架，那自然就不用我们自己再去实现。grpc实现重试的方法，是使用Interceptor，翻译过来就是拦截器，这里第一次看可能会很疑惑，重试和拦截器有什么关系？？为了理解拦截器的概念，我们可以画一个简单的图，抽象一下grpc的调用过程。
+首先，没有拦截器的时候，一次rpc调用是这样的：
+首先，我们会调用protoc生成的接口，将请求发给对端，收到对端的回复后，grpc接口会将结果返回，这样就完成了一次调用。
+而有了拦截器，上面的过程就变成了这样：
+可以看到，拦截器会在grpc接口收到回复之前先收到回复，也就是拦截了回复，拦截回复之后，拦截器就可以对回复进行一些处理，比如身份验证，消息内容校验，当然，还可以进行重试， 比如回复中的code为5xx时，拦截器先不返回，而是重新发送一次请求，直到code为200了再返回给grpc接口，这样对于应用程序而言，就在毫不知情的情况下，提高了调用的成功率。
+retry拦截器的具体实现 # retry拦截器的作用很好理解，但它是怎么工作的呢？这一节我们就来深入源码，看看retry拦截器的具体实现。
+grpc本身是支持拦截器的，但是并没有实现各种拦截器，也就是说，grpc允许你进行拦截，但是拦截之后怎么处理，要你自己实现，不过呢，像重试、身份验证这样比较常用的拦截器，已经有非常成熟的库了，所以我们直接拿来用就好了，接下来，我们就先来看看官方的retry拦截器是怎么工作的。
+retry的逻辑 # 我们先不管调用是怎么走到拦截器这里的，先只看retry拦截器的逻辑，首先这个拦截器是这个包里实现的：
+&amp;#34;github.com/grpc-ecosystem/go-grpc-middleware/retry&amp;#34; **拦截器是个什么？其实就是一个函数，这个函数会被最外层的grpc接口调用，而函数内部又会调用调用grpc的底层接口，实现真正的rpc，然后在返回外层之前，在函数内部对rpc的返回进行处理。**接下来我们就看看重试拦截器的函数内部逻辑。
+关于重试的逻辑是下面这段代码：
+func(parentCtx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error { grpcOpts, retryOpts := filterCallOptions(opts) callOpts := reuseOrNewWithCallOptions(intOpts, retryOpts) // short circuit for simplicity, and avoiding allocations. if callOpts.max == 0 { return invoker(parentCtx, method, req, reply, cc, grpcOpts...) } var lastErr error for attempt := uint(0); attempt &amp;lt; callOpts.</description>
     </item>
     
     <item>
@@ -534,10 +554,10 @@ ssh-keygen -t rsa -C &amp;#34;github邮箱地址&amp;#34; -f ~/.ssh/github_rsa 2
     
     <item>
       <title>微服务</title>
-      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</guid>
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</guid>
       <description>微服务 # 微服务框架是将复杂的系统使用组件化的方式进行拆分，并使用轻量级通讯方式进行整合的一种设计方法。
 微服务是通过这种架构设计方法拆分出来的一个独立的组件化的小应用。
 微服务架构和整体式架构的区别？ # 开发单体式（整体式）应用的不足之处 # 三层架构（MVC）的具体内容如下：
@@ -697,10 +717,10 @@ HTTP的特性 # 1、简单，易于理解
     
     <item>
       <title>golang力扣刷题（二）</title>
-      <link>https://chain-code.github.io/docs/golang/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/</link>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/</link>
       <pubDate>Thu, 04 Nov 2021 10:06:27 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/golang/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/</guid>
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/</guid>
       <description>力扣刷题（二） # 力扣刷题 全部题目模块（101～200）
 简单 # 对称二叉树 # 给你一个二叉树的根节点 root ， 检查它是否轴对称。
 输入：root = [1,2,2,3,4,4,3]输出：true //不能使用中序遍历后看其是否对称，例如[1,2,2,2,null,2] func isSymmetric(root *TreeNode) bool { return metric(root.Left,root.Right) } func metric(left *TreeNode,right *TreeNode) bool{ if left==nil&amp;amp;&amp;amp;right==nil{ //如果都为nil证明到底了返回true return true } if left==nil||right==nil{ //一个为nil一个不为nil返回false return false } if left.Val!=right.Val{ //不相等返回false return false } return metric(left.Left,right.Right)&amp;amp;&amp;amp;metric(left.Right,right.Left) //将两边同时放进去递归 } 执行用时：0 ms, 在所有 Go 提交中击败了100.00%的用户 内存消耗：2.7 MB, 在所有 Go 提交中击败了67.20%的用户 相交链表 # 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回 null 。</description>
@@ -936,11 +956,42 @@ OrdererOrgs:	- Name: Orderer	Domain: example.com	Specs: - Hostname: orderer - Ho
     </item>
     
     <item>
+      <title>动态路由与静态路由</title>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1/</link>
+      <pubDate>Tue, 27 Dec 2022 21:22:31 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1/</guid>
+      <description>静态路由 # 静态路由：静态路由是在路由器中设置固定的路由表；除非网络管理员进行干预，否则静态路由表不会发生变化。
+动态路由 # 动态路由：由网络中的路由器之间相互通信，传递路由信息，利用收到的路由信息更新路由表的路由方式。
+动态路由是与静态路由相对的一个概念，指路由器能够根据路由器之间交换的特定路由信息自动建立自己的路由表，并且能够根据链路和节点的变化适时地进行自动调整。
+当网络节点或节点间的链路发生故障，或者存在其它可用路由时候，动态路由可以自行选择“最佳”的可用路由。
+换句话说，动态路由就好比我们选择自由行，我们根据目的地和每个景区的情况实时地变更我们的旅行安排。比如深圳遇到交通管控，我们可以选择从广州绕行，不会因为一些意外情况耽误旅行。但是也要承担自由的“代价”，就是需要根据变化实时费心安排。
+相似的，动态路由可以自动根据网络拓扑结构变化进行调整，同时也会占用路由器的CPU、内存和链路带宽。
+常见的动态路由协议有：
+RIP（Routing Information Protocol，路由信息协议）、OSPF（Open Shortest Path First，开放最短路径优先）、IS-IS（Intermediate System-to-Intermediate System，中间系统到中间系统）、BGP（Border Gateway Protocol，边界网关协议）。
+每种动态路由协议的工作方式、选路原则等都有所不同，想要理解它们的工作原理需要更深的专业知识。
+想进一步了解各种动态路由协议的话，请给文档君留言，让我看到你们的双手~动态路由协议虽然有很多，但是有两条通用规则：
+（1）路由器之间需要实时地交换路由信息。你的路由表给我看看，我的路由表给你看看，你好我也好~
+动态路由之所以能够根据网络的情况自动计算路由、选择转发路径，是由于当网络发生变化时，路由器之间彼此交换的路由信息会告知对方网络的这种变化，通过信息扩散使得所有路由器都能得知网络的变化。
+（2）路由器根据路由算法把收集到的路由信息加工成路由表，供路由器在转发IP报文时查阅。
+在网络发生变化时，路由器收集到最新的路由信息后，重新计算路由，从而可以得到最新的路由表。
+需要说明的是， 路由器之间的路由信息在不同路由协议中交换的过程和原则是不同的。交换路由信息的最终目的在于通过路由表找到一条转发IP报文的最佳路径。
+每一种路由算法都有其衡量”最佳“的一套原则，大多数是在综合多个特性的基础上进行计算。
+这些特性有：路径所包含的路由节点数（hop count）、网络传输费用（cost）、带宽（bandwidth）、延迟（delay）、负载（load）、可靠性（reliability）和最大传输单元MTU（maximum transmission unit）。
+特征对比 # 动态路由和静态路由的特点对比如下：
+静态路由 动态路由 配置复杂性 随着网络规模的增大而越趋复杂 通常不受网络规模限制 管理员所需知识 不需要额外的专业知识 需要了解动态路由协议和技能 拓扑结构变化 需要管理员参与 自动根据拓扑变化进行调整 可扩展性 适合简单的网络拓扑结构 简单拓扑结构和复杂拓扑结构都适合 安全性 更安全 没有静态路由安全 资源占用 不需要额外的资源 占用CPU、内存和链路带宽 可预测性 总是通过同一路径到达目的地 根据当前网络拓扑结构确定路径 优点： # 静态路由：简单、高效、可靠、网络安全、转发效率高。
+动态路由：灵活，能够适时适应网络结构的变化，无需管理员手工维护，减轻了管理员的工作负担。
+缺点： # 静态路由：不能灵活的适应网络的动态变化。
+动态路由：占用网络带宽（用于传输路由更新信息）。
+使用场景： # 静态路由：网络规模不大，拓扑结构固定的网络中。</description>
+    </item>
+    
+    <item>
       <title>gin框架</title>
-      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/gin%E6%A1%86%E6%9E%B6/</link>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/gin%E6%A1%86%E6%9E%B6/</link>
       <pubDate>Mon, 27 Dec 2021 21:22:31 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/gin%E6%A1%86%E6%9E%B6/</guid>
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/gin%E6%A1%86%E6%9E%B6/</guid>
       <description>简介 # 介绍 # Gin是一个golang的微框架，封装比较优雅，API友好，源码注释比较明确，具有快速灵活，容错方便等特点 对于golang而言，web框架的依赖要远比Python，Java之类的要小。自身的net/http足够简单，性能也非常不错 借助框架开发，不仅可以省去很多常用的封装带来的时间，也有助于团队的编码风格和形成规范 安装 # 要安装Gin软件包，您需要安装Go并首先设置Go工作区。
 1.首先需要安装Go（需要1.10+版本），然后可以使用下面的Go命令安装Gin。
 go get -u github.com/gin-gonic/gin
@@ -948,7 +999,8 @@ go get -u github.com/gin-gonic/gin
 import &amp;ldquo;github.com/gin-gonic/gin&amp;rdquo;
 3.（可选）导入net/http。例如，如果使用常量，则需要这样做http.StatusOK。
 import &amp;ldquo;net/http&amp;rdquo;
-hello word # package main import ( &amp;#34;net/http&amp;#34; &amp;#34;github.com/gin-gonic/gin&amp;#34; ) func main() { // 1.创建路由 r := gin.Default() // 2.绑定路由规则，执行的函数 // gin.Context，封装了request和response r.GET(&amp;#34;/&amp;#34;, func(c *gin.Context) { c.String(http.StatusOK, &amp;#34;hello World!&amp;#34;) }) // 3.监听端口，默认在8080 // Run(&amp;#34;里面不指定端口号默认为8080&amp;#34;) r.Run(&amp;#34;:8000&amp;#34;) } GORM # 特性 # 全功能 ORM 关联 (Has One，Has Many，Belongs To，Many To Many，多态，单表继承) Create，Save，Update，Delete，Find 中钩子方法 支持 Preload、Joins 的预加载 事务，嵌套事务，Save Point，Rollback To Saved Point Context、预编译模式、DryRun 模式 批量插入，FindInBatches，Find/Create with Map，使用 SQL 表达式、Context Valuer 进行 CRUD SQL 构建器，Upsert，数据库锁，Optimizer/Index/Comment Hint，命名参数，子查询 复合主键，索引，约束 Auto Migration 自定义 Logger 灵活的可扩展插件 API：Database Resolver（多数据库，读写分离）、Prometheus… 每个特性都经过了测试的重重考验 开发者友好 安装 # go get -u gorm.</description>
+hello word # package main import ( &amp;#34;net/http&amp;#34; &amp;#34;github.com/gin-gonic/gin&amp;#34; ) func main() { // 1.创建路由 r := gin.Default() // 2.绑定路由规则，执行的函数 // gin.Context，封装了request和response r.GET(&amp;#34;/&amp;#34;, func(c *gin.Context) { c.String(http.StatusOK, &amp;#34;hello World!&amp;#34;) }) // 3.监听端口，默认在8080 // Run(&amp;#34;里面不指定端口号默认为8080&amp;#34;) r.Run(&amp;#34;:8000&amp;#34;) } Gin路由基础 # 1 路由的基本使 # gin 框架中采用的路由库是基于httprouter做的 地址为：https://github.com/julienschmidt/httprouter
+1.1 基本路由 # package main import ( &amp;#34;github.</description>
     </item>
     
     <item>
@@ -968,10 +1020,10 @@ scp 是 secure copy 的缩写, scp 是 Linux 系统下基于 ssh 登陆进行安
     
     <item>
       <title>Beego框架</title>
-      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/beego%E6%A1%86%E6%9E%B6/</link>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/beego%E6%A1%86%E6%9E%B6/</link>
       <pubDate>Sun, 07 Mar 2021 13:48:22 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/beego%E6%A1%86%E6%9E%B6/</guid>
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/beego%E6%A1%86%E6%9E%B6/</guid>
       <description>beego框架 # beego框架了解 # Beego框架是go语言开发的web框架。
 beego是中国人开发的，开发文档比较详细
 beego网址 MVC架构 # Beego是MVC架构。MVC 是一种应用非常广泛的体系架构，几乎所有的编程语言都会使用到，而且所有的程序员在工作中都会遇到！用 MVC 的方式开发程序，可以让程序的结构更加合理和清晰。 我们画图说明
@@ -1235,10 +1287,10 @@ Dockerfile的作用：
     
     <item>
       <title>必刷top101</title>
-      <link>https://chain-code.github.io/docs/golang/leetcode/%E5%BF%85%E5%88%B7top101/</link>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/%E5%BF%85%E5%88%B7top101/</link>
       <pubDate>Sat, 17 Sep 2022 11:40:17 +0800</pubDate>
       
-      <guid>https://chain-code.github.io/docs/golang/leetcode/%E5%BF%85%E5%88%B7top101/</guid>
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/%E5%BF%85%E5%88%B7top101/</guid>
       <description>题目来源：牛客网面试必刷TOP101
 链表 # 反转链表 # 给定一个单链表的头结点pHead(该头节点是有值的，比如在下图，它的val是1)，长度为n，反转该链表后，返回新链表的表头。
 数据范围： 0≤n≤10000≤n≤1000
@@ -1392,11 +1444,7 @@ P和M的个数问题 # 1、P的数量：
       <pubDate>Tue, 24 May 2022 15:47:27 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/</guid>
-      <description>字段标签 # 标签是声明模型时可选的标记，标记不区分大小写，GORM 支持以下标记：
-声明model时，tag是可选的，GORM支持以下tag：tag名大小写不敏感，但建议使用camelcase风格
-标签名 说明 column 指定列名 type 列数据类型，推荐使用兼容性好的通用类型，例如：所有数据库都支持bool、int、uint、float、string、time、bytes并且可以和其他标签一起使用，例如：not null、size、autoIncrement&amp;hellip;像varbinary（8）这样指定数据库数据类型也是支持的。在使用指定数据库数据类型时，它需要是完整的数据库数据类型，如：MEDIUMINT、UNSIGNED、not、NULL、AUTO、INSTREMENT size 指定列大小，例如：size: 256 primaryKey 指定列为主键 unique 指定列为唯一 default 指定列的默认值 precision 指定列的精度 scale 指定列大小 not null 不能为空 autolncrement 指定列为自动增长 embedded 嵌套字段 embeddedPrefix 嵌入字段的列名前缀 autoCreateTime 创建时追踪当前时间，对于int字段，它会追踪时间戳秒数，您可以使用nano/milli来追踪纳秒、毫秒时间戳，例如autoCreateTime:nano autoUpdateTime 创建/更新时追踪当前时间，对于int字段，它会追踪时间戳秒数，您可以使用nano/milli来追踪纳秒、毫秒时间戳，例如：autoupdateTime:milli index 根据参数创建索引1，多个字段使用相同的名称则创建复合索引，查看索引获取详情 uniqueindex 与index相同，但创建的是唯一索引 check 创建检查约束，例如check:age＞13查看约束获取详情 &amp;lt;- 设置字段写入的权限，&amp;lt;-:create只创建、&amp;lt;-:update只更新、&amp;lt;-:false无写入权限、「&amp;lt;-创建和更新权限 -&amp;gt; 设置字段读的权限，-&amp;gt;:false无读权限 - 忽略该字段，-无读写权限 gorm使用中遇到的坑点 # 3、Count方法不适合放在raw方法后面，否则将会出错
-count:=0 db.Raw(sql).Count(&amp;amp;count) 正确用法
-db.Model(&amp;amp;User{}).Where(&amp;#34;name = ?&amp;#34;, &amp;#34;jinzhu&amp;#34;).Count(&amp;amp;count) //正确用法result := engine.Raw(querySQL, args...).Find(resultData)if result.Error != nil {err = fmt.</description>
+      <description>GORM # 特性 # 全功能 ORM 关联 (Has One，Has Many，Belongs To，Many To Many，多态，单表继承) Create，Save，Update，Delete，Find 中钩子方法 支持 Preload、Joins 的预加载 事务，嵌套事务，Save Point，Rollback To Saved Point Context、预编译模式、DryRun 模式 批量插入，FindInBatches，Find/Create with Map，使用 SQL 表达式、Context Valuer 进行 CRUD SQL 构建器，Upsert，数据库锁，Optimizer/Index/Comment Hint，命名参数，子查询 复合主键，索引，约束 Auto Migration 自定义 Logger 灵活的可扩展插件 API：Database Resolver（多数据库，读写分离）、Prometheus… 每个特性都经过了测试的重重考验 开发者友好 安装 # go get -u gorm.io/gormgo get -u gorm.io/driver/sqlite 快速入门 # package main import ( &amp;#34;gorm.io/gorm&amp;#34; &amp;#34;gorm.io/driver/sqlite&amp;#34; ) type Product struct { gorm.</description>
     </item>
     
     <item>
@@ -1586,10 +1634,10 @@ func Benchmark1Sort(b *testing.B) {for i := 0; i &amp;lt; b.N; i++ {sort.Ints(
     
     <item>
       <title>LeetCode算法总结</title>
-      <link>https://chain-code.github.io/docs/golang/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/</link>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/</link>
       <pubDate>Thu, 28 Oct 2021 22:03:24 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/golang/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/</guid>
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/</guid>
       <description>动态规划 # 介绍 # 当最优化问题具有重复子问题和最优子结构的时候，适合使用动态规划算法。动态规划算法的核心就是提供了一个memory来缓存重复子问题的结果，避免了递归的过程中的大量的重复计算。动态规划算法的难点在于怎么将问题转化为能够利用动态规划算法来解决。当重复子问题的数目比较小时，动态规划的效果也会很差。如果问题存在大量的重复子问题的话，动态规划的效率较高。
 例题 # 正则表达式匹配 # 给你一个字符串 s 和一个字符规律 p，请你来实现一个支持 &amp;lsquo;.&amp;rsquo; 和 &amp;lsquo;*&amp;rsquo; 的正则表达式匹配。
 &amp;lsquo;.&amp;rsquo; 匹配任意单个字符 &amp;lsquo;*&amp;rsquo; 匹配零个或多个前面的那一个元素 所谓匹配，是要涵盖 整个 字符串 s的，而不是部分字符串。

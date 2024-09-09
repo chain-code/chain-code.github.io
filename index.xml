@@ -170,7 +170,11 @@ Go协程goroutine: 是一种轻量线程，它不是操作系统的线程，而�
 垃圾回收
 ​ go垃圾回收不咋地
 静态链接 只须编译一个可执行文件，无须附加任何东西就能部署。将运行时、依赖库直接打包到可执行文件内部，简化了部署和发布操作，无须事先安装运行环境和下载诸多第三方库。
-标准库 工具链 第二章 类型 # 变量 # 定义 # var a int //会自动初始化为0 var y=false //自动推断为bool类型 var x,y int x=1 y=2 //定义完变量后再赋值 var a int =2 var a,s=100,&amp;#34;abc&amp;#34; //初始化 var ( x,y int a,s=100,&amp;#34;abc&amp;#34; //字符串加“” ) a:=100 //自动推导类型 a,s:=100,&amp;#34;abc&amp;#34; 注意： * 定义变量，同时显示初始化 * 不能提供数据类型 * 只能用在函数内部 退化赋值 # 退化赋值的前提条件是：最少有一个新变量被定义，且必须是同一作用域。</description>
+标准库 工具链 设计初衷 # 少即是多（less is more）：如果一个特性并不对解决任何问题有显著价值，那么go就不提供它；如果需要一个特性，那么只有一种方法去实现 面向接口编程：非侵入式接口，反对继承、反对虚函数和虚函数重载（多态）、删除构造和析构函数 正交+组合的语言特性：语言的特性之间相互独立，不相互影响。比如类型和方法是互相独立的，类型之间也是相互独立的，没有子类，包也没有子包。不同特性用组合的方式来松耦合 并发在语言层面支持：并发更好利用多核，有更强的表现力来模拟真实世界 在设计上，Go秉承了C的简单粗暴。
+为什么没有继承 # Go没有子类型的概念，只能把类型嵌入到另一个类型中，所以没有类型系统。Go的作者认为类型系统被过度使用了，应该在这个方向上退一步。
+使用伸缩性良好的组合，而不是继承 数据和方法不再绑定在一起，数据的集合用struct，方法的集合用interface，保持正交 类似子类父类的系统造成非常脆弱的代码。类型的层次必须在早期进行设计，通常会是程序设计的第一步，但是一旦写出程序后，早期的决策就很难进行改变了。所以，类型层次结构会促成早期的过度设计，因为程序员要尽力对软件可能需要的各种可能的用法进行预测，不断地为了避免挂一漏万，不断的增加类型和抽象的层次。这种做法有点颠倒了，系统各个部分之间交互的方式本应该随着系统的发展而做出相应的改变，而不应该在一开始就固定下来。
+作者附了一个例子，是一些以接口为参数并且其返回结果也是一个接口的函数：
+// 入参是接口的函数，而不是成员方法func ReadAll(r io.Reader) ([]byte, error)// 封装器 - 出入参都是接口func LoggingReader(r io.Reader) io.Reader //读到的内容录入日志func LimitingReader(r io.</description>
     </item>
     
     <item>
@@ -184,6 +188,15 @@ Go协程goroutine: 是一种轻量线程，它不是操作系统的线程，而�
 要解决此问题，请在Docker Desktop首选项中，取消选中该框Use gRPC FUSE for file sharing， 以使用旧版osxfs文件共享，然后单击**Apply****＆**Restart
 报错二： # 问题原因： # 环境配置问题，进入go.mod文件 重新配置
 github.com/Shopify/sarama v1.27.2 // indirectgithub.com/astaxie/beego v1.12.1github.com/fsouza/go-dockerclient v1.7.0 // indirectgithub.com/grpc-ecosystem/go-grpc-middleware v1.2.2 // indirectgithub.</description>
+    </item>
+    
+    <item>
+      <title>C&#43;&#43;部署PaddleOCR</title>
+      <link>https://chain-code.github.io/docs/c/c&#43;&#43;%E9%83%A8%E7%BD%B2paddleocr/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/c/c&#43;&#43;%E9%83%A8%E7%BD%B2paddleocr/</guid>
+      <description> # </description>
     </item>
     
     <item>
@@ -278,6 +291,19 @@ cmd -x * *为0，false有可能表示一个文件名或文件，也有可能表�
 拒绝服务攻击的目标可以是各种网络服务，例如网站、服务器、路由器、域名系统（DNS）等。攻击者可能利用系统或网络的弱点，通过发送大量请求、占用资源、耗尽带宽或利用其他漏洞来导致服务不可用。
 固定窗口控流：在这种方法中，在一个固定时间窗口内执行控流。例如，如果流控设置为每分钟 100 个请求，则系统在任何给定的 60 秒窗口内最多允许 100 个请求，超过此限制的请求将被拒绝或延迟到下一个时间窗口。 令牌桶控流：令牌桶控流基于令牌从桶中消失的概念。令牌桶最初装满固定数量的令牌，每个令牌代表一个请求。当客户端要发出请求时，必须从桶中获取一个令牌。如果令牌桶是空的，客户端必须等待，直到有令牌可用。 Go 提供了一个名为 golang.org/x/time/rate 的内置软件包，实现了流控功能。接下来我们看看如何使用固定窗口和令牌桶两种方法来实现流控。
 固定窗口控流 # package main import ( &amp;#34;fmt&amp;#34; &amp;#34;golang.org/x/time/rate&amp;#34; &amp;#34;time&amp;#34; ) func main() { limiter := rate.NewLimiter(rate.Limit(100), 1) // Allow 100 requests per second for i := 0; i &amp;lt; 200; i++ { if !limiter.Allow() { fmt.Println(&amp;#34;Rate limit exceeded. Request rejected.&amp;#34;) continue } // Process the request fmt.</description>
+    </item>
+    
+    <item>
+      <title>golang限流实践</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/golang%E9%99%90%E6%B5%81%E5%AE%9E%E8%B7%B5/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/golang%E9%99%90%E6%B5%81%E5%AE%9E%E8%B7%B5/</guid>
+      <description>前言 # 在编写服务的过程中，我们会遇到需要对服务接入请求进行限流的情况。通过对不同用户、访问内容的限流，我们可以减轻单个服务收到较大流量时对其他系统内服务的影响，防止系统因为单个来源的请求而无法及时对其他来源的请求响应，同时也可以减轻后续服务处理的压力。
+当前系统限流方式 # 当前的服务中主要使用了令牌桶对用户和 token api 接入的请求进行了区分限流。令牌桶是一个比较均衡的限流方式，在能保证均匀恢复限流阈值的同时，还允许按照设定的容量值进行动态增加容量和速率。
+起始时令牌桶中填满了可用的令牌，当有新的请求进入后，会从令牌桶取走令牌，同时令牌桶按照指定的速率恢复令牌。当令牌桶的令牌被取完后，新的请求因无法获取到令牌而被拒绝，直至令牌恢复到最小单个请求所需的令牌数量后，新的请求才可通过。也就是说请求到来的速度如果始终大于令牌产生的速度时，在消耗完桶中已存有的令牌后，超出部分的请求会被拒绝；桶内存有的令牌允许短时间内接收等于令牌数量的请求，即允许按照配置的数量（容量）处理突发的请求。
+系统中设置了两个令牌桶限流器组，分别是用户令牌桶组和 api 令牌桶组。以 api 令牌桶组为例，配置令牌桶添加令牌的速率为 20 / s，桶的容量为 30（即在桶中的令牌未被取走前最大允许同时有 30 个请求进入）。桶容量一般设置为速率的 0.6~1.5 倍之间。
+var (userLimiters = NewLimiters(&amp;#34;user&amp;#34;, 10, 15) // 用户限流tokenLimiters = NewLimiters(&amp;#34;token&amp;#34;, 20, 30) // api 限流)func NewLimiters(_type string, r float64, size int) *Limiters {return &amp;amp;Limiters{_type: _type,r: rate.Limit(r),b: size,l: sync.RWMutex{},m: make(map[int64]*rate.Limiter),}}type Limiters struct {_type string // 限流类型r rate.</description>
     </item>
     
     <item>
@@ -384,12 +410,36 @@ localhost在IPv6中通常解析为::1，这是IPv6下的环回地址。直接使
     </item>
     
     <item>
+      <title>panic</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/panic/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/panic/</guid>
+      <description> panic # 1、panic 中可以传任何值，不仅仅可以传 string
+func main(){ defer func(){ if r := recover();r != nil{ fmt.Println(r) } }() panic([]int{12312}) } [12312] </description>
+    </item>
+    
+    <item>
       <title>pprof</title>
       <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/pprof/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/pprof/</guid>
-      <description>[pprof用法简介](Go 语言性能调试与分析工具：pprof 用法简介 | wxsm&amp;rsquo;s pace)</description>
+      <description>[pprof用法简介](Go 语言性能调试与分析工具：pprof 用法简介 | wxsm&amp;rsquo;s pace)
+一、什么是pprof # 1、简介 # pprof是GoLang程序性能分析工具，可以用于可视化和分析性能数据的工具，prof是profile（画像）的缩写，本文将对下面包进行运用：
+net/http/pprof：对 runtime/pprof 的二次封装，一般用于web server，它一直运行。这个包对提供的http服务进行数据采集分析。 上面的 pprof 开启后，每隔一段时间就会采集当前程序的堆栈信息，获取函数的 cpu、内存等使用情况。通过对采样的数据进行分析，形成一个数据分析报告。
+pprof 以profile.proto的格式保存数据，然后根据这个数据可以生成可视化的分析报告，支持文本形式和图形形式报告。profile.proto里具体的数据格式是 protocol buffers。
+2、支持的功能 # profile：CPU 占用率 heap：当前时刻的内存使用情况 allocs：所有时刻的内存使用情况，包括正在使用的及已经回收的 goroutine：目前的goroutine数量及运行情况 mutex：锁争用情况 block：协程阻塞情况 二、net/http/pprof使用介绍 # 1、样例 # 准备炸弹代码: git clone https://github.com/wolfogre/go-pprof-practice.git ,运行代码开始分析问题
+2、分析代码 # 处理cpu问题 # # 采集10秒CPU数据排查问题: go tool pprof &amp;#34;http://localhost:6060/debug/pprof/profile?seconds=10&amp;#34; 输入top命令，查看CPU占用较高的调用，如下图:
+flat：函数上运行耗时
+flat%：CPU运行耗时总比例
+sum%：累积使用CPU总比例
+cum：函数加上它之上的调用运行总耗时
+cum%：CPU运行耗时总比例
+最后一列为函数名称，可以通过这五列得出一个应用程序的运行情况
+可以看到主要是tiger.Eat占用较高,使用 list Eat可以查看详情，如图
+注释问题代码解决问题
+处理内存占用过高 # # 采集内存数据排查问题 go tool pprof http://localhost:6060/debug/pprof/heap 输入top命令，查看内存占用较高的调用，如下图:</description>
     </item>
     
     <item>
@@ -432,14 +482,7 @@ XML 已经成为多种行业标准的编写工具，Protobuf 只是 Google 公�
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/url/</guid>
-      <description>Url # // 将bool类型转换为字符串
-bool到string
-string := strconv.FormatBool(bool) string到bool
-bool, err := strconv.ParseBool(string) string到float64
-strconv.ParseFloat(s string, bitSize int) (float64, error) float64到string
-strconv.FormatFloat(f float64, fmt byte, prec int, bitSize int) string func main() { f := 3.14159 // 将浮点数转换为字符串，保留两位小数 str := strconv.FormatFloat(f, &amp;#39;f&amp;#39;, 2, 64) fmt.Println(str) } 在上述示例中，我们使用strconv.FormatFloat()函数将浮点数f转换为字符串，并指定了以下参数：
-f：要转换的浮点数。 &#39;f&#39;：表示格式化为十进制表示法（浮点数），其他可选的格式有 &#39;b&#39;（科学计数法）和 &#39;e&#39;（指数表示法）。 2：保留小数点后的位数。 64：表示f的位大小，通常为32或64。 实战 # interface{}是结构体
-var v interface{} v = Person{ Name: &amp;#34;Alice&amp;#34;, Age: 30, Email: &amp;#34;alice@example.com&amp;#34;, } value := reflect.</description>
+      <description> Url # </description>
     </item>
     
     <item>
@@ -503,6 +546,20 @@ generationTimestamp要比genymdhms要好的多，即使前一个比较长一点�
       
       <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/</guid>
       <description>/***　*　瓦瓦　十　*　十齱龠己　亅瓦車己　*　乙龍龠毋日丶　丶乙己毋毋丶　*　十龠馬鬼車瓦　己十瓦毋毋　*　鬼馬龠馬龠十　己己毋車毋瓦　*　毋龠龠龍龠鬼乙丶丶乙車乙毋鬼車己　*　乙龠龍龍鬼龍瓦　十瓦毋乙瓦龠瓦亅　*　馬齱龍馬鬼十丶日己己己毋車乙丶　*　己齱馬鬼車十十毋日乙己己乙乙　*　車馬齱齱日乙毋瓦己乙瓦日亅　*　亅車齺龖瓦乙車龖龍乙乙十　*　日龠龠十亅車龍毋十十　*　日毋己亅　己己十亅亅　*　丶己十十乙　丶丶丶丶丶　*　亅己十龍龖瓦　丶　丶　乙十　*　亅己十龠龖毋　丶丶　丶己鬼鬼瓦亅　*　十日十十日亅丶亅丶　丶十日毋鬼馬馬車乙　*　十日乙十亅亅亅丶　十乙己毋鬼鬼鬼龍齺馬乙　*　丶瓦己乙十十亅丶亅乙乙乙己毋鬼鬼鬼龍齱齺齺鬼十　*　乙乙十十十亅乙瓦瓦己日瓦毋鬼鬼龠齱齱龍龍齱齱毋丶　*　亅十十十十乙瓦車毋瓦瓦日車馬龠龍龍龍龍龍龠龠龠馬亅*　十十十十己毋車瓦瓦瓦瓦鬼馬龠龍龠龠龍龠龠龠馬龠車*　亅十十日毋瓦日日瓦鬼鬼鬼龠龠馬馬龠龍龍龠馬馬車*　亅亅亅乙瓦瓦毋車車車馬龍龠鬼鬼馬龠龍龍龠馬馬鬼*　丶丶乙亅亅乙車鬼鬼鬼毋車龍龍龠鬼馬馬龠龍齱齱龍馬鬼*　亅己十十己十日鬼鬼車瓦毋龠龍龠馬馬龠龠龠齱齺齺齱龠鬼*　亅乙乙乙十車馬車毋馬齱齱龍龠龠龠馬龠龍齱龍龠龠鬼瓦*　丶毋龠鬼車瓦車馬龠龍龠龠龍齱齱龠馬馬鬼毋日*　十乙己日十　丶己鬼龍齱齺齱龍馬馬馬車毋己*　丶十己乙亅丶　亅瓦馬龠龍龠龠馬毋瓦乙*　丶十十乙亅十　亅己瓦車馬龠鬼車瓦乙*　丶十乙十十丶　丶丶亅十瓦鬼車瓦己*　丶亅亅丶　亅日瓦日*　丶*/ /*** * .</description>
+    </item>
+    
+    <item>
+      <title>包管理</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8C%85%E7%AE%A1%E7%90%86/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8C%85%E7%AE%A1%E7%90%86/</guid>
+      <description>Golang的包管理有四种方式，分别是：go path、go vendor、go module、go work，其中是go path、go vendor已经算是“上古时代”的产物，本文主要详细介绍一下后两种管理方式。
+1. Go Module # 从Go1.13版本开始，go module将是Go语言默认的依赖管理工具，平常我们用的最多的命令应该就是：go mod init myModule， go mod tidy，这些相信大家已经很熟练了，但是到实际要引用某个包下的函数时，往往写import xxx/xxx语句时会不知道该怎么开头，以下是一个示例，包含了工作中的大部分情况：
+testModule/ |-- softwareExample| |-- example.go| |-- go.mod| |-- go.sum| |-- httpclient| | |-- httpclient.go| | |-- task| | | `-- taskapi.go`-- utils.go|-- go.mod|-- go.sum 以上文件结构展示了一个Module中包含一个子Module的情况，另外softwareExample模块中还有多个package的情况。以上各个文件中的内容如下：
+testModule/go.mod
+module test go 1.20 testModule/utils.go
+package testUtil func Util_ADD(a, b int){ fmt.Println(a+b) } testModule/softwareExample/go.mod</description>
     </item>
     
     <item>
@@ -633,6 +690,21 @@ A类IP段 0.0.0.0 到 127.255.255.255 即首位为‘0’的IP地址。 B类IP�
 greeter-session=ukui-greeteruser-session=ukuigreeter-setup-script=/usr/lib/ukui-greeter/ukui-greeter-nm-start.sh# ↓↓↓↓追加的内容↓↓↓↓allow-guest=falsegreeter-show-manual-login=true# ↑↑↑↑追加的内容↑↑↑↑ 开机自动登录到“root” # sudo vim /etc/lightdm/lightdm.conf lightdm.conf
 [SeatDefaults]autologin-guest=false# ↓↓↓↓修改的内容↓↓↓↓autologin-user=root# ↑↑↑↑修改的内容↑↑↑↑autologin-user-timeout=0 关闭“麒麟安全授权认证” # sudo vim /etc/default/grub grub
 # ...GRUB_DEFAULT=0GRUB_TIMEOUT=5GRUB_DISTRIBUTOR=`lsb_release -i -s 2&amp;gt; /dev/null || echo Debian`GRUB_DISTRIBUTOR_RELEASE=`lsb_release -d -s | awk -F&amp;#34; &amp;#34; &amp;#39;{print $2 &amp;#34; &amp;#34; $3}&amp;#39; 2&amp;gt; /dev/null || echo &amp;#34;&amp;#34;`GRUB_CMDLINE_LINUX_DEFAULT=&amp;#34;quiet splash&amp;#34;GRUB_CMDLINE_LINUX=&amp;#34;&amp;#34;# ↓↓↓↓修改的内容↓↓↓↓# GRUB_CMDLINE_LINUX_SECURITY=&amp;#34;audit=0 security=kysec&amp;#34;GRUB_CMDLINE_LINUX_SECURITY=&amp;#34;audit=0 security=&amp;#34;# ↑↑↑↑修改的内容↑↑↑↑# .</description>
+    </item>
+    
+    <item>
+      <title>Go避坑指南</title>
+      <link>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E9%81%BF%E5%9D%91%E6%8C%87%E5%8D%97/</link>
+      <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E9%81%BF%E5%9D%91%E6%8C%87%E5%8D%97/</guid>
+      <description>问题1：字符串序列化后，&amp;amp;符号 转成 “\u0026“ # 问题描述： # 从CGO拿到的字符串，序列化后存入数据库后，&amp;amp; &amp;lt; &amp;gt; 符号变成了类似 &amp;ldquo;\u0026&amp;quot;的形式，但编译器、界面等其他地方看到的确实原始的&amp;amp; &amp;lt; &amp;gt; 符号。
+解决方案： # 数据结构中的值 带有 &amp;amp; &amp;gt; &amp;lt; 等符号，当我们要将 struct map 转成json时，使用
+json.Marshal() 函数，此函数会将 值中的 &amp;amp; &amp;lt; &amp;gt; 符号转义 为 类似 &amp;ldquo;\u0026&amp;rdquo;
+parm := make(map[string]string) parm[&amp;#34;path&amp;#34;] = &amp;#34;http://baidu.com?a=djflks&amp;amp;b=1231131&amp;#34; //转成json 不转义特殊字符 这段替换原来的json.marshal bf := bytes.NewBuffer([]byte{}) jsonEncoder := json.NewEncoder(bf) jsonEncoder.SetEscapeHTML(false) jsonEncoder.Encode(parm) fmt.Println(bf.String()) 问题2：IDEA大面积报红，但编译能通过 # 问题描述： # 在使用IDEA编译代码的伙伴，偶合会发现个别函数报红，鼠标悬停显示函数未声明或者找不到等等，但是go build 却可以通过。
+解决方案： # IEDA缓存混乱的问题，点击 文件-&amp;gt;修复IDE-&amp;gt;
+根据右下角提示，一路点到底，重新建立索引就好了。
+问题4：CGO不支持在函数参数列表中使用默认参数 # 问题描述： # 使用CGO调用别人的动态库时，经常出现这种问题：</description>
     </item>
     
     <item>
@@ -772,6 +844,18 @@ M thread线程
 Processor 它包含了运行goroutine的资源，如果线程想运行goroutine,必须先获取P，P中还包含了可运行的G队列。
 在Go中，线程是运行goroutine的实体，调度器的功能是把可运行的goroutine分配到工作线程上。
 全局队列：存放等待运行的G P的本地队列：同全局队列类似，存放的也是等待运行的G，存的数量有限，不超过256个。新建 G’时，G’优先加入到 P 的本地队列，如果队列满了，则会把本地队列中一半的 G 移动到全局队列。 P列表：所有的P都在程序启动时创建，并保存在数组中，最多有 GOMAXPROCS(可配置) 个。 M：线程想运行任务就得获取P，从P的本地队列获取G，P队列为空时，M 也会尝试从全局队列拿一批 G 放到 P 的本地队列，或从其他 P 的本地队列偷一半放到自己 P 的本地队列。M 运行 G，G 执行之后，M 会从 P 获取下一个 G，不断重复下去。 Goroutine 调度器和 OS 调度器是通过 M 结合起来的，每个 M 都代表了 1 个内核线程，OS 调度器负责把内核线程分配到 CPU 的核上执行。</description>
+    </item>
+    
+    <item>
+      <title>易错细节</title>
+      <link>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/%E6%98%93%E9%94%99%E7%BB%86%E8%8A%82/</link>
+      <pubDate>Thu, 03 Nov 2022 13:46:27 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/%E6%98%93%E9%94%99%E7%BB%86%E8%8A%82/</guid>
+      <description>容易出错的细节 # 创建对象 # 新建一个对象在go里面有好几种方法，让人迷惑，而且似乎和简洁这一设计原则违背。我们按照对象类型讨论一下：
+对于结构体，new(T)和&amp;amp;T{}是等价的，都会给对象赋零值（一般人很少用new）。 Note：直接var obj T;&amp;amp;T也是等价的，只不过变量有可能在堆上，有可能在栈上 对于slice、map、chan，make(map[string]int)和map[string]int{}等价，会对对象进行初始化。 var a []int // nil a := []int{} // not nil a := *new([]int) // nil a := make([]int,0) // not nil 零值 # 零值和未初始化的值并不相同。不同类型的零值是什么？
+布尔类型是false，整型是0，字符串是&amp;quot;&amp;quot; 指针、函数、interface、slice、channel和map的零值都是nil 结构体的零值是递归生成的，每个成员都是对应的零值 我们来看一个例子。一个为nil的slice和map能做什么操作：
+// 一个为nil的slice，除了不能索引外，其他的操作都是可以的 // Note: 如果这个slice是个指针，不适用这里的规则 var a []int fmt.Printf(&amp;#34;len(a):%d, cap(a):%d, a==nil:%v\n&amp;#34;, len(a),cap(a), a == nil) //0 0 true for _, v := range a{// 不会panic fmt.Println(v) } aa := a[0:0] // 也不会panic，只要索引都是0 // nil的map，我们可以简单把它看成是一个只读的map var b map[string]string if val, ok := b[&amp;#34;notexist&amp;#34;];ok{// 不会panic fmt.</description>
     </item>
     
     <item>
@@ -1059,6 +1143,33 @@ MySQL索引机制 # 数据库索引，官方定义如下
     </item>
     
     <item>
+      <title>MySql锁相关总结</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E9%94%81%E7%9B%B8%E5%85%B3%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Tue, 30 Apr 2024 16:16:50 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E9%94%81%E7%9B%B8%E5%85%B3%E6%80%BB%E7%BB%93/</guid>
+      <description>MySql锁总体结构 # MySql的锁总体分为三类：总体、类型、用途
+总体上分为：乐观锁和悲观锁 类型上分为：读锁和写锁 粒度上分为：表锁、行锁、页面锁、间隙锁、临键锁 悲观锁 # 悲观锁对数据库中的数据读写持悲观态度，即在整个数据处理过程中，他会悲观的认为数据不会保持一致性，所以是会将相应的数据锁定。在数据库中，悲观锁的实现是依赖数据库提供的锁机制。
+如果加上了悲观锁，那么就无法对这些数据进行读取操作。
+乐观锁 # 乐观锁对于数据库的数据的读写持乐观态度，即在整个数据处理的过程中，他会很乐观的认为数据会保持一致性，所以不加锁，而是通过数据版本记录机制实现。
+MySQL中的MVCC多版本控制就是乐观锁的一种实现方式。
+往往会在数据表中增加一个类型version的版本号字段。 在查询数据库中的数据时，会将版本号字段的值一起读取出来。 当更新数据时，会令版本号字段的值加1。将提交数据的版本与数据库表对应记录的版本进行对比。 如果提交的数据版本号大于数据表中当前要修改的数据的版本号，则数据进行修改操作。 否则不修改数据库表中的数据。 读锁 # 读写又称为共享锁或者S锁（Shared Lock），针对同一份数据，可以加多个读锁而互不影响。
+写锁 # 写锁又称为排他锁或者X锁（Exclusive Lock），如果当前写锁未释放，他会阻塞其他的写锁和读锁。
+表锁 # 表锁也称为表级锁，就是在整个数据表上对数据进行加锁和释放锁。特点：开销小，加速快，粒度大，并发度最低，发生锁冲突概率高。
+在MySQL中，有两种表锁模式：一种是表共享锁（Table Shard Lock），另一种是表独占写锁（Table Write Lock）。
+当一个线程获取到一个表的读锁后，其他线程仍然可以进行读操作，但不能对表进行写操作。那么对应的如果一个线程获取到一个表的写锁后，只有这个线程可以进行读写操作，其他线程无法对表进行读写操作，直到写锁被释放为止。
+在mysql中可以通过以下命令手动添加表锁
+LOCK TABLE 表名称 read(write); eg: 添加读表锁
+LOCK TABLE user_table read; eg: 添加写表锁
+LOCK TABLE user_table write; 使用如下命令可以查看数据表上增加的锁
+SHOW OPEN TABLES; 删除表锁：
+UNLOCK TABLES; 行锁 # 行锁也称为行级别，就是在数据行上对数据进行加锁和释放锁。特点：开销大，加锁慢，粒度小，并发度高，锁冲突概率最小。
+在mysql的InnoDB存储引擎中有两种行锁，排他锁和共享锁。
+共享锁：允许一个事务读取一行数据，但不允许一个事务对加了共享锁的当前行增加排他锁。 排他锁：允许当前事务对数据行进行增删改查操作，不允许其他事务对增加了排他锁的数据行增加共享锁和排他锁。 注意：
+行锁主要加在索引上，如果对非索引字段设置条件进行更新，行锁可能会变成表锁。例如UPDATE user_table SET number = 2 WHERE name = &#39;fanone&#39; 如果name没有加索引，那么可能会进行表锁。所以我们一般建议使用主键id作为更新数据的查询条件。 InnoDB的行锁是针对索引加锁，不是针对记录加锁，并且加锁的索引不能失效，否则行锁也有可能变成表锁。而导致索引失效的有很多，比如联合索引不遵循最左匹配原则会失效、OR会失效等等&amp;hellip; 锁定某一行时，可以使用lock in share mode命令来指定共享锁，使用for update命令来指定排他锁。 UPDATE user_table SET number = 2 WHERE name = &amp;#39;fanone&amp;#39; LOCK IN SHARE MODE;UPDATE user_table SET number = 2 WHERE name = &amp;#39;fanone&amp;#39; FOR UPDATE; 页面锁 # 页级锁定是 MySQL 中比较独特的一种锁定级别。特点：锁定颗粒度介于行级锁定与表级锁之间，锁开销和加锁时间界于表锁和行锁之间，并发处理能力也同样是介于上面二者之间，并发度一般。</description>
+    </item>
+    
+    <item>
       <title>Os</title>
       <link>https://chain-code.github.io/docs/golang/package/os/</link>
       <pubDate>Fri, 05 May 2023 11:51:49 +0800</pubDate>
@@ -1179,12 +1290,41 @@ func main() {vo := reflect.</description>
     </item>
     
     <item>
+      <title>context</title>
+      <link>https://chain-code.github.io/docs/golang/package/context/</link>
+      <pubDate>Wed, 19 Apr 2023 20:05:22 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/context/</guid>
+      <description>context # Context本质 # golang标准库里Context实际上是一个接口（即一种编程规范、 一种约定）。
+type Context interface { Deadline() (deadline time.Time, ok bool) Done() &amp;lt;-chan struct{} Err() error Value(key any) any } 通过查看源码里的注释，我们得到如下约定：
+1、Done()函数返回一个只读管道，且管道里不存放任何元素(struct{})，所以用这个管道就是为了实现阻塞
+2、Deadline()用来记录到期时间，以及是否到期。
+3、Err()用来记录Done()管道关闭的原因，比如可能是因为超时，也可能是因为被强行Cancel了。
+4、Value()用来返回key对应的value，你可以想像成Context内部维护了一个map。
+Context实现 # go源码里提供了Context接口的一个具体实现，遗憾的是它只是一个空的Context，什么也没做。
+type emptyCtx int func (*emptyCtx) Deadline() (deadline time.Time, ok bool) { return } func (*emptyCtx) Done() &amp;lt;-chan struct{} { return nil } func (*emptyCtx) Err() error { return nil } func (*emptyCtx) Value(key any) any { return nil } emptyCtx以小写开头，包外不可见，所以golang又提供了Background和TODO这2个函数让我们能获取到emptyCtx。</description>
+    </item>
+    
+    <item>
       <title>filepath</title>
       <link>https://chain-code.github.io/docs/golang/package/filepath/</link>
       <pubDate>Wed, 19 Apr 2023 20:05:22 +0800</pubDate>
       
       <guid>https://chain-code.github.io/docs/golang/package/filepath/</guid>
       <description>filepath # Base返回路径的最后一个元素 # func main() { path := filepath.Base(&amp;#34;/path/to/file.txt&amp;#34;) fmt.Println(path) // 输出: file.txt } Clean清理路径，去掉冗余元素 # func main() { path := filepath.Clean(&amp;#34;/path/../to/file.txt&amp;#34;) fmt.Println(path) // 输出: /to/file.txt } Abs返回路径的绝对路径 # func main() { path, err := filepath.Abs(&amp;#34;relative/path/to/file&amp;#34;) if err != nil { log.Fatal(err) } fmt.Println(path) //C:\Users\...\go\src\VideoForensic\test\relative\path\to\file } Dir除去最后一个元素 # func main() { path := filepath.Dir(&amp;#34;/path/to/file.txt&amp;#34;) fmt.Println(path) // 输出: /path/to } Ext返回路径的扩展名 # func main() { ext := filepath.Ext(&amp;#34;/path/to/file.txt&amp;#34;) fmt.Println(ext) // 输出: .</description>
+    </item>
+    
+    <item>
+      <title>math</title>
+      <link>https://chain-code.github.io/docs/golang/package/math/</link>
+      <pubDate>Wed, 19 Apr 2023 20:05:22 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/math/</guid>
+      <description>Math # Abs 绝对值 # func Abs(x float64) float64：返回指定数字的绝对值。适用于负数和正数，确保结果为非负数。
+x := -5.5fmt.Println(math.Abs(x)) // 输出: 5.5 Pow 幂运算 # func Pow(x, y float64) float64：计算x的y次幂。常用于指数运算。
+base := 2.0exponent := 3.0fmt.Println(math.Pow(base, exponent)) // 输出: 8.0 Sqrt 平方根 # func Sqrt(x float64) float64：返回x的平方根。适用于非负数。
+num := 16.0fmt.Println(math.Sqrt(num)) // 输出: 4.0 Sin 正弦 # func Sin(x float64) float64：返回x的正弦值，x以弧度为单位。用于三角函数计算。
+radian := math.Pi / 2fmt.Println(math.Sin(radian)) // 输出: 1.0 Cos 余弦 # func Cos(x float64) float64：返回x的余弦值，x以弧度为单位。</description>
     </item>
     
     <item>
@@ -2023,6 +2163,25 @@ nvcc --version 成功输出版本信息即为成功
 安装PyTorch # 官网：https://pytorch.org/get-started/locally/
 选择自己环境的配置项，复制pip或者conda的命令来安装即可
 pip3 install torch torchvision torchaudio --index-url https://download.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/</guid>
+      <description>title: 几种常见数据库的备份与恢复 date: 2022-05-24 15:47:27 MySQL的数据备份与恢复 # 1. 数据的备份类型 # 数据的备份类型根据其自身的特性主要分为以下几组：
+1.完全备份　完全备份指的是备份整个数据集( 即整个数据库 )
+2.部分备份 部分备份指的是备份部分数据集(例如: 只备份一个表) 而部分备份又分为：
+增量备份 增量备份指的是备份自上一次备份以来(增量或完全)以来变化的数据。特点: 节约空间、还原麻烦 差异备份 差异备份指的是备份自上一次完全备份以来变化的数据。特点: 浪费空间、还原比增量备份简单 2. MySQL备份数据的方式 # 在MySQl中备份数据一般有三种方式：
+热备份 热备份指的是当数据库进行备份时, 数据库的读写操作均不是受影响
+温备份 温备份指的是当数据库进行备份时, 数据库的读操作可以执行, 但是不能执行写操作
+冷备份 冷备份指的是当数据库进行备份时, 数据库不能进行读写操作, 即数据库要下线
+MySQL中进行不同方式的备份还要考虑存储引擎是否支持： 1）MyISAM 热备 × 温备 √ 冷备 √ 2）InnoDB 热备 √ 温备 √ 冷备 √
+我们考虑完数据备份, 数据库的运行状态之后还需要考虑对于MySQL数据库中数据的备份方式：
+（1）物理备份 物理备份一般就是通过tar,cp等命令直接打包复制数据库的数据文件达到备份的效果 （2）逻辑备份 逻辑备份一般就是通过特定工具从数据库中导出数据并另存备份(逻辑备份会丢失数据精度) 3.备份工具 # 常用的备份工具有：
+mysqldump： 逻辑备份工具, 适用于所有的存储引擎, 支持温备、完全备份、部分备份、对于InnoDB存储引擎支持热备 cp, tar 等归档复制工具： 物理备份工具, 适用于所有的存储引擎, 冷备、完全备份、部分备份 lvm2 snapshot： 几乎热备, 借助文件系统管理工具进行备份 mysqlhotcopy： 名不副实的的一个工具, 几乎冷备, 仅支持MyISAM存储引擎 xtrabackup： 一款非常强大的InnoDB/XtraDB热备工具, 支持完全备份、增量备份, 由percona提供 下面介绍一下mysqldump的使用</description>
     </item>
     
     <item>

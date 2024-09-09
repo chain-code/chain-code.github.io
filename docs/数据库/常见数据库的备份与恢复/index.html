@@ -1,0 +1,2968 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="title: 几种常见数据库的备份与恢复 date: 2022-05-24 15:47:27 MySQL的数据备份与恢复 # 1. 数据的备份类型 # 数据的备份类型根据其自身的特性主要分为以下几组：
+1.完全备份　完全备份指的是备份整个数据集( 即整个数据库 )
+2.部分备份 部分备份指的是备份部分数据集(例如: 只备份一个表) 而部分备份又分为：
+增量备份 增量备份指的是备份自上一次备份以来(增量或完全)以来变化的数据。特点: 节约空间、还原麻烦 差异备份 差异备份指的是备份自上一次完全备份以来变化的数据。特点: 浪费空间、还原比增量备份简单 2. MySQL备份数据的方式 # 在MySQl中备份数据一般有三种方式：
+热备份 热备份指的是当数据库进行备份时, 数据库的读写操作均不是受影响
+温备份 温备份指的是当数据库进行备份时, 数据库的读操作可以执行, 但是不能执行写操作
+冷备份 冷备份指的是当数据库进行备份时, 数据库不能进行读写操作, 即数据库要下线
+MySQL中进行不同方式的备份还要考虑存储引擎是否支持： 1）MyISAM 热备 × 温备 √ 冷备 √ 2）InnoDB 热备 √ 温备 √ 冷备 √
+我们考虑完数据备份, 数据库的运行状态之后还需要考虑对于MySQL数据库中数据的备份方式：
+（1）物理备份 物理备份一般就是通过tar,cp等命令直接打包复制数据库的数据文件达到备份的效果 （2）逻辑备份 逻辑备份一般就是通过特定工具从数据库中导出数据并另存备份(逻辑备份会丢失数据精度) 3.备份工具 # 常用的备份工具有：
+mysqldump： 逻辑备份工具, 适用于所有的存储引擎, 支持温备、完全备份、部分备份、对于InnoDB存储引擎支持热备 cp, tar 等归档复制工具： 物理备份工具, 适用于所有的存储引擎, 冷备、完全备份、部分备份 lvm2 snapshot： 几乎热备, 借助文件系统管理工具进行备份 mysqlhotcopy： 名不副实的的一个工具, 几乎冷备, 仅支持MyISAM存储引擎 xtrabackup： 一款非常强大的InnoDB/XtraDB热备工具, 支持完全备份、增量备份, 由percona提供 下面介绍一下mysqldump的使用">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="" />
+<meta property="og:description" content="title: 几种常见数据库的备份与恢复 date: 2022-05-24 15:47:27 MySQL的数据备份与恢复 # 1. 数据的备份类型 # 数据的备份类型根据其自身的特性主要分为以下几组：
+1.完全备份　完全备份指的是备份整个数据集( 即整个数据库 )
+2.部分备份 部分备份指的是备份部分数据集(例如: 只备份一个表) 而部分备份又分为：
+增量备份 增量备份指的是备份自上一次备份以来(增量或完全)以来变化的数据。特点: 节约空间、还原麻烦 差异备份 差异备份指的是备份自上一次完全备份以来变化的数据。特点: 浪费空间、还原比增量备份简单 2. MySQL备份数据的方式 # 在MySQl中备份数据一般有三种方式：
+热备份 热备份指的是当数据库进行备份时, 数据库的读写操作均不是受影响
+温备份 温备份指的是当数据库进行备份时, 数据库的读操作可以执行, 但是不能执行写操作
+冷备份 冷备份指的是当数据库进行备份时, 数据库不能进行读写操作, 即数据库要下线
+MySQL中进行不同方式的备份还要考虑存储引擎是否支持： 1）MyISAM 热备 × 温备 √ 冷备 √ 2）InnoDB 热备 √ 温备 √ 冷备 √
+我们考虑完数据备份, 数据库的运行状态之后还需要考虑对于MySQL数据库中数据的备份方式：
+（1）物理备份 物理备份一般就是通过tar,cp等命令直接打包复制数据库的数据文件达到备份的效果 （2）逻辑备份 逻辑备份一般就是通过特定工具从数据库中导出数据并另存备份(逻辑备份会丢失数据精度) 3.备份工具 # 常用的备份工具有：
+mysqldump： 逻辑备份工具, 适用于所有的存储引擎, 支持温备、完全备份、部分备份、对于InnoDB存储引擎支持热备 cp, tar 等归档复制工具： 物理备份工具, 适用于所有的存储引擎, 冷备、完全备份、部分备份 lvm2 snapshot： 几乎热备, 借助文件系统管理工具进行备份 mysqlhotcopy： 名不副实的的一个工具, 几乎冷备, 仅支持MyISAM存储引擎 xtrabackup： 一款非常强大的InnoDB/XtraDB热备工具, 支持完全备份、增量备份, 由percona提供 下面介绍一下mysqldump的使用" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/" /><meta property="article:section" content="docs" />
+
+
+<title>常见数据库的备份与恢复 | Soulmate</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" >
+<link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.5f7fe5094494699bcf0d470707c15aceb9d96e39b86dbae97745905c61709533.js" integrity="sha256-X3/lCUSUaZvPDUcHB8FazrnZbjm4bbrpd0WQXGFwlTM=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo.png" alt="Logo" /><span>Soulmate</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>计算机基础</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e99d92668627838818961f696faae00" class="toggle"  />
+    <label for="section-1e99d92668627838818961f696faae00" class="flex justify-between">
+      <a role="button" class="">八股文</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="">计算机网络基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/linux%E5%9F%BA%E7%A1%80/" class="">Linux基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/git%E5%9F%BA%E7%A1%80/" class="">Git基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-00c75bd1eabdaaae0cac73d13168e71f" class="toggle"  />
+    <label for="section-00c75bd1eabdaaae0cac73d13168e71f" class="flex justify-between">
+      <a role="button" class="">其他</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/crontab%E4%BD%BF%E7%94%A8/" class="">crontab使用</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/libewf%E5%BA%93%E7%BC%96%E8%AF%91/" class="">libewf库编译</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/localhost%E4%B8%8E127.0.0.1/" class="">localhost与127.0.0.1</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/schtasks%E4%BD%BF%E7%94%A8/" class="">schtask使用</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="">Vim编程常用快捷键</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E4%BB%A3%E7%A0%81%E6%95%B4%E6%B4%81%E4%B9%8B%E9%81%93/" class="">代码整洁之道</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8github%E5%92%8Cgitlab/" class="">同时使用github和gitlab</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E8%8E%B7%E5%8F%96%E5%86%85%E7%BD%91%E6%B4%BB%E8%B7%83ip/" class="">获取内网活跃IP</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E9%80%9A%E8%BF%87%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81%E8%AE%A1%E7%AE%97ip%E5%9C%B0%E5%9D%80%E8%8C%83%E5%9B%B4/" class="">通过子网掩码计算IP地址范围</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E9%85%8D%E7%BD%AEkylinv10/" class="">配置 Kylin V10</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E8%99%9A%E6%8B%9F%E7%BB%84%E7%BD%91/" class="">虚拟组网</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3dcacc5e7a7c646c608757dc5f042d92" class="toggle"  />
+    <label for="section-3dcacc5e7a7c646c608757dc5f042d92" class="flex justify-between">
+      <a role="button" class="">LeetCode</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/" class="">golang力扣刷题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/" class="">golang力扣刷题（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/%E5%BF%85%E5%88%B7top101/" class="">必刷top101</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" class="">LeetCode算法总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Golang</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-670eda717a06f31447c52422ec93a159" class="toggle"  />
+    <label for="section-670eda717a06f31447c52422ec93a159" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/" class="">go语言基础（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/golang%E6%8E%A7%E6%B5%81/" class="">Golang控流</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/golang%E9%99%90%E6%B5%81%E5%AE%9E%E8%B7%B5/" class="">golang限流实践</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E6%B3%9B%E5%9E%8B%E4%BB%8B%E7%BB%8D/" class="">go泛型介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/panic/" class="">panic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/pprof/" class="">pprof</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/" class="">ProtoBuf</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8C%85%E7%AE%A1%E7%90%86/" class="">包管理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="">单元测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">常用业务代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/" class="">go语言基础（三）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/" class="">go语言底层基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/" class="">benchmark测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/" class="">Goland常用技巧</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle"  />
+    <label for="section-c453881a62c640f6a4cceec99c02477e" class="flex justify-between">
+      <a role="button" class="">高阶</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" class="">Go高阶-语言基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%81%BF%E5%9D%91%E6%8C%87%E5%8D%97/" class="">Go避坑指南</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/%E6%98%93%E9%94%99%E7%BB%86%E8%8A%82/" class="">易错细节</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f235e88e751d2cb18d527c1784763605" class="toggle"  />
+    <label for="section-f235e88e751d2cb18d527c1784763605" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/flag/" class="">Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/atomic/" class="">Atomic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/os/" class="">Os</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strconv/" class="">Strconv</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sort/" class="">Sort</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strings/" class="">Strings</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/reflect/" class="">Reflect</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/context/" class="">context</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/filepath/" class="">filepath</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/math/" class="">math</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/time/" class="">Time</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sync/" class="">Sync</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>数据库</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle"  />
+    <label for="section-94f26238d1ca3b5bcd40eadc7a88d726" class="flex justify-between">
+      <a role="button" class="">MySql</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/" class="">MySql相关问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E9%94%81%E7%9B%B8%E5%85%B3%E6%80%BB%E7%BB%93/" class="">MySql锁相关总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" class="">MySql基础总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="">Mac连接数据库所遇到的问题</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="toggle"  />
+    <label for="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="flex justify-between">
+      <a role="button" class="">Redis</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="">Redis集群搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/" class="">Redis基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="">redis面试总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8be9c2251abd1fe110e3c1520cac6177" class="toggle"  />
+    <label for="section-8be9c2251abd1fe110e3c1520cac6177" class="flex justify-between">
+      <a role="button" class="">SQLite</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/" class="">Sqlite</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/" class="">Xorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/" class="active">常见数据库的备份与恢复</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>系统架构</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%9F%BA%E7%A1%80/" class="">系统架构基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-083ca86fd1b56cca1f76a6d6b34dc093" class="toggle"  />
+    <label for="section-083ca86fd1b56cca1f76a6d6b34dc093" class="flex justify-between">
+      <a role="button" class="">设计模式</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E5%88%9B%E5%BB%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">创建型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%BB%93%E6%9E%84%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">结构型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">行为型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%89%A9%E5%B1%95/" class="">设计模式扩展</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-266e66094f86ce336245af3b8aaf0e2e" class="toggle"  />
+    <label for="section-266e66094f86ce336245af3b8aaf0e2e" class="flex justify-between">
+      <a role="button" class="">微服务</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/grpc/" class="">Grpc</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/grpc%E6%8B%A6%E6%88%AA%E5%99%A8retry/" class="">grpc拦截器retry</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3d14fec58473cc9c35cafaca50699647" class="toggle"  />
+    <label for="section-3d14fec58473cc9c35cafaca50699647" class="flex justify-between">
+      <a role="button" class="">web框架</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1/" class="">动态路由与静态路由</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>前端</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ac8e4e2fda641053d78fc10cbbde236e" class="toggle"  />
+    <label for="section-ac8e4e2fda641053d78fc10cbbde236e" class="flex justify-between">
+      <a role="button" class="">C</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/c&#43;&#43;%E9%83%A8%E7%BD%B2paddleocr/" class="">C&#43;&#43;部署PaddleOCR</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/cgo/" class="">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/cgo%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/" class="">CGO遇到的问题解决</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8ca541663a7d7fd63c79c6ce40ab5b81" class="toggle"  />
+    <label for="section-8ca541663a7d7fd63c79c6ce40ab5b81" class="flex justify-between">
+      <a role="button" class="">Python</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/venv%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/" class="">venv虚拟环境</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/" class="">Yolov8快速上手 实践</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>区块链</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle"  />
+    <label for="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="flex justify-between">
+      <a role="button" class="">Fabric</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">fabric相关机制与原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/" class="">智能合约</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/" class="">fabric-sdk-go详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/" class="">fabric-ca详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle"  />
+    <label for="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="flex justify-between">
+      <a role="button" class="">环境测试</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/" class="">fabric网络中的报错（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/" class="">fabric网络中的报错（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">fabric环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/" class="">solo节点测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/" class="">fabric多机搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/" class="">部署tape测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/" class="">手动生成ca证书搭建fabric网络</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/" class="">centos安装fabric1.2</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-25aef1d59a561fcefcaecb043ef8afd2" class="toggle"  />
+    <label for="section-25aef1d59a561fcefcaecb043ef8afd2" class="flex justify-between">
+      <a role="button" class="">配置文件</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/" class="">cryptogen生成的证书详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">docker-compose.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">configtx.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">crypto-config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/" class="">升级链码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/" class="">区块链网络添加组织</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/" class="">fabric浏览器搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/" class="">如何在已有组织中增加节点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/" class="">Fabric1.4多通道实验</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b07621083aa30b12de4c0333941e479f" class="toggle"  />
+    <label for="section-b07621083aa30b12de4c0333941e479f" class="flex justify-between">
+      <a role="button" class="">比特币</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">比特币相关机制与原理</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle"  />
+    <label for="section-ff5477999ef29208270c84e8b56b2758" class="flex justify-between">
+      <a role="button" class="">IPFS</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/" class="">go-ipfs-api</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" class="">ipfs-webui可视化工具搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/" class="">IPFS基本原理（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/" class="">IPFS私有网络搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-77a0a17b06e8d04cfb0fba9952941706" class="toggle"  />
+    <label for="section-77a0a17b06e8d04cfb0fba9952941706" class="flex justify-between">
+      <a role="button" class="">密码学</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" class="">区块链安全基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/" class="">椭圆曲线加密</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/" class="">密码学基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2e4d10b323fd668021dbd532575d8790" class="toggle"  />
+    <label for="section-2e4d10b323fd668021dbd532575d8790" class="flex justify-between">
+      <a role="button" class="">Docker</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/" class="">Docker基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/" class="">Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" class="">docker常用知识总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-70383d7f28a7ae4bf840a844eb61aa16" class="toggle"  />
+    <label for="section-70383d7f28a7ae4bf840a844eb61aa16" class="flex justify-between">
+      <a role="button" class="">共识算法</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">共识算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" class="">Raft共识算法</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
+    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
+      <a role="button" class="">博客</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%9B%BE%E4%B9%A6/" class="">图书</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/" class="">工具库</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="https://gitee.com/chaincode"  target="_blank" rel="noopener">
+        Gitee
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>常见数据库的备份与恢复</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#mysql的数据备份与恢复">MySQL的数据备份与恢复</a>
+          <ul>
+            <li><a href="#1-数据的备份类型">1. 数据的备份类型</a></li>
+            <li><a href="#2-mysql备份数据的方式">2. MySQL备份数据的方式</a></li>
+            <li><a href="#3备份工具">3.备份工具</a></li>
+            <li><a href="#4-mysqldump-的介绍与使用">4. mysqldump 的介绍与使用</a></li>
+          </ul>
+        </li>
+        <li><a href="#mongodb的数据备份与恢复">MongoDB的数据备份与恢复</a>
+          <ul>
+            <li><a href="#mongodump的介绍与使用">mongodump的介绍与使用</a></li>
+            <li><a href="#二单节点意外关闭后恢复数据">二、单节点意外关闭后恢复数据</a></li>
+            <li><a href="#三mongodb-数据恢复">三、MongoDB 数据恢复</a></li>
+          </ul>
+        </li>
+        <li><a href="#postgresql数据备份与恢复">PostgreSQL数据备份与恢复</a>
+          <ul>
+            <li><a href="#postgresql备份方案">PostgreSQL备份方案</a></li>
+            <li><a href="#postgresql逻辑备份恢复">PostgreSQL逻辑备份恢复</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><pre tabindex="0"><code>title: 几种常见数据库的备份与恢复
+date: 2022-05-24 15:47:27
+</code></pre><h2 id="mysql的数据备份与恢复">
+  MySQL的数据备份与恢复
+  <a class="anchor" href="#mysql%e7%9a%84%e6%95%b0%e6%8d%ae%e5%a4%87%e4%bb%bd%e4%b8%8e%e6%81%a2%e5%a4%8d">#</a>
+</h2>
+<h3 id="1-数据的备份类型">
+  1. 数据的备份类型
+  <a class="anchor" href="#1-%e6%95%b0%e6%8d%ae%e7%9a%84%e5%a4%87%e4%bb%bd%e7%b1%bb%e5%9e%8b">#</a>
+</h3>
+<p>数据的备份类型根据其自身的特性主要分为以下几组：</p>
+<ul>
+<li>
+<p>1.完全备份　　
+完全备份指的是备份整个数据集( 即整个数据库 )</p>
+</li>
+<li>
+<p>2.部分备份
+部分备份指的是备份部分数据集(例如: 只备份一个表)
+而部分备份又分为：</p>
+<ul>
+<li>增量备份
+增量备份指的是备份自上一次备份以来(增量或完全)以来变化的数据。特点: 节约空间、还原麻烦</li>
+<li>差异备份
+差异备份指的是备份自上一次完全备份以来变化的数据。特点: 浪费空间、还原比增量备份简单</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-mysql备份数据的方式">
+  2. MySQL备份数据的方式
+  <a class="anchor" href="#2-mysql%e5%a4%87%e4%bb%bd%e6%95%b0%e6%8d%ae%e7%9a%84%e6%96%b9%e5%bc%8f">#</a>
+</h3>
+<p>在MySQl中备份数据一般有三种方式：</p>
+<ul>
+<li>
+<p>热备份
+热备份指的是当数据库进行备份时, 数据库的读写操作均不是受影响</p>
+</li>
+<li>
+<p>温备份
+温备份指的是当数据库进行备份时, 数据库的读操作可以执行, 但是不能执行写操作</p>
+</li>
+<li>
+<p>冷备份
+冷备份指的是当数据库进行备份时, 数据库不能进行读写操作, 即数据库要下线</p>
+</li>
+</ul>
+<p>MySQL中进行不同方式的备份还要考虑存储引擎是否支持：
+1）MyISAM 　　　　
+热备 ×
+温备 √
+冷备 √
+2）InnoDB
+热备 √
+温备 √
+冷备 √</p>
+<p>我们考虑完数据备份, 数据库的运行状态之后还需要考虑对于MySQL数据库中数据的备份方式：</p>
+<ul>
+<li>（1）物理备份
+物理备份一般就是通过tar,cp等命令直接打包复制数据库的数据文件达到备份的效果</li>
+<li>（2）逻辑备份
+逻辑备份一般就是通过特定工具从数据库中导出数据并另存备份(逻辑备份会丢失数据精度)</li>
+</ul>
+<h3 id="3备份工具">
+  3.备份工具
+  <a class="anchor" href="#3%e5%a4%87%e4%bb%bd%e5%b7%a5%e5%85%b7">#</a>
+</h3>
+<p>常用的备份工具有：</p>
+<ul>
+<li>mysqldump：
+逻辑备份工具, 适用于所有的存储引擎, 支持温备、完全备份、部分备份、对于InnoDB存储引擎支持热备</li>
+<li>cp, tar 等归档复制工具：
+物理备份工具, 适用于所有的存储引擎, 冷备、完全备份、部分备份</li>
+<li>lvm2 snapshot：
+几乎热备, 借助文件系统管理工具进行备份</li>
+<li>mysqlhotcopy：
+名不副实的的一个工具, 几乎冷备, 仅支持MyISAM存储引擎</li>
+<li>xtrabackup：
+一款非常强大的InnoDB/XtraDB热备工具, 支持完全备份、增量备份, 由percona提供</li>
+</ul>
+<p>下面介绍一下mysqldump的使用</p>
+<h3 id="4-mysqldump-的介绍与使用">
+  4. mysqldump 的介绍与使用
+  <a class="anchor" href="#4-mysqldump-%e7%9a%84%e4%bb%8b%e7%bb%8d%e4%b8%8e%e4%bd%bf%e7%94%a8">#</a>
+</h3>
+<p>mysqldump 属于逻辑备份，也是最常见的备份工具了</p>
+<h4 id="备份实例">
+  备份实例
+  <a class="anchor" href="#%e5%a4%87%e4%bb%bd%e5%ae%9e%e4%be%8b">#</a>
+</h4>
+<pre tabindex="0"><code># 备份整个数据库
+mysqldump -u root -h host -p dbname &gt; backdb.sql
+
+# 备份数据库中的某个表
+mysqldump -u root -h host -p dbname tbname1, tbname2 &gt; backdb.sql
+
+# 备份多个数据库
+mysqldump -u root -h host -p --databases dbname1, dbname2 &gt; backdb.sql
+
+# 备份系统中所有数据库
+mysqldump -u root -h host -p --all-databases &gt; backdb.sql
+</code></pre><h4 id="还原">
+  还原
+  <a class="anchor" href="#%e8%bf%98%e5%8e%9f">#</a>
+</h4>
+<p>mysql命令导入sql文件还原</p>
+<pre tabindex="0"><code># 在系统命令行中，输入如下实现还原：
+mysql -u root -p dbname &lt; backup.sql
+
+# 在登录进入mysql系统中,通过source指令找到对应系统中的文件进行还原：
+MYSQL&gt; source backup.sql;
+</code></pre><h2 id="mongodb的数据备份与恢复">
+  MongoDB的数据备份与恢复
+  <a class="anchor" href="#mongodb%e7%9a%84%e6%95%b0%e6%8d%ae%e5%a4%87%e4%bb%bd%e4%b8%8e%e6%81%a2%e5%a4%8d">#</a>
+</h2>
+<p>MongoDB 备份的几种方式：</p>
+<ul>
+<li>mongodump</li>
+<li>系统快照(这里不做详细介绍，具体内容见官网：Back Up with Filesystem Snapshots)</li>
+<li>cp 或者 rsync</li>
+</ul>
+<h3 id="mongodump的介绍与使用">
+  mongodump的介绍与使用
+  <a class="anchor" href="#mongodump%e7%9a%84%e4%bb%8b%e7%bb%8d%e4%b8%8e%e4%bd%bf%e7%94%a8">#</a>
+</h3>
+<h4 id="1-mongodump概述">
+  1. mongodump概述
+  <a class="anchor" href="#1-mongodump%e6%a6%82%e8%bf%b0">#</a>
+</h4>
+<p><strong>mongodump</strong> 是 MongoDB 官方提供的备份工具，它可以从 MongoDB 数据库读取数据，并生成 BSON 文件，mongodump 适合用于备份和恢复数据量较小的 MongoDB 数据库，不适用于大数据量备份。</p>
+<p><strong>默认情况下 mongodump 不获取 local 数据库里面的内容。</strong></p>
+<p>mongodump 仅备份数据库中的文档，不备份索引，所以我们还原后，需要重新生成索引。</p>
+<p>mongodump 备份过程中会对 mongod 服务的性能产生影响，我们建议在业务低峰期进行操作。如果我们备份的数据，大于系统内存，我们备份的时候容易出现错误。</p>
+<blockquote>
+<p>在执行 mongodump 的时候，mongod 服务还是可以提供服务的，可以进行修改数据，如果我们在备份的时候加上参数 &ndash;oplog 的话，那么 oplog 是会记录这一次操作的，如果我们想在 restore 的时候也有日志记录，我们可以使用 mongorestore &ndash;oplogReplay 进行恢复</p>
+</blockquote>
+<h5 id="mongodump常用命令和参数">
+  mongodump常用命令和参数
+  <a class="anchor" href="#mongodump%e5%b8%b8%e7%94%a8%e5%91%bd%e4%bb%a4%e5%92%8c%e5%8f%82%e6%95%b0">#</a>
+</h5>
+<p>官方文档：<a href="https://docs.mongodb.com/manual/reference/program/mongodump/">mongodump</a></p>
+<p>mongodump 默认输出的目录名为 dump ,如果输出路径包含 dump 目录，会直接覆盖的。 默认备份是没有压缩的。</p>
+<p>参数：</p>
+<pre tabindex="0"><code>--host &lt;hostname&gt;&lt;:port&gt;, -h &lt;hostname&gt;&lt;:port&gt;  # 指定备份的主机ip和端口号，默认值localhost:27017
+--port # 指定端口号 默认27017
+
+--username &lt;username&gt;, -u &lt;username&gt; # 指定用户名
+--password &lt;password&gt;, -p &lt;password&gt; # 指定密码
+--authenticationDatabase &lt;dbname&gt; # 指定认证的数据库
+--authenticationMechanism &lt;name&gt; # 指定认证的算法 ，默认值 SCRAM-SHA-1
+--db &lt;database&gt;, -d &lt;database&gt; # 指定备份的数据库，未指定的话，备份所有的数据库，但不包含local库
+--collection &lt;collection&gt;, -c &lt;collection&gt; # 指定备份的集合，未指定则备份指定库中的所有集合。
+--query &lt;json&gt;, -q &lt;json&gt;  # 指定 json 作为查询条件。来备份我们过滤后的数据。
+--queryFile &lt;path&gt;  # 指定 json 文档路径，以该文档的内容作为查询条件，来备份我们过滤后的数据。
+--quit # 通过抑制 MongoDB的复制，连接等活动，来实现备份。
+--gzip  # 开启压缩，3.2版本后可以使用，输出为文件的话会带有后缀.gz
+--out &lt;path&gt;, -o &lt;path&gt;  # 输出的目录路径
+
+--repir # 修复数据时使用 下面有详细介绍
+--oplog # mongodump 会将 mongodump 执行期间的 oplog 日志 输出到文件 oplog.bson，这就意味着从备份开始到备份结束的数据操作我们都可以记录下来。
+--archive &lt;file&gt; # 输出到单个存档文件或者是直接输出。
+
+
+--dumpDbUsersAndRoles # 只有在 使用 --db 时才适用，备份数据库的包含的用户和角色。
+--excludeCollection string # 排除指定的集合，如果要排除多个，使用多个--excludeCollection
+--numParallelCollections int, -j int # 并行导出的集合数，默认为4
+
+
+--ssl  # 指定 TLS/SSL 协议
+--sslCAFile filename # 指定认证文件名
+--sslPEMKeyFile &lt;filename&gt;
+--sslPEMKeyPassword &lt;value&gt;
+--sslCRLFile &lt;filename&gt;
+--sslAllowInvalidCertificates
+--sslAllowInvalidHostnames
+--sslFIPSMode
+</code></pre><h5 id="备份示例">
+  备份示例：
+  <a class="anchor" href="#%e5%a4%87%e4%bb%bd%e7%a4%ba%e4%be%8b">#</a>
+</h5>
+<p>语法：mongodump -h  host:port -d dbname -o dbdirectory</p>
+<p>-h：数据库服务器地址+服务端口</p>
+<p>-d：要备份的数据库的名称</p>
+<p>-c：备份的数据表</p>
+<p>-o：备份数据库的存放目录</p>
+<p>如果数据库开启了登录认证，则需要添加用户认证信息</p>
+<pre tabindex="0"><code># 导出指定数据库到指定目录
+mongodump -h 127.0.0.1:27017 -u=账号 -p=密码 --authenticationDatabase=admin  -d deployservice -o /data/backup/mongodump-2024-5-16/
+</code></pre><pre tabindex="0"><code>root@c02e337bf417:/# ls
+bin   data  docker-entrypoint-initdb.d	etc   js-yaml.js  lib32  libx32  mnt  proc  run   srv  tmp  var
+boot  dev   dump			home  lib	  lib64  media	 opt  root  sbin  sys  usr
+root@c02e337bf417:/# mongodump -h 127.0.0.1:27017 -u=admin -p=123456 --authenticationDatabase=admin -d deployservice -o /data/backup/mongodump-2024-5-16
+2024-05-16T08:37:30.456+0000	writing deployservice.deploys to /data/backup/mongodump-2024-5-16/deployservice/deploys.bson
+2024-05-16T08:37:30.457+0000	writing deployservice.records to /data/backup/mongodump-2024-5-16/deployservice/records.bson
+2024-05-16T08:37:30.457+0000	writing deployservice.services to /data/backup/mongodump-2024-5-16/deployservice/services.bson
+2024-05-16T08:37:30.479+0000	done dumping deployservice.services (72 documents)
+2024-05-16T08:37:30.479+0000	writing deployservice.loopholes to /data/backup/mongodump-2024-5-16/deployservice/loopholes.bson
+2024-05-16T08:37:30.504+0000	done dumping deployservice.loopholes (59 documents)
+2024-05-16T08:37:30.504+0000	writing deployservice.backups to /data/backup/mongodump-2024-5-16/deployservice/backups.bson
+2024-05-16T08:37:30.545+0000	done dumping deployservice.backups (27 documents)
+2024-05-16T08:37:30.545+0000	writing deployservice.servers to /data/backup/mongodump-2024-5-16/deployservice/servers.bson
+2024-05-16T08:37:30.566+0000	done dumping deployservice.servers (13 documents)
+2024-05-16T08:37:30.567+0000	writing deployservice.vulnerabilities to /data/backup/mongodump-2024-5-16/deployservice/vulnerabilities.bson
+2024-05-16T08:37:30.568+0000	writing deployservice.logs to /data/backup/mongodump-2024-5-16/deployservice/logs.bson
+2024-05-16T08:37:30.574+0000	done dumping deployservice.records (596 documents)
+2024-05-16T08:37:30.575+0000	writing deployservice.users to /data/backup/mongodump-2024-5-16/deployservice/users.bson
+2024-05-16T08:37:30.587+0000	done dumping deployservice.vulnerabilities (10 documents)
+2024-05-16T08:37:30.588+0000	writing deployservice.sessioninfos to /data/backup/mongodump-2024-5-16/deployservice/sessioninfos.bson
+2024-05-16T08:37:30.592+0000	done dumping deployservice.users (8 documents)
+2024-05-16T08:37:30.592+0000	writing deployservice.migrations to /data/backup/mongodump-2024-5-16/deployservice/migrations.bson
+2024-05-16T08:37:30.604+0000	done dumping deployservice.sessioninfos (5 documents)
+2024-05-16T08:37:30.605+0000	writing deployservice.vdbs to /data/backup/mongodump-2024-5-16/deployservice/vdbs.bson
+2024-05-16T08:37:30.609+0000	done dumping deployservice.migrations (4 documents)
+2024-05-16T08:37:30.610+0000	writing deployservice.settings to /data/backup/mongodump-2024-5-16/deployservice/settings.bson
+2024-05-16T08:37:30.625+0000	done dumping deployservice.vdbs (2 documents)
+2024-05-16T08:37:30.627+0000	writing deployservice.tasks to /data/backup/mongodump-2024-5-16/deployservice/tasks.bson
+2024-05-16T08:37:30.648+0000	done dumping deployservice.settings (1 document)
+2024-05-16T08:37:30.648+0000	writing deployservice.sessions to /data/backup/mongodump-2024-5-16/deployservice/sessions.bson
+2024-05-16T08:37:30.649+0000	done dumping deployservice.tasks (0 documents)
+2024-05-16T08:37:30.649+0000	writing deployservice.rules to /data/backup/mongodump-2024-5-16/deployservice/rules.bson
+2024-05-16T08:37:30.666+0000	done dumping deployservice.sessions (0 documents)
+2024-05-16T08:37:30.667+0000	done dumping deployservice.rules (0 documents)
+2024-05-16T08:37:30.701+0000	done dumping deployservice.logs (10812 documents)
+2024-05-16T08:37:30.792+0000	done dumping deployservice.deploys (1193 documents)
+root@c02e337bf417:/# cd /data/backup/mongodump-2024-5-16/
+root@c02e337bf417:/data/backup/mongodump-2024-5-16# ls
+deployservice
+root@c02e337bf417:/data/backup/mongodump-2024-5-16# ls deployservice/
+backups.bson		 migrations.bson	   services.bson	       tasks.bson
+backups.metadata.json	 migrations.metadata.json  services.metadata.json      tasks.metadata.json
+deploys.bson		 records.bson		   sessioninfos.bson	       users.bson
+deploys.metadata.json	 records.metadata.json	   sessioninfos.metadata.json  users.metadata.json
+logs.bson		 rules.bson		   sessions.bson	       vdbs.bson
+logs.metadata.json	 rules.metadata.json	   sessions.metadata.json      vdbs.metadata.json
+loopholes.bson		 servers.bson		   settings.bson	       vulnerabilities.bson
+loopholes.metadata.json  servers.metadata.json	   settings.metadata.json      vulnerabilities.metadata.json
+</code></pre><pre tabindex="0"><code># 也可以导出特定表,例如导出数据库的 users 表 到指定目录
+mongodump -h 127.0.0.1:27017 -u=账号 -p=密码 --authenticationDatabase=admin  -c users -d deployservice -o /data/backup/users
+</code></pre><pre tabindex="0"><code>root@c02e337bf417:/data/backup# ls
+mongodump-2024-5-16
+root@c02e337bf417:/data/backup# mongodump -h 127.0.0.1:27017 -u=admin -p=123456 --authenticationDatabase=admin  -c users -d deployservice -o /data/backup/users
+2024-05-16T08:43:10.217+0000	writing deployservice.users to /data/backup/users/deployservice/users.bson
+2024-05-16T08:43:10.218+0000	done dumping deployservice.users (8 documents)
+root@c02e337bf417:/data/backup# ls
+mongodump-2024-5-16  users
+</code></pre><h5 id="查看备份数据">
+  查看备份数据
+  <a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e5%a4%87%e4%bb%bd%e6%95%b0%e6%8d%ae">#</a>
+</h5>
+<p>以上备份的数据都是二进制的，是直接查看不到的，可以通过工具 bsondump(安装 MongoDB 自带了) 来进行查看,例如</p>
+<pre tabindex="0"><code>root@c02e337bf417:/data/backup/mongodump-2024-5-16/deployservice# ls
+backups.bson		 migrations.bson	   services.bson	       tasks.bson
+backups.metadata.json	 migrations.metadata.json  services.metadata.json      tasks.metadata.json
+deploys.bson		 records.bson		   sessioninfos.bson	       users.bson
+deploys.metadata.json	 records.metadata.json	   sessioninfos.metadata.json  users.metadata.json
+logs.bson		 rules.bson		   sessions.bson	       vdbs.bson
+logs.metadata.json	 rules.metadata.json	   sessions.metadata.json      vdbs.metadata.json
+loopholes.bson		 servers.bson		   settings.bson	       vulnerabilities.bson
+loopholes.metadata.json  servers.metadata.json	   settings.metadata.json      vulnerabilities.metadata.json
+root@c02e337bf417:/data/backup/mongodump-2024-5-16/deployservice# bsondump migrations.bson
+{&#34;_id&#34;:{&#34;$oid&#34;:&#34;5ffd4a425c6af8aa4f3e64f4&#34;},&#34;name&#34;:&#34;20200909_update_service_schema&#34;,&#34;__v&#34;:{&#34;$numberInt&#34;:&#34;0&#34;},&#34;createAt&#34;:{&#34;$date&#34;:{&#34;$numberLong&#34;:&#34;1610435138557&#34;}},&#34;status&#34;:&#34;done&#34;,&#34;updateAt&#34;:{&#34;$date&#34;:{&#34;$numberLong&#34;:&#34;1715409734303&#34;}},&#34;duration&#34;:{&#34;$numberInt&#34;:&#34;14&#34;},&#34;message&#34;:null}
+{&#34;_id&#34;:{&#34;$oid&#34;:&#34;63199c816e25985082415721&#34;},&#34;name&#34;:&#34;20220908_update_server_password&#34;,&#34;__v&#34;:{&#34;$numberInt&#34;:&#34;0&#34;},&#34;createAt&#34;:{&#34;$date&#34;:{&#34;$numberLong&#34;:&#34;1662622848971&#34;}},&#34;status&#34;:&#34;done&#34;,&#34;updateAt&#34;:{&#34;$date&#34;:{&#34;$numberLong&#34;:&#34;1715409734352&#34;}},&#34;duration&#34;:{&#34;$numberInt&#34;:&#34;99&#34;},&#34;message&#34;:null}
+{&#34;_id&#34;:{&#34;$oid&#34;:&#34;6458d945370b214d125ed703&#34;},&#34;name&#34;:&#34;202303017_update_server_password&#34;,&#34;__v&#34;:{&#34;$numberInt&#34;:&#34;0&#34;},&#34;createAt&#34;:{&#34;$date&#34;:{&#34;$numberLong&#34;:&#34;1683544389220&#34;}},&#34;status&#34;:&#34;done&#34;,&#34;updateAt&#34;:{&#34;$date&#34;:{&#34;$numberLong&#34;:&#34;1715409734356&#34;}},&#34;duration&#34;:{&#34;$numberInt&#34;:&#34;59&#34;},&#34;message&#34;:null}
+{&#34;_id&#34;:{&#34;$oid&#34;:&#34;65ae38706ce52db7b5ae8918&#34;},&#34;name&#34;:&#34;202401017_init_vulnerability_database&#34;,&#34;__v&#34;:{&#34;$numberInt&#34;:&#34;0&#34;},&#34;createAt&#34;:{&#34;$date&#34;:{&#34;$numberLong&#34;:&#34;1705916528598&#34;}},&#34;status&#34;:&#34;done&#34;,&#34;updateAt&#34;:{&#34;$date&#34;:{&#34;$numberLong&#34;:&#34;1709546970264&#34;}},&#34;duration&#34;:{&#34;$numberInt&#34;:&#34;17&#34;},&#34;message&#34;:null}
+2024-05-16T08:46:55.806+0000	4 objects found
+</code></pre><h4 id="2-cp-或者rsync">
+  2. cp 或者rsync
+  <a class="anchor" href="#2-cp-%e6%88%96%e8%80%85rsync">#</a>
+</h4>
+<p>可以直接复制数据文件，但是必须在复制文件前停止对 MongoDB 的操作，否则复制的文件是无效的。</p>
+<h3 id="二单节点意外关闭后恢复数据">
+  二、单节点意外关闭后恢复数据
+  <a class="anchor" href="#%e4%ba%8c%e5%8d%95%e8%8a%82%e7%82%b9%e6%84%8f%e5%a4%96%e5%85%b3%e9%97%ad%e5%90%8e%e6%81%a2%e5%a4%8d%e6%95%b0%e6%8d%ae">#</a>
+</h3>
+<p>有时mongodb异常退出后会造成服务无法启动，比如服务器异常断电场景</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202408231943066.png" alt="" /></p>
+<h4 id="数据修复流程">
+  数据修复流程：
+  <a class="anchor" href="#%e6%95%b0%e6%8d%ae%e4%bf%ae%e5%a4%8d%e6%b5%81%e7%a8%8b">#</a>
+</h4>
+<ul>
+<li>
+<p>先备份现有的数据
+可以用 cp 命令将现有的数据的整个目录的所有文件都备份一份。</p>
+</li>
+<li>
+<p>使用 mongod &ndash;repair</p>
+</li>
+</ul>
+<pre tabindex="0"><code>#针对 所有数据库
+mongod --repair
+
+#针对 单个数据库
+mongod --dbpath /data/mongodb/data/djx  --repair
+</code></pre><p>一般情况下，不应该手动删除该mongod.lock文件。而是使用上述过程来恢复数据库。在严峻的情况下，您可以删除文件，使用可能损坏的文件启动数据库，并尝试从数据库中恢复数据，但这存在风险。</p>
+<h5 id="docker容器-数据修复流程">
+  docker容器-数据修复流程：
+  <a class="anchor" href="#docker%e5%ae%b9%e5%99%a8-%e6%95%b0%e6%8d%ae%e4%bf%ae%e5%a4%8d%e6%b5%81%e7%a8%8b">#</a>
+</h5>
+<p>docker-compose 以交互式方式运行容器</p>
+<p>模板添加 ：container_name: mymongo(自定义容器名)</p>
+<p>例如</p>
+<pre tabindex="0"><code>services:
+  redis:
+    image: ${REGISTRY}/docker/redis:${REDIS_TAG}
+    restart: always
+    volumes:
+      - ./redis/data:/data
+    networks:
+      - deploy_net
+
+  mongo:
+    image: ${REGISTRY}/docker/mongo:${MONGO_TAG}
+    container_name: mymongo
+    command: --wiredTigerCacheSizeGB=${MONGO_CACHE_GB}
+</code></pre><p>执行命令如下</p>
+<pre tabindex="0"><code>docker-compose run your_service sh        #以交互式方式启动容器
+mongod --dbpath=data/db(mongo db的路径) --repair   #这里的/data/db是容器里面的db路径
+
+例如：
+docker-compose run mymongo  sh                       # 启动容器
+mongod --dbpath=data/db --repair                   # 修复
+</code></pre><h3 id="三mongodb-数据恢复">
+  三、MongoDB 数据恢复
+  <a class="anchor" href="#%e4%b8%89mongodb-%e6%95%b0%e6%8d%ae%e6%81%a2%e5%a4%8d">#</a>
+</h3>
+<h4 id="1mongorestore特点">
+  1、mongorestore特点
+  <a class="anchor" href="#1mongorestore%e7%89%b9%e7%82%b9">#</a>
+</h4>
+<ul>
+<li>mongorestore 可以创建新的数据库或将数据添加到现有的数据库，但是 mongorestore 仅仅执行insert 操作，不执行 update操作。这就意味着如果将文档还原到现有的数据库，现有的数据库中的文档的_id的值和要还原的文档中的_id 值是一样的，是不会将数据库原有的值覆盖的。</li>
+<li>重建索引，mongorestore 会重建索引。</li>
+<li>mongorestore 不恢复 system.profile 的数据</li>
+</ul>
+<h4 id="2mongorestore-常用参数">
+  2、mongorestore 常用参数
+  <a class="anchor" href="#2mongorestore-%e5%b8%b8%e7%94%a8%e5%8f%82%e6%95%b0">#</a>
+</h4>
+<pre tabindex="0"><code>--help # 查看帮助
+--quiet # 通过抑制 MongoDB的复制，连接等活动，来实现数据恢复。
+
+--host &lt;hostname&gt;&lt;:port&gt;, -h &lt;hostname&gt;&lt;:port&gt;  # 指定恢复的主机ip和端口号，默认值localhost:27017
+--port # 指定端口号 默认27017
+
+--username &lt;username&gt;, -u &lt;username&gt; # 指定用户名
+--password &lt;password&gt;, -p &lt;password&gt; # 指定密码
+--authenticationDatabase &lt;dbname&gt; # 指定认证的数据库
+--authenticationMechanism &lt;name&gt; # 指定认证的算法 ，默认值 SCRAM-SHA-1
+--objcheck # 开启验证，验证还原操作，确保没有无效的文档插入数据库。会有较小的性能影响
+--oplogReplay # 恢复备份数据并将 mongodump 执行期间的操作(记录在导出的日志)恢复。
+--oplogLimit  # 指定恢复
+--oplogFile # 指定 Oplog 路径
+--keepIndexVersion # 阻止mongorestore在还原过程中将索引升级到最新版本。
+--restoreDbUsersAndRoles # 还原指定的数据库用户和角色。
+--maintainInsertionOrder # 默认值为False,如果为 True,mongorestore 将按照输入源的文档顺序插入，否则是 随机执行插入。
+--numParallelCollections int, -j int # 指定并行恢复的集合数。
+--numInsertionWorkersPerCollection int # 默认值为 1，指定每个集合恢复的并发数，大数据量导入增加该值可提高 恢复速度。
+--gzip # 从压缩文档中 恢复。
+--archive # 从归档文件中恢复。
+--dir # 指定还原数据储存目录。
+</code></pre><h4 id="3mongorestore-恢复示例">
+  3、mongorestore 恢复示例
+  <a class="anchor" href="#3mongorestore-%e6%81%a2%e5%a4%8d%e7%a4%ba%e4%be%8b">#</a>
+</h4>
+<p>语法：mongorestore -h host:port -d dbname &ndash;dir dbdirectory</p>
+<p>-h：数据库服务器地址+服务端口</p>
+<p>-d：恢复数据库后的数据库名称</p>
+<p>-c：需要恢复的数据表</p>
+<p>&ndash;dir：备份数据库所在的位置</p>
+<p>如果数据库开启了登录认证，则需要添加用户认证信息</p>
+<pre tabindex="0"><code># 恢复 deployservice数据库的所有表
+mongorestore -h 127.0.0.1:27017 -u=账号 -p=密码 --authenticationDatabase=admin  -d deployservice  /data/backup/mongodump-2024-5-16
+
+# 恢复 deployservice数据库中特定的表，比如只恢复users 表
+mongorestore -h 127.0.0.1:27017 -u=账号 -p=密码 --authenticationDatabase=admin -d deployservice /data/backup/mongodump-2024-5-16 /deployservice/users.bson
+</code></pre><h2 id="postgresql数据备份与恢复">
+  PostgreSQL数据备份与恢复
+  <a class="anchor" href="#postgresql%e6%95%b0%e6%8d%ae%e5%a4%87%e4%bb%bd%e4%b8%8e%e6%81%a2%e5%a4%8d">#</a>
+</h2>
+<h3 id="postgresql备份方案">
+  PostgreSQL备份方案
+  <a class="anchor" href="#postgresql%e5%a4%87%e4%bb%bd%e6%96%b9%e6%a1%88">#</a>
+</h3>
+<ul>
+<li>方案一：逻辑备份——使用pg_dump</li>
+<li>方案二：物理备份——使用pg_rman(暂不介绍)</li>
+</ul>
+<h3 id="postgresql逻辑备份恢复">
+  PostgreSQL逻辑备份恢复
+  <a class="anchor" href="#postgresql%e9%80%bb%e8%be%91%e5%a4%87%e4%bb%bd%e6%81%a2%e5%a4%8d">#</a>
+</h3>
+<h4 id="逻辑备份pg_dump">
+  逻辑备份：pg_dump
+  <a class="anchor" href="#%e9%80%bb%e8%be%91%e5%a4%87%e4%bb%bdpg_dump">#</a>
+</h4>
+<h5 id="1pg_dump简介">
+  1、pg_dump简介
+  <a class="anchor" href="#1pg_dump%e7%ae%80%e4%bb%8b">#</a>
+</h5>
+<p>pg_dump 是 PostgreSQL 自带的备份工具，可以将 PostgreSQL 数据库备份为一个 SQL 脚本，可以用来还原数据库。</p>
+<p>pg_dump 通常会随着 PostgreSQL 安装包一起提供。如果你已经安装了 PostgreSQL，则 pg_dump 应该已经在系统中可用。如果你使用的是 Linux 系统，你可以通过以下命令来查找 pg_dump 的位置：<code>which pg_dump</code></p>
+<ul>
+<li>pg_dump 支持备份表，备份用户，备份数据库</li>
+<li>pg_dumpall 支持导出全库的数据</li>
+<li>pg_dump 可以把数据备份成SQL文本的形式，也可以自定义为tar包等二进制</li>
+</ul>
+<h5 id="2备份数据操作">
+  2、备份数据操作
+  <a class="anchor" href="#2%e5%a4%87%e4%bb%bd%e6%95%b0%e6%8d%ae%e6%93%8d%e4%bd%9c">#</a>
+</h5>
+<p>常用备份命令（查看帮助信息） <code>pg_dump --help</code></p>
+<p>备份操作实例</p>
+<pre tabindex="0"><code># 备份准备
+mkdir -p /pgbak
+chown postgres.postgres /pgbak
+</code></pre><pre tabindex="0"><code># 本机备份
+# 方式一：使用重定向符号
+bash-5.0# pg_dump -U demo testdb &gt; /pgbak/testdb.sql
+bash-5.0# cd pgbak/
+bash-5.0# ls
+testdb.sql
+bash-5.0#
+</code></pre><pre tabindex="0"><code># 方式二：使用pg参数
+bash-5.0# pg_dump -U demo testdb --file=/pgbak/backup-testdb11.sql
+bash-5.0# ls
+testdb.sql    backup-testdb11.sql
+</code></pre><pre tabindex="0"><code># 压缩备份
+若遇到数据库容量比较大时，可以选择压缩备份
+ash-5.0# pg_dump -U demo  testdb --format=custom --file=/pgbak/db_testdb000.dump
+bash-5.0# ls
+db_testdb000.dump  testdb.sql         backup-testdb11.sql
+</code></pre><h4 id="22-恢复">
+  2.2 恢复
+  <a class="anchor" href="#22-%e6%81%a2%e5%a4%8d">#</a>
+</h4>
+<h5 id="恢复方式">
+  恢复方式
+  <a class="anchor" href="#%e6%81%a2%e5%a4%8d%e6%96%b9%e5%bc%8f">#</a>
+</h5>
+<ul>
+<li>psql恢复：一般恢复SQL文本</li>
+<li>pg_restore恢复：一般恢复压缩的二进制文件</li>
+</ul>
+<h5 id="恢复实现">
+  恢复实现
+  <a class="anchor" href="#%e6%81%a2%e5%a4%8d%e5%ae%9e%e7%8e%b0">#</a>
+</h5>
+<pre tabindex="0"><code># 基于sql文件恢复
+pgsql --dbname=db_name --file=backup_db_name.sql
+
+# 基于dump压缩文件恢复
+pg_restore --dbname=db_name backup_db_name.dump
+</code></pre></article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#mysql的数据备份与恢复">MySQL的数据备份与恢复</a>
+          <ul>
+            <li><a href="#1-数据的备份类型">1. 数据的备份类型</a></li>
+            <li><a href="#2-mysql备份数据的方式">2. MySQL备份数据的方式</a></li>
+            <li><a href="#3备份工具">3.备份工具</a></li>
+            <li><a href="#4-mysqldump-的介绍与使用">4. mysqldump 的介绍与使用</a></li>
+          </ul>
+        </li>
+        <li><a href="#mongodb的数据备份与恢复">MongoDB的数据备份与恢复</a>
+          <ul>
+            <li><a href="#mongodump的介绍与使用">mongodump的介绍与使用</a></li>
+            <li><a href="#二单节点意外关闭后恢复数据">二、单节点意外关闭后恢复数据</a></li>
+            <li><a href="#三mongodb-数据恢复">三、MongoDB 数据恢复</a></li>
+          </ul>
+        </li>
+        <li><a href="#postgresql数据备份与恢复">PostgreSQL数据备份与恢复</a>
+          <ul>
+            <li><a href="#postgresql备份方案">PostgreSQL备份方案</a></li>
+            <li><a href="#postgresql逻辑备份恢复">PostgreSQL逻辑备份恢复</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -15,7 +15,11 @@ Go协程goroutine: 是一种轻量线程，它不是操作系统的线程，而�
 垃圾回收
 ​ go垃圾回收不咋地
 静态链接 只须编译一个可执行文件，无须附加任何东西就能部署。将运行时、依赖库直接打包到可执行文件内部，简化了部署和发布操作，无须事先安装运行环境和下载诸多第三方库。
-标准库 工具链 第二章 类型 # 变量 # 定义 # var a int //会自动初始化为0 var y=false //自动推断为bool类型 var x,y int x=1 y=2 //定义完变量后再赋值 var a int =2 var a,s=100,&#34;abc&#34; //初始化 var ( x,y int a,s=100,&#34;abc&#34; //字符串加“” ) a:=100 //自动推导类型 a,s:=100,&#34;abc&#34; 注意： * 定义变量，同时显示初始化 * 不能提供数据类型 * 只能用在函数内部 退化赋值 # 退化赋值的前提条件是：最少有一个新变量被定义，且必须是同一作用域。">
+标准库 工具链 设计初衷 # 少即是多（less is more）：如果一个特性并不对解决任何问题有显著价值，那么go就不提供它；如果需要一个特性，那么只有一种方法去实现 面向接口编程：非侵入式接口，反对继承、反对虚函数和虚函数重载（多态）、删除构造和析构函数 正交&#43;组合的语言特性：语言的特性之间相互独立，不相互影响。比如类型和方法是互相独立的，类型之间也是相互独立的，没有子类，包也没有子包。不同特性用组合的方式来松耦合 并发在语言层面支持：并发更好利用多核，有更强的表现力来模拟真实世界 在设计上，Go秉承了C的简单粗暴。
+为什么没有继承 # Go没有子类型的概念，只能把类型嵌入到另一个类型中，所以没有类型系统。Go的作者认为类型系统被过度使用了，应该在这个方向上退一步。
+使用伸缩性良好的组合，而不是继承 数据和方法不再绑定在一起，数据的集合用struct，方法的集合用interface，保持正交 类似子类父类的系统造成非常脆弱的代码。类型的层次必须在早期进行设计，通常会是程序设计的第一步，但是一旦写出程序后，早期的决策就很难进行改变了。所以，类型层次结构会促成早期的过度设计，因为程序员要尽力对软件可能需要的各种可能的用法进行预测，不断地为了避免挂一漏万，不断的增加类型和抽象的层次。这种做法有点颠倒了，系统各个部分之间交互的方式本应该随着系统的发展而做出相应的改变，而不应该在一开始就固定下来。
+作者附了一个例子，是一些以接口为参数并且其返回结果也是一个接口的函数：
+// 入参是接口的函数，而不是成员方法func ReadAll(r io.Reader) ([]byte, error)// 封装器 - 出入参都是接口func LoggingReader(r io.Reader) io.Reader //读到的内容录入日志func LimitingReader(r io.">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="go语言基础（一）" />
@@ -31,7 +35,11 @@ Go协程goroutine: 是一种轻量线程，它不是操作系统的线程，而�
 垃圾回收
 ​ go垃圾回收不咋地
 静态链接 只须编译一个可执行文件，无须附加任何东西就能部署。将运行时、依赖库直接打包到可执行文件内部，简化了部署和发布操作，无须事先安装运行环境和下载诸多第三方库。
-标准库 工具链 第二章 类型 # 变量 # 定义 # var a int //会自动初始化为0 var y=false //自动推断为bool类型 var x,y int x=1 y=2 //定义完变量后再赋值 var a int =2 var a,s=100,&#34;abc&#34; //初始化 var ( x,y int a,s=100,&#34;abc&#34; //字符串加“” ) a:=100 //自动推导类型 a,s:=100,&#34;abc&#34; 注意： * 定义变量，同时显示初始化 * 不能提供数据类型 * 只能用在函数内部 退化赋值 # 退化赋值的前提条件是：最少有一个新变量被定义，且必须是同一作用域。" />
+标准库 工具链 设计初衷 # 少即是多（less is more）：如果一个特性并不对解决任何问题有显著价值，那么go就不提供它；如果需要一个特性，那么只有一种方法去实现 面向接口编程：非侵入式接口，反对继承、反对虚函数和虚函数重载（多态）、删除构造和析构函数 正交&#43;组合的语言特性：语言的特性之间相互独立，不相互影响。比如类型和方法是互相独立的，类型之间也是相互独立的，没有子类，包也没有子包。不同特性用组合的方式来松耦合 并发在语言层面支持：并发更好利用多核，有更强的表现力来模拟真实世界 在设计上，Go秉承了C的简单粗暴。
+为什么没有继承 # Go没有子类型的概念，只能把类型嵌入到另一个类型中，所以没有类型系统。Go的作者认为类型系统被过度使用了，应该在这个方向上退一步。
+使用伸缩性良好的组合，而不是继承 数据和方法不再绑定在一起，数据的集合用struct，方法的集合用interface，保持正交 类似子类父类的系统造成非常脆弱的代码。类型的层次必须在早期进行设计，通常会是程序设计的第一步，但是一旦写出程序后，早期的决策就很难进行改变了。所以，类型层次结构会促成早期的过度设计，因为程序员要尽力对软件可能需要的各种可能的用法进行预测，不断地为了避免挂一漏万，不断的增加类型和抽象的层次。这种做法有点颠倒了，系统各个部分之间交互的方式本应该随着系统的发展而做出相应的改变，而不应该在一开始就固定下来。
+作者附了一个例子，是一些以接口为参数并且其返回结果也是一个接口的函数：
+// 入参是接口的函数，而不是成员方法func ReadAll(r io.Reader) ([]byte, error)// 封装器 - 出入参都是接口func LoggingReader(r io.Reader) io.Reader //读到的内容录入日志func LimitingReader(r io." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/" /><meta property="article:section" content="docs" />
 <meta property="article:published_time" content="2021-04-07T16:58:12+00:00" />
@@ -41,7 +49,7 @@ Go协程goroutine: 是一种轻量线程，它不是操作系统的线程，而�
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.1737026d07ba4a2a3ea7bc5b04fccda1cd16a5cad40e0292005ee50828676b2b.js" integrity="sha256-FzcCbQe6Sio&#43;p7xbBPzNoc0WpcrUDgKSAF7lCChnays=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.5f7fe5094494699bcf0d470707c15aceb9d96e39b86dbae97745905c61709533.js" integrity="sha256-X3/lCUSUaZvPDUcHB8FazrnZbjm4bbrpd0WQXGFwlTM=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -528,6 +536,19 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/golang%E9%99%90%E6%B5%81%E5%AE%9E%E8%B7%B5/" class="">golang限流实践</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E6%B3%9B%E5%9E%8B%E4%BB%8B%E7%BB%8D/" class="">go泛型介绍</a>
   
 
@@ -542,6 +563,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/panic/" class="">panic</a>
   
 
         </li>
@@ -581,6 +615,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8C%85%E7%AE%A1%E7%90%86/" class="">包管理</a>
   
 
         </li>
@@ -731,6 +778,19 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%81%BF%E5%9D%91%E6%8C%87%E5%8D%97/" class="">Go避坑指南</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
   
 
@@ -745,6 +805,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/%E6%98%93%E9%94%99%E7%BB%86%E8%8A%82/" class="">易错细节</a>
   
 
         </li>
@@ -869,7 +942,33 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/golang/package/context/" class="">context</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/golang/package/filepath/" class="">filepath</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/math/" class="">math</a>
   
 
         </li>
@@ -948,6 +1047,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/" class="">MySql相关问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E9%94%81%E7%9B%B8%E5%85%B3%E6%80%BB%E7%BB%93/" class="">MySql锁相关总结</a>
   
 
         </li>
@@ -1099,6 +1211,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/" class="">常见数据库的备份与恢复</a>
   
 
         </li>
@@ -1387,6 +1512,19 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/c/c&#43;&#43;%E9%83%A8%E7%BD%B2paddleocr/" class="">C&#43;&#43;部署PaddleOCR</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/c/cgo/" class="">CGo</a>
   
 
@@ -1461,53 +1599,6 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/python/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/" class="">Yolov8快速上手 实践</a>
-  
-
-        </li>
-      
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li class="book-section-flat" >
-          
-  
-  
-
-  
-    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
-    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
-      <a role="button" class="">博客</a>
-    </label>
-  
-
-          
-  <ul>
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
-  
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
   
 
         </li>
@@ -2166,6 +2257,53 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
+    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
+      <a role="button" class="">博客</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
     <a href="/docs/%E5%9B%BE%E4%B9%A6/" class="">图书</a>
   
 
@@ -2261,7 +2399,14 @@ https://github.com/alex-shpak/hugo-book
   <ul>
     <li><a href="#第一章-概述">第一章 概述</a>
       <ul>
-        <li><a href="#go语言特征">go语言特征</a></li>
+        <li><a href="#go语言特征">go语言特征</a>
+          <ul>
+            <li><a href="#设计初衷">设计初衷</a></li>
+            <li><a href="#为什么没有继承">为什么没有继承</a></li>
+            <li><a href="#为什么没有异常">为什么没有异常？</a></li>
+            <li><a href="#为什么没有x">为什么没有X？</a></li>
+          </ul>
+        </li>
       </ul>
     </li>
     <li><a href="#第二章-类型">第二章 类型</a>
@@ -2495,6 +2640,53 @@ https://github.com/alex-shpak/hugo-book
 <li>标准库</li>
 <li>工具链</li>
 </ul>
+<h3 id="设计初衷">
+  设计初衷
+  <a class="anchor" href="#%e8%ae%be%e8%ae%a1%e5%88%9d%e8%a1%b7">#</a>
+</h3>
+<ul>
+<li>少即是多（less is more）：如果一个特性并不对解决任何问题有显著价值，那么go就不提供它；如果需要一个特性，那么只有一种方法去实现</li>
+<li>面向接口编程：非侵入式接口，反对继承、反对虚函数和虚函数重载（多态）、删除构造和析构函数</li>
+<li>正交+组合的语言特性：语言的特性之间相互独立，不相互影响。比如类型和方法是互相独立的，类型之间也是相互独立的，没有子类，包也没有子包。不同特性用组合的方式来松耦合</li>
+<li>并发在语言层面支持：并发更好利用多核，有更强的表现力来模拟真实世界</li>
+</ul>
+<p>在设计上，Go秉承了C的简单粗暴。</p>
+<h3 id="为什么没有继承">
+  为什么没有继承
+  <a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e6%b2%a1%e6%9c%89%e7%bb%a7%e6%89%bf">#</a>
+</h3>
+<p>Go没有子类型的概念，只能把类型嵌入到另一个类型中，所以没有类型系统。Go的作者认为类型系统被过度使用了，应该在这个方向上退一步。</p>
+<ul>
+<li>使用伸缩性良好的组合，而不是继承</li>
+<li>数据和方法不再绑定在一起，数据的集合用struct，方法的集合用interface，保持正交</li>
+</ul>
+<blockquote>
+<p>类似子类父类的系统造成非常脆弱的代码。类型的层次必须在早期进行设计，通常会是程序设计的第一步，但是一旦写出程序后，早期的决策就很难进行改变了。所以，类型层次结构会促成早期的过度设计，因为程序员要尽力对软件可能需要的各种可能的用法进行预测，不断地为了避免挂一漏万，不断的增加类型和抽象的层次。这种做法有点颠倒了，系统各个部分之间交互的方式本应该随着系统的发展而做出相应的改变，而不应该在一开始就固定下来。</p>
+</blockquote>
+<p>作者附了一个例子，是一些以接口为参数并且其返回结果也是一个接口的函数：</p>
+<pre tabindex="0"><code>// 入参是接口的函数，而不是成员方法
+func ReadAll(r io.Reader) ([]byte, error)
+// 封装器 - 出入参都是接口
+func LoggingReader(r io.Reader) io.Reader    //读到的内容录入日志
+func LimitingReader(r io.Reader, n int64) io.Reader    //读n个字节停下来
+func ErrorInjector(r io.Reader) io.Reader
+</code></pre><p>这种组合+函数的模式是相当灵活的。如果用继承，我们可能会多三个io.Reader的定义；然后用多态去获得对应的功能</p>
+<h3 id="为什么没有异常">
+  为什么没有异常？
+  <a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e6%b2%a1%e6%9c%89%e5%bc%82%e5%b8%b8">#</a>
+</h3>
+<p>panic和recover这些函数是故意弄的不好用的，因为我们应该减少使用他们。不像Java库中使用异常那样，在go的库中这两个关键字几乎没有使用。</p>
+<ol>
+<li>业务中的错误并不是真正的异常情况，if和return完全可以胜任，无需控制流</li>
+<li>如果错误要使用特殊的控制结构，错误处理就会扭曲程序的控制流，非常复杂</li>
+<li>显式的错误检查会迫使程序员在错误出现的时候对错误进行思考，并进行相应的处理，而不是推给前面的调用堆栈</li>
+</ol>
+<p>毫无疑问这会使代码更长一些，但如此编码带来的清晰度和简单性可以弥补其冗长的缺点</p>
+<h3 id="为什么没有x">
+  为什么没有X？
+  <a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e6%b2%a1%e6%9c%89x">#</a>
+</h3>
+<p>总结：Go的设计着眼于编程的便利性、编译的速度、概念的正交性以及支持并发和垃圾回收等功能。如果你在Go中找不到其他语言的X特性，那么只能说明这个特性不适合Go，比如它会影响编译速度或设计的清晰度，或者使得基础系统变得特别复杂。</p>
 <h1 id="第二章-类型">
   第二章 类型
   <a class="anchor" href="#%e7%ac%ac%e4%ba%8c%e7%ab%a0-%e7%b1%bb%e5%9e%8b">#</a>
@@ -6174,7 +6366,14 @@ read 4
   <ul>
     <li><a href="#第一章-概述">第一章 概述</a>
       <ul>
-        <li><a href="#go语言特征">go语言特征</a></li>
+        <li><a href="#go语言特征">go语言特征</a>
+          <ul>
+            <li><a href="#设计初衷">设计初衷</a></li>
+            <li><a href="#为什么没有继承">为什么没有继承</a></li>
+            <li><a href="#为什么没有异常">为什么没有异常？</a></li>
+            <li><a href="#为什么没有x">为什么没有X？</a></li>
+          </ul>
+        </li>
       </ul>
     </li>
     <li><a href="#第二章-类型">第二章 类型</a>

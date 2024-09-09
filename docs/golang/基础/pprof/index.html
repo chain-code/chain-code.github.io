@@ -3,11 +3,39 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="[pprof用法简介](Go 语言性能调试与分析工具：pprof 用法简介 | wxsm&rsquo;s pace)">
+<meta name="description" content="[pprof用法简介](Go 语言性能调试与分析工具：pprof 用法简介 | wxsm&rsquo;s pace)
+一、什么是pprof # 1、简介 # pprof是GoLang程序性能分析工具，可以用于可视化和分析性能数据的工具，prof是profile（画像）的缩写，本文将对下面包进行运用：
+net/http/pprof：对 runtime/pprof 的二次封装，一般用于web server，它一直运行。这个包对提供的http服务进行数据采集分析。 上面的 pprof 开启后，每隔一段时间就会采集当前程序的堆栈信息，获取函数的 cpu、内存等使用情况。通过对采样的数据进行分析，形成一个数据分析报告。
+pprof 以profile.proto的格式保存数据，然后根据这个数据可以生成可视化的分析报告，支持文本形式和图形形式报告。profile.proto里具体的数据格式是 protocol buffers。
+2、支持的功能 # profile：CPU 占用率 heap：当前时刻的内存使用情况 allocs：所有时刻的内存使用情况，包括正在使用的及已经回收的 goroutine：目前的goroutine数量及运行情况 mutex：锁争用情况 block：协程阻塞情况 二、net/http/pprof使用介绍 # 1、样例 # 准备炸弹代码: git clone https://github.com/wolfogre/go-pprof-practice.git ,运行代码开始分析问题
+2、分析代码 # 处理cpu问题 # # 采集10秒CPU数据排查问题: go tool pprof &#34;http://localhost:6060/debug/pprof/profile?seconds=10&#34; 输入top命令，查看CPU占用较高的调用，如下图:
+flat：函数上运行耗时
+flat%：CPU运行耗时总比例
+sum%：累积使用CPU总比例
+cum：函数加上它之上的调用运行总耗时
+cum%：CPU运行耗时总比例
+最后一列为函数名称，可以通过这五列得出一个应用程序的运行情况
+可以看到主要是tiger.Eat占用较高,使用 list Eat可以查看详情，如图
+注释问题代码解决问题
+处理内存占用过高 # # 采集内存数据排查问题 go tool pprof http://localhost:6060/debug/pprof/heap 输入top命令，查看内存占用较高的调用，如下图:">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="pprof" />
-<meta property="og:description" content="[pprof用法简介](Go 语言性能调试与分析工具：pprof 用法简介 | wxsm&rsquo;s pace)" />
+<meta property="og:description" content="[pprof用法简介](Go 语言性能调试与分析工具：pprof 用法简介 | wxsm&rsquo;s pace)
+一、什么是pprof # 1、简介 # pprof是GoLang程序性能分析工具，可以用于可视化和分析性能数据的工具，prof是profile（画像）的缩写，本文将对下面包进行运用：
+net/http/pprof：对 runtime/pprof 的二次封装，一般用于web server，它一直运行。这个包对提供的http服务进行数据采集分析。 上面的 pprof 开启后，每隔一段时间就会采集当前程序的堆栈信息，获取函数的 cpu、内存等使用情况。通过对采样的数据进行分析，形成一个数据分析报告。
+pprof 以profile.proto的格式保存数据，然后根据这个数据可以生成可视化的分析报告，支持文本形式和图形形式报告。profile.proto里具体的数据格式是 protocol buffers。
+2、支持的功能 # profile：CPU 占用率 heap：当前时刻的内存使用情况 allocs：所有时刻的内存使用情况，包括正在使用的及已经回收的 goroutine：目前的goroutine数量及运行情况 mutex：锁争用情况 block：协程阻塞情况 二、net/http/pprof使用介绍 # 1、样例 # 准备炸弹代码: git clone https://github.com/wolfogre/go-pprof-practice.git ,运行代码开始分析问题
+2、分析代码 # 处理cpu问题 # # 采集10秒CPU数据排查问题: go tool pprof &#34;http://localhost:6060/debug/pprof/profile?seconds=10&#34; 输入top命令，查看CPU占用较高的调用，如下图:
+flat：函数上运行耗时
+flat%：CPU运行耗时总比例
+sum%：累积使用CPU总比例
+cum：函数加上它之上的调用运行总耗时
+cum%：CPU运行耗时总比例
+最后一列为函数名称，可以通过这五列得出一个应用程序的运行情况
+可以看到主要是tiger.Eat占用较高,使用 list Eat可以查看详情，如图
+注释问题代码解决问题
+处理内存占用过高 # # 采集内存数据排查问题 go tool pprof http://localhost:6060/debug/pprof/heap 输入top命令，查看内存占用较高的调用，如下图:" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/pprof/" /><meta property="article:section" content="docs" />
 
@@ -17,7 +45,7 @@
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.1737026d07ba4a2a3ea7bc5b04fccda1cd16a5cad40e0292005ee50828676b2b.js" integrity="sha256-FzcCbQe6Sio&#43;p7xbBPzNoc0WpcrUDgKSAF7lCChnays=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.5f7fe5094494699bcf0d470707c15aceb9d96e39b86dbae97745905c61709533.js" integrity="sha256-X3/lCUSUaZvPDUcHB8FazrnZbjm4bbrpd0WQXGFwlTM=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -504,6 +532,19 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/golang%E9%99%90%E6%B5%81%E5%AE%9E%E8%B7%B5/" class="">golang限流实践</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E6%B3%9B%E5%9E%8B%E4%BB%8B%E7%BB%8D/" class="">go泛型介绍</a>
   
 
@@ -518,6 +559,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/panic/" class="">panic</a>
   
 
         </li>
@@ -557,6 +611,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8C%85%E7%AE%A1%E7%90%86/" class="">包管理</a>
   
 
         </li>
@@ -707,6 +774,19 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%81%BF%E5%9D%91%E6%8C%87%E5%8D%97/" class="">Go避坑指南</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
   
 
@@ -721,6 +801,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/%E6%98%93%E9%94%99%E7%BB%86%E8%8A%82/" class="">易错细节</a>
   
 
         </li>
@@ -845,7 +938,33 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/golang/package/context/" class="">context</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/golang/package/filepath/" class="">filepath</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/math/" class="">math</a>
   
 
         </li>
@@ -924,6 +1043,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/" class="">MySql相关问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E9%94%81%E7%9B%B8%E5%85%B3%E6%80%BB%E7%BB%93/" class="">MySql锁相关总结</a>
   
 
         </li>
@@ -1075,6 +1207,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/" class="">常见数据库的备份与恢复</a>
   
 
         </li>
@@ -1363,6 +1508,19 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/c/c&#43;&#43;%E9%83%A8%E7%BD%B2paddleocr/" class="">C&#43;&#43;部署PaddleOCR</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/c/cgo/" class="">CGo</a>
   
 
@@ -1437,53 +1595,6 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/python/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/" class="">Yolov8快速上手 实践</a>
-  
-
-        </li>
-      
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li class="book-section-flat" >
-          
-  
-  
-
-  
-    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
-    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
-      <a role="button" class="">博客</a>
-    </label>
-  
-
-          
-  <ul>
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
-  
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
   
 
         </li>
@@ -2142,6 +2253,53 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
+    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
+      <a role="button" class="">博客</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
     <a href="/docs/%E5%9B%BE%E4%B9%A6/" class="">图书</a>
   
 
@@ -2233,7 +2391,27 @@ https://github.com/alex-shpak/hugo-book
   <aside class="hidden clearfix">
     
   
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#一什么是pprof">一、什么是pprof</a>
+          <ul>
+            <li><a href="#1简介">1、简介</a></li>
+            <li><a href="#2支持的功能">2、支持的功能</a></li>
+          </ul>
+        </li>
+        <li><a href="#二nethttppprof使用介绍">二、net/http/pprof使用介绍</a>
+          <ul>
+            <li><a href="#1样例">1、样例</a></li>
+            <li><a href="#2分析代码">2、分析代码</a></li>
+          </ul>
+        </li>
+        <li><a href="#三总结">三、总结</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
 
 
 
@@ -2245,6 +2423,150 @@ https://github.com/alex-shpak/hugo-book
       
       
   <article class="markdown"><p>[pprof用法简介](<a href="https://wxsm.space/2023/go-pprof-note/">Go 语言性能调试与分析工具：pprof 用法简介 | wxsm&rsquo;s pace</a>)</p>
+<h2 id="一什么是pprof">
+  一、什么是pprof
+  <a class="anchor" href="#%e4%b8%80%e4%bb%80%e4%b9%88%e6%98%afpprof">#</a>
+</h2>
+<h3 id="1简介">
+  1、简介
+  <a class="anchor" href="#1%e7%ae%80%e4%bb%8b">#</a>
+</h3>
+<p>pprof是GoLang程序性能分析工具，可以用于可视化和分析性能数据的工具，prof是profile（画像）的缩写，本文将对下面包进行运用：</p>
+<ul>
+<li><a href="https://golang.org/pkg/net/http/pprof/">net/http/pprof</a>：对 runtime/pprof 的二次封装，一般用于web server，它一直运行。这个包对提供的http服务进行数据采集分析。</li>
+</ul>
+<p>上面的 pprof 开启后，每隔一段时间就会采集当前程序的堆栈信息，获取函数的 cpu、内存等使用情况。通过对采样的数据进行分析，形成一个数据分析报告。<br>
+pprof 以<strong>profile.proto</strong>的格式保存数据，然后根据这个数据可以生成可视化的分析报告，支持文本形式和图形形式报告。<strong>profile.proto</strong>里具体的数据格式是 <a href="https://developers.google.com/protocol-buffers">protocol buffers</a>。</p>
+<h3 id="2支持的功能">
+  2、支持的功能
+  <a class="anchor" href="#2%e6%94%af%e6%8c%81%e7%9a%84%e5%8a%9f%e8%83%bd">#</a>
+</h3>
+<ul>
+<li><strong>profile</strong>：CPU 占用率</li>
+<li><strong>heap</strong>：当前时刻的内存使用情况</li>
+<li><strong>allocs</strong>：所有时刻的内存使用情况，包括正在使用的及已经回收的</li>
+<li><strong>goroutine</strong>：目前的goroutine数量及运行情况</li>
+<li><strong>mutex</strong>：锁争用情况</li>
+<li><strong>block</strong>：协程阻塞情况</li>
+</ul>
+<h2 id="二nethttppprof使用介绍">
+  二、net/http/pprof使用介绍
+  <a class="anchor" href="#%e4%ba%8cnethttppprof%e4%bd%bf%e7%94%a8%e4%bb%8b%e7%bb%8d">#</a>
+</h2>
+<h3 id="1样例">
+  1、样例
+  <a class="anchor" href="#1%e6%a0%b7%e4%be%8b">#</a>
+</h3>
+<p>准备炸弹代码: git clone <a href="https://github.com/wolfogre/go-pprof-practice.git">https://github.com/wolfogre/go-pprof-practice.git</a> ,运行代码开始分析问题</p>
+<h3 id="2分析代码">
+  2、分析代码
+  <a class="anchor" href="#2%e5%88%86%e6%9e%90%e4%bb%a3%e7%a0%81">#</a>
+</h3>
+<h4 id="处理cpu问题">
+  处理cpu问题
+  <a class="anchor" href="#%e5%a4%84%e7%90%86cpu%e9%97%ae%e9%a2%98">#</a>
+</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 采集10秒CPU数据排查问题:</span>
+</span></span><span style="display:flex;"><span>go tool pprof <span style="color:#e6db74">&#34;http://localhost:6060/debug/pprof/profile?seconds=10&#34;</span>
+</span></span></code></pre></div><p>输入<strong>top</strong>命令，查看CPU占用较高的调用，如下图:</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202408261940251.png" alt="" /></p>
+<ul>
+<li>
+<p><strong>flat</strong>：函数上运行耗时</p>
+</li>
+<li>
+<p><strong>flat%</strong>：CPU运行耗时总比例</p>
+</li>
+<li>
+<p><strong>sum%</strong>：累积使用CPU总比例</p>
+</li>
+<li>
+<p><strong>cum</strong>：函数加上它之上的调用运行总耗时</p>
+</li>
+<li>
+<p><strong>cum%</strong>：CPU运行耗时总比例</p>
+</li>
+<li>
+<p>最后一列为函数名称，可以通过这五列得出一个应用程序的运行情况</p>
+</li>
+</ul>
+<p>可以看到主要是tiger.Eat占用较高,使用 list Eat可以查看详情，如图</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202408261940579.png" alt="" /></p>
+<p>注释问题代码解决问题</p>
+<h4 id="处理内存占用过高">
+  处理内存占用过高
+  <a class="anchor" href="#%e5%a4%84%e7%90%86%e5%86%85%e5%ad%98%e5%8d%a0%e7%94%a8%e8%bf%87%e9%ab%98">#</a>
+</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 采集内存数据排查问题</span>
+</span></span><span style="display:flex;"><span>go tool pprof http://localhost:6060/debug/pprof/heap
+</span></span></code></pre></div><p>输入top命令，查看内存占用较高的调用，如下图:</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202408261941506.png" alt="" /></p>
+<ul>
+<li>
+<p><strong>flat</strong>：函数上占用内存大小</p>
+</li>
+<li>
+<p><strong>flat%</strong>：内存占用比例</p>
+</li>
+<li>
+<p><strong>sum%</strong>：累积使用内存总比例</p>
+</li>
+<li>
+<p><strong>cum</strong>：函数加上它之上的内存总占用</p>
+</li>
+<li>
+<p><strong>cum%</strong>：内存总占用比例</p>
+</li>
+</ul>
+<p>可以看到主要是mouse.Steal占用较高,使用 list Steal可以查看详情，如图</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202408261941886.png" alt="" /></p>
+<p>注释问题代码解决问题</p>
+<h4 id="排查协程泄露问题">
+  排查协程泄露问题
+  <a class="anchor" href="#%e6%8e%92%e6%9f%a5%e5%8d%8f%e7%a8%8b%e6%b3%84%e9%9c%b2%e9%97%ae%e9%a2%98">#</a>
+</h4>
+<p>如下图，可以看到我们程序的协程数有119，因为这只是一个很小的程序，所以这存在问题</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202408261941149.png" alt="" /></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 查看协程情况</span>
+</span></span><span style="display:flex;"><span>go tool pprof <span style="color:#e6db74">&#34;http://localhost:6060/debug/pprof/goroutine&#34;</span>
+</span></span></code></pre></div><p>输入top命令，查看可能存在问题的地方，如下图:</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202408261941528.png" alt="" /></p>
+<p>我们可以看到 wolf.(*Wolf).Drink.func1 这个函数占了总goroutine数量的 99.02%，</p>
+<p>输入list func1 查看具体详情</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202408261941109.png" alt="" /></p>
+<p>可以看到，Drink 方法每次会起10个协程，每个协程会sleep 30 秒再推出，而 Drink 函数又被反复的调用，这才导致了大量的协程泄漏。
+我们注释问题代码，重新运行可以看到协程数量已经降低到个位数的水平了。</p>
+<h4 id="排查锁问题">
+  排查锁问题
+  <a class="anchor" href="#%e6%8e%92%e6%9f%a5%e9%94%81%e9%97%ae%e9%a2%98">#</a>
+</h4>
+<p>上面排查了可能出现的资源占用的问题，但是还有可能出现的问题是性能问题<br>
+首先能想到的便是不合理的锁争用的问题，比如加锁时间太长等</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 查看锁情况</span>
+</span></span><span style="display:flex;"><span>go tool pprof http://localhost:6060/debug/pprof/mutex
+</span></span></code></pre></div><p>输入top命令，查看锁占用情况，如下图:</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202408261941495.png" alt="" /></p>
+<p>输入list Howl.func1查看具体详情</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202408261941592.png" alt="" /></p>
+<p>修改代码解决问题</p>
+<h4 id="排查阻塞问题">
+  排查阻塞问题
+  <a class="anchor" href="#%e6%8e%92%e6%9f%a5%e9%98%bb%e5%a1%9e%e9%97%ae%e9%a2%98">#</a>
+</h4>
+<p>在程序中除了锁的竞争会导致阻塞外，还有很多逻辑会导致阻塞。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 查看阻塞情况</span>
+</span></span><span style="display:flex;"><span>go tool pprof http://localhost:6060/debug/pprof/block
+</span></span></code></pre></div><p>输入top查看阻塞情况</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202408261941413.png" alt="" /></p>
+<p>输入list Live查看具体详情 发现是Pee的情况
+<img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202408261942625.png" alt="" />
+输入list Pee查看具体情况，如图：可以发现问题<br>
+<img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202408261942077.png" alt="" /></p>
+<h2 id="三总结">
+  三、总结
+  <a class="anchor" href="#%e4%b8%89%e6%80%bb%e7%bb%93">#</a>
+</h2>
+<p>以上就是本文对于net/http/pprof的简单使用介绍，更多详情可以参考<a href="https://golang.org/pkg/net/http/pprof/">pprof</a></p>
 </article>
  
       
@@ -2284,7 +2606,27 @@ https://github.com/alex-shpak/hugo-book
       <div class="book-toc-content">
         
   
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#一什么是pprof">一、什么是pprof</a>
+          <ul>
+            <li><a href="#1简介">1、简介</a></li>
+            <li><a href="#2支持的功能">2、支持的功能</a></li>
+          </ul>
+        </li>
+        <li><a href="#二nethttppprof使用介绍">二、net/http/pprof使用介绍</a>
+          <ul>
+            <li><a href="#1样例">1、样例</a></li>
+            <li><a href="#2分析代码">2、分析代码</a></li>
+          </ul>
+        </li>
+        <li><a href="#三总结">三、总结</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
 
 
  

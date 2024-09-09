@@ -1,0 +1,2995 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="容易出错的细节 # 创建对象 # 新建一个对象在go里面有好几种方法，让人迷惑，而且似乎和简洁这一设计原则违背。我们按照对象类型讨论一下：
+对于结构体，new(T)和&amp;T{}是等价的，都会给对象赋零值（一般人很少用new）。 Note：直接var obj T;&amp;T也是等价的，只不过变量有可能在堆上，有可能在栈上 对于slice、map、chan，make(map[string]int)和map[string]int{}等价，会对对象进行初始化。 var a []int // nil a := []int{} // not nil a := *new([]int) // nil a := make([]int,0) // not nil 零值 # 零值和未初始化的值并不相同。不同类型的零值是什么？
+布尔类型是false，整型是0，字符串是&quot;&quot; 指针、函数、interface、slice、channel和map的零值都是nil 结构体的零值是递归生成的，每个成员都是对应的零值 我们来看一个例子。一个为nil的slice和map能做什么操作：
+// 一个为nil的slice，除了不能索引外，其他的操作都是可以的 // Note: 如果这个slice是个指针，不适用这里的规则 var a []int fmt.Printf(&#34;len(a):%d, cap(a):%d, a==nil:%v\n&#34;, len(a),cap(a), a == nil) //0 0 true for _, v := range a{// 不会panic fmt.Println(v) } aa := a[0:0] // 也不会panic，只要索引都是0 // nil的map，我们可以简单把它看成是一个只读的map var b map[string]string if val, ok := b[&#34;notexist&#34;];ok{// 不会panic fmt.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="易错细节" />
+<meta property="og:description" content="容易出错的细节 # 创建对象 # 新建一个对象在go里面有好几种方法，让人迷惑，而且似乎和简洁这一设计原则违背。我们按照对象类型讨论一下：
+对于结构体，new(T)和&amp;T{}是等价的，都会给对象赋零值（一般人很少用new）。 Note：直接var obj T;&amp;T也是等价的，只不过变量有可能在堆上，有可能在栈上 对于slice、map、chan，make(map[string]int)和map[string]int{}等价，会对对象进行初始化。 var a []int // nil a := []int{} // not nil a := *new([]int) // nil a := make([]int,0) // not nil 零值 # 零值和未初始化的值并不相同。不同类型的零值是什么？
+布尔类型是false，整型是0，字符串是&quot;&quot; 指针、函数、interface、slice、channel和map的零值都是nil 结构体的零值是递归生成的，每个成员都是对应的零值 我们来看一个例子。一个为nil的slice和map能做什么操作：
+// 一个为nil的slice，除了不能索引外，其他的操作都是可以的 // Note: 如果这个slice是个指针，不适用这里的规则 var a []int fmt.Printf(&#34;len(a):%d, cap(a):%d, a==nil:%v\n&#34;, len(a),cap(a), a == nil) //0 0 true for _, v := range a{// 不会panic fmt.Println(v) } aa := a[0:0] // 也不会panic，只要索引都是0 // nil的map，我们可以简单把它看成是一个只读的map var b map[string]string if val, ok := b[&#34;notexist&#34;];ok{// 不会panic fmt." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/%E6%98%93%E9%94%99%E7%BB%86%E8%8A%82/" /><meta property="article:section" content="docs" />
+<meta property="article:published_time" content="2022-11-03T13:46:27+08:00" />
+<meta property="article:modified_time" content="2022-11-03T13:46:27+08:00" />
+<title>易错细节 | Soulmate</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" >
+<link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.5f7fe5094494699bcf0d470707c15aceb9d96e39b86dbae97745905c61709533.js" integrity="sha256-X3/lCUSUaZvPDUcHB8FazrnZbjm4bbrpd0WQXGFwlTM=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo.png" alt="Logo" /><span>Soulmate</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>计算机基础</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e99d92668627838818961f696faae00" class="toggle"  />
+    <label for="section-1e99d92668627838818961f696faae00" class="flex justify-between">
+      <a role="button" class="">八股文</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="">计算机网络基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/linux%E5%9F%BA%E7%A1%80/" class="">Linux基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/git%E5%9F%BA%E7%A1%80/" class="">Git基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-00c75bd1eabdaaae0cac73d13168e71f" class="toggle"  />
+    <label for="section-00c75bd1eabdaaae0cac73d13168e71f" class="flex justify-between">
+      <a role="button" class="">其他</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/crontab%E4%BD%BF%E7%94%A8/" class="">crontab使用</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/libewf%E5%BA%93%E7%BC%96%E8%AF%91/" class="">libewf库编译</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/localhost%E4%B8%8E127.0.0.1/" class="">localhost与127.0.0.1</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/schtasks%E4%BD%BF%E7%94%A8/" class="">schtask使用</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="">Vim编程常用快捷键</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E4%BB%A3%E7%A0%81%E6%95%B4%E6%B4%81%E4%B9%8B%E9%81%93/" class="">代码整洁之道</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8github%E5%92%8Cgitlab/" class="">同时使用github和gitlab</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E8%8E%B7%E5%8F%96%E5%86%85%E7%BD%91%E6%B4%BB%E8%B7%83ip/" class="">获取内网活跃IP</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E9%80%9A%E8%BF%87%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81%E8%AE%A1%E7%AE%97ip%E5%9C%B0%E5%9D%80%E8%8C%83%E5%9B%B4/" class="">通过子网掩码计算IP地址范围</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E9%85%8D%E7%BD%AEkylinv10/" class="">配置 Kylin V10</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E8%99%9A%E6%8B%9F%E7%BB%84%E7%BD%91/" class="">虚拟组网</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3dcacc5e7a7c646c608757dc5f042d92" class="toggle"  />
+    <label for="section-3dcacc5e7a7c646c608757dc5f042d92" class="flex justify-between">
+      <a role="button" class="">LeetCode</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/" class="">golang力扣刷题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/" class="">golang力扣刷题（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/%E5%BF%85%E5%88%B7top101/" class="">必刷top101</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" class="">LeetCode算法总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Golang</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-670eda717a06f31447c52422ec93a159" class="toggle"  />
+    <label for="section-670eda717a06f31447c52422ec93a159" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/" class="">go语言基础（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/golang%E6%8E%A7%E6%B5%81/" class="">Golang控流</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/golang%E9%99%90%E6%B5%81%E5%AE%9E%E8%B7%B5/" class="">golang限流实践</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E6%B3%9B%E5%9E%8B%E4%BB%8B%E7%BB%8D/" class="">go泛型介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/panic/" class="">panic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/pprof/" class="">pprof</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/" class="">ProtoBuf</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8C%85%E7%AE%A1%E7%90%86/" class="">包管理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="">单元测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">常用业务代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/" class="">go语言基础（三）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/" class="">go语言底层基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/" class="">benchmark测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/" class="">Goland常用技巧</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle" checked />
+    <label for="section-c453881a62c640f6a4cceec99c02477e" class="flex justify-between">
+      <a role="button" class="">高阶</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" class="">Go高阶-语言基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%81%BF%E5%9D%91%E6%8C%87%E5%8D%97/" class="">Go避坑指南</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/%E6%98%93%E9%94%99%E7%BB%86%E8%8A%82/" class="active">易错细节</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f235e88e751d2cb18d527c1784763605" class="toggle"  />
+    <label for="section-f235e88e751d2cb18d527c1784763605" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/flag/" class="">Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/atomic/" class="">Atomic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/os/" class="">Os</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strconv/" class="">Strconv</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sort/" class="">Sort</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strings/" class="">Strings</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/reflect/" class="">Reflect</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/context/" class="">context</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/filepath/" class="">filepath</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/math/" class="">math</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/time/" class="">Time</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sync/" class="">Sync</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>数据库</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle"  />
+    <label for="section-94f26238d1ca3b5bcd40eadc7a88d726" class="flex justify-between">
+      <a role="button" class="">MySql</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/" class="">MySql相关问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E9%94%81%E7%9B%B8%E5%85%B3%E6%80%BB%E7%BB%93/" class="">MySql锁相关总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" class="">MySql基础总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="">Mac连接数据库所遇到的问题</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="toggle"  />
+    <label for="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="flex justify-between">
+      <a role="button" class="">Redis</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="">Redis集群搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/" class="">Redis基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="">redis面试总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8be9c2251abd1fe110e3c1520cac6177" class="toggle"  />
+    <label for="section-8be9c2251abd1fe110e3c1520cac6177" class="flex justify-between">
+      <a role="button" class="">SQLite</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/" class="">Sqlite</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/" class="">Xorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/" class="">常见数据库的备份与恢复</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>系统架构</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%9F%BA%E7%A1%80/" class="">系统架构基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-083ca86fd1b56cca1f76a6d6b34dc093" class="toggle"  />
+    <label for="section-083ca86fd1b56cca1f76a6d6b34dc093" class="flex justify-between">
+      <a role="button" class="">设计模式</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E5%88%9B%E5%BB%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">创建型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%BB%93%E6%9E%84%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">结构型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">行为型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%89%A9%E5%B1%95/" class="">设计模式扩展</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-266e66094f86ce336245af3b8aaf0e2e" class="toggle"  />
+    <label for="section-266e66094f86ce336245af3b8aaf0e2e" class="flex justify-between">
+      <a role="button" class="">微服务</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/grpc/" class="">Grpc</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/grpc%E6%8B%A6%E6%88%AA%E5%99%A8retry/" class="">grpc拦截器retry</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3d14fec58473cc9c35cafaca50699647" class="toggle"  />
+    <label for="section-3d14fec58473cc9c35cafaca50699647" class="flex justify-between">
+      <a role="button" class="">web框架</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1/" class="">动态路由与静态路由</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>前端</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ac8e4e2fda641053d78fc10cbbde236e" class="toggle"  />
+    <label for="section-ac8e4e2fda641053d78fc10cbbde236e" class="flex justify-between">
+      <a role="button" class="">C</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/c&#43;&#43;%E9%83%A8%E7%BD%B2paddleocr/" class="">C&#43;&#43;部署PaddleOCR</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/cgo/" class="">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/cgo%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/" class="">CGO遇到的问题解决</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8ca541663a7d7fd63c79c6ce40ab5b81" class="toggle"  />
+    <label for="section-8ca541663a7d7fd63c79c6ce40ab5b81" class="flex justify-between">
+      <a role="button" class="">Python</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/venv%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/" class="">venv虚拟环境</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/" class="">Yolov8快速上手 实践</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>区块链</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle"  />
+    <label for="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="flex justify-between">
+      <a role="button" class="">Fabric</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">fabric相关机制与原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/" class="">智能合约</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/" class="">fabric-sdk-go详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/" class="">fabric-ca详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle"  />
+    <label for="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="flex justify-between">
+      <a role="button" class="">环境测试</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/" class="">fabric网络中的报错（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/" class="">fabric网络中的报错（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">fabric环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/" class="">solo节点测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/" class="">fabric多机搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/" class="">部署tape测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/" class="">手动生成ca证书搭建fabric网络</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/" class="">centos安装fabric1.2</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-25aef1d59a561fcefcaecb043ef8afd2" class="toggle"  />
+    <label for="section-25aef1d59a561fcefcaecb043ef8afd2" class="flex justify-between">
+      <a role="button" class="">配置文件</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/" class="">cryptogen生成的证书详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">docker-compose.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">configtx.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">crypto-config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/" class="">升级链码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/" class="">区块链网络添加组织</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/" class="">fabric浏览器搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/" class="">如何在已有组织中增加节点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/" class="">Fabric1.4多通道实验</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b07621083aa30b12de4c0333941e479f" class="toggle"  />
+    <label for="section-b07621083aa30b12de4c0333941e479f" class="flex justify-between">
+      <a role="button" class="">比特币</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">比特币相关机制与原理</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle"  />
+    <label for="section-ff5477999ef29208270c84e8b56b2758" class="flex justify-between">
+      <a role="button" class="">IPFS</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/" class="">go-ipfs-api</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" class="">ipfs-webui可视化工具搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/" class="">IPFS基本原理（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/" class="">IPFS私有网络搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-77a0a17b06e8d04cfb0fba9952941706" class="toggle"  />
+    <label for="section-77a0a17b06e8d04cfb0fba9952941706" class="flex justify-between">
+      <a role="button" class="">密码学</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" class="">区块链安全基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/" class="">椭圆曲线加密</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/" class="">密码学基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2e4d10b323fd668021dbd532575d8790" class="toggle"  />
+    <label for="section-2e4d10b323fd668021dbd532575d8790" class="flex justify-between">
+      <a role="button" class="">Docker</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/" class="">Docker基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/" class="">Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" class="">docker常用知识总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-70383d7f28a7ae4bf840a844eb61aa16" class="toggle"  />
+    <label for="section-70383d7f28a7ae4bf840a844eb61aa16" class="flex justify-between">
+      <a role="button" class="">共识算法</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">共识算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" class="">Raft共识算法</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
+    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
+      <a role="button" class="">博客</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%9B%BE%E4%B9%A6/" class="">图书</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/" class="">工具库</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="https://gitee.com/chaincode"  target="_blank" rel="noopener">
+        Gitee
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>易错细节</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#容易出错的细节">容易出错的细节</a>
+          <ul>
+            <li><a href="#创建对象">创建对象</a></li>
+            <li><a href="#零值">零值</a></li>
+            <li><a href="#值传递">值传递</a></li>
+            <li><a href="#深拷贝">深拷贝</a></li>
+            <li><a href="#小心interface判等">小心interface判等</a></li>
+            <li><a href="#点点点">点点点</a></li>
+            <li><a href="#闭包里的局部变量是引用">闭包里的局部变量是引用</a></li>
+            <li><a href="#不要引用大数组">不要引用大数组</a></li>
+            <li><a href="#赋值不是原子操作">赋值不是原子操作</a></li>
+            <li><a href="#接收器用指针还是值">接收器用指针还是值</a></li>
+            <li><a href="#for循环里的变量都是副本">for循环里的变量都是副本</a></li>
+            <li><a href="#map的值不可取址">map的值不可取址</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#逃逸分析">逃逸分析</a></li>
+    <li><a href="#routine">routine</a>
+      <ul>
+        <li><a href="#golang并发注意点">Golang并发注意点</a></li>
+        <li><a href="#防止泄漏">防止泄漏</a></li>
+        <li><a href="#复用timer来替代timerafter">复用timer来替代timer.After</a></li>
+      </ul>
+    </li>
+    <li><a href="#常用的仓库">常用的仓库</a>
+      <ul>
+        <li><a href="#演化中的错误处理">演化中的错误处理</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h2 id="容易出错的细节">
+  容易出错的细节
+  <a class="anchor" href="#%e5%ae%b9%e6%98%93%e5%87%ba%e9%94%99%e7%9a%84%e7%bb%86%e8%8a%82">#</a>
+</h2>
+<h3 id="创建对象">
+  创建对象
+  <a class="anchor" href="#%e5%88%9b%e5%bb%ba%e5%af%b9%e8%b1%a1">#</a>
+</h3>
+<p>新建一个对象在go里面有好几种方法，让人迷惑，而且似乎和简洁这一设计原则违背。我们按照对象类型讨论一下：</p>
+<ol>
+<li>对于结构体，<code>new(T)</code>和<code>&amp;T{}</code>是等价的，都会给对象赋零值（一般人很少用new）。
+Note：直接<code>var obj T;&amp;T</code>也是等价的，只不过变量有可能在堆上，有可能在栈上</li>
+<li>对于slice、map、chan，<code>make(map[string]int)</code>和<code>map[string]int{}</code>等价，会对对象进行初始化。</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a</span> []<span style="color:#66d9ef">int</span>                      <span style="color:#75715e">// nil
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">a</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{}                     <span style="color:#75715e">// not nil
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">a</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">*</span>new([]<span style="color:#66d9ef">int</span>)                 <span style="color:#75715e">// nil
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">a</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">int</span>,<span style="color:#ae81ff">0</span>)               <span style="color:#75715e">// not nil
+</span></span></span></code></pre></div><h3 id="零值">
+  零值
+  <a class="anchor" href="#%e9%9b%b6%e5%80%bc">#</a>
+</h3>
+<p>零值和未初始化的值并不相同。不同类型的零值是什么？</p>
+<ol>
+<li>布尔类型是false，整型是0，字符串是&quot;&quot;</li>
+<li>指针、函数、interface、slice、channel和map的零值都是nil</li>
+<li>结构体的零值是递归生成的，每个成员都是对应的零值</li>
+</ol>
+<p>我们来看一个例子。一个为nil的slice和map能做什么操作：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 一个为nil的slice，除了不能索引外，其他的操作都是可以的
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// Note: 如果这个slice是个指针，不适用这里的规则
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a</span> []<span style="color:#66d9ef">int</span>        
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;len(a):%d, cap(a):%d, a==nil:%v\n&#34;</span>, len(<span style="color:#a6e22e">a</span>),cap(<span style="color:#a6e22e">a</span>), <span style="color:#a6e22e">a</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span>) <span style="color:#75715e">//0 0 true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">a</span>{<span style="color:#75715e">// 不会panic
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">v</span>) 
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">aa</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">a</span>[<span style="color:#ae81ff">0</span>:<span style="color:#ae81ff">0</span>]     <span style="color:#75715e">// 也不会panic，只要索引都是0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// nil的map，我们可以简单把它看成是一个只读的map
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">b</span> <span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">val</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">b</span>[<span style="color:#e6db74">&#34;notexist&#34;</span>];<span style="color:#a6e22e">ok</span>{<span style="color:#75715e">// 不会panic
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">val</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> <span style="color:#a6e22e">k</span>, <span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">b</span>{<span style="color:#75715e">// 不会panic
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">k</span>,<span style="color:#a6e22e">v</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>delete(<span style="color:#a6e22e">b</span>, <span style="color:#e6db74">&#34;foo&#34;</span>) <span style="color:#75715e">// 也不会panic
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;len(b):%d, b==nil:%v\n&#34;</span>, len(<span style="color:#a6e22e">b</span>), <span style="color:#a6e22e">b</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span>) <span style="color:#75715e">// 0 true
+</span></span></span></code></pre></div><h3 id="值传递">
+  值传递
+  <a class="anchor" href="#%e5%80%bc%e4%bc%a0%e9%80%92">#</a>
+</h3>
+<p>Go语言中所有的传参都是值传递，都是原值的一个副本，或者说一个拷贝。传入的数据能不能在函数内被修改，取决于是不是指针或者含有指针的类型（指针被值传递复制后依然指向同一块地址）。这就让人很疑惑，什么时候传入的参数修改会生效，什么时候不会生效？
+slice类型在 值传递的时候len和cap不会变，所以函数内append没有用：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">slice</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">array</span> <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">len</span>   <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">cap</span>   <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// badcase
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">appendMe</span>(<span style="color:#a6e22e">s</span> []<span style="color:#66d9ef">int</span>){
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">s</span> = append(<span style="color:#a6e22e">s</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>map 和 chan类型，本来就是个指针，所以函数内修改一定会生效：</p>
+<pre tabindex="0"><code>// map实际上是一个 *hmap
+func makemap(t *maptype, hint int64, h *hmap, bucket unsafe.Pointer) *hmap {
+    //省略无关代码
+}
+
+// chan实际上是个 *hchan
+func makechan(t *chantype, size int64) *hchan {
+    //省略无关代码
+}
+</code></pre><p>再比如一个结构体作为参数：</p>
+<pre tabindex="0"><code>// 这是一个典型的指针包裹类型
+type Person struct {
+    name string
+    age  *int
+}
+func modify(x Person){
+    x.name = &#34;modified&#34;
+    *x.age = 66
+}
+</code></pre><p>这个结构体里的age是个指针类型，所以在函数内会被修改。
+这种含有指针的结构体类型，里面的指针指向了其他的内存。在发生拷贝的时候，只有结构体本身的内存会被拷贝，指向的内存是和原值共享的。
+<a href="https://gfw.go101.org/article/value-part.html">更多细节参考 ：值部</a>
+但是我们一般希望的是，要么结构体的成员一起改变（这个简单，参数传person的指针），要么一起不改变（深拷贝）。那么另一个让人头疼的问题来了，那我如何深拷贝这个对象？</p>
+<h3 id="深拷贝">
+  深拷贝
+  <a class="anchor" href="#%e6%b7%b1%e6%8b%b7%e8%b4%9d">#</a>
+</h3>
+<p>对于slice，go提供了似乎还不错的方式：</p>
+<pre tabindex="0"><code>// 自己复制
+s1 := []int{1,2,3}
+s2 := append([]int{}, s1...)
+// 效率更高的复制
+s1 := []int{1,2,3}
+s2 := make([]int, len(s1))
+copy(s2, s1)
+</code></pre><p>如果你要拷贝一个map，只能用for循环依次把键值对赋值到新map里。
+切记：需要拷贝map一定要深拷贝，不然如果后续在不同的协程里操作map会panic
+如果有其他更复杂的结构体需要深拷贝呢？目前还没有很好的办法：</p>
+<ol>
+<li>自己写一个复制值的函数</li>
+<li>用序列化/反序列化的方法来做，json，bson</li>
+<li>用反射来做</li>
+</ol>
+<pre tabindex="0"><code>age := 22
+p := &amp;Person{&#34;Bob&#34;, &amp;age}
+
+v := reflect.ValueOf(p).Elem()
+vp2 := reflect.New(v.Type())
+vp2.Elem().Set(v)
+</code></pre><h3 id="小心interface判等">
+  小心interface判等
+  <a class="anchor" href="#%e5%b0%8f%e5%bf%83interface%e5%88%a4%e7%ad%89">#</a>
+</h3>
+<p>go实现接口的时候有两个属性，type T和value V，判等的时候两个属性都要比较。比如一个interface存了3，那么T=int，v=3。只有当两个值都没有设置才等于nil。</p>
+<pre tabindex="0"><code>var pi *int = nil
+var pb *bool = nil
+var x interface{} = pi
+var y interface{} = pb
+var z interface{} = nil
+
+fmt.Println(x == y)   // false
+fmt.Println(x == nil) // false
+fmt.Println(x == z)   // false
+
+// badcase
+type error interface {
+    Error() string
+}
+func returnsError() error {
+    var p *MyError = nil
+    if bad() {
+        p = ErrBad
+    }
+    return p // Will always return a non-nil error.
+}
+</code></pre><p>还有一种常见的场景是我们容易漏掉的。int64和int的interface也不相等：</p>
+<pre tabindex="0"><code>var int1,int2 interface{}
+int1 = int64(0)
+int2 = int(0)
+fmt.Printf(&#34;%v %v = %v&#34;, int1, int2, int1 == int2) // 0 0 false
+
+// 如果函数参数用了interface，如果我们很容易犯错
+func (m *Map) Load(key, value interface{}) {
+    if e, ok := read.m[key]; ok {
+        ...
+    }
+}
+// badcase 1: key的类型不一致导致缓存无法取出
+m := sync.Map{}
+m.Store(0, &#34;ManualCache&#34;)
+val, ok := m.Load(int64(0)) // nil false 
+// badcase 2: value的类型不一致导致断言失败
+m.Store(&#34;key&#34;, 0)
+if val, ok := m.Load(&#34;key&#34;); ok {
+        _ = val.(int64)    // panic
+}
+</code></pre><h3 id="点点点">
+  点点点
+  <a class="anchor" href="#%e7%82%b9%e7%82%b9%e7%82%b9">#</a>
+</h3>
+<p><code>...</code>是个很常用的语法糖，能帮我们节省很多代码。
+用作展开：</p>
+<pre tabindex="0"><code>x := []int{1,2,3}
+y := []int{4,5,6}
+x = append(x, y...) //而不是for循环
+x = append(x, 4, 5, 6) //等价于上面的
+</code></pre><p>用作可变参数列表：</p>
+<pre tabindex="0"><code>// Println prints to the standard logger in the manner of fmt.Println.
+func Println(v ...interface{}) {
+    std.Output(2, fmt.Sprintln(v...))  // Output takes parameters (int, string)
+}
+</code></pre><p>用作简化数组声明：</p>
+<pre tabindex="0"><code>var _ = [...]language{
+        {&#34;C&#34;, 1972},
+        {&#34;Python&#34;, 1991},
+        {&#34;Go&#34;, 2009},
+}
+var b = [...]string{0: &#34;foo&#34;, 2: &#34;foo&#34;}        // [3]string{&#34;foo&#34;, &#34;&#34;, &#34;foo&#34;}
+</code></pre><h3 id="闭包里的局部变量是引用">
+  闭包里的局部变量是引用
+  <a class="anchor" href="#%e9%97%ad%e5%8c%85%e9%87%8c%e7%9a%84%e5%b1%80%e9%83%a8%e5%8f%98%e9%87%8f%e6%98%af%e5%bc%95%e7%94%a8">#</a>
+</h3>
+<p>闭包里起的go协程里面引用的是变量i的地址。所有的go协程启动后等待调用，在上面的协程中，部分协程很可能在for循环完成之后才被调用，所以输出结果很多都是最后一个i的值</p>
+<pre tabindex="0"><code>// bad case
+done := make(chan bool)
+for i := 0; i &lt; 5; i++ {
+    go func() {
+        println(i)
+        done &lt;- true
+    }()
+}
+for _ = range values {
+    &lt;-done
+}
+// 5 5 5 5 5
+
+// good sample 1
+for i := 0; i &lt; 5; i++ {
+    defer func(i int) {
+        println(i)
+        done &lt;- true
+    }(i)
+}
+// good sample 2
+for i := 0; i &lt; 5; i++ {
+    i := i    // 新建变量
+    go func() {
+        println(i)
+        done &lt;- true
+    }()
+}
+//1 3 5 4 2
+</code></pre><h3 id="不要引用大数组">
+  不要引用大数组
+  <a class="anchor" href="#%e4%b8%8d%e8%a6%81%e5%bc%95%e7%94%a8%e5%a4%a7%e6%95%b0%e7%bb%84">#</a>
+</h3>
+<p>被切片引用的数据不会被释放（即使你仅仅引用了很小一部分），会大幅降低代码性能</p>
+<pre tabindex="0"><code>headerMap := make(map[string][]byte)
+
+for i := 0; i &lt; 5; i++ {
+    name := &#34;/path/to/file&#34;
+    data, err := ioutil.ReadFile(name)
+    if err != nil {
+        log.Fatal(err)
+    }
+    headerMap[name] = data[:1]
+    // better:  headerMap[name] = append([]byte{}, data[:1]...)
+}
+</code></pre><h3 id="赋值不是原子操作">
+  赋值不是原子操作
+  <a class="anchor" href="#%e8%b5%8b%e5%80%bc%e4%b8%8d%e6%98%af%e5%8e%9f%e5%ad%90%e6%93%8d%e4%bd%9c">#</a>
+</h3>
+<p>在64位的机器上，赋值很可能被拆成mov两次的汇编代码，因此不是原子的。我们可以用atomic里的方法帮助我们做原子操作。
+考虑一个内存cache定时刷新的协程：因为随时有请求在读cache，所以刷新cache的时候需要保证cache的指针存取是原子操作。
+举例：<code>mycache *map[string]*Cache</code></p>
+<pre tabindex="0"><code>// 加载（读取）
+var _ = (*T)(atomic.LoadPointer((*unsafe.Pointer)(unsafe.Pointer(mycache))))
+
+// 存储（修改）
+atomic.StorePointer(
+    (*unsafe.Pointer)(unsafe.Pointer(mycache)), unsafe.Pointer(&amp;newMycache))
+</code></pre><p>所有的操作，只要存在同时存在多个goroutine同时操作一个资源（临界区），除了带有sync，atomic，或者channel关键字的，都不安全。包括但不限于：</p>
+<ol>
+<li>并发读写map</li>
+<li>并发append切片</li>
+<li>自增变量</li>
+<li>赋值</li>
+</ol>
+<h3 id="接收器用指针还是值">
+  接收器用指针还是值
+  <a class="anchor" href="#%e6%8e%a5%e6%94%b6%e5%99%a8%e7%94%a8%e6%8c%87%e9%92%88%e8%bf%98%e6%98%af%e5%80%bc">#</a>
+</h3>
+<p>Go的接收器可以传指针进来，也可以传值。注意传值的时候接收器不会被改变。官方推荐下面两种情况该用指针：</p>
+<ol>
+<li>MyStruct很大，需要拷贝的成本太高</li>
+<li>方法需要修改MyStruct</li>
+</ol>
+<p>否则Go推荐使用值接收器
+Note：如果对象有可能并发执行方法，指针接收器中可能产生数据竞争，记得加锁</p>
+<pre tabindex="0"><code>func（s * MyStruct）pointerMethod（）{    // 指针方法
+    s.Age = -1  // useful
+}
+func（s MyStruct）valueMethod（）{        // 值方法
+    s.Age = -1 // no use
+}     
+</code></pre><h3 id="for循环里的变量都是副本">
+  for循环里的变量都是副本
+  <a class="anchor" href="#for%e5%be%aa%e7%8e%af%e9%87%8c%e7%9a%84%e5%8f%98%e9%87%8f%e9%83%bd%e6%98%af%e5%89%af%e6%9c%ac">#</a>
+</h3>
+<pre tabindex="0"><code>for key, element = range aContainer {...}
+</code></pre><p>关于上面for循环有几个点：</p>
+<ol>
+<li>实际遍历的aContainer是原始值的一个副本</li>
+<li>element是遍历到的元素的原始值的一个副本</li>
+<li>key和element整个循环都是同一个变量，而不是每次迭代都生成新变量</li>
+</ol>
+<p>这里涉及到几个问题。一个是aContainer和element的拷贝成本。aContainer是数组的时候的拷贝成本比较大，而切片和map的拷贝成本比较小。如果想要缩小拷贝成本，我们有几个建议：</p>
+<ol>
+<li>遍历大数组时，可以先创建大数组的切片再放在range后面</li>
+<li>element结构比较大的时候，直接用下标key遍历，舍弃element</li>
+</ol>
+<p>还有一个问题是遍历的时候修改，能不能生效？</p>
+<ol>
+<li>当aContainer是数组时，因为数组是整个复制，所以直接修改aContainer不会生效</li>
+<li>直接修改key或者element，？</li>
+<li>因为切片和map是浅复制，在循环中操作aContainer或者aContainer[key]可以生效</li>
+</ol>
+<p>因为循环里的副本和函数参数的副本非常类似，所以我们可以参考上面的“值传递”中的内容来判断修改副本是否会使得修改达到想要的效果。</p>
+<h3 id="map的值不可取址">
+  map的值不可取址
+  <a class="anchor" href="#map%e7%9a%84%e5%80%bc%e4%b8%8d%e5%8f%af%e5%8f%96%e5%9d%80">#</a>
+</h3>
+<p>map是哈希表实现的，所以值的地址在哈希表动态调整的时候可能会产生变化。因此。存着map值的地址是没有意义的，go中直接禁止了map的值的取地址。这些类型都不能取址：</p>
+<ul>
+<li>map元素</li>
+<li>string的字节元素</li>
+<li>常量（有名常量和字面量都不可以）</li>
+<li>中间结果值（函数调用、显式值转换、各种操作）</li>
+</ul>
+<pre tabindex="0"><code>// 下面这几行编译不通过。
+_ = &amp;[3]int{2, 3, 5}[0]        //字面量
+_ = &amp;map[int]bool{1: true}[1]  //字面量
+const pi = 3.14
+_ = &amp;pi                        //有名常量
+m := map[int]bool{1: true}
+_ = &amp;m[1]                      //map的value
+lt := [3]int{2, 3, 5}
+_ = &amp;lt[1:1]                   //切片操作
+</code></pre><p>一般来说，一个不可寻址的值的直接部分是不可修改的。但是map的元素是个例外。 map的元素虽然不可寻址，但是每个映射元素可以被整个修改（但不可以被部分修改）：</p>
+<pre tabindex="0"><code>type T struct{age int}
+mt := map[string]T{}
+mt[&#34;John&#34;] = T{age: 29} // 整体修改是允许的
+ma := map[int][5]int{}
+ma[1] = [5]int{1: 789} // 整体修改是允许的
+
+// 这两个赋值编译不通过，因为部分修改一个映射元素是非法的。这看上去确实有些反直觉。
+ma[1][1] = 123      // error
+mt[&#34;John&#34;].age = 30 // error
+
+// 读取映射元素的元素或者字段是没问题的。
+fmt.Println(ma[1][1])       // 789
+fmt.Println(mt[&#34;John&#34;].age) // 29
+</code></pre><h1 id="逃逸分析">
+  逃逸分析
+  <a class="anchor" href="#%e9%80%83%e9%80%b8%e5%88%86%e6%9e%90">#</a>
+</h1>
+<p>关心变量在栈或者堆上有助于我们对变量的生命周期有所了解，写出更好性能的代码。比如一些短周期的变量的指针如果和长生命周期的变量绑定，就会使得这个变量迟迟不能回收，影响性能。
+Go在栈上的变量不会产生GC成本，因为变量会随着函数的退出一起销毁（当然这样性能也是最高的）。但是，变量是否在栈上，不能简单的通过是否局部变量或者是否使用new构建的引用类型来判断。有一个基本的判断原则：
+情况1：如果变量的引用被声明它的函数返回了，那么这个变量就会逃逸到堆上</p>
+<pre tabindex="0"><code>func ref(z S) *S {
+  return &amp;z
+}
+// go run -gcflags &#39;-m -l&#39; main.go
+./escape.go:10: moved to heap: z
+./escape.go:11: &amp;z escapes to heap
+</code></pre><p>情况2：返回的结构体引用的对象会逃逸</p>
+<pre tabindex="0"><code>func refStruct(y int) (z S) {
+  z.M = &amp;y
+  return z
+}
+// go run -gcflags &#39;-m -l&#39; main.go
+./escape.go:12: moved to heap: y
+./escape.go:13: &amp;y escapes to heap
+</code></pre><p>情况3：map、slice、chan引用的对象会逃逸</p>
+<pre tabindex="0"><code>func main() {
+    a := make([]*int,1)
+    b := 12
+    a[0] = &amp;b
+}
+// go run -gcflags &#39;-m -l&#39; maint.go
+./maint.go:5:2: moved to heap: b
+./maint.go:4:11: make([]*int, 1) does not escape
+</code></pre><p>我们看一个例子，逃逸使得性能下降了不少：</p>
+<pre tabindex="0"><code>func BenchmarkHeap(b *testing.B) {
+    b.ResetTimer()
+    c := make(chan *T, b.N)
+    // c := make(chan T, b.N)
+    for i := 0; i &lt; b.N; i++ {
+        b := T{a: 3, b: 5}
+        c &lt;- &amp;b
+        // c &lt;- b
+    }
+}
+//  go test -bench=. -run=none
+BenchmarkStack-12       32297865                32.1 ns/op
+BenchmarkHeap-12        28062832                40.2 ns/op
+</code></pre><h1 id="routine">
+  routine
+  <a class="anchor" href="#routine">#</a>
+</h1>
+<h2 id="golang并发注意点">
+  Golang并发注意点
+  <a class="anchor" href="#golang%e5%b9%b6%e5%8f%91%e6%b3%a8%e6%84%8f%e7%82%b9">#</a>
+</h2>
+<ol>
+<li>最好确认routine任务的开销大于上下文切换的开销时，才使用routine。</li>
+<li>要尽量控制routine的数量，不然会起到反效果</li>
+<li>channel要注意缓冲区的大小和每次写入的数量，尽量打包写入</li>
+</ol>
+<h2 id="防止泄漏">
+  防止泄漏
+  <a class="anchor" href="#%e9%98%b2%e6%ad%a2%e6%b3%84%e6%bc%8f">#</a>
+</h2>
+<p>如果routine在运行中被阻塞，或者速度很慢，就会发生泄漏（routine的数量会迅速线性增长）</p>
+<ol>
+<li>routinue卡死在读取chan却没数据
+理想情况下，我们设计的读取chan的routine会把所有的内容读取完毕后才会关闭。但是，一旦读取者在读取完成之前退出，写入方写满chan之后就会卡死。</li>
+<li>routinue处理的速度过慢
+这个情况有点类似消息队列消费者的堆积，如果新起的routine处理速度比主协程还慢的话，堆积起来的routine会越来越多，最终打爆内存</li>
+</ol>
+<h2 id="复用timer来替代timerafter">
+  复用timer来替代timer.After
+  <a class="anchor" href="#%e5%a4%8d%e7%94%a8timer%e6%9d%a5%e6%9b%bf%e4%bb%a3timerafter">#</a>
+</h2>
+<p>timer.After会创建很多的timer，引发很大的GC消耗。</p>
+<pre tabindex="0"><code>// 如果有100w个msg推进来，就会有100w个timer被销毁
+func longRunning(messages &lt;-chan string) {
+        for {
+                select {
+                // 消息间隔超过1min会return
+                case &lt;-time.After(time.Minute):
+                        return
+                case msg := &lt;-messages:
+                        fmt.Println(msg)
+                }
+        }
+}
+func longRunning(messages &lt;-chan string) {
+        timer := time.NewTimer(time.Minute)
+        defer timer.Stop()
+        for {
+                select {
+                case &lt;-timer.C: // 过期了
+                        return
+                case msg := &lt;-messages:
+                        fmt.Println(msg)
+                        // 此if代码块很重要。
+                        if !timer.Stop() {
+                                &lt;-timer.C
+                        }
+                }
+                // 必须重置以复用。
+                timer.Reset(time.Minute)
+        }
+}
+</code></pre><ul>
+<li>我们在每次处理完消息后调用timer.Stop()以便于复用。如果timer已经过期，stop会返回false，C里面还有一条过期消息，我们需要把它取出来；如果timer没有过期，stop会返回true，继续执行循环</li>
+<li>在一个Timer终止（stopped）之后并且在重置和重用此Timer值之前，我们应该确保此Timer的通道C中肯定不存在过期的通知</li>
+</ul>
+<h1 id="常用的仓库">
+  常用的仓库
+  <a class="anchor" href="#%e5%b8%b8%e7%94%a8%e7%9a%84%e4%bb%93%e5%ba%93">#</a>
+</h1>
+<h2 id="演化中的错误处理">
+  演化中的错误处理
+  <a class="anchor" href="#%e6%bc%94%e5%8c%96%e4%b8%ad%e7%9a%84%e9%94%99%e8%af%af%e5%a4%84%e7%90%86">#</a>
+</h2>
+<p>满足下面的诉求：</p>
+<ol>
+<li>可以把异常传递下去，并不丢失自己的类型</li>
+<li>可以保存堆栈信息</li>
+</ol>
+<p>Go的错误处理一直在讨论和演进，目前官方已经有几种不同的方案。对于反复写错误处理代码的问题，有几种解决的设想，可以看看上面的（Go语⾔将⾛向何⽅?）</p>
+<pre tabindex="0"><code>import (
+   &#34;golang.org/x/xerrors&#34;
+)
+
+func bar() error {
+   if err := foo(); err != nil {
+      return xerrors.Errorf(&#34;bar failed: %w&#34;, foo())
+   }
+   return nil
+}
+func foo() error {
+   return xerrors.Errorf(&#34;foo failed: %w&#34;, sql.ErrNoRows)
+}
+
+func main() {
+   err := bar()
+   if xerrors.Is(err, sql.ErrNoRows) {
+      fmt.Printf(&#34;data not found, %v\n&#34;, err)
+      fmt.Printf(&#34;%+v\n&#34;, err)
+      return
+   }
+}
+/* Outputs:data not found, bar failed: foo failed: sql: no rows in result set
+bar failed:
+    main.bar
+        /usr/four/main.go:12
+  - foo failed:
+    main.foo
+        /usr/four/main.go:18
+  - sql: no rows in result set
+*/
+</code></pre></article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#容易出错的细节">容易出错的细节</a>
+          <ul>
+            <li><a href="#创建对象">创建对象</a></li>
+            <li><a href="#零值">零值</a></li>
+            <li><a href="#值传递">值传递</a></li>
+            <li><a href="#深拷贝">深拷贝</a></li>
+            <li><a href="#小心interface判等">小心interface判等</a></li>
+            <li><a href="#点点点">点点点</a></li>
+            <li><a href="#闭包里的局部变量是引用">闭包里的局部变量是引用</a></li>
+            <li><a href="#不要引用大数组">不要引用大数组</a></li>
+            <li><a href="#赋值不是原子操作">赋值不是原子操作</a></li>
+            <li><a href="#接收器用指针还是值">接收器用指针还是值</a></li>
+            <li><a href="#for循环里的变量都是副本">for循环里的变量都是副本</a></li>
+            <li><a href="#map的值不可取址">map的值不可取址</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#逃逸分析">逃逸分析</a></li>
+    <li><a href="#routine">routine</a>
+      <ul>
+        <li><a href="#golang并发注意点">Golang并发注意点</a></li>
+        <li><a href="#防止泄漏">防止泄漏</a></li>
+        <li><a href="#复用timer来替代timerafter">复用timer来替代timer.After</a></li>
+      </ul>
+    </li>
+    <li><a href="#常用的仓库">常用的仓库</a>
+      <ul>
+        <li><a href="#演化中的错误处理">演化中的错误处理</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

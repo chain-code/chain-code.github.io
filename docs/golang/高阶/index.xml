@@ -39,6 +39,21 @@ func main(){ var whatever [3]struct{} for i:=range whatever{ defer func(){ fmt.P
     </item>
     
     <item>
+      <title>Go避坑指南</title>
+      <link>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E9%81%BF%E5%9D%91%E6%8C%87%E5%8D%97/</link>
+      <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E9%81%BF%E5%9D%91%E6%8C%87%E5%8D%97/</guid>
+      <description>问题1：字符串序列化后，&amp;amp;符号 转成 “\u0026“ # 问题描述： # 从CGO拿到的字符串，序列化后存入数据库后，&amp;amp; &amp;lt; &amp;gt; 符号变成了类似 &amp;ldquo;\u0026&amp;quot;的形式，但编译器、界面等其他地方看到的确实原始的&amp;amp; &amp;lt; &amp;gt; 符号。
+解决方案： # 数据结构中的值 带有 &amp;amp; &amp;gt; &amp;lt; 等符号，当我们要将 struct map 转成json时，使用
+json.Marshal() 函数，此函数会将 值中的 &amp;amp; &amp;lt; &amp;gt; 符号转义 为 类似 &amp;ldquo;\u0026&amp;rdquo;
+parm := make(map[string]string) parm[&amp;#34;path&amp;#34;] = &amp;#34;http://baidu.com?a=djflks&amp;amp;b=1231131&amp;#34; //转成json 不转义特殊字符 这段替换原来的json.marshal bf := bytes.NewBuffer([]byte{}) jsonEncoder := json.NewEncoder(bf) jsonEncoder.SetEscapeHTML(false) jsonEncoder.Encode(parm) fmt.Println(bf.String()) 问题2：IDEA大面积报红，但编译能通过 # 问题描述： # 在使用IDEA编译代码的伙伴，偶合会发现个别函数报红，鼠标悬停显示函数未声明或者找不到等等，但是go build 却可以通过。
+解决方案： # IEDA缓存混乱的问题，点击 文件-&amp;gt;修复IDE-&amp;gt;
+根据右下角提示，一路点到底，重新建立索引就好了。
+问题4：CGO不支持在函数参数列表中使用默认参数 # 问题描述： # 使用CGO调用别人的动态库时，经常出现这种问题：</description>
+    </item>
+    
+    <item>
       <title>Go高阶 语言类库</title>
       <link>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/</link>
       <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
@@ -84,6 +99,18 @@ M thread线程
 Processor 它包含了运行goroutine的资源，如果线程想运行goroutine,必须先获取P，P中还包含了可运行的G队列。
 在Go中，线程是运行goroutine的实体，调度器的功能是把可运行的goroutine分配到工作线程上。
 全局队列：存放等待运行的G P的本地队列：同全局队列类似，存放的也是等待运行的G，存的数量有限，不超过256个。新建 G’时，G’优先加入到 P 的本地队列，如果队列满了，则会把本地队列中一半的 G 移动到全局队列。 P列表：所有的P都在程序启动时创建，并保存在数组中，最多有 GOMAXPROCS(可配置) 个。 M：线程想运行任务就得获取P，从P的本地队列获取G，P队列为空时，M 也会尝试从全局队列拿一批 G 放到 P 的本地队列，或从其他 P 的本地队列偷一半放到自己 P 的本地队列。M 运行 G，G 执行之后，M 会从 P 获取下一个 G，不断重复下去。 Goroutine 调度器和 OS 调度器是通过 M 结合起来的，每个 M 都代表了 1 个内核线程，OS 调度器负责把内核线程分配到 CPU 的核上执行。</description>
+    </item>
+    
+    <item>
+      <title>易错细节</title>
+      <link>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/%E6%98%93%E9%94%99%E7%BB%86%E8%8A%82/</link>
+      <pubDate>Thu, 03 Nov 2022 13:46:27 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/%E6%98%93%E9%94%99%E7%BB%86%E8%8A%82/</guid>
+      <description>容易出错的细节 # 创建对象 # 新建一个对象在go里面有好几种方法，让人迷惑，而且似乎和简洁这一设计原则违背。我们按照对象类型讨论一下：
+对于结构体，new(T)和&amp;amp;T{}是等价的，都会给对象赋零值（一般人很少用new）。 Note：直接var obj T;&amp;amp;T也是等价的，只不过变量有可能在堆上，有可能在栈上 对于slice、map、chan，make(map[string]int)和map[string]int{}等价，会对对象进行初始化。 var a []int // nil a := []int{} // not nil a := *new([]int) // nil a := make([]int,0) // not nil 零值 # 零值和未初始化的值并不相同。不同类型的零值是什么？
+布尔类型是false，整型是0，字符串是&amp;quot;&amp;quot; 指针、函数、interface、slice、channel和map的零值都是nil 结构体的零值是递归生成的，每个成员都是对应的零值 我们来看一个例子。一个为nil的slice和map能做什么操作：
+// 一个为nil的slice，除了不能索引外，其他的操作都是可以的 // Note: 如果这个slice是个指针，不适用这里的规则 var a []int fmt.Printf(&amp;#34;len(a):%d, cap(a):%d, a==nil:%v\n&amp;#34;, len(a),cap(a), a == nil) //0 0 true for _, v := range a{// 不会panic fmt.Println(v) } aa := a[0:0] // 也不会panic，只要索引都是0 // nil的map，我们可以简单把它看成是一个只读的map var b map[string]string if val, ok := b[&amp;#34;notexist&amp;#34;];ok{// 不会panic fmt.</description>
     </item>
     
   </channel>

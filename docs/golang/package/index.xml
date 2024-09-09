@@ -115,12 +115,41 @@ func main() {vo := reflect.</description>
     </item>
     
     <item>
+      <title>context</title>
+      <link>https://chain-code.github.io/docs/golang/package/context/</link>
+      <pubDate>Wed, 19 Apr 2023 20:05:22 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/context/</guid>
+      <description>context # Context本质 # golang标准库里Context实际上是一个接口（即一种编程规范、 一种约定）。
+type Context interface { Deadline() (deadline time.Time, ok bool) Done() &amp;lt;-chan struct{} Err() error Value(key any) any } 通过查看源码里的注释，我们得到如下约定：
+1、Done()函数返回一个只读管道，且管道里不存放任何元素(struct{})，所以用这个管道就是为了实现阻塞
+2、Deadline()用来记录到期时间，以及是否到期。
+3、Err()用来记录Done()管道关闭的原因，比如可能是因为超时，也可能是因为被强行Cancel了。
+4、Value()用来返回key对应的value，你可以想像成Context内部维护了一个map。
+Context实现 # go源码里提供了Context接口的一个具体实现，遗憾的是它只是一个空的Context，什么也没做。
+type emptyCtx int func (*emptyCtx) Deadline() (deadline time.Time, ok bool) { return } func (*emptyCtx) Done() &amp;lt;-chan struct{} { return nil } func (*emptyCtx) Err() error { return nil } func (*emptyCtx) Value(key any) any { return nil } emptyCtx以小写开头，包外不可见，所以golang又提供了Background和TODO这2个函数让我们能获取到emptyCtx。</description>
+    </item>
+    
+    <item>
       <title>filepath</title>
       <link>https://chain-code.github.io/docs/golang/package/filepath/</link>
       <pubDate>Wed, 19 Apr 2023 20:05:22 +0800</pubDate>
       
       <guid>https://chain-code.github.io/docs/golang/package/filepath/</guid>
       <description>filepath # Base返回路径的最后一个元素 # func main() { path := filepath.Base(&amp;#34;/path/to/file.txt&amp;#34;) fmt.Println(path) // 输出: file.txt } Clean清理路径，去掉冗余元素 # func main() { path := filepath.Clean(&amp;#34;/path/../to/file.txt&amp;#34;) fmt.Println(path) // 输出: /to/file.txt } Abs返回路径的绝对路径 # func main() { path, err := filepath.Abs(&amp;#34;relative/path/to/file&amp;#34;) if err != nil { log.Fatal(err) } fmt.Println(path) //C:\Users\...\go\src\VideoForensic\test\relative\path\to\file } Dir除去最后一个元素 # func main() { path := filepath.Dir(&amp;#34;/path/to/file.txt&amp;#34;) fmt.Println(path) // 输出: /path/to } Ext返回路径的扩展名 # func main() { ext := filepath.Ext(&amp;#34;/path/to/file.txt&amp;#34;) fmt.Println(ext) // 输出: .</description>
+    </item>
+    
+    <item>
+      <title>math</title>
+      <link>https://chain-code.github.io/docs/golang/package/math/</link>
+      <pubDate>Wed, 19 Apr 2023 20:05:22 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/math/</guid>
+      <description>Math # Abs 绝对值 # func Abs(x float64) float64：返回指定数字的绝对值。适用于负数和正数，确保结果为非负数。
+x := -5.5fmt.Println(math.Abs(x)) // 输出: 5.5 Pow 幂运算 # func Pow(x, y float64) float64：计算x的y次幂。常用于指数运算。
+base := 2.0exponent := 3.0fmt.Println(math.Pow(base, exponent)) // 输出: 8.0 Sqrt 平方根 # func Sqrt(x float64) float64：返回x的平方根。适用于非负数。
+num := 16.0fmt.Println(math.Sqrt(num)) // 输出: 4.0 Sin 正弦 # func Sin(x float64) float64：返回x的正弦值，x以弧度为单位。用于三角函数计算。
+radian := math.Pi / 2fmt.Println(math.Sin(radian)) // 输出: 1.0 Cos 余弦 # func Cos(x float64) float64：返回x的余弦值，x以弧度为单位。</description>
     </item>
     
     <item>

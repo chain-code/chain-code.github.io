@@ -34,5 +34,24 @@ sqlite3 mysql dsn mymysql postgres 在engine创建完成后可以进行一些设
       <description>GORM # 特性 # 全功能 ORM 关联 (Has One，Has Many，Belongs To，Many To Many，多态，单表继承) Create，Save，Update，Delete，Find 中钩子方法 支持 Preload、Joins 的预加载 事务，嵌套事务，Save Point，Rollback To Saved Point Context、预编译模式、DryRun 模式 批量插入，FindInBatches，Find/Create with Map，使用 SQL 表达式、Context Valuer 进行 CRUD SQL 构建器，Upsert，数据库锁，Optimizer/Index/Comment Hint，命名参数，子查询 复合主键，索引，约束 Auto Migration 自定义 Logger 灵活的可扩展插件 API：Database Resolver（多数据库，读写分离）、Prometheus… 每个特性都经过了测试的重重考验 开发者友好 安装 # go get -u gorm.io/gormgo get -u gorm.io/driver/sqlite 快速入门 # package main import ( &amp;#34;gorm.io/gorm&amp;#34; &amp;#34;gorm.io/driver/sqlite&amp;#34; ) type Product struct { gorm.</description>
     </item>
     
+    <item>
+      <title></title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/</guid>
+      <description>title: 几种常见数据库的备份与恢复 date: 2022-05-24 15:47:27 MySQL的数据备份与恢复 # 1. 数据的备份类型 # 数据的备份类型根据其自身的特性主要分为以下几组：
+1.完全备份　完全备份指的是备份整个数据集( 即整个数据库 )
+2.部分备份 部分备份指的是备份部分数据集(例如: 只备份一个表) 而部分备份又分为：
+增量备份 增量备份指的是备份自上一次备份以来(增量或完全)以来变化的数据。特点: 节约空间、还原麻烦 差异备份 差异备份指的是备份自上一次完全备份以来变化的数据。特点: 浪费空间、还原比增量备份简单 2. MySQL备份数据的方式 # 在MySQl中备份数据一般有三种方式：
+热备份 热备份指的是当数据库进行备份时, 数据库的读写操作均不是受影响
+温备份 温备份指的是当数据库进行备份时, 数据库的读操作可以执行, 但是不能执行写操作
+冷备份 冷备份指的是当数据库进行备份时, 数据库不能进行读写操作, 即数据库要下线
+MySQL中进行不同方式的备份还要考虑存储引擎是否支持： 1）MyISAM 热备 × 温备 √ 冷备 √ 2）InnoDB 热备 √ 温备 √ 冷备 √
+我们考虑完数据备份, 数据库的运行状态之后还需要考虑对于MySQL数据库中数据的备份方式：
+（1）物理备份 物理备份一般就是通过tar,cp等命令直接打包复制数据库的数据文件达到备份的效果 （2）逻辑备份 逻辑备份一般就是通过特定工具从数据库中导出数据并另存备份(逻辑备份会丢失数据精度) 3.备份工具 # 常用的备份工具有：
+mysqldump： 逻辑备份工具, 适用于所有的存储引擎, 支持温备、完全备份、部分备份、对于InnoDB存储引擎支持热备 cp, tar 等归档复制工具： 物理备份工具, 适用于所有的存储引擎, 冷备、完全备份、部分备份 lvm2 snapshot： 几乎热备, 借助文件系统管理工具进行备份 mysqlhotcopy： 名不副实的的一个工具, 几乎冷备, 仅支持MyISAM存储引擎 xtrabackup： 一款非常强大的InnoDB/XtraDB热备工具, 支持完全备份、增量备份, 由percona提供 下面介绍一下mysqldump的使用</description>
+    </item>
+    
   </channel>
 </rss>

@@ -8,6 +8,50 @@
     <language>zh-cn</language>
     <lastBuildDate>Wed, 19 Apr 2023 20:07:07 +0800</lastBuildDate><atom:link href="https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Vite&#43;Vue快速搭建项目</title>
+      <link>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/vite&#43;vue%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE/</link>
+      <pubDate>Wed, 19 Apr 2023 20:07:07 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/vite&#43;vue%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE/</guid>
+      <description>Vite+Vue快速搭建项目 # -y 快速创建一个默认的包信息
+npm init -y -D开发环境中的依赖，加载vite
+npm i vite -D 生成&amp;quot;devDependencies&amp;quot;，开发环境下的依赖
+从工作区index.html为入口</description>
+    </item>
+    
+    <item>
+      <title>Vue3</title>
+      <link>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/vue3/</link>
+      <pubDate>Wed, 19 Apr 2023 20:07:07 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/vue3/</guid>
+      <description> Vue3 # watch函数 # watch函数：这是Vue 3提供的一个响应式API，用于观察和响应reactive状态的变化。
+watch(() =&amp;gt; store.page,(newPage, oldPage) =&amp;gt; {getRawItem(store.page)} a. 第一个参数：() =&amp;gt; store.page
+这是一个箭头函数，返回被监视的值（store.page）。 每当store.page发生变化时，这个函数会被重新执行。 b. 第二个参数：(newPage, oldPage) =&amp;gt; { getRawItem(store.page) }
+这是一个回调函数，当被监视的值变化时会被调用。 newPage参数代表store.page的新值。 oldPage参数代表store.page的旧值。 函数体内调用了getRawItem(store.page)。 </description>
+    </item>
+    
+    <item>
+      <title>Vue环境搭建</title>
+      <link>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/vue%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Wed, 19 Apr 2023 20:07:07 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/vue%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</guid>
+      <description>Vue环境搭建 # VueJS 是一个开源的渐进式 JavaScript 框架，用于开发交互式 Web 界面。
+它是用于简化 Web 开发的着名框架之一，VueJS 专注于视图层。它可以很容易地集成到大型项目前端开发没有任何问题。
+Vue 中文网：https://cn.vuejs.org/ 安装 node.js # 安装 # 下载地址：https://nodejs.org/en/download/
+windows 版一路往下点
+安装完成：
+$ npm -v 6.14.6 设置路径 # 设置 nodejs prefix（全局）和 cache（缓存）路径
+在 nodejs 安装路径下，新建 node_global 和 node_cache 两个文件夹
+设置缓存文件夹
+npm config set cache &amp;#34;C:\Program Files\nodejs\node_cache&amp;#34; 设置全局模块存放路径
+npm config set prefix &amp;#34;C:\Program Files\nodejs\node_global&amp;#34; 设置成功后，之后用命令 npm install XXX -g 安装以后模块就在C:\Program Files\nodejs\node_global 里
+安装镜像 # 基于 Node.js 安装 cnpm（淘宝镜像）
+npm install -g cnpm --registry=https://registry.</description>
+    </item>
+    
+    <item>
       <title>Web Socket</title>
       <link>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/websocket/</link>
       <pubDate>Wed, 19 Apr 2023 20:07:07 +0800</pubDate>

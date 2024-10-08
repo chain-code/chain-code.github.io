@@ -38,7 +38,7 @@
       <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
-      <description> 行为型设计模式 # </description>
+      <description> 行为型设计模式 # 策略模式 # 介绍 # 优点 # 缺点 # 示例 # 责任链模式 # 介绍 # 优点 # 缺点 # 示例 # 命令模式 # 介绍 # 优点 # 缺点 # 示例 # 迭代器模式 # 介绍 # 优点 # 缺点 # 示例 # 中介者模式 # 介绍 # 优点 # 缺点 # 示例 # 备忘录模式 # 介绍 # 优点 # 缺点 # 示例 # 观察者模式 # 介绍 # 优点 # 缺点 # 示例 # 状态模式 # 介绍 # 优点 # 缺点 # 示例 # 模板方法模式 # 介绍 # 优点 # 缺点 # 示例 # 访问者模式 # 介绍 # 优点 # 缺点 # 示例 # </description>
     </item>
     
     <item>
@@ -47,7 +47,7 @@
       <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%89%A9%E5%B1%95/</guid>
-      <description> 设计模式扩展 # </description>
+      <description> 设计模式扩展 # 空对象模式 # 介绍 # 优点 # 缺点 # 示例 # 规格模式 # 介绍 # 优点 # 缺点 # 示例 # 领域驱动设计 # 介绍 # 优点 # 缺点 # 示例 # </description>
     </item>
     
   </channel>

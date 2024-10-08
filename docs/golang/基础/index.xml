@@ -38,17 +38,13 @@ Go协程goroutine: 是一种轻量线程，它不是操作系统的线程，而�
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/channel/</guid>
-      <description>channel # 如何判断通道为空
-if len(channel) == 0 {// 通道为空} select {case &amp;lt;-channel:// 通道不为空，可以接收元素default:// 通道为空} 如何判断通道已关闭
-v, ok := &amp;lt;-ch 通道各种花里胡哨用法
-https://learnku.com/articles/71310
-https://cloud.tencent.com/developer/article/1911948
-https://segmentfault.com/a/1190000017958702
-https://www.jianshu.com/p/554e210bdca4
-https://www.cnblogs.com/jiujuan/p/16014608.html
-https://colobu.com/2016/04/14/Golang-Channels/
-1、一个经典的算法题 有 4 个 goroutine，编号为 1、2、3、4。每秒钟会有一个 goroutine 打印出自己的编号，要求写一个程序，让输出的编号总是按照 1、2、3、4、1、2、3、4… 的顺序打印出来
-func main() { // 4个channel chs := make([]chan int, 4) for i, _ := range chs { chs[i] = make(chan int) // 开4个协程 go func(i int) { for { // 获取当前channel值并打印 v := &amp;lt;-chs[i] fmt.</description>
+      <description>channel # 遍历一个未关闭的channel会造成死循环
+channel的使用场景 # 把channel用在数据流动的地方：
+消息传递、消息过滤 信号广播 事件订阅与广播 请求、响应转发 任务分发 结果汇总 并发控制 同步与异步 … channel的基本操作和注意事项 # channel存在3种状态：
+nil，未初始化的状态，只进行了声明，或者手动赋值为nil active，正常的channel，可读或者可写 closed，已关闭，千万不要误认为关闭channel后，channel的值是nil channel可进行3种操作：
+读 写 关闭 把这3种操作和3种channel状态可以组合出9种情况：
+操作 nil的channel 正常channel 已关闭channel &amp;lt;- ch 阻塞 成功或阻塞 读到零值 ch &amp;lt;- 阻塞 成功或阻塞 panic close(ch) panic 成功 panic 对于nil通道的情况，也并非完全遵循上表，有1个特殊场景：当nil的通道在select的某个case中时，这个case会阻塞，但不会造成死锁。
+如何判断通道为空 # if len(channel) == 0 {// 通道为空} select {case &amp;lt;-channel:// 通道不为空，可以接收元素default:// 通道为空} 如何判断通道已关闭 # v, ok := &amp;lt;-ch 通道各种花里胡哨用法</description>
     </item>
     
     <item>
@@ -199,6 +195,19 @@ Go 语言的单元测试默认采用官方自带的测试框架，通过引入 t
 在源代码包目录内，所有以 _test.go 为后缀名的源文件会被 go test 认定为单元测试的文件，这些单元测试的文件不会包含在 go build 的源代码构建中，而是单独通过 go test 来编译并执行。
 规范 # Go 单元测试的基本规范如下：
 每个测试函数都必须导入 testing 包。测试函数的命名类似func TestName(t *testing.T)，入参必须是 *testing.T 测试函数的函数名必须以大写的 Test 开头，后面紧跟的函数名，要么是大写开关，要么就是下划线，比如 func TestName(t *testing.T) 或者 func Test_name(t *testing.T) 都是 ok 的， 但是 func Testname(t *testing.T)不会被检测到 通常情况下，需要将测试文件和源代码放在同一个包内。一般测试文件的命名，都是 {source_filename}_test.go，比如我们的源代码文件是allen.go ，那么就会在 allen.go 的相同目录下，再建立一个 allen_test.go 的单元测试文件去测试 allen.go 文件里的相关方法。 当运行 go test 命令时，go test 会遍历所有的 *_test.</description>
+    </item>
+    
+    <item>
+      <title>奇怪的io.copy</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/io.copy/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/io.copy/</guid>
+      <description>介绍 # 遇到一个从挂载目录copy文件慢的问题，从挂载目录直接鼠标拖动文件到其他地方很快，但使用函数进行copy却很慢。
+这四种copy方式有什么区别？
+io.Copy # io.Copy 是标准库中用于文件复制的简便方式，它会根据内部默认的缓冲区大小（通常较小，可能是 32KB ）进行读取和写入。由于 io.Copy 的缓冲区较小，它在大文件复制时可能需要更多的 I/O 操作次数，导致了较大的性能开销。
+func CopyFile1(src string, dst string) (int64, error) { srcFile, err := os.Open(src) if err != nil { return -1, err } defer srcFile.Close() dstFile, err := os.OpenFile(dst, os.O_RDWR|os.O_CREATE|os.O_TRUNC, os.ModePerm) if err != nil { return -1, err } defer dstFile.Close() return io.Copy(dstFile, srcFile) } 点开io.Copy，发现里面调用copyBuffer，与下面要说的io.CopyBuffer函数入口一致。
+func Copy(dst Writer, src Reader) (written int64, err error) { return copyBuffer(dst, src, nil) } io.</description>
     </item>
     
     <item>

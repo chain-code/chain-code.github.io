@@ -37,7 +37,7 @@ EXT4 # EXT4是Linux操作系统中使用的一种高性能的日志式文件系�
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.5f7fe5094494699bcf0d470707c15aceb9d96e39b86dbae97745905c61709533.js" integrity="sha256-X3/lCUSUaZvPDUcHB8FazrnZbjm4bbrpd0WQXGFwlTM=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.199af8022ed5688419c78c8193cbbed9a747a058f9b29cd18e9338ef70f168b6.js" integrity="sha256-GZr4Ai7VaIQZx4yBk8u&#43;2adHoFj5spzRjpM473DxaLY=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -629,6 +629,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="">单元测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/io.copy/" class="">奇怪的io.copy</a>
   
 
         </li>
@@ -1458,6 +1471,45 @@ https://github.com/alex-shpak/hugo-book
 
           
   <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/vite&#43;vue%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE/" class="">Vite&#43;Vue快速搭建项目</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/vue3/" class="">Vue3</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/vue%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">Vue环境搭建</a>
+  
+
+        </li>
+      
     
       
         <li>
@@ -2441,6 +2493,7 @@ https://github.com/alex-shpak/hugo-book
             <li><a href="#临时文件和目录">临时文件和目录</a></li>
             <li><a href="#通过http下载文件">通过HTTP下载文件</a></li>
             <li><a href="#哈希和摘要">哈希和摘要</a></li>
+            <li><a href="#设置底层读取缓存">设置底层读取缓存</a></li>
           </ul>
         </li>
       </ul>
@@ -3345,6 +3398,33 @@ os.O_WRONLY | os.O_CREATE | os.O_APPEND  【如果已经存在，则在尾部添
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">sum</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">hasher</span>.<span style="color:#a6e22e">Sum</span>(<span style="color:#66d9ef">nil</span>)
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Md5 checksum: %x\n&#34;</span>, <span style="color:#a6e22e">sum</span>)
 </span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="设置底层读取缓存">
+  设置底层读取缓存
+  <a class="anchor" href="#%e8%ae%be%e7%bd%ae%e5%ba%95%e5%b1%82%e8%af%bb%e5%8f%96%e7%bc%93%e5%ad%98">#</a>
+</h3>
+<p>如果你直接使用 <code>os.File</code> 读取文件，Go 会使用默认的缓冲区大小（一般是 4KB）。</p>
+<p>通过 <code>bufio.NewReaderSize</code> 来手动指定缓冲区大小</p>
+<p>dokan挂载的文件系统，使用默认4k读取会非常慢，使用1M跟它保持一致，速度很快。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">file</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#e6db74">&#34;example.txt&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">file</span>.<span style="color:#a6e22e">Close</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 设置缓冲区大小为 1MB
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">reader</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">bufio</span>.<span style="color:#a6e22e">NewReaderSize</span>(<span style="color:#a6e22e">file</span>, <span style="color:#ae81ff">1</span><span style="color:#f92672">*</span><span style="color:#ae81ff">1024</span><span style="color:#f92672">*</span><span style="color:#ae81ff">1024</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">buffer</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">byte</span>, <span style="color:#ae81ff">1024</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">n</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">reader</span>.<span style="color:#a6e22e">Read</span>(<span style="color:#a6e22e">buffer</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Print</span>(string(<span style="color:#a6e22e">buffer</span>[:<span style="color:#a6e22e">n</span>]))
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div></article>
  
       
@@ -3442,6 +3522,7 @@ os.O_WRONLY | os.O_CREATE | os.O_APPEND  【如果已经存在，则在尾部添
             <li><a href="#临时文件和目录">临时文件和目录</a></li>
             <li><a href="#通过http下载文件">通过HTTP下载文件</a></li>
             <li><a href="#哈希和摘要">哈希和摘要</a></li>
+            <li><a href="#设置底层读取缓存">设置底层读取缓存</a></li>
           </ul>
         </li>
       </ul>

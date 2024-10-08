@@ -230,17 +230,13 @@ cgo: gcc errors for preamble:In file included from .\hikvision.go:6:0:error: e
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/channel/</guid>
-      <description>channel # 如何判断通道为空
-if len(channel) == 0 {// 通道为空} select {case &amp;lt;-channel:// 通道不为空，可以接收元素default:// 通道为空} 如何判断通道已关闭
-v, ok := &amp;lt;-ch 通道各种花里胡哨用法
-https://learnku.com/articles/71310
-https://cloud.tencent.com/developer/article/1911948
-https://segmentfault.com/a/1190000017958702
-https://www.jianshu.com/p/554e210bdca4
-https://www.cnblogs.com/jiujuan/p/16014608.html
-https://colobu.com/2016/04/14/Golang-Channels/
-1、一个经典的算法题 有 4 个 goroutine，编号为 1、2、3、4。每秒钟会有一个 goroutine 打印出自己的编号，要求写一个程序，让输出的编号总是按照 1、2、3、4、1、2、3、4… 的顺序打印出来
-func main() { // 4个channel chs := make([]chan int, 4) for i, _ := range chs { chs[i] = make(chan int) // 开4个协程 go func(i int) { for { // 获取当前channel值并打印 v := &amp;lt;-chs[i] fmt.</description>
+      <description>channel # 遍历一个未关闭的channel会造成死循环
+channel的使用场景 # 把channel用在数据流动的地方：
+消息传递、消息过滤 信号广播 事件订阅与广播 请求、响应转发 任务分发 结果汇总 并发控制 同步与异步 … channel的基本操作和注意事项 # channel存在3种状态：
+nil，未初始化的状态，只进行了声明，或者手动赋值为nil active，正常的channel，可读或者可写 closed，已关闭，千万不要误认为关闭channel后，channel的值是nil channel可进行3种操作：
+读 写 关闭 把这3种操作和3种channel状态可以组合出9种情况：
+操作 nil的channel 正常channel 已关闭channel &amp;lt;- ch 阻塞 成功或阻塞 读到零值 ch &amp;lt;- 阻塞 成功或阻塞 panic close(ch) panic 成功 panic 对于nil通道的情况，也并非完全遵循上表，有1个特殊场景：当nil的通道在select的某个case中时，这个case会阻塞，但不会造成死锁。
+如何判断通道为空 # if len(channel) == 0 {// 通道为空} select {case &amp;lt;-channel:// 通道不为空，可以接收元素default:// 通道为空} 如何判断通道已关闭 # v, ok := &amp;lt;-ch 通道各种花里胡哨用法</description>
     </item>
     
     <item>
@@ -601,6 +597,19 @@ ssh-keygen -t rsa -C &amp;#34;github邮箱地址&amp;#34; -f ~/.ssh/github_rsa 2
     </item>
     
     <item>
+      <title>奇怪的io.copy</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/io.copy/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/io.copy/</guid>
+      <description>介绍 # 遇到一个从挂载目录copy文件慢的问题，从挂载目录直接鼠标拖动文件到其他地方很快，但使用函数进行copy却很慢。
+这四种copy方式有什么区别？
+io.Copy # io.Copy 是标准库中用于文件复制的简便方式，它会根据内部默认的缓冲区大小（通常较小，可能是 32KB ）进行读取和写入。由于 io.Copy 的缓冲区较小，它在大文件复制时可能需要更多的 I/O 操作次数，导致了较大的性能开销。
+func CopyFile1(src string, dst string) (int64, error) { srcFile, err := os.Open(src) if err != nil { return -1, err } defer srcFile.Close() dstFile, err := os.OpenFile(dst, os.O_RDWR|os.O_CREATE|os.O_TRUNC, os.ModePerm) if err != nil { return -1, err } defer dstFile.Close() return io.Copy(dstFile, srcFile) } 点开io.Copy，发现里面调用copyBuffer，与下面要说的io.CopyBuffer函数入口一致。
+func Copy(dst Writer, src Reader) (written int64, err error) { return copyBuffer(dst, src, nil) } io.</description>
+    </item>
+    
+    <item>
       <title>常用业务代码</title>
       <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -864,7 +873,7 @@ Processor 它包含了运行goroutine的资源，如果线程想运行goroutine,
       <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
-      <description> 行为型设计模式 # </description>
+      <description> 行为型设计模式 # 策略模式 # 介绍 # 优点 # 缺点 # 示例 # 责任链模式 # 介绍 # 优点 # 缺点 # 示例 # 命令模式 # 介绍 # 优点 # 缺点 # 示例 # 迭代器模式 # 介绍 # 优点 # 缺点 # 示例 # 中介者模式 # 介绍 # 优点 # 缺点 # 示例 # 备忘录模式 # 介绍 # 优点 # 缺点 # 示例 # 观察者模式 # 介绍 # 优点 # 缺点 # 示例 # 状态模式 # 介绍 # 优点 # 缺点 # 示例 # 模板方法模式 # 介绍 # 优点 # 缺点 # 示例 # 访问者模式 # 介绍 # 优点 # 缺点 # 示例 # </description>
     </item>
     
     <item>
@@ -993,7 +1002,7 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - 9DC
       <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%89%A9%E5%B1%95/</guid>
-      <description> 设计模式扩展 # </description>
+      <description> 设计模式扩展 # 空对象模式 # 介绍 # 优点 # 缺点 # 示例 # 规格模式 # 介绍 # 优点 # 缺点 # 示例 # 领域驱动设计 # 介绍 # 优点 # 缺点 # 示例 # </description>
     </item>
     
     <item>
@@ -1254,6 +1263,50 @@ import ( _ &amp;#34;github.com/mattn/go-sqlite3&amp;#34; &amp;#34;github.com/go-
 var err error for i:=0;i&amp;lt;5;i++ { engines[i], err = xorm.NewEngine(&amp;#34;sqlite3&amp;#34;, fmt.Sprintf(&amp;#34;./test%d.db&amp;#34;, i)) } engine可以通过engine.Close来手动关闭，但是一般情况下可以不用关闭，在程序退出时会自动关闭。
 NewEngine传入的参数和sql.Open传入的参数完全相同，因此，在使用某个驱动前，请查看此驱动中关于传入参数的说明文档。以下为各个驱动的连接符对应的文档链接：
 sqlite3 mysql dsn mymysql postgres 在engine创建完成后可以进行一些设置，如：</description>
+    </item>
+    
+    <item>
+      <title>Vite&#43;Vue快速搭建项目</title>
+      <link>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/vite&#43;vue%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE/</link>
+      <pubDate>Wed, 19 Apr 2023 20:07:07 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/vite&#43;vue%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE/</guid>
+      <description>Vite+Vue快速搭建项目 # -y 快速创建一个默认的包信息
+npm init -y -D开发环境中的依赖，加载vite
+npm i vite -D 生成&amp;quot;devDependencies&amp;quot;，开发环境下的依赖
+从工作区index.html为入口</description>
+    </item>
+    
+    <item>
+      <title>Vue3</title>
+      <link>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/vue3/</link>
+      <pubDate>Wed, 19 Apr 2023 20:07:07 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/vue3/</guid>
+      <description> Vue3 # watch函数 # watch函数：这是Vue 3提供的一个响应式API，用于观察和响应reactive状态的变化。
+watch(() =&amp;gt; store.page,(newPage, oldPage) =&amp;gt; {getRawItem(store.page)} a. 第一个参数：() =&amp;gt; store.page
+这是一个箭头函数，返回被监视的值（store.page）。 每当store.page发生变化时，这个函数会被重新执行。 b. 第二个参数：(newPage, oldPage) =&amp;gt; { getRawItem(store.page) }
+这是一个回调函数，当被监视的值变化时会被调用。 newPage参数代表store.page的新值。 oldPage参数代表store.page的旧值。 函数体内调用了getRawItem(store.page)。 </description>
+    </item>
+    
+    <item>
+      <title>Vue环境搭建</title>
+      <link>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/vue%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Wed, 19 Apr 2023 20:07:07 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/vue%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</guid>
+      <description>Vue环境搭建 # VueJS 是一个开源的渐进式 JavaScript 框架，用于开发交互式 Web 界面。
+它是用于简化 Web 开发的着名框架之一，VueJS 专注于视图层。它可以很容易地集成到大型项目前端开发没有任何问题。
+Vue 中文网：https://cn.vuejs.org/ 安装 node.js # 安装 # 下载地址：https://nodejs.org/en/download/
+windows 版一路往下点
+安装完成：
+$ npm -v 6.14.6 设置路径 # 设置 nodejs prefix（全局）和 cache（缓存）路径
+在 nodejs 安装路径下，新建 node_global 和 node_cache 两个文件夹
+设置缓存文件夹
+npm config set cache &amp;#34;C:\Program Files\nodejs\node_cache&amp;#34; 设置全局模块存放路径
+npm config set prefix &amp;#34;C:\Program Files\nodejs\node_global&amp;#34; 设置成功后，之后用命令 npm install XXX -g 安装以后模块就在C:\Program Files\nodejs\node_global 里
+安装镜像 # 基于 Node.js 安装 cnpm（淘宝镜像）
+npm install -g cnpm --registry=https://registry.</description>
     </item>
     
     <item>

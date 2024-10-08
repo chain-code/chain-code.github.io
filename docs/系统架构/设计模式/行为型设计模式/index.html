@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content=" 行为型设计模式 # ">
+<meta name="description" content=" 行为型设计模式 # 策略模式 # 介绍 # 优点 # 缺点 # 示例 # 责任链模式 # 介绍 # 优点 # 缺点 # 示例 # 命令模式 # 介绍 # 优点 # 缺点 # 示例 # 迭代器模式 # 介绍 # 优点 # 缺点 # 示例 # 中介者模式 # 介绍 # 优点 # 缺点 # 示例 # 备忘录模式 # 介绍 # 优点 # 缺点 # 示例 # 观察者模式 # 介绍 # 优点 # 缺点 # 示例 # 状态模式 # 介绍 # 优点 # 缺点 # 示例 # 模板方法模式 # 介绍 # 优点 # 缺点 # 示例 # 访问者模式 # 介绍 # 优点 # 缺点 # 示例 # ">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="行为型设计模式" />
-<meta property="og:description" content=" 行为型设计模式 # " />
+<meta property="og:description" content=" 行为型设计模式 # 策略模式 # 介绍 # 优点 # 缺点 # 示例 # 责任链模式 # 介绍 # 优点 # 缺点 # 示例 # 命令模式 # 介绍 # 优点 # 缺点 # 示例 # 迭代器模式 # 介绍 # 优点 # 缺点 # 示例 # 中介者模式 # 介绍 # 优点 # 缺点 # 示例 # 备忘录模式 # 介绍 # 优点 # 缺点 # 示例 # 观察者模式 # 介绍 # 优点 # 缺点 # 示例 # 状态模式 # 介绍 # 优点 # 缺点 # 示例 # 模板方法模式 # 介绍 # 优点 # 缺点 # 示例 # 访问者模式 # 介绍 # 优点 # 缺点 # 示例 # " />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" /><meta property="article:section" content="docs" />
 <meta property="article:published_time" content="2022-11-03T13:46:08+08:00" />
@@ -17,7 +17,7 @@
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.5f7fe5094494699bcf0d470707c15aceb9d96e39b86dbae97745905c61709533.js" integrity="sha256-X3/lCUSUaZvPDUcHB8FazrnZbjm4bbrpd0WQXGFwlTM=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.199af8022ed5688419c78c8193cbbed9a747a058f9b29cd18e9338ef70f168b6.js" integrity="sha256-GZr4Ai7VaIQZx4yBk8u&#43;2adHoFj5spzRjpM473DxaLY=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -609,6 +609,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="">单元测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/io.copy/" class="">奇怪的io.copy</a>
   
 
         </li>
@@ -1438,6 +1451,45 @@ https://github.com/alex-shpak/hugo-book
 
           
   <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/vite&#43;vue%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE/" class="">Vite&#43;Vue快速搭建项目</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/vue3/" class="">Vue3</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/vue%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">Vue环境搭建</a>
+  
+
+        </li>
+      
     
       
         <li>
@@ -2367,7 +2419,20 @@ https://github.com/alex-shpak/hugo-book
   <ul>
     <li>
       <ul>
-        <li><a href="#行为型设计模式">行为型设计模式</a></li>
+        <li><a href="#行为型设计模式">行为型设计模式</a>
+          <ul>
+            <li><a href="#策略模式">策略模式</a></li>
+            <li><a href="#责任链模式">责任链模式</a></li>
+            <li><a href="#命令模式">命令模式</a></li>
+            <li><a href="#迭代器模式">迭代器模式</a></li>
+            <li><a href="#中介者模式">中介者模式</a></li>
+            <li><a href="#备忘录模式">备忘录模式</a></li>
+            <li><a href="#观察者模式">观察者模式</a></li>
+            <li><a href="#状态模式">状态模式</a></li>
+            <li><a href="#模板方法模式">模板方法模式</a></li>
+            <li><a href="#访问者模式">访问者模式</a></li>
+          </ul>
+        </li>
       </ul>
     </li>
   </ul>
@@ -2386,6 +2451,206 @@ https://github.com/alex-shpak/hugo-book
   行为型设计模式
   <a class="anchor" href="#%e8%a1%8c%e4%b8%ba%e5%9e%8b%e8%ae%be%e8%ae%a1%e6%a8%a1%e5%bc%8f">#</a>
 </h2>
+<h3 id="策略模式">
+  策略模式
+  <a class="anchor" href="#%e7%ad%96%e7%95%a5%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<h4 id="介绍">
+  介绍
+  <a class="anchor" href="#%e4%bb%8b%e7%bb%8d">#</a>
+</h4>
+<h4 id="优点">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9">#</a>
+</h4>
+<h4 id="缺点">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9">#</a>
+</h4>
+<h4 id="示例">
+  示例
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b">#</a>
+</h4>
+<h3 id="责任链模式">
+  责任链模式
+  <a class="anchor" href="#%e8%b4%a3%e4%bb%bb%e9%93%be%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<h4 id="介绍-1">
+  介绍
+  <a class="anchor" href="#%e4%bb%8b%e7%bb%8d-1">#</a>
+</h4>
+<h4 id="优点-1">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9-1">#</a>
+</h4>
+<h4 id="缺点-1">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9-1">#</a>
+</h4>
+<h4 id="示例-1">
+  示例
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b-1">#</a>
+</h4>
+<h3 id="命令模式">
+  命令模式
+  <a class="anchor" href="#%e5%91%bd%e4%bb%a4%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<h4 id="介绍-2">
+  介绍
+  <a class="anchor" href="#%e4%bb%8b%e7%bb%8d-2">#</a>
+</h4>
+<h4 id="优点-2">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9-2">#</a>
+</h4>
+<h4 id="缺点-2">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9-2">#</a>
+</h4>
+<h4 id="示例-2">
+  示例
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b-2">#</a>
+</h4>
+<h3 id="迭代器模式">
+  迭代器模式
+  <a class="anchor" href="#%e8%bf%ad%e4%bb%a3%e5%99%a8%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<h4 id="介绍-3">
+  介绍
+  <a class="anchor" href="#%e4%bb%8b%e7%bb%8d-3">#</a>
+</h4>
+<h4 id="优点-3">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9-3">#</a>
+</h4>
+<h4 id="缺点-3">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9-3">#</a>
+</h4>
+<h4 id="示例-3">
+  示例
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b-3">#</a>
+</h4>
+<h3 id="中介者模式">
+  中介者模式
+  <a class="anchor" href="#%e4%b8%ad%e4%bb%8b%e8%80%85%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<h4 id="介绍-4">
+  介绍
+  <a class="anchor" href="#%e4%bb%8b%e7%bb%8d-4">#</a>
+</h4>
+<h4 id="优点-4">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9-4">#</a>
+</h4>
+<h4 id="缺点-4">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9-4">#</a>
+</h4>
+<h4 id="示例-4">
+  示例
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b-4">#</a>
+</h4>
+<h3 id="备忘录模式">
+  备忘录模式
+  <a class="anchor" href="#%e5%a4%87%e5%bf%98%e5%bd%95%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<h4 id="介绍-5">
+  介绍
+  <a class="anchor" href="#%e4%bb%8b%e7%bb%8d-5">#</a>
+</h4>
+<h4 id="优点-5">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9-5">#</a>
+</h4>
+<h4 id="缺点-5">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9-5">#</a>
+</h4>
+<h4 id="示例-5">
+  示例
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b-5">#</a>
+</h4>
+<h3 id="观察者模式">
+  观察者模式
+  <a class="anchor" href="#%e8%a7%82%e5%af%9f%e8%80%85%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<h4 id="介绍-6">
+  介绍
+  <a class="anchor" href="#%e4%bb%8b%e7%bb%8d-6">#</a>
+</h4>
+<h4 id="优点-6">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9-6">#</a>
+</h4>
+<h4 id="缺点-6">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9-6">#</a>
+</h4>
+<h4 id="示例-6">
+  示例
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b-6">#</a>
+</h4>
+<h3 id="状态模式">
+  状态模式
+  <a class="anchor" href="#%e7%8a%b6%e6%80%81%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<h4 id="介绍-7">
+  介绍
+  <a class="anchor" href="#%e4%bb%8b%e7%bb%8d-7">#</a>
+</h4>
+<h4 id="优点-7">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9-7">#</a>
+</h4>
+<h4 id="缺点-7">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9-7">#</a>
+</h4>
+<h4 id="示例-7">
+  示例
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b-7">#</a>
+</h4>
+<h3 id="模板方法模式">
+  模板方法模式
+  <a class="anchor" href="#%e6%a8%a1%e6%9d%bf%e6%96%b9%e6%b3%95%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<h4 id="介绍-8">
+  介绍
+  <a class="anchor" href="#%e4%bb%8b%e7%bb%8d-8">#</a>
+</h4>
+<h4 id="优点-8">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9-8">#</a>
+</h4>
+<h4 id="缺点-8">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9-8">#</a>
+</h4>
+<h4 id="示例-8">
+  示例
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b-8">#</a>
+</h4>
+<h3 id="访问者模式">
+  访问者模式
+  <a class="anchor" href="#%e8%ae%bf%e9%97%ae%e8%80%85%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<h4 id="介绍-9">
+  介绍
+  <a class="anchor" href="#%e4%bb%8b%e7%bb%8d-9">#</a>
+</h4>
+<h4 id="优点-9">
+  优点
+  <a class="anchor" href="#%e4%bc%98%e7%82%b9-9">#</a>
+</h4>
+<h4 id="缺点-9">
+  缺点
+  <a class="anchor" href="#%e7%bc%ba%e7%82%b9-9">#</a>
+</h4>
+<h4 id="示例-9">
+  示例
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b-9">#</a>
+</h4>
 </article>
  
       
@@ -2429,7 +2694,20 @@ https://github.com/alex-shpak/hugo-book
   <ul>
     <li>
       <ul>
-        <li><a href="#行为型设计模式">行为型设计模式</a></li>
+        <li><a href="#行为型设计模式">行为型设计模式</a>
+          <ul>
+            <li><a href="#策略模式">策略模式</a></li>
+            <li><a href="#责任链模式">责任链模式</a></li>
+            <li><a href="#命令模式">命令模式</a></li>
+            <li><a href="#迭代器模式">迭代器模式</a></li>
+            <li><a href="#中介者模式">中介者模式</a></li>
+            <li><a href="#备忘录模式">备忘录模式</a></li>
+            <li><a href="#观察者模式">观察者模式</a></li>
+            <li><a href="#状态模式">状态模式</a></li>
+            <li><a href="#模板方法模式">模板方法模式</a></li>
+            <li><a href="#访问者模式">访问者模式</a></li>
+          </ul>
+        </li>
       </ul>
     </li>
   </ul>

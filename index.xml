@@ -191,6 +191,22 @@ github.com/Shopify/sarama v1.27.2 // indirectgithub.com/astaxie/beego v1.12.1g
     </item>
     
     <item>
+      <title>argparse</title>
+      <link>https://chain-code.github.io/docs/python/package/argparse/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/package/argparse/</guid>
+      <description>argparse # 在命令行程序中，经常需要获取命令行参数。Python内置的sys.argv保存了完整的参数列表，我们可以从中解析出需要的参数：
+# copy.py import sys print(sys.argv) source = sys.argv[1] target = sys.argv[2] # TODO... 运行上述copy.py，并传入参数，打印如下：
+[&amp;#39;copy.py&amp;#39;, &amp;#39;source.txt&amp;#39;, &amp;#39;copy.txt&amp;#39;] 这种方式能应付简单的参数，但参数稍微复杂点，比如可以使用-d复制目录，使用--filename *.py过滤文件名等，解析起来就非常麻烦。
+为了简化参数解析，我们可以使用内置的argparse库，定义好各个参数类型后，它能直接返回有效的参数。
+假设我们想编写一个备份MySQL数据库的命令行程序，需要输入的参数如下：
+host参数：表示MySQL主机名或IP，不输入则默认为localhost； port参数：表示MySQL的端口号，int类型，不输入则默认为3306； user参数：表示登录MySQL的用户名，必须输入； password参数：表示登录MySQL的口令，必须输入； gz参数：表示是否压缩备份文件，不输入则默认为False； outfile参数：表示备份文件保存在哪，必须输入。 其中，outfile是位置参数，而其他则是类似--user root这样的“关键字”参数。
+用argparse来解析参数，一个完整的示例如下：
+# backup.py import argparse def main(): # 定义一个ArgumentParser实例: parser = argparse.ArgumentParser( prog=&amp;#39;backup&amp;#39;, # 程序名 description=&amp;#39;Backup MySQL database.&amp;#39;, # 描述 epilog=&amp;#39;Copyright(r), 2023&amp;#39; # 说明信息 ) # 定义位置参数: parser.add_argument(&amp;#39;outfile&amp;#39;) # 定义关键字参数: parser.add_argument(&amp;#39;--host&amp;#39;, default=&amp;#39;localhost&amp;#39;) # 此参数必须为int类型: parser.add_argument(&amp;#39;--port&amp;#39;, default=&amp;#39;3306&amp;#39;, type=int) # 允许用户输入简写的-u: parser.</description>
+    </item>
+    
+    <item>
       <title>C&#43;&#43;部署PaddleOCR</title>
       <link>https://chain-code.github.io/docs/c/c&#43;&#43;%E9%83%A8%E7%BD%B2paddleocr/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -240,6 +256,25 @@ nil，未初始化的状态，只进行了声明，或者手动赋值为nil acti
     </item>
     
     <item>
+      <title>collections</title>
+      <link>https://chain-code.github.io/docs/python/package/collections/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/package/collections/</guid>
+      <description>collections # collections是Python内建的一个集合模块，提供了许多有用的集合类。
+namedtuple # 我们知道tuple可以表示不变集合，例如，一个点的二维坐标就可以表示成：
+&amp;gt;&amp;gt;&amp;gt; p = (1, 2) 但是，看到(1, 2)，很难看出这个tuple是用来表示一个坐标的。
+定义一个class又小题大做了，这时，namedtuple就派上了用场：
+&amp;gt;&amp;gt;&amp;gt; from collections import namedtuple &amp;gt;&amp;gt;&amp;gt; Point = namedtuple(&amp;#39;Point&amp;#39;, [&amp;#39;x&amp;#39;, &amp;#39;y&amp;#39;]) &amp;gt;&amp;gt;&amp;gt; p = Point(1, 2) &amp;gt;&amp;gt;&amp;gt; p.x 1 &amp;gt;&amp;gt;&amp;gt; p.y 2 namedtuple是一个函数，它用来创建一个自定义的tuple对象，并且规定了tuple元素的个数，并可以用属性而不是索引来引用tuple的某个元素。
+这样一来，我们用namedtuple可以很方便地定义一种数据类型，它具备tuple的不变性，又可以根据属性来引用，使用十分方便。
+可以验证创建的Point对象是tuple的一种子类：
+&amp;gt;&amp;gt;&amp;gt; isinstance(p, Point) True &amp;gt;&amp;gt;&amp;gt; isinstance(p, tuple) True 类似的，如果要用坐标和半径表示一个圆，也可以用namedtuple定义：
+# namedtuple(&amp;#39;名称&amp;#39;, [属性list]): Circle = namedtuple(&amp;#39;Circle&amp;#39;, [&amp;#39;x&amp;#39;, &amp;#39;y&amp;#39;, &amp;#39;r&amp;#39;]) deque # 使用list存储数据时，按索引访问元素很快，但是插入和删除元素就很慢了，因为list是线性存储，数据量大的时候，插入和删除效率很低。
+deque是为了高效实现插入和删除操作的双向列表，适合用于队列和栈：
+&amp;gt;&amp;gt;&amp;gt; from collections import deque &amp;gt;&amp;gt;&amp;gt; q = deque([&amp;#39;a&amp;#39;, &amp;#39;b&amp;#39;, &amp;#39;c&amp;#39;]) &amp;gt;&amp;gt;&amp;gt; q.</description>
+    </item>
+    
+    <item>
       <title>crontab使用</title>
       <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/crontab%E4%BD%BF%E7%94%A8/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -255,6 +290,23 @@ crontab 是用来让使用者在固定时间或固定间隔执行程序之用，
 -u user 是指设定指定 user 的时程表，这个前提是你必须要有其权限(比如说是 root)才能够指定他人的时程表。如果不使用 -u user 的话，就是表示设定自己的时程表。
 参数说明：
 -e : 执行文字编辑器来设定时程表，内定的文字编辑器是 Vi/Vim，如果你想用别的文字编辑器，则请先设定 VISUAL 环境变数来指定使用那个文字编辑器(比如说 setenv VISUAL joe) -r : 删除目前的时程表 -l : 列出目前的时程表 查看当前用户的 crontab 文件：</description>
+    </item>
+    
+    <item>
+      <title>datetime</title>
+      <link>https://chain-code.github.io/docs/python/package/detetime/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/package/detetime/</guid>
+      <description>datetime # datetime是Python处理日期和时间的标准库。
+获取当前日期和时间 # 我们先看如何获取当前日期和时间：
+&amp;gt;&amp;gt;&amp;gt; from datetime import datetime &amp;gt;&amp;gt;&amp;gt; now = datetime.now() # 获取当前datetime &amp;gt;&amp;gt;&amp;gt; print(now) 2015-05-18 16:28:07.198690 &amp;gt;&amp;gt;&amp;gt; print(type(now)) &amp;lt;class &amp;#39;datetime.datetime&amp;#39;&amp;gt; 注意到datetime是模块，datetime模块还包含一个datetime类，通过from datetime import datetime导入的才是datetime这个类。
+如果仅导入import datetime，则必须引用全名datetime.datetime。
+datetime.now()返回当前日期和时间，其类型是datetime。
+获取指定日期和时间 # 要指定某个日期和时间，我们直接用参数构造一个datetime：
+&amp;gt;&amp;gt;&amp;gt; from datetime import datetime &amp;gt;&amp;gt;&amp;gt; dt = datetime(2015, 4, 19, 12, 20) # 用指定日期时间创建datetime &amp;gt;&amp;gt;&amp;gt; print(dt) 2015-04-19 12:20:00 datetime转换为timestamp # 在计算机中，时间实际上是用数字表示的。我们把1970年1月1日 00:00:00 UTC+00:00时区的时刻称为epoch time，记为0（1970年以前的时间timestamp为负数），当前时间就是相对于epoch time的秒数，称为timestamp。
+你可以认为：
+timestamp = 0 = 1970-1-1 00:00:00 UTC+0:00 对应的北京时间是：</description>
     </item>
     
     <item>
@@ -463,6 +515,57 @@ XML 已经成为多种行业标准的编写工具，Protobuf 只是 Google 公�
     </item>
     
     <item>
+      <title>python基础</title>
+      <link>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/python%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/python%E5%9F%BA%E7%A1%80/</guid>
+      <description>安装Python # 安装Python 3 # 目前，Python有两个版本，一个是2.x版，一个是3.x版，这两个版本是不兼容的。由于3.x版越来越普及，我们的教程将以最新的Python 3.x版本为基础。请确保你的电脑上安装的Python版本是最新的3.x，这样，你才能无痛学习这个教程。
+在Windows上安装Python # 首先，根据你的Windows版本（64位还是32位）从Python的官方网站下载Python 3对应的安装程序，然后，运行下载的exe安装包：
+特别要注意勾上Add Python 3.x to PATH，然后点“Install Now”即可完成安装。
+在Mac上安装Python # 如果你正在使用Mac，那么系统自带的Python版本是2.7。要安装最新的Python 3，有两个方法：
+方法一：从Python官网下载Python 3 macOS版的安装程序，下载后双击运行并安装；
+方法二：如果安装了Homebrew，直接通过命令brew install python3安装即可。
+在Linux上安装Python # 如果你正在使用Linux，那我可以假定你有Linux系统管理经验，自行安装Python 3应该没有问题，否则，请换回Windows系统。
+对于大量的目前仍在使用Windows的同学，如果短期内没有打算换Mac，就可以继续阅读以下内容。
+运行Python # 安装成功后，打开命令提示符窗口，敲入python后，会出现两种情况：
+情况一：
+┌────────────────────────────────────────────────────────┐│Command Prompt - □ x │├────────────────────────────────────────────────────────┤│Microsoft Windows [Version 10.0.0] ││(c) 2015 Microsoft Corporation. All rights reserved. ││ ││C:\&amp;gt; python ││Python 3.12 ... ││[MSC v... 64 bit (AMD64)] on win32 ││Type &amp;#34;help&amp;#34;, &amp;#34;copyright&amp;#34;, &amp;#34;credits&amp;#34; or &amp;#34;license&amp;#34;.</description>
+    </item>
+    
+    <item>
+      <title>python安装</title>
+      <link>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/python%E5%AE%89%E8%A3%85/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/python%E5%AE%89%E8%A3%85/</guid>
+      <description>Python安装 # 安装地址：python
+查看python版本 # python --verison 查看python路径 # where python 列出所有已安装的 Python 版本 # py -0 指定运行某个版本 # py -3.12 指定版本环境 # 右键点击“此电脑” &amp;gt; 选择“属性” &amp;gt; 高级系统设置 &amp;gt; 环境变量
+调整版本上下顺序
+C:\Users\&amp;lt;用户名&amp;gt;\AppData\Local\Programs\Python\Python38\C:\Users\&amp;lt;用户名&amp;gt;\AppData\Local\Programs\Python\Python312\ virtualenv介绍 # Virtualenv 是一个工具，它能够帮我们创建一个独立（隔离）的 Python 环境。想象你有一个应用程序，依赖于版本为2的第三方模块，但另一个程序依赖的版本是3，请问你如何使用和开发这些应用程序？
+如果你把一切都安装到了 /usr/lib/python2.7/site-packages（或者其它平台的标准位置），那很容易出现某个模块被升级而你却不知道的情况。
+在另一种情况下，想象你有一个已经开发完成的程序，但是你不想更新它所依赖的第三方模块版本；但你已经开始另一个程序，需要这些第三方模块的版本。
+使用 virtualenv！针对每个程序创建独立（隔离）的 Python 环境，而不是在全局安装所依赖的模块。
+要安装它，只需要在命令行中输入以下命令：
+$ pip install virtualenv 最重要的命令是：
+$ virtualenv myproject$ source myproject/bin/activate 执行第一个命令在 myproject 文件夹创建一个隔离的 virtualenv 环境，第二个命令激活这个隔离的环境（virtualenv）。
+在创建 virtualenv 时，你必须做出决定：这个 virtualenv 是使用系统全局的模块呢，还是只使用这个virtualenv内的模块？ 默认情况下，virtualenv 不会使用系统全局模块。</description>
+    </item>
+    
+    <item>
+      <title>resty</title>
+      <link>https://chain-code.github.io/docs/golang/package/resty/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/resty/</guid>
+      <description>介绍： # RESTful API 已成为现代 Web 开发的基石，可实现客户端与服务器之间的无缝通信。在本文中，我们将探索使用 Resty（一种流行的 HTTP 客户端库）在 Go 中执行常见操作（如 GET、POST、UPDATE 和 DELETE 请求）的强大功能和简便性。我们还将学习如何在请求中传递标头，从而使我们能够自定义和增强 API 交互。
+网址：https://github.com/go-resty/resty
+安装 Resty： # 首先，我们需要在 Go 环境中安装 Resty。我们可以使用以下命令来安装 Resty 包：
+go get -u github.com/go-resty/resty/v2 GET # 发出 GET 请求： # 让我们首先研究如何使用 Resty v2 执行 GET 请求。以下代码片段演示了一个简单的 GET 请求并将响应绑定到结构体中：
+package mainimport (&amp;#34;fmt&amp;#34;&amp;#34;log&amp;#34;&amp;#34;github.com/go-resty/resty/v2&amp;#34;)type DevUser struct {ID int `json:&amp;#34;id&amp;#34;`Name string `json:&amp;#34;name&amp;#34;`Email string `json:&amp;#34;email&amp;#34;`}func main() {var users []DevUserresponse, err := resty.</description>
+    </item>
+    
+    <item>
       <title>schtask使用</title>
       <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/schtasks%E4%BD%BF%E7%94%A8/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -482,11 +585,21 @@ XML 已经成为多种行业标准的编写工具，Protobuf 只是 Google 公�
     </item>
     
     <item>
-      <title>venv虚拟环境</title>
-      <link>https://chain-code.github.io/docs/python/venv%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/</link>
+      <title>uvicorn</title>
+      <link>https://chain-code.github.io/docs/python/package/uvicorn/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/python/venv%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/</guid>
+      <guid>https://chain-code.github.io/docs/python/package/uvicorn/</guid>
+      <description>uvicorn # Uvicorn 是由 Starlette 框架的作者编写的 ASGI 服务器，旨在提供高性能的异步请求处理能力。它使用 asyncio 库实现异步 I/O 操作，支持 HTTP 和 WebSocket 协议，可与各种 ASGI 应用程序框架（如 FastAPI、Django、Starlette 等）配合使用。
+示例 # # main.pyfrom fastapi import FastAPIapp = FastAPI()@app.get(&amp;#34;/&amp;#34;)async def read_root():return {&amp;#34;message&amp;#34;: &amp;#34;Hello, World!&amp;#34;} from fastapi import FastAPIimport uvicornapp = FastAPI()@app.get(&amp;#34;/&amp;#34;)async def read_root():return {&amp;#34;message&amp;#34;: &amp;#34;Hello, World!&amp;#34;}if __name__ == &amp;#34;__main__&amp;#34;:host = &amp;#34;0.0.0.0&amp;#34;port = 8000uvicorn.run(app, host=host, port=port, log_level=40) 配置选项 # Uvicorn 提供了丰富的配置选项，以满足不同需求。可以通过命令行参数或配置文件来配置 Uvicorn 的行为。</description>
+    </item>
+    
+    <item>
+      <title>venv虚拟环境</title>
+      <link>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/venv%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/venv%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/</guid>
       <description>venv &amp;mdash; 虚拟环境的创建 # venv 模块支持创建轻量的“虚拟环境”，每个虚拟环境将拥有它们自己独立的安装在其 site 目录中的 Python 软件包集合。 虚拟环境是在现有的 Python 安装版基础之上创建的，这被称为虚拟环境的“基础”Python，并且还可选择与基础环境中的软件包隔离开来，这样只有在虚拟环境中显式安装的软件包才是可用的。
 当在虚拟环境中使用时，常见安装工具如 pip 将把 Python 软件包安装到虚拟环境而无需显式地指明这一点。
 虚拟环境是（主要的特性）：
@@ -656,6 +769,35 @@ func Copy(dst Writer, src Reader) (written int64, err error) { return copyBuffer
 进程隔离
 单块架构中，整个系统运行在同一个进程中，当应用进行部署时，必须停掉当前正在运行的应用，部署完成后再重启进程，无法做到独立部署。
 有时候我们会将重复的代码抽取出来封装成组件，在单块架构中，组件通常的形态叫做共享库（如 jar 包或者 DLL），但是当程序运行时，所有组件最终也会被加载到同一进程中运行.</description>
+    </item>
+    
+    <item>
+      <title>正则表达式</title>
+      <link>https://chain-code.github.io/docs/python/package/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/package/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</guid>
+      <description>正则表达式 # 字符串是编程时涉及到的最多的一种数据结构，对字符串进行操作的需求几乎无处不在。比如判断一个字符串是否是合法的Email地址，虽然可以编程提取@前后的子串，再分别判断是否是单词和域名，但这样做不但麻烦，而且代码难以复用。
+正则表达式是一种用来匹配字符串的强有力的武器。它的设计思想是用一种描述性的语言来给字符串定义一个规则，凡是符合规则的字符串，我们就认为它“匹配”了，否则，该字符串就是不合法的。
+所以我们判断一个字符串是否是合法的Email的方法是：
+创建一个匹配Email的正则表达式； 用该正则表达式去匹配用户的输入来判断是否合法。 因为正则表达式也是用字符串表示的，所以，我们要首先了解如何用字符来描述字符。
+在正则表达式中，如果直接给出字符，就是精确匹配。用\d可以匹配一个数字，\w可以匹配一个字母或数字，所以：
+&#39;00\d&#39;可以匹配&#39;007&#39;，但无法匹配&#39;00A&#39;； &#39;\d\d\d&#39;可以匹配&#39;010&#39;； &#39;\w\w\d&#39;可以匹配&#39;py3&#39;； .可以匹配任意字符，所以：
+&#39;py.&#39;可以匹配&#39;pyc&#39;、&#39;pyo&#39;、&#39;py!&#39;等等。 要匹配变长的字符，在正则表达式中，用*表示任意个字符（包括0个），用+表示至少一个字符，用?表示0个或1个字符，用{n}表示n个字符，用{n,m}表示n-m个字符：
+来看一个复杂的例子：\d{3}\s+\d{3,8}。
+我们来从左到右解读一下：
+\d{3}表示匹配3个数字，例如&#39;010&#39;； \s可以匹配一个空格（也包括Tab等空白符），所以\s+表示至少有一个空格，例如匹配&#39; &#39;，&#39; &#39;等； \d{3,8}表示3-8个数字，例如&#39;1234567&#39;。 综合起来，上面的正则表达式可以匹配以任意个空格隔开的带区号的电话号码。
+如果要匹配&#39;010-12345&#39;这样的号码呢？由于&#39;-&#39;是特殊字符，在正则表达式中，要用&#39;\&#39;转义，所以，上面的正则是\d{3}\-\d{3,8}。
+但是，仍然无法匹配&#39;010 - 12345&#39;，因为带有空格。所以我们需要更复杂的匹配方式。
+进阶 # 要做更精确地匹配，可以用[]表示范围，比如：
+[0-9a-zA-Z\_]可以匹配一个数字、字母或者下划线； [0-9a-zA-Z\_]+可以匹配至少由一个数字、字母或者下划线组成的字符串，比如&#39;a100&#39;，&#39;0_Z&#39;，&#39;Py3000&#39;等等； [a-zA-Z\_][0-9a-zA-Z\_]*可以匹配由字母或下划线开头，后接任意个由一个数字、字母或者下划线组成的字符串，也就是Python合法的变量； [a-zA-Z\_][0-9a-zA-Z\_]{0, 19}更精确地限制了变量的长度是1-20个字符（前面1个字符+后面最多19个字符）。 A|B可以匹配A或B，所以(P|p)ython可以匹配&#39;Python&#39;或者&#39;python&#39;。
+^表示行的开头，^\d表示必须以数字开头。
+$表示行的结束，\d$表示必须以数字结束。
+你可能注意到了，py也可以匹配&#39;python&#39;，但是加上^py$就变成了整行匹配，就只能匹配&#39;py&#39;了。
+re模块 # 有了准备知识，我们就可以在Python中使用正则表达式了。Python提供re模块，包含所有正则表达式的功能。由于Python的字符串本身也用\转义，所以要特别注意：
+s = &amp;#39;ABC\\-001&amp;#39; # Python的字符串 # 对应的正则表达式字符串变成 &amp;#39;ABC\-001&amp;#39; 因此我们强烈建议使用Python的r前缀，就不用考虑转义的问题了：
+s = r&amp;#39;ABC\-001&amp;#39; # Python的字符串 # 对应的正则表达式字符串不变：&amp;#39;ABC\-001&amp;#39; 先看看如何判断正则表达式是否匹配：
+&amp;gt;&amp;gt;&amp;gt; import re &amp;gt;&amp;gt;&amp;gt; re.match(r&amp;#39;^\d{3}\-\d{3,8}$&amp;#39;, &amp;#39;010-12345&amp;#39;) &amp;lt;_sre.SRE_Match object; span=(0, 9), match=&amp;#39;010-12345&amp;#39;&amp;gt; &amp;gt;&amp;gt;&amp;gt; re.</description>
     </item>
     
     <item>
@@ -832,6 +974,17 @@ Fabric2.3.0版本测试网络运行问题解决办法 # 问题一： # Starting 
     </item>
     
     <item>
+      <title>go性能优化</title>
+      <link>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</link>
+      <pubDate>Thu, 03 Nov 2022 13:46:27 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</guid>
+      <description>go性能优化 # 10亿级for循环 # 获取一个整数5000，然后生成一个随机数，接着通过两层循环对一个数组的每个元素进行累加，最终输出该数组中以随机数为下标对应的数组元素的值。
+func Test_one(t *testing.T) { input := 5000 u := int32(input) r := int32(rand.Intn(10000))//使用更快的rand实现 var a [10000]int32 //固定大小数组，栈上分配内存 避免逃逸 for i := int32(0); i &amp;lt; 10000; i++ { for j := int32(0); j &amp;lt; 10000; j++ { a[i] = a[i] + j%u } a[i] += r } fmt.Println(a[r]) return } === RUN Test_one25004351--- PASS: Test_one (0.14s)PASS 将数组元素累积到一个临时变量中，并在外层循环结束后写回数组，这样做可以减少内层循环中的内存读写操作，充分利用CPU缓存和寄存器，加速数据处理。
+func Test_two(t *testing.T) { input := 5000 u := int32(input) r := int32(rand.</description>
+    </item>
+    
+    <item>
       <title>Go高阶 高级特性</title>
       <link>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/</link>
       <pubDate>Thu, 03 Nov 2022 13:46:27 +0800</pubDate>
@@ -873,7 +1026,10 @@ Processor 它包含了运行goroutine的资源，如果线程想运行goroutine,
       <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
-      <description> 行为型设计模式 # 策略模式 # 介绍 # 优点 # 缺点 # 示例 # 责任链模式 # 介绍 # 优点 # 缺点 # 示例 # 命令模式 # 介绍 # 优点 # 缺点 # 示例 # 迭代器模式 # 介绍 # 优点 # 缺点 # 示例 # 中介者模式 # 介绍 # 优点 # 缺点 # 示例 # 备忘录模式 # 介绍 # 优点 # 缺点 # 示例 # 观察者模式 # 介绍 # 优点 # 缺点 # 示例 # 状态模式 # 介绍 # 优点 # 缺点 # 示例 # 模板方法模式 # 介绍 # 优点 # 缺点 # 示例 # 访问者模式 # 介绍 # 优点 # 缺点 # 示例 # </description>
+      <description>行为型设计模式 # 策略模式 # 介绍 # 策略模式可以让开发者定义一系列的算法，并且将每种算法分别放入独立的类，从而使算法的对象能够相互替换。策略模式可以将一组行为转换为对象，并且使其在原始对象内部能够相互替换。策略模式可以将一组行为转换为对象，并且使其在原始对象内部能够相互替换。原始对象称为上下文，包含指向策略对象的引用并将执行行为的任务分派给策略对象。为了改变上下文完成其工作的方式，其他对象可以使用另一个对象替换当前链接的策略对象。
+当开发者需要使用对象中各种不同算法的变体，并且希望能在运行时切换算法时，可以使用策略模式。策略模式让开发者能够将对象关联至能以不同方式执行特定子任务的不同子对象，从而以间接方式在运行时更改对象行为。 当开发者有许多仅在执行某些行为时略有不同的相似类时，可以使用策略模式。策略模式让开发者能够将不同的行为抽取到一个独立类层次结构中，并且将原始类组合成同一个类，从而减少重复代码。 如果算法在上下文的逻辑中不是特别重要，那么使用策略模式可以将类的业务逻辑与算法实现细节分开。 如果类中使用了复杂条件运算符，用于在同一个算法的不同变体中切换，则可以使用策略模式。策略模式将所有继承自同一个接口的算法抽取到独立类中，因此不需要条件语句。 （1）从上下文类中找出修改频率较高的算法，定义该算法所有变体的通用策略接口
+//策略接口 type Strategy interface { Execute() } （2）定义具体策略类及其方法
+// 具体策略 A type strategyA struct { } // 具体策略 A 的方法 func (s *strategyA) Execute() { fmt.Println(&amp;#34;执行策略 A&amp;#34;) } // 具体策略B type strategyB struct { } // 具体策略B的方法 func (s *strategyB) Execute() { fmt.Println(&amp;#34;执行策略 B&amp;#34;) } // 创建策略 A 的新对象 func NewStrategyA() Strategy { return &amp;amp;strategyA{} } // 创建策略 B 的新对象 func NewStrategyB() Strategy { return &amp;amp;strategyB{} } （3）定义上下文类及其方法</description>
     </item>
     
     <item>
@@ -1097,6 +1253,15 @@ hello word # package main import ( &amp;#34;net/http&amp;#34; &amp;#34;github.co
     </item>
     
     <item>
+      <title>流式数据</title>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/%E6%B5%81%E5%BC%8F%E6%95%B0%E6%8D%AE/</link>
+      <pubDate>Mon, 27 Dec 2021 21:22:31 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/%E6%B5%81%E5%BC%8F%E6%95%B0%E6%8D%AE/</guid>
+      <description> 流式数据 # </description>
+    </item>
+    
+    <item>
       <title>fabric多机搭建</title>
       <link>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/</link>
       <pubDate>Thu, 25 Mar 2021 19:26:42 +0000</pubDate>
@@ -1271,7 +1436,8 @@ sqlite3 mysql dsn mymysql postgres 在engine创建完成后可以进行一些设
       <pubDate>Wed, 19 Apr 2023 20:07:07 +0800</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/vite&#43;vue%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE/</guid>
-      <description>Vite+Vue快速搭建项目 # -y 快速创建一个默认的包信息
+      <description>Vite+Vue快速搭建项目 # npm init vite@latest 输入项目名，选择Vue 选择TypeScript 回车 再运行
+npm install -y 快速创建一个默认的包信息
 npm init -y -D开发环境中的依赖，加载vite
 npm i vite -D 生成&amp;quot;devDependencies&amp;quot;，开发环境下的依赖
 从工作区index.html为入口</description>
@@ -1321,6 +1487,16 @@ WebSocket API是一种先进的技术，可以在用户的浏览器和服务器�
 官方示例可参照synk项目结合gin框架
 官方介绍
 main.go # package main import ( &amp;#34;flag&amp;#34; &amp;#34;log&amp;#34; &amp;#34;net/http&amp;#34; ) var addr = flag.String(&amp;#34;addr&amp;#34;, &amp;#34;:8080&amp;#34;, &amp;#34;http service address&amp;#34;) func serveHome(w http.ResponseWriter, r *http.Request) { log.Println(r.URL) if r.URL.Path != &amp;#34;/&amp;#34; { http.Error(w, &amp;#34;Not found&amp;#34;, http.StatusNotFound) return } if r.Method != http.MethodGet { http.Error(w, &amp;#34;Method not allowed&amp;#34;, http.StatusMethodNotAllowed) return } http.ServeFile(w, r, &amp;#34;home.html&amp;#34;) } func main() { flag.</description>
+    </item>
+    
+    <item>
+      <title>WebStorm-debug</title>
+      <link>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/webstorm-debug/</link>
+      <pubDate>Wed, 19 Apr 2023 20:07:07 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/webstorm-debug/</guid>
+      <description> WebStorm-debug # 1. 运行项目，查看运行url # 比如我的测试项目使用npm run serve运行后展示的端口是5174
+2. 配置JavaScript Debug # 3. Debug # </description>
     </item>
     
     <item>
@@ -2194,10 +2370,10 @@ npm i hexo-theme-butterfly 三 在hexo工作文件夹的根配置文件_config.<
     
     <item>
       <title></title>
-      <link>https://chain-code.github.io/docs/python/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/</link>
+      <link>https://chain-code.github.io/docs/python/ai/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/python/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/</guid>
+      <guid>https://chain-code.github.io/docs/python/ai/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/</guid>
       <description>title: &amp;#34;YOLOv8快速上手+实践&amp;#34; weight: 2 # bookFlatSection: false # bookToc: true # bookHidden: false # bookCollapseSection: false # bookComments: false # bookSearchExclude: false YOLOv8快速上手+实践 # 前言 # 本文旨在快速上手并不涉及细致的训练超参数调优和YOLO源码层面的解析。
 YOLOv8是YOLO家族中流行的实时目标检测系统，以其快速、准确和高效的特性在计算机视觉领域中广泛应用（目前YOLO的发展很快，YOLOv10就在前不久也已经正式发布）。本文将详细介绍如何在NVIDIA GPU环境下部署YOLOv8，从环境配置、库安装，到模型训练和应用的全流程操作，并在其中结合实际的火焰特征识别的实践。
 环境部署（N卡） # 需要提前准备好要使用的Python环境，此步骤不再赘述
@@ -2216,6 +2392,18 @@ nvcc --version 成功输出版本信息即为成功
 安装PyTorch # 官网：https://pytorch.org/get-started/locally/
 选择自己环境的配置项，复制pip或者conda的命令来安装即可
 pip3 install torch torchvision torchaudio --index-url https://download.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8F%92%E5%85%A5%E4%BC%98%E5%8C%96/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8F%92%E5%85%A5%E4%BC%98%E5%8C%96/</guid>
+      <description>title: SQLite数据库插入优化 date: 2022-05-24 15:47:27 SQLite数据库插入优化 # 需求 # 视频取证业务中，由于部分监控录像品牌视频碎块太多，扫描视频过程中每三秒会产生百万级数据需要插入数据库，原有数据插入接口太慢，无法达到要求，导致我们产品的扫描速度很慢，极大影响客户体验。
+视频取证产品使用的是SQLite数据库，SQLite 是一种轻量级、基于文件的关系数据库管理系统 (RDBMS)，以其简单性、可移植性和独立性而闻名。它适用于需要独立数据库解决方案的嵌入式系统、移动应用程序和小型项目。SQLite的设计初衷是用于单用户或嵌入式应用，专注于轻量级、低资源消耗。因此，当插入数据量较大时，SQLite的性能会受到影响，比不上MySQL等其他数据库。若替换其他数据库完全没有必要。
+性能优化过程 # 现有性能 # 以465.76GB镜像文件为例，取最后十次提交日志：
+本次提交数量：5897 本次提交耗时：0.3652427 本次提交速率：16145.428779274713 总提交数量：126400613 总提交耗时：4654.896980299996 平均速率：27154.330919661686 本次提交数量：358796 本次提交耗时：12.5037099 本次提交速率：28695.16350503301 总提交数量：126759409 总提交耗时：4667.4006901999965 平均速率：27158.45872546426 本次提交数量：50902 本次提交耗时：3.0472488 本次提交速率：16704.24810734194 总提交数量：126810311 总提交耗时：4670.447938999996 平均速率：27151.637842076394 本次提交数量：5102 本次提交耗时：0.997792 本次提交速率：5113.2901446393635 总提交数量：126815413 总提交耗时：4671.445730999996 平均速率：27146.93058691558 本次提交数量：375604 本次提交耗时：14.2310447 本次提交速率：26393.28369195552 总提交数量：127191017 总提交耗时：4685.676775699996 平均速率：27144.64165766083 本次提交数量：490755 本次提交耗时：17.804466 本次提交速率：27563.589944230844 总提交数量：127681772 总提交耗时：4703.481241699996 平均速率：27146.227536319784 本次提交数量：254451 本次提交耗时：9.9592031 本次提交速率：25549.333359814704 总提交数量：127936223 总提交耗时：4713.440444799996 平均速率：27142.853399398085 本次提交数量：543249 本次提交耗时：19.6061585 本次提交速率：27708.07958121934 总提交数量：128479472 总提交耗时：4733.046603299996 平均速率：27145.194790691683 本次提交数量：424834 本次提交耗时：14.9654391 本次提交速率：28387.673569831975 总提交数量：128904306 总提交耗时：4748.</description>
     </item>
     
     <item>

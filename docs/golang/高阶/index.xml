@@ -78,6 +78,17 @@ Go语言提供了一种机制在运行时更新变量和检查它们的值、调
     </item>
     
     <item>
+      <title>go性能优化</title>
+      <link>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</link>
+      <pubDate>Thu, 03 Nov 2022 13:46:27 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</guid>
+      <description>go性能优化 # 10亿级for循环 # 获取一个整数5000，然后生成一个随机数，接着通过两层循环对一个数组的每个元素进行累加，最终输出该数组中以随机数为下标对应的数组元素的值。
+func Test_one(t *testing.T) { input := 5000 u := int32(input) r := int32(rand.Intn(10000))//使用更快的rand实现 var a [10000]int32 //固定大小数组，栈上分配内存 避免逃逸 for i := int32(0); i &amp;lt; 10000; i++ { for j := int32(0); j &amp;lt; 10000; j++ { a[i] = a[i] + j%u } a[i] += r } fmt.Println(a[r]) return } === RUN Test_one25004351--- PASS: Test_one (0.14s)PASS 将数组元素累积到一个临时变量中，并在外层循环结束后写回数组，这样做可以减少内层循环中的内存读写操作，充分利用CPU缓存和寄存器，加速数据处理。
+func Test_two(t *testing.T) { input := 5000 u := int32(input) r := int32(rand.</description>
+    </item>
+    
+    <item>
       <title>Go高阶 高级特性</title>
       <link>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/</link>
       <pubDate>Thu, 03 Nov 2022 13:46:27 +0800</pubDate>

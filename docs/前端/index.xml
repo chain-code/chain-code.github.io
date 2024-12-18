@@ -13,7 +13,8 @@
       <pubDate>Wed, 19 Apr 2023 20:07:07 +0800</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/vite&#43;vue%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE/</guid>
-      <description>Vite+Vue快速搭建项目 # -y 快速创建一个默认的包信息
+      <description>Vite+Vue快速搭建项目 # npm init vite@latest 输入项目名，选择Vue 选择TypeScript 回车 再运行
+npm install -y 快速创建一个默认的包信息
 npm init -y -D开发环境中的依赖，加载vite
 npm i vite -D 生成&amp;quot;devDependencies&amp;quot;，开发环境下的依赖
 从工作区index.html为入口</description>
@@ -63,6 +64,16 @@ WebSocket API是一种先进的技术，可以在用户的浏览器和服务器�
 官方示例可参照synk项目结合gin框架
 官方介绍
 main.go # package main import ( &amp;#34;flag&amp;#34; &amp;#34;log&amp;#34; &amp;#34;net/http&amp;#34; ) var addr = flag.String(&amp;#34;addr&amp;#34;, &amp;#34;:8080&amp;#34;, &amp;#34;http service address&amp;#34;) func serveHome(w http.ResponseWriter, r *http.Request) { log.Println(r.URL) if r.URL.Path != &amp;#34;/&amp;#34; { http.Error(w, &amp;#34;Not found&amp;#34;, http.StatusNotFound) return } if r.Method != http.MethodGet { http.Error(w, &amp;#34;Method not allowed&amp;#34;, http.StatusMethodNotAllowed) return } http.ServeFile(w, r, &amp;#34;home.html&amp;#34;) } func main() { flag.</description>
+    </item>
+    
+    <item>
+      <title>WebStorm-debug</title>
+      <link>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/webstorm-debug/</link>
+      <pubDate>Wed, 19 Apr 2023 20:07:07 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/webstorm-debug/</guid>
+      <description> WebStorm-debug # 1. 运行项目，查看运行url # 比如我的测试项目使用npm run serve运行后展示的端口是5174
+2. 配置JavaScript Debug # 3. Debug # </description>
     </item>
     
   </channel>

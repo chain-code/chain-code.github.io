@@ -26,6 +26,19 @@ cmd -x * *为0，false有可能表示一个文件名或文件，也有可能表�
     </item>
     
     <item>
+      <title>resty</title>
+      <link>https://chain-code.github.io/docs/golang/package/resty/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/resty/</guid>
+      <description>介绍： # RESTful API 已成为现代 Web 开发的基石，可实现客户端与服务器之间的无缝通信。在本文中，我们将探索使用 Resty（一种流行的 HTTP 客户端库）在 Go 中执行常见操作（如 GET、POST、UPDATE 和 DELETE 请求）的强大功能和简便性。我们还将学习如何在请求中传递标头，从而使我们能够自定义和增强 API 交互。
+网址：https://github.com/go-resty/resty
+安装 Resty： # 首先，我们需要在 Go 环境中安装 Resty。我们可以使用以下命令来安装 Resty 包：
+go get -u github.com/go-resty/resty/v2 GET # 发出 GET 请求： # 让我们首先研究如何使用 Resty v2 执行 GET 请求。以下代码片段演示了一个简单的 GET 请求并将响应绑定到结构体中：
+package mainimport (&amp;#34;fmt&amp;#34;&amp;#34;log&amp;#34;&amp;#34;github.com/go-resty/resty/v2&amp;#34;)type DevUser struct {ID int `json:&amp;#34;id&amp;#34;`Name string `json:&amp;#34;name&amp;#34;`Email string `json:&amp;#34;email&amp;#34;`}func main() {var users []DevUserresponse, err := resty.</description>
+    </item>
+    
+    <item>
       <title>Atomic</title>
       <link>https://chain-code.github.io/docs/golang/package/atomic/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

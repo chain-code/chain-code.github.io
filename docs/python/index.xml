@@ -6,44 +6,5 @@
     <description>Recent content in Python on Soulmate</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language><atom:link href="https://chain-code.github.io/docs/python/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>venv虚拟环境</title>
-      <link>https://chain-code.github.io/docs/python/venv%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://chain-code.github.io/docs/python/venv%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/</guid>
-      <description>venv &amp;mdash; 虚拟环境的创建 # venv 模块支持创建轻量的“虚拟环境”，每个虚拟环境将拥有它们自己独立的安装在其 site 目录中的 Python 软件包集合。 虚拟环境是在现有的 Python 安装版基础之上创建的，这被称为虚拟环境的“基础”Python，并且还可选择与基础环境中的软件包隔离开来，这样只有在虚拟环境中显式安装的软件包才是可用的。
-当在虚拟环境中使用时，常见安装工具如 pip 将把 Python 软件包安装到虚拟环境而无需显式地指明这一点。
-虚拟环境是（主要的特性）：
-用来包含支持一个项目（库或应用程序）所需的特定 Python 解释器、软件库和二进制文件。 它们在默认情况下与其他虚拟环境中的软件以及操作系统中安装的 Python 解释器和库保持隔离。 包含在一个目录中，根据惯例被命名为项目目录下的venv 或 .venv，或是有许多虚拟环境的容器目录下，如 ~/.virtualenvs。 不可签入 Git 等源代码控制系统。 被视为是可丢弃性的 —— 应当能够简单地删除并从头开始重建。 你不应在虚拟环境中放置任何项目代码。 不被视为是可移动或可复制的 —— 你只能在目标位置重建相同的环境。 创建虚拟环境 # 通过执行 venv 指令来创建一个 虚拟环境:
-python -m venv /path/to/new/virtual/environment 运行此命令将创建目标目录（父目录若不存在也将创建），并放置一个 pyvenv.cfg 文件在其中，文件中有一个 home 键，它的值指向运行此命令的 Python 安装（目标目录的常用名称是 .venv）。它还会创建一个 bin 子目录（在 Windows 上是 Scripts），其中包含 Python 二进制文件的副本或符号链接（视创建环境时使用的平台或参数而定）。它还会创建一个（初始为空的） lib/pythonX.Y/site-packages 子目录（在 Windows 上是 Lib\site-packages）。如果指定了一个现有的目录，这个目录就将被重新使用。</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://chain-code.github.io/docs/python/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://chain-code.github.io/docs/python/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/</guid>
-      <description>title: &amp;#34;YOLOv8快速上手+实践&amp;#34; weight: 2 # bookFlatSection: false # bookToc: true # bookHidden: false # bookCollapseSection: false # bookComments: false # bookSearchExclude: false YOLOv8快速上手+实践 # 前言 # 本文旨在快速上手并不涉及细致的训练超参数调优和YOLO源码层面的解析。
-YOLOv8是YOLO家族中流行的实时目标检测系统，以其快速、准确和高效的特性在计算机视觉领域中广泛应用（目前YOLO的发展很快，YOLOv10就在前不久也已经正式发布）。本文将详细介绍如何在NVIDIA GPU环境下部署YOLOv8，从环境配置、库安装，到模型训练和应用的全流程操作，并在其中结合实际的火焰特征识别的实践。
-环境部署（N卡） # 需要提前准备好要使用的Python环境，此步骤不再赘述
-安装和配置CUDA # 前往nvidia的开发者网站，选择下载CUDA toolkit
-先检查一下本地环境显卡驱动支持的最高CUDA版本，查看的CUDA toolkit 版本不能高于显卡驱动支持的最高版本
-方式一：打开N卡的控制面板，在系统信息的组件里
-方式二：使用命令nvidia-smi查看CUDA版本
-其次建议要下载前先确认下准备使用的Pytorch版本，尽量CUDA toolkit的版本和Pytorch支持的保持一致，起码不能使用低版本
-最新版的CUDA：https://developer.nvidia.com/cuda-downloads 历史版本：https://developer.nvidia.com/cuda-toolkit-archive 跟着安装程序走即可，最后检查一下安装是否成功：
-nvcc --version 成功输出版本信息即为成功
-【可选】下载&amp;amp;安装CUDNN库 # cuDNN 是用于深度神经网络的 GPU 加速库
-继续回到之前的N卡开发者网站上，需要注册登录后才能下载
-最新版本：https://developer.nvidia.com/cudnn 历史版本：https://developer.nvidia.com/rdp/cudnn-archive 下载的版本也需要和CUDA的大版本一一对应
-下载下来的CUDNN库包括bin、include和lib目录，将目录下对应的所有文件复制到之前CUDA toolkit
-的安装目录下即可
-安装PyTorch # 官网：https://pytorch.org/get-started/locally/
-选择自己环境的配置项，复制pip或者conda的命令来安装即可
-pip3 install torch torchvision torchaudio --index-url https://download.</description>
-    </item>
-    
   </channel>
 </rss>

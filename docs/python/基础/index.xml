@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>基础 on Soulmate</title>
+    <link>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/</link>
+    <description>Recent content in 基础 on Soulmate</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language><atom:link href="https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>python基础</title>
+      <link>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/python%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/python%E5%9F%BA%E7%A1%80/</guid>
+      <description>安装Python # 安装Python 3 # 目前，Python有两个版本，一个是2.x版，一个是3.x版，这两个版本是不兼容的。由于3.x版越来越普及，我们的教程将以最新的Python 3.x版本为基础。请确保你的电脑上安装的Python版本是最新的3.x，这样，你才能无痛学习这个教程。
+在Windows上安装Python # 首先，根据你的Windows版本（64位还是32位）从Python的官方网站下载Python 3对应的安装程序，然后，运行下载的exe安装包：
+特别要注意勾上Add Python 3.x to PATH，然后点“Install Now”即可完成安装。
+在Mac上安装Python # 如果你正在使用Mac，那么系统自带的Python版本是2.7。要安装最新的Python 3，有两个方法：
+方法一：从Python官网下载Python 3 macOS版的安装程序，下载后双击运行并安装；
+方法二：如果安装了Homebrew，直接通过命令brew install python3安装即可。
+在Linux上安装Python # 如果你正在使用Linux，那我可以假定你有Linux系统管理经验，自行安装Python 3应该没有问题，否则，请换回Windows系统。
+对于大量的目前仍在使用Windows的同学，如果短期内没有打算换Mac，就可以继续阅读以下内容。
+运行Python # 安装成功后，打开命令提示符窗口，敲入python后，会出现两种情况：
+情况一：
+┌────────────────────────────────────────────────────────┐│Command Prompt - □ x │├────────────────────────────────────────────────────────┤│Microsoft Windows [Version 10.0.0] ││(c) 2015 Microsoft Corporation. All rights reserved. ││ ││C:\&amp;gt; python ││Python 3.12 ... ││[MSC v... 64 bit (AMD64)] on win32 ││Type &amp;#34;help&amp;#34;, &amp;#34;copyright&amp;#34;, &amp;#34;credits&amp;#34; or &amp;#34;license&amp;#34;.</description>
+    </item>
+    
+    <item>
+      <title>python安装</title>
+      <link>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/python%E5%AE%89%E8%A3%85/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/python%E5%AE%89%E8%A3%85/</guid>
+      <description>Python安装 # 安装地址：python
+查看python版本 # python --verison 查看python路径 # where python 列出所有已安装的 Python 版本 # py -0 指定运行某个版本 # py -3.12 指定版本环境 # 右键点击“此电脑” &amp;gt; 选择“属性” &amp;gt; 高级系统设置 &amp;gt; 环境变量
+调整版本上下顺序
+C:\Users\&amp;lt;用户名&amp;gt;\AppData\Local\Programs\Python\Python38\C:\Users\&amp;lt;用户名&amp;gt;\AppData\Local\Programs\Python\Python312\ virtualenv介绍 # Virtualenv 是一个工具，它能够帮我们创建一个独立（隔离）的 Python 环境。想象你有一个应用程序，依赖于版本为2的第三方模块，但另一个程序依赖的版本是3，请问你如何使用和开发这些应用程序？
+如果你把一切都安装到了 /usr/lib/python2.7/site-packages（或者其它平台的标准位置），那很容易出现某个模块被升级而你却不知道的情况。
+在另一种情况下，想象你有一个已经开发完成的程序，但是你不想更新它所依赖的第三方模块版本；但你已经开始另一个程序，需要这些第三方模块的版本。
+使用 virtualenv！针对每个程序创建独立（隔离）的 Python 环境，而不是在全局安装所依赖的模块。
+要安装它，只需要在命令行中输入以下命令：
+$ pip install virtualenv 最重要的命令是：
+$ virtualenv myproject$ source myproject/bin/activate 执行第一个命令在 myproject 文件夹创建一个隔离的 virtualenv 环境，第二个命令激活这个隔离的环境（virtualenv）。
+在创建 virtualenv 时，你必须做出决定：这个 virtualenv 是使用系统全局的模块呢，还是只使用这个virtualenv内的模块？ 默认情况下，virtualenv 不会使用系统全局模块。</description>
+    </item>
+    
+    <item>
+      <title>venv虚拟环境</title>
+      <link>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/venv%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/venv%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/</guid>
+      <description>venv &amp;mdash; 虚拟环境的创建 # venv 模块支持创建轻量的“虚拟环境”，每个虚拟环境将拥有它们自己独立的安装在其 site 目录中的 Python 软件包集合。 虚拟环境是在现有的 Python 安装版基础之上创建的，这被称为虚拟环境的“基础”Python，并且还可选择与基础环境中的软件包隔离开来，这样只有在虚拟环境中显式安装的软件包才是可用的。
+当在虚拟环境中使用时，常见安装工具如 pip 将把 Python 软件包安装到虚拟环境而无需显式地指明这一点。
+虚拟环境是（主要的特性）：
+用来包含支持一个项目（库或应用程序）所需的特定 Python 解释器、软件库和二进制文件。 它们在默认情况下与其他虚拟环境中的软件以及操作系统中安装的 Python 解释器和库保持隔离。 包含在一个目录中，根据惯例被命名为项目目录下的venv 或 .venv，或是有许多虚拟环境的容器目录下，如 ~/.virtualenvs。 不可签入 Git 等源代码控制系统。 被视为是可丢弃性的 —— 应当能够简单地删除并从头开始重建。 你不应在虚拟环境中放置任何项目代码。 不被视为是可移动或可复制的 —— 你只能在目标位置重建相同的环境。 创建虚拟环境 # 通过执行 venv 指令来创建一个 虚拟环境:
+python -m venv /path/to/new/virtual/environment 运行此命令将创建目标目录（父目录若不存在也将创建），并放置一个 pyvenv.cfg 文件在其中，文件中有一个 home 键，它的值指向运行此命令的 Python 安装（目标目录的常用名称是 .venv）。它还会创建一个 bin 子目录（在 Windows 上是 Scripts），其中包含 Python 二进制文件的副本或符号链接（视创建环境时使用的平台或参数而定）。它还会创建一个（初始为空的） lib/pythonX.Y/site-packages 子目录（在 Windows 上是 Lib\site-packages）。如果指定了一个现有的目录，这个目录就将被重新使用。</description>
+    </item>
+    
+  </channel>
+</rss>

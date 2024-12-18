@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>AI on Soulmate</title>
+    <link>https://chain-code.github.io/docs/python/ai/</link>
+    <description>Recent content in AI on Soulmate</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language><atom:link href="https://chain-code.github.io/docs/python/ai/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title></title>
+      <link>https://chain-code.github.io/docs/python/ai/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/ai/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/</guid>
+      <description>title: &amp;#34;YOLOv8快速上手+实践&amp;#34; weight: 2 # bookFlatSection: false # bookToc: true # bookHidden: false # bookCollapseSection: false # bookComments: false # bookSearchExclude: false YOLOv8快速上手+实践 # 前言 # 本文旨在快速上手并不涉及细致的训练超参数调优和YOLO源码层面的解析。
+YOLOv8是YOLO家族中流行的实时目标检测系统，以其快速、准确和高效的特性在计算机视觉领域中广泛应用（目前YOLO的发展很快，YOLOv10就在前不久也已经正式发布）。本文将详细介绍如何在NVIDIA GPU环境下部署YOLOv8，从环境配置、库安装，到模型训练和应用的全流程操作，并在其中结合实际的火焰特征识别的实践。
+环境部署（N卡） # 需要提前准备好要使用的Python环境，此步骤不再赘述
+安装和配置CUDA # 前往nvidia的开发者网站，选择下载CUDA toolkit
+先检查一下本地环境显卡驱动支持的最高CUDA版本，查看的CUDA toolkit 版本不能高于显卡驱动支持的最高版本
+方式一：打开N卡的控制面板，在系统信息的组件里
+方式二：使用命令nvidia-smi查看CUDA版本
+其次建议要下载前先确认下准备使用的Pytorch版本，尽量CUDA toolkit的版本和Pytorch支持的保持一致，起码不能使用低版本
+最新版的CUDA：https://developer.nvidia.com/cuda-downloads 历史版本：https://developer.nvidia.com/cuda-toolkit-archive 跟着安装程序走即可，最后检查一下安装是否成功：
+nvcc --version 成功输出版本信息即为成功
+【可选】下载&amp;amp;安装CUDNN库 # cuDNN 是用于深度神经网络的 GPU 加速库
+继续回到之前的N卡开发者网站上，需要注册登录后才能下载
+最新版本：https://developer.nvidia.com/cudnn 历史版本：https://developer.nvidia.com/rdp/cudnn-archive 下载的版本也需要和CUDA的大版本一一对应
+下载下来的CUDNN库包括bin、include和lib目录，将目录下对应的所有文件复制到之前CUDA toolkit
+的安装目录下即可
+安装PyTorch # 官网：https://pytorch.org/get-started/locally/
+选择自己环境的配置项，复制pip或者conda的命令来安装即可
+pip3 install torch torchvision torchaudio --index-url https://download.</description>
+    </item>
+    
+  </channel>
+</rss>

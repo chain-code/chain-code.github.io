@@ -3,11 +3,17 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content=" 行为型设计模式 # 策略模式 # 介绍 # 优点 # 缺点 # 示例 # 责任链模式 # 介绍 # 优点 # 缺点 # 示例 # 命令模式 # 介绍 # 优点 # 缺点 # 示例 # 迭代器模式 # 介绍 # 优点 # 缺点 # 示例 # 中介者模式 # 介绍 # 优点 # 缺点 # 示例 # 备忘录模式 # 介绍 # 优点 # 缺点 # 示例 # 观察者模式 # 介绍 # 优点 # 缺点 # 示例 # 状态模式 # 介绍 # 优点 # 缺点 # 示例 # 模板方法模式 # 介绍 # 优点 # 缺点 # 示例 # 访问者模式 # 介绍 # 优点 # 缺点 # 示例 # ">
+<meta name="description" content="行为型设计模式 # 策略模式 # 介绍 # 策略模式可以让开发者定义一系列的算法，并且将每种算法分别放入独立的类，从而使算法的对象能够相互替换。策略模式可以将一组行为转换为对象，并且使其在原始对象内部能够相互替换。策略模式可以将一组行为转换为对象，并且使其在原始对象内部能够相互替换。原始对象称为上下文，包含指向策略对象的引用并将执行行为的任务分派给策略对象。为了改变上下文完成其工作的方式，其他对象可以使用另一个对象替换当前链接的策略对象。
+当开发者需要使用对象中各种不同算法的变体，并且希望能在运行时切换算法时，可以使用策略模式。策略模式让开发者能够将对象关联至能以不同方式执行特定子任务的不同子对象，从而以间接方式在运行时更改对象行为。 当开发者有许多仅在执行某些行为时略有不同的相似类时，可以使用策略模式。策略模式让开发者能够将不同的行为抽取到一个独立类层次结构中，并且将原始类组合成同一个类，从而减少重复代码。 如果算法在上下文的逻辑中不是特别重要，那么使用策略模式可以将类的业务逻辑与算法实现细节分开。 如果类中使用了复杂条件运算符，用于在同一个算法的不同变体中切换，则可以使用策略模式。策略模式将所有继承自同一个接口的算法抽取到独立类中，因此不需要条件语句。 （1）从上下文类中找出修改频率较高的算法，定义该算法所有变体的通用策略接口
+//策略接口 type Strategy interface { Execute() } （2）定义具体策略类及其方法
+// 具体策略 A type strategyA struct { } // 具体策略 A 的方法 func (s *strategyA) Execute() { fmt.Println(&#34;执行策略 A&#34;) } // 具体策略B type strategyB struct { } // 具体策略B的方法 func (s *strategyB) Execute() { fmt.Println(&#34;执行策略 B&#34;) } // 创建策略 A 的新对象 func NewStrategyA() Strategy { return &amp;strategyA{} } // 创建策略 B 的新对象 func NewStrategyB() Strategy { return &amp;strategyB{} } （3）定义上下文类及其方法">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="行为型设计模式" />
-<meta property="og:description" content=" 行为型设计模式 # 策略模式 # 介绍 # 优点 # 缺点 # 示例 # 责任链模式 # 介绍 # 优点 # 缺点 # 示例 # 命令模式 # 介绍 # 优点 # 缺点 # 示例 # 迭代器模式 # 介绍 # 优点 # 缺点 # 示例 # 中介者模式 # 介绍 # 优点 # 缺点 # 示例 # 备忘录模式 # 介绍 # 优点 # 缺点 # 示例 # 观察者模式 # 介绍 # 优点 # 缺点 # 示例 # 状态模式 # 介绍 # 优点 # 缺点 # 示例 # 模板方法模式 # 介绍 # 优点 # 缺点 # 示例 # 访问者模式 # 介绍 # 优点 # 缺点 # 示例 # " />
+<meta property="og:description" content="行为型设计模式 # 策略模式 # 介绍 # 策略模式可以让开发者定义一系列的算法，并且将每种算法分别放入独立的类，从而使算法的对象能够相互替换。策略模式可以将一组行为转换为对象，并且使其在原始对象内部能够相互替换。策略模式可以将一组行为转换为对象，并且使其在原始对象内部能够相互替换。原始对象称为上下文，包含指向策略对象的引用并将执行行为的任务分派给策略对象。为了改变上下文完成其工作的方式，其他对象可以使用另一个对象替换当前链接的策略对象。
+当开发者需要使用对象中各种不同算法的变体，并且希望能在运行时切换算法时，可以使用策略模式。策略模式让开发者能够将对象关联至能以不同方式执行特定子任务的不同子对象，从而以间接方式在运行时更改对象行为。 当开发者有许多仅在执行某些行为时略有不同的相似类时，可以使用策略模式。策略模式让开发者能够将不同的行为抽取到一个独立类层次结构中，并且将原始类组合成同一个类，从而减少重复代码。 如果算法在上下文的逻辑中不是特别重要，那么使用策略模式可以将类的业务逻辑与算法实现细节分开。 如果类中使用了复杂条件运算符，用于在同一个算法的不同变体中切换，则可以使用策略模式。策略模式将所有继承自同一个接口的算法抽取到独立类中，因此不需要条件语句。 （1）从上下文类中找出修改频率较高的算法，定义该算法所有变体的通用策略接口
+//策略接口 type Strategy interface { Execute() } （2）定义具体策略类及其方法
+// 具体策略 A type strategyA struct { } // 具体策略 A 的方法 func (s *strategyA) Execute() { fmt.Println(&#34;执行策略 A&#34;) } // 具体策略B type strategyB struct { } // 具体策略B的方法 func (s *strategyB) Execute() { fmt.Println(&#34;执行策略 B&#34;) } // 创建策略 A 的新对象 func NewStrategyA() Strategy { return &amp;strategyA{} } // 创建策略 B 的新对象 func NewStrategyB() Strategy { return &amp;strategyB{} } （3）定义上下文类及其方法" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" /><meta property="article:section" content="docs" />
 <meta property="article:published_time" content="2022-11-03T13:46:08+08:00" />
@@ -17,7 +23,7 @@
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.199af8022ed5688419c78c8193cbbed9a747a058f9b29cd18e9338ef70f168b6.js" integrity="sha256-GZr4Ai7VaIQZx4yBk8u&#43;2adHoFj5spzRjpM473DxaLY=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.4c1d79c77b2003076b32f8c179605f26620e9a5fd778dfae8769b8b60c706631.js" integrity="sha256-TB15x3sgAwdrMvjBeWBfJmIOml/XeN&#43;uh2m4tgxwZjE=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -785,6 +791,19 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" class="">go性能优化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
   
 
@@ -833,6 +852,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/golang/package/flag/" class="">Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/resty/" class="">resty</a>
   
 
         </li>
@@ -1166,6 +1198,19 @@ https://github.com/alex-shpak/hugo-book
         </li>
       
     
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8F%92%E5%85%A5%E4%BC%98%E5%8C%96/" class="">Sqlite数据库插入优化</a>
+  
+
+        </li>
+      
+    
   </ul>
 
         </li>
@@ -1423,6 +1468,19 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/%E6%B5%81%E5%BC%8F%E6%95%B0%E6%8D%AE/" class="">流式数据</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
   
 
@@ -1499,6 +1557,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/webstorm-debug/" class="">WebStorm-debug</a>
   
 
         </li>
@@ -1589,9 +1660,22 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <input type="checkbox" id="section-8ca541663a7d7fd63c79c6ce40ab5b81" class="toggle"  />
-    <label for="section-8ca541663a7d7fd63c79c6ce40ab5b81" class="flex justify-between">
-      <a role="button" class="">Python</a>
+    <span>Python</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-9fa9875ee3af29ba8922d532968a7155" class="toggle"  />
+    <label for="section-9fa9875ee3af29ba8922d532968a7155" class="flex justify-between">
+      <a role="button" class="">基础</a>
     </label>
   
 
@@ -1605,7 +1689,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/python/venv%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/" class="">venv虚拟环境</a>
+    <a href="/docs/python/%E5%9F%BA%E7%A1%80/python%E5%9F%BA%E7%A1%80/" class="">python基础</a>
   
 
         </li>
@@ -1618,8 +1702,146 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/python/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/" class="">Yolov8快速上手 实践</a>
+    <a href="/docs/python/%E5%9F%BA%E7%A1%80/python%E5%AE%89%E8%A3%85/" class="">python安装</a>
   
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/%E5%9F%BA%E7%A1%80/venv%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/" class="">venv虚拟环境</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-583fc129cceb6ebb566fe0a30ca770ee" class="toggle"  />
+    <label for="section-583fc129cceb6ebb566fe0a30ca770ee" class="flex justify-between">
+      <a role="button" class="">AI</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/ai/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/" class="">Yolov8快速上手 实践</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76d10924673a9347dff74c68c3ea9d86" class="toggle"  />
+    <label for="section-76d10924673a9347dff74c68c3ea9d86" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/argparse/" class="">argparse</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/collections/" class="">collections</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/detetime/" class="">datetime</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/uvicorn/" class="">uvicorn</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="">正则表达式</a>
+  
+
+        </li>
+      
+    
+  </ul>
 
         </li>
       
@@ -2459,19 +2681,202 @@ https://github.com/alex-shpak/hugo-book
   介绍
   <a class="anchor" href="#%e4%bb%8b%e7%bb%8d">#</a>
 </h4>
-<h4 id="优点">
+<p>策略模式可以让开发者定义一系列的算法，并且将每种算法分别放入独立的类，从而使算法的对象能够相互替换。策略模式可以将一组行为转换为对象，并且使其在原始对象内部能够相互替换。策略模式可以将一组行为转换为对象，并且使其在原始对象内部能够相互替换。原始对象称为上下文，包含指向策略对象的引用并将执行行为的任务分派给策略对象。为了改变上下文完成其工作的方式，其他对象可以使用另一个对象替换当前链接的策略对象。</p>
+<ul>
+<li>当开发者需要使用对象中各种不同算法的变体，并且希望能在运行时切换算法时，可以使用策略模式。策略模式让开发者能够将对象关联至能以不同方式执行特定子任务的不同子对象，从而以间接方式在运行时更改对象行为。</li>
+<li>当开发者有许多仅在执行某些行为时略有不同的相似类时，可以使用策略模式。策略模式让开发者能够将不同的行为抽取到一个独立类层次结构中，并且将原始类组合成同一个类，从而减少重复代码。</li>
+<li>如果算法在上下文的逻辑中不是特别重要，那么使用策略模式可以将类的业务逻辑与算法实现细节分开。</li>
+<li>如果类中使用了复杂条件运算符，用于在同一个算法的不同变体中切换，则可以使用策略模式。策略模式将所有继承自同一个接口的算法抽取到独立类中，因此不需要条件语句。</li>
+</ul>
+<p>（1）从上下文类中找出修改频率较高的算法，定义该算法所有变体的通用策略接口</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//策略接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Strategy</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Execute</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（2）定义具体策略类及其方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 具体策略 A
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">strategyA</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 具体策略 A 的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">strategyA</span>) <span style="color:#a6e22e">Execute</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;执行策略 A&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 具体策略B
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">strategyB</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 具体策略B的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">strategyB</span>) <span style="color:#a6e22e">Execute</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;执行策略 B&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 创建策略 A 的新对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewStrategyA</span>() <span style="color:#a6e22e">Strategy</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">strategyA</span>{}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 创建策略 B 的新对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewStrategyB</span>() <span style="color:#a6e22e">Strategy</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">strategyB</span>{}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（3）定义上下文类及其方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 上下文
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Context</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">strategy</span> <span style="color:#a6e22e">Strategy</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 设置上下文执行的策略
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Context</span>) <span style="color:#a6e22e">SetStrategy</span>(<span style="color:#a6e22e">strategy</span> <span style="color:#a6e22e">Strategy</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">strategy</span> = <span style="color:#a6e22e">strategy</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 上下文的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Context</span>) <span style="color:#a6e22e">Execute</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">strategy</span>.<span style="color:#a6e22e">Execute</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 创建一个新的上下文对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewContext</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">Context</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Context</span>{}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">strategyB</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewStrategyB</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">context</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewContext</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">SetStrategy</span>(<span style="color:#a6e22e">strategyB</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">strategyA</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewStrategyA</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">SetStrategy</span>(<span style="color:#a6e22e">strategyA</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Execute</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="优点">
   优点
   <a class="anchor" href="#%e4%bc%98%e7%82%b9">#</a>
 </h4>
+<ul>
+<li>策略模式的部分算法可以重用。策略接口的层次结构定义了一系列算法或行为，以供上下文重用。</li>
+<li>子类化的代替方法。继承支持各种算法或行为的另一种方式。</li>
+<li>策略模式消除了条件语句。策略模式为选择所需算法或行为提供了条件语句的替代方案。在将不同的算法或行为归为一类时，很难避免使用条件语句选择正确的算法或行为。</li>
+<li>策略模式可以提供相同行为的不同实现。客户端可以选择具有不同时间和空间权衡的策略。</li>
+<li>策略模式符合开闭区间原则。开发者无须对上下文进行修改，就能够引入新的策略。</li>
+</ul>
 <h4 id="缺点">
   缺点
   <a class="anchor" href="#%e7%bc%ba%e7%82%b9">#</a>
 </h4>
+<ul>
+<li>如果开发者的算法极少发生改变，则没有任何理由引入新的类或接口。使用策略模式会让程序变得复杂。</li>
+<li>只有当行为变化与客户端相关时，才应该使用策略模式。</li>
+<li>策略模式会使对象数量增加。策略模式会增加应用程序中的对象数量。</li>
+</ul>
 <h4 id="示例">
   示例
   <a class="anchor" href="#%e7%a4%ba%e4%be%8b">#</a>
 </h4>
-<h3 id="责任链模式">
+<p>使用go语言构建内存缓存。由于缓存位于内存中，因此其大小会存在限制，在达到一定上限后，必须将一些条目移除，以便留出内存空间。此类操作可以通过多种算法实现：</p>
+<ul>
+<li>最少最近使用</li>
+<li>先进先出</li>
+<li>最少使用</li>
+</ul>
+<p>我们需要解决的问题时如何将缓存类与这些算法解耦，以便在运行时更改算法。此外，在添加新算法时，缓存类不应该发生改变。</p>
+<p>（1)定义策略接口</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">AlgorithmType</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Delete</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Cache</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（2）定义具体策略类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// FIFO算法类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Fifo</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 删除缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">l</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Fifo</span>) <span style="color:#a6e22e">Delete</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Cache</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Deleting by fifo strategy&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// LRU算法类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Lru</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 删除缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">l</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Lru</span>) <span style="color:#a6e22e">Delete</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Cache</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Deleting by lru strategy&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// LFU算法类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Lfu</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 删除缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">l</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Lfu</span>) <span style="color:#a6e22e">Delete</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Cache</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Deleting by lfu strategy&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（3）定义上下文类（缓存类）及其方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Cache</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">storage</span>       <span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">AlgorithmType</span> <span style="color:#a6e22e">AlgorithmType</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">capacity</span>      <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">maxCapacity</span>   <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">InitCache</span>(<span style="color:#a6e22e">e</span> <span style="color:#a6e22e">AlgorithmType</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">Cache</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">storage</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#66d9ef">string</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Cache</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">storage</span>:       <span style="color:#a6e22e">storage</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">AlgorithmType</span>: <span style="color:#a6e22e">e</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">capacity</span>:      <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">maxCapacity</span>:   <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Cache</span>) <span style="color:#a6e22e">SetAlgorithmType</span>(<span style="color:#a6e22e">e</span> <span style="color:#a6e22e">AlgorithmType</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">AlgorithmType</span> = <span style="color:#a6e22e">e</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Cache</span>) <span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">key</span>, <span style="color:#a6e22e">value</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">capacity</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">maxCapacity</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Delete</span>()
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">capacity</span><span style="color:#f92672">++</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">storage</span>[<span style="color:#a6e22e">key</span>] = <span style="color:#a6e22e">value</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Cache</span>) <span style="color:#a6e22e">Get</span>(<span style="color:#a6e22e">key</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>	delete(<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">storage</span>, <span style="color:#a6e22e">key</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Cache</span>) <span style="color:#a6e22e">Delete</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">AlgorithmType</span>.<span style="color:#a6e22e">Delete</span>(<span style="color:#a6e22e">c</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">capacity</span><span style="color:#f92672">--</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（4）客户端</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//声明Lfu对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">lfu</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Lfu</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//初始化缓存对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">cache</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">InitCache</span>(<span style="color:#a6e22e">lfu</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//添加缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">cache</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#e6db74">&#34;one&#34;</span>, <span style="color:#e6db74">&#34;1&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cache</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#e6db74">&#34;two&#34;</span>, <span style="color:#e6db74">&#34;2&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cache</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#e6db74">&#34;three&#34;</span>, <span style="color:#e6db74">&#34;3&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//声明Lru对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">lru</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Lru</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//设置lru算法类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">cache</span>.<span style="color:#a6e22e">SetAlgorithmType</span>(<span style="color:#a6e22e">lru</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//添加缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">cache</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#e6db74">&#34;four&#34;</span>, <span style="color:#e6db74">&#34;4&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//声明Fifo对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fifo</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Fifo</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//设置Fifo算法类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">cache</span>.<span style="color:#a6e22e">SetAlgorithmType</span>(<span style="color:#a6e22e">fifo</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//添加缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">cache</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#e6db74">&#34;five&#34;</span>, <span style="color:#e6db74">&#34;5&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="责任链模式">
   责任链模式
   <a class="anchor" href="#%e8%b4%a3%e4%bb%bb%e9%93%be%e6%a8%a1%e5%bc%8f">#</a>
 </h3>
@@ -2479,7 +2884,72 @@ https://github.com/alex-shpak/hugo-book
   介绍
   <a class="anchor" href="#%e4%bb%8b%e7%bb%8d-1">#</a>
 </h4>
-<h4 id="优点-1">
+<p>责任链模式允许开发者请求沿着链进行发送，直至其中一个处理者对象对其进行处理。责任链模式可以根据请求的类型将请求的发送者和接收者解耦。当有请求发生时，可以将请求沿着这条链传递，知道有处理者对象处理它为止。</p>
+<p>责任链模式允许多个处理者对象对请求进行处理，无须让发送者类与具体接收者类相耦合。</p>
+<ul>
+<li>如果程序需要使用不同的方式处理不同种类的请求，并且请求类型和顺序预先未知，则可以使用责任链模式。</li>
+<li>如果必须按顺序执行多个具体处理者对象，则可以使用责任链模式。</li>
+<li>如果所需的具体处理对象及其顺序必须在运行时发生改变，则可以使用责任链模式。如果在具体处理者类中有成员变量的引用，那么开发者可以动态的插入和移除具体处理者对象或改变其顺序。</li>
+</ul>
+<p>（1）定义处理者接口及其处理方法，确定客户端如何将请求传递给方法。最灵活的方式是将请求转换为对象，然后将其以参数的形式传递给处理函数。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// Handler 定义了一个处理程序来处理给定的 handleID
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Handler</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">SetNext</span>(<span style="color:#a6e22e">handler</span> <span style="color:#a6e22e">Handler</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Handle</span>(<span style="color:#a6e22e">handleID</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（2）定义基础处理者类及其方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 基础处理者
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">BaseHandler</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">name</span>     <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">next</span>     <span style="color:#a6e22e">Handler</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">handleID</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// NewHandler 返回一个新的处理程序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewBaseHandler</span>(<span style="color:#a6e22e">name</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">next</span> <span style="color:#a6e22e">Handler</span>, <span style="color:#a6e22e">handleID</span> <span style="color:#66d9ef">int</span>) <span style="color:#a6e22e">Handler</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">BaseHandler</span>{<span style="color:#a6e22e">name</span>, <span style="color:#a6e22e">next</span>, <span style="color:#a6e22e">handleID</span>}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Handle 处理给定的 handleID
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">h</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">BaseHandler</span>) <span style="color:#a6e22e">Handle</span>(<span style="color:#a6e22e">handleID</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">handleID</span> &lt; <span style="color:#ae81ff">4</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">ch</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">ConcreteHandler</span>{}
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">ch</span>.<span style="color:#a6e22e">Handle</span>(<span style="color:#a6e22e">handleID</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">h</span>.<span style="color:#a6e22e">name</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">h</span>.<span style="color:#a6e22e">next</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">h</span>.<span style="color:#a6e22e">next</span>.<span style="color:#a6e22e">Handle</span>(<span style="color:#a6e22e">handleID</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">handleID</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 设置下一个处理者
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">h</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">BaseHandler</span>) <span style="color:#a6e22e">SetNext</span>(<span style="color:#a6e22e">handler</span> <span style="color:#a6e22e">Handler</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">h</span>.<span style="color:#a6e22e">next</span> = <span style="color:#a6e22e">handler</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（3）定义具体处理者类及其方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 具体处理者
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">ConcreteHandler</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 具体处理者的处理方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">ch</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">ConcreteHandler</span>) <span style="color:#a6e22e">Handle</span>(<span style="color:#a6e22e">handleID</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;ConcreteHandler handleID:&#34;</span>, <span style="color:#a6e22e">handleID</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（4）客户端</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">barry</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewBaseHandler</span>(<span style="color:#e6db74">&#34;Barry&#34;</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">shirdon</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewBaseHandler</span>(<span style="color:#e6db74">&#34;Shirdon&#34;</span>, <span style="color:#a6e22e">barry</span>, <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">jack</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewBaseHandler</span>(<span style="color:#e6db74">&#34;Shirdon&#34;</span>, <span style="color:#a6e22e">shirdon</span>, <span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">res</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">shirdon</span>.<span style="color:#a6e22e">Handle</span>(<span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">res1</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">jack</span>.<span style="color:#a6e22e">Handle</span>(<span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">res</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">res1</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="优点-1">
   优点
   <a class="anchor" href="#%e4%bc%98%e7%82%b9-1">#</a>
 </h4>
@@ -2619,19 +3089,224 @@ https://github.com/alex-shpak/hugo-book
   介绍
   <a class="anchor" href="#%e4%bb%8b%e7%bb%8d-8">#</a>
 </h4>
-<h4 id="优点-8">
+<p>模板方法模式可以在基类中定义一个算法的框架，允许子类在不修改框架结构的情况下重写算法的特定步骤。</p>
+<ul>
+<li>如果开发者只希望客户端扩展某个特定的算法步骤，而不是整个算法或其结构，则可以使用模板方法模式。模板方法模式可以将算法转换为一系列独立的步骤，以便子类可以对其进行扩展，并且使父类中定义的结构保持完整。</li>
+<li>如果多个类的算法几乎完全相同，则可以使用模板方法模式。但其后果是，如果算法发生变化，那么开发者可能需要修改所有的类。在将算法转换为一系列独立的步骤时，开发者可以将相似的步骤提取到父类中，从而去除重复的代码。子类之间各不相同的代码可以继续保留在子类中。</li>
+</ul>
+<p>（1）分析目标算法，确定能否将其分解为多个步骤</p>
+<p>（2）定义抽象类接口，然后定义抽象类及其方法。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 抽象类接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">AbstractClassInterface</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Step1</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Step2</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Step3</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 抽象类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">AbstractClass</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">AbstractClassInterface</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 初始化抽象类对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewAbstractClass</span>(<span style="color:#a6e22e">aci</span> <span style="color:#a6e22e">AbstractClassInterface</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">AbstractClass</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">AbstractClass</span>{<span style="color:#a6e22e">aci</span>}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 模版方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">cc</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">AbstractClass</span>) <span style="color:#a6e22e">TemplateMethod</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cc</span>.<span style="color:#a6e22e">Step1</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cc</span>.<span style="color:#a6e22e">Step2</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cc</span>.<span style="color:#a6e22e">Step3</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（3）为每个算法变体都新建一个具体类，该类必须实现所有的抽象步骤，也可以重写部分可选步骤</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 具体类A
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">ConcreteClassA</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 具体类A的方法1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">cc</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">ConcreteClassA</span>) <span style="color:#a6e22e">Step1</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;ConcreteClassA Step1&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 具体类A的方法2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">cc</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">ConcreteClassA</span>) <span style="color:#a6e22e">Step2</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;ConcreteClassA Step2&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 具体类A的方法3
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">cc</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">ConcreteClassA</span>) <span style="color:#a6e22e">Step3</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;ConcreteClassA Step3&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 具体类B
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">ConcreteClassB</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 具体类B的方法1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">cc</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">ConcreteClassB</span>) <span style="color:#a6e22e">Step1</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;ConcreteClassB Step1&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 具体类B的方法2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">cc</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">ConcreteClassB</span>) <span style="color:#a6e22e">Step2</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;ConcreteClassB Step2&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 具体类B的方法3
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">cc</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">ConcreteClassB</span>) <span style="color:#a6e22e">Step3</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;ConcreteClassB Step3&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>func main() {
+	concreteClassA := NewAbstractClass(&amp;ConcreteClassA{})
+	concreteClassA.TemplateMethod()
+	concreteClassB := NewAbstractClass(&amp;ConcreteClassB{})
+	concreteClassB.TemplateMethod()
+}
+</code></pre><h4 id="优点-8">
   优点
   <a class="anchor" href="#%e4%bc%98%e7%82%b9-8">#</a>
 </h4>
+<ul>
+<li>开发者可以只允许客户端重写一个大型算法中的特定步分，使算法其他部分的修改对其造成的影响减少。</li>
+<li>开发者可以将重复的代码提取到父类中</li>
+<li>可以减少代码重复</li>
+<li>代码重用发生在模板方法模式中，因为它使用继承而不是组合。只有少数方法需要被覆盖。</li>
+<li>模板方法模式的灵活性可以让子类决定如何在算法中实现步骤。</li>
+</ul>
 <h4 id="缺点-8">
   缺点
   <a class="anchor" href="#%e7%bc%ba%e7%82%b9-8">#</a>
 </h4>
+<ul>
+<li>部分客户端可能会受到算法框架的限制</li>
+<li>通过子类抑制默认步骤实现可能会违反里氏代换原则：子类可以扩展父类的功能，但不能改变父类原有的功能。</li>
+<li>模板方法模式中的步骤越多，其维护工作可能越空难。</li>
+</ul>
 <h4 id="示例-8">
   示例
   <a class="anchor" href="#%e7%a4%ba%e4%be%8b-8">#</a>
 </h4>
-<h3 id="访问者模式">
+<p>使用模板模式实现一次性密码功能，将一次性密码传递给用户的方式有很多种，如短信、邮件，但无论那种方式，实现一次性密码的流程都是相同的。</p>
+<ul>
+<li>生成随机的n位数字</li>
+<li>在缓存中存储这组数字，以便进行后续验证。</li>
+<li>准备工作</li>
+<li>发送通知</li>
+<li>发布</li>
+</ul>
+<p>（1）定义模板方法的一次性密码接口IOtp、一次性密码类Otp及其方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 定义一次性密码接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">IOtp</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">GenRandomOTP</span>(<span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">SaveOTPCache</span>(<span style="color:#66d9ef">string</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">GetMessage</span>(<span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">SendNotification</span>(<span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">error</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Publish</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 定义一次性密码类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Otp</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">IOtp</span> <span style="color:#a6e22e">IOtp</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 生成验证码并发送
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">o</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Otp</span>) <span style="color:#a6e22e">GenAndSendOTP</span>(<span style="color:#a6e22e">otpLength</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">error</span> {    <span style="color:#75715e">//这里就是模板，因为不同结构体实现了里面的方法，所以会跳到对应接口体的方法中去
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">//生成随机验证码
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">otp</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">o</span>.<span style="color:#a6e22e">IOtp</span>.<span style="color:#a6e22e">GenRandomOTP</span>(<span style="color:#a6e22e">otpLength</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">o</span>.<span style="color:#a6e22e">IOtp</span>.<span style="color:#a6e22e">SaveOTPCache</span>(<span style="color:#a6e22e">otp</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">message</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">o</span>.<span style="color:#a6e22e">IOtp</span>.<span style="color:#a6e22e">GetMessage</span>(<span style="color:#a6e22e">otp</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">o</span>.<span style="color:#a6e22e">IOtp</span>.<span style="color:#a6e22e">SendNotification</span>(<span style="color:#a6e22e">message</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">o</span>.<span style="color:#a6e22e">IOtp</span>.<span style="color:#a6e22e">Publish</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（2）具体实施</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 短信类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Sms</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Otp</span>   <span style="color:#75715e">//这里可以注销，定义自己想要的结构
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Sms</span>) <span style="color:#a6e22e">GenRandomOTP</span>(<span style="color:#a6e22e">len</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">randomOTP</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;1688&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;SMS: 生成随机验证码：%s\n&#34;</span>, <span style="color:#a6e22e">randomOTP</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">randomOTP</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Sms</span>) <span style="color:#a6e22e">SaveOTPCache</span>(<span style="color:#a6e22e">otp</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;SMS: 保存验证码：%s 到缓存\n&#34;</span>, <span style="color:#a6e22e">otp</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Sms</span>) <span style="color:#a6e22e">GetMessage</span>(<span style="color:#a6e22e">otp</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;登录的短信验证码是：&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">otp</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Sms</span>) <span style="color:#a6e22e">SendNotification</span>(<span style="color:#a6e22e">message</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;SMS: 发送消息：%s\n&#34;</span>, <span style="color:#a6e22e">message</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Sms</span>) <span style="color:#a6e22e">Publish</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;SMS: 发布完成\n&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 邮箱类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Email</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Otp</span>  <span style="color:#75715e">//这里可以注销，定义自己想要的结构
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Email</span>) <span style="color:#a6e22e">GenRandomOTP</span>(<span style="color:#a6e22e">len</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">randomOTP</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;3699&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;EMAIL: 生成随机验证码：%s\n&#34;</span>, <span style="color:#a6e22e">randomOTP</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">randomOTP</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Email</span>) <span style="color:#a6e22e">SaveOTPCache</span>(<span style="color:#a6e22e">otp</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;EMAIL: 保存验证码：%s 到缓存\n&#34;</span>, <span style="color:#a6e22e">otp</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Email</span>) <span style="color:#a6e22e">GetMessage</span>(<span style="color:#a6e22e">otp</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;登录的短信验证码是：&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">otp</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Email</span>) <span style="color:#a6e22e">SendNotification</span>(<span style="color:#a6e22e">message</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;EMAIL: 发送消息：%s\n&#34;</span>, <span style="color:#a6e22e">message</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Email</span>) <span style="color:#a6e22e">Publish</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;EMAIL:发布完成\n&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（3）客户端</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//创建短信对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">smsOTP</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Sms</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">o</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Otp</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">IOtp</span>: <span style="color:#a6e22e">smsOTP</span>,   <span style="color:#75715e">//结构体给接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//生成短信验证码并发送
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">o</span>.<span style="color:#a6e22e">GenAndSendOTP</span>(<span style="color:#ae81ff">4</span>)  <span style="color:#75715e">//调这个结构体的方法，这个方法里面就是模板，按这个模板走
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//创建邮件对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">EmailOTP</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Email</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">o</span> = <span style="color:#a6e22e">Otp</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">IOtp</span>: <span style="color:#a6e22e">EmailOTP</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//生成邮件验证码并发送
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">o</span>.<span style="color:#a6e22e">GenAndSendOTP</span>(<span style="color:#ae81ff">4</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>SMS: 生成随机验证码：1688
+SMS: 保存验证码：1688 到缓存
+SMS: 发送消息：登录的短信验证码是：1688
+SMS: 发布完成
+
+EMAIL: 生成随机验证码：3699
+EMAIL: 保存验证码：3699 到缓存
+EMAIL: 发送消息：登录的短信验证码是：3699
+EMAIL:发布完成
+</code></pre><h3 id="访问者模式">
   访问者模式
   <a class="anchor" href="#%e8%ae%bf%e9%97%ae%e8%80%85%e6%a8%a1%e5%bc%8f">#</a>
 </h3>

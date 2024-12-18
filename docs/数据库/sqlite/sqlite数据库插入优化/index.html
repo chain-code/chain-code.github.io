@@ -1,0 +1,3474 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="title: SQLite数据库插入优化 date: 2022-05-24 15:47:27 SQLite数据库插入优化 # 需求 # 视频取证业务中，由于部分监控录像品牌视频碎块太多，扫描视频过程中每三秒会产生百万级数据需要插入数据库，原有数据插入接口太慢，无法达到要求，导致我们产品的扫描速度很慢，极大影响客户体验。
+视频取证产品使用的是SQLite数据库，SQLite 是一种轻量级、基于文件的关系数据库管理系统 (RDBMS)，以其简单性、可移植性和独立性而闻名。它适用于需要独立数据库解决方案的嵌入式系统、移动应用程序和小型项目。SQLite的设计初衷是用于单用户或嵌入式应用，专注于轻量级、低资源消耗。因此，当插入数据量较大时，SQLite的性能会受到影响，比不上MySQL等其他数据库。若替换其他数据库完全没有必要。
+性能优化过程 # 现有性能 # 以465.76GB镜像文件为例，取最后十次提交日志：
+本次提交数量：5897 本次提交耗时：0.3652427 本次提交速率：16145.428779274713 总提交数量：126400613 总提交耗时：4654.896980299996 平均速率：27154.330919661686 本次提交数量：358796 本次提交耗时：12.5037099 本次提交速率：28695.16350503301 总提交数量：126759409 总提交耗时：4667.4006901999965 平均速率：27158.45872546426 本次提交数量：50902 本次提交耗时：3.0472488 本次提交速率：16704.24810734194 总提交数量：126810311 总提交耗时：4670.447938999996 平均速率：27151.637842076394 本次提交数量：5102 本次提交耗时：0.997792 本次提交速率：5113.2901446393635 总提交数量：126815413 总提交耗时：4671.445730999996 平均速率：27146.93058691558 本次提交数量：375604 本次提交耗时：14.2310447 本次提交速率：26393.28369195552 总提交数量：127191017 总提交耗时：4685.676775699996 平均速率：27144.64165766083 本次提交数量：490755 本次提交耗时：17.804466 本次提交速率：27563.589944230844 总提交数量：127681772 总提交耗时：4703.481241699996 平均速率：27146.227536319784 本次提交数量：254451 本次提交耗时：9.9592031 本次提交速率：25549.333359814704 总提交数量：127936223 总提交耗时：4713.440444799996 平均速率：27142.853399398085 本次提交数量：543249 本次提交耗时：19.6061585 本次提交速率：27708.07958121934 总提交数量：128479472 总提交耗时：4733.046603299996 平均速率：27145.194790691683 本次提交数量：424834 本次提交耗时：14.9654391 本次提交速率：28387.673569831975 总提交数量：128904306 总提交耗时：4748.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="" />
+<meta property="og:description" content="title: SQLite数据库插入优化 date: 2022-05-24 15:47:27 SQLite数据库插入优化 # 需求 # 视频取证业务中，由于部分监控录像品牌视频碎块太多，扫描视频过程中每三秒会产生百万级数据需要插入数据库，原有数据插入接口太慢，无法达到要求，导致我们产品的扫描速度很慢，极大影响客户体验。
+视频取证产品使用的是SQLite数据库，SQLite 是一种轻量级、基于文件的关系数据库管理系统 (RDBMS)，以其简单性、可移植性和独立性而闻名。它适用于需要独立数据库解决方案的嵌入式系统、移动应用程序和小型项目。SQLite的设计初衷是用于单用户或嵌入式应用，专注于轻量级、低资源消耗。因此，当插入数据量较大时，SQLite的性能会受到影响，比不上MySQL等其他数据库。若替换其他数据库完全没有必要。
+性能优化过程 # 现有性能 # 以465.76GB镜像文件为例，取最后十次提交日志：
+本次提交数量：5897 本次提交耗时：0.3652427 本次提交速率：16145.428779274713 总提交数量：126400613 总提交耗时：4654.896980299996 平均速率：27154.330919661686 本次提交数量：358796 本次提交耗时：12.5037099 本次提交速率：28695.16350503301 总提交数量：126759409 总提交耗时：4667.4006901999965 平均速率：27158.45872546426 本次提交数量：50902 本次提交耗时：3.0472488 本次提交速率：16704.24810734194 总提交数量：126810311 总提交耗时：4670.447938999996 平均速率：27151.637842076394 本次提交数量：5102 本次提交耗时：0.997792 本次提交速率：5113.2901446393635 总提交数量：126815413 总提交耗时：4671.445730999996 平均速率：27146.93058691558 本次提交数量：375604 本次提交耗时：14.2310447 本次提交速率：26393.28369195552 总提交数量：127191017 总提交耗时：4685.676775699996 平均速率：27144.64165766083 本次提交数量：490755 本次提交耗时：17.804466 本次提交速率：27563.589944230844 总提交数量：127681772 总提交耗时：4703.481241699996 平均速率：27146.227536319784 本次提交数量：254451 本次提交耗时：9.9592031 本次提交速率：25549.333359814704 总提交数量：127936223 总提交耗时：4713.440444799996 平均速率：27142.853399398085 本次提交数量：543249 本次提交耗时：19.6061585 本次提交速率：27708.07958121934 总提交数量：128479472 总提交耗时：4733.046603299996 平均速率：27145.194790691683 本次提交数量：424834 本次提交耗时：14.9654391 本次提交速率：28387.673569831975 总提交数量：128904306 总提交耗时：4748." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8F%92%E5%85%A5%E4%BC%98%E5%8C%96/" /><meta property="article:section" content="docs" />
+
+
+<title>Sqlite数据库插入优化 | Soulmate</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" >
+<link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.4c1d79c77b2003076b32f8c179605f26620e9a5fd778dfae8769b8b60c706631.js" integrity="sha256-TB15x3sgAwdrMvjBeWBfJmIOml/XeN&#43;uh2m4tgxwZjE=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo.png" alt="Logo" /><span>Soulmate</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>计算机基础</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e99d92668627838818961f696faae00" class="toggle"  />
+    <label for="section-1e99d92668627838818961f696faae00" class="flex justify-between">
+      <a role="button" class="">八股文</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="">计算机网络基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/linux%E5%9F%BA%E7%A1%80/" class="">Linux基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/git%E5%9F%BA%E7%A1%80/" class="">Git基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-00c75bd1eabdaaae0cac73d13168e71f" class="toggle"  />
+    <label for="section-00c75bd1eabdaaae0cac73d13168e71f" class="flex justify-between">
+      <a role="button" class="">其他</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/crontab%E4%BD%BF%E7%94%A8/" class="">crontab使用</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/libewf%E5%BA%93%E7%BC%96%E8%AF%91/" class="">libewf库编译</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/localhost%E4%B8%8E127.0.0.1/" class="">localhost与127.0.0.1</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/schtasks%E4%BD%BF%E7%94%A8/" class="">schtask使用</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="">Vim编程常用快捷键</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E4%BB%A3%E7%A0%81%E6%95%B4%E6%B4%81%E4%B9%8B%E9%81%93/" class="">代码整洁之道</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8github%E5%92%8Cgitlab/" class="">同时使用github和gitlab</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E8%8E%B7%E5%8F%96%E5%86%85%E7%BD%91%E6%B4%BB%E8%B7%83ip/" class="">获取内网活跃IP</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E9%80%9A%E8%BF%87%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81%E8%AE%A1%E7%AE%97ip%E5%9C%B0%E5%9D%80%E8%8C%83%E5%9B%B4/" class="">通过子网掩码计算IP地址范围</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E9%85%8D%E7%BD%AEkylinv10/" class="">配置 Kylin V10</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E8%99%9A%E6%8B%9F%E7%BB%84%E7%BD%91/" class="">虚拟组网</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3dcacc5e7a7c646c608757dc5f042d92" class="toggle"  />
+    <label for="section-3dcacc5e7a7c646c608757dc5f042d92" class="flex justify-between">
+      <a role="button" class="">LeetCode</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/" class="">golang力扣刷题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/" class="">golang力扣刷题（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/%E5%BF%85%E5%88%B7top101/" class="">必刷top101</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" class="">LeetCode算法总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Golang</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-670eda717a06f31447c52422ec93a159" class="toggle"  />
+    <label for="section-670eda717a06f31447c52422ec93a159" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/" class="">go语言基础（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/golang%E6%8E%A7%E6%B5%81/" class="">Golang控流</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/golang%E9%99%90%E6%B5%81%E5%AE%9E%E8%B7%B5/" class="">golang限流实践</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E6%B3%9B%E5%9E%8B%E4%BB%8B%E7%BB%8D/" class="">go泛型介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/panic/" class="">panic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/pprof/" class="">pprof</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/" class="">ProtoBuf</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8C%85%E7%AE%A1%E7%90%86/" class="">包管理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="">单元测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/io.copy/" class="">奇怪的io.copy</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">常用业务代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/" class="">go语言基础（三）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/" class="">go语言底层基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/" class="">benchmark测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/" class="">Goland常用技巧</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle"  />
+    <label for="section-c453881a62c640f6a4cceec99c02477e" class="flex justify-between">
+      <a role="button" class="">高阶</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" class="">Go高阶-语言基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%81%BF%E5%9D%91%E6%8C%87%E5%8D%97/" class="">Go避坑指南</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" class="">go性能优化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/%E6%98%93%E9%94%99%E7%BB%86%E8%8A%82/" class="">易错细节</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f235e88e751d2cb18d527c1784763605" class="toggle"  />
+    <label for="section-f235e88e751d2cb18d527c1784763605" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/flag/" class="">Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/resty/" class="">resty</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/atomic/" class="">Atomic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/os/" class="">Os</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strconv/" class="">Strconv</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sort/" class="">Sort</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strings/" class="">Strings</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/reflect/" class="">Reflect</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/context/" class="">context</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/filepath/" class="">filepath</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/math/" class="">math</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/time/" class="">Time</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sync/" class="">Sync</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>数据库</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle"  />
+    <label for="section-94f26238d1ca3b5bcd40eadc7a88d726" class="flex justify-between">
+      <a role="button" class="">MySql</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/" class="">MySql相关问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E9%94%81%E7%9B%B8%E5%85%B3%E6%80%BB%E7%BB%93/" class="">MySql锁相关总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" class="">MySql基础总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="">Mac连接数据库所遇到的问题</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="toggle"  />
+    <label for="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="flex justify-between">
+      <a role="button" class="">Redis</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="">Redis集群搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/" class="">Redis基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="">redis面试总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8be9c2251abd1fe110e3c1520cac6177" class="toggle" checked />
+    <label for="section-8be9c2251abd1fe110e3c1520cac6177" class="flex justify-between">
+      <a role="button" class="">SQLite</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/" class="">Sqlite</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8F%92%E5%85%A5%E4%BC%98%E5%8C%96/" class="active">Sqlite数据库插入优化</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/" class="">Xorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/" class="">常见数据库的备份与恢复</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>系统架构</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%9F%BA%E7%A1%80/" class="">系统架构基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-083ca86fd1b56cca1f76a6d6b34dc093" class="toggle"  />
+    <label for="section-083ca86fd1b56cca1f76a6d6b34dc093" class="flex justify-between">
+      <a role="button" class="">设计模式</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E5%88%9B%E5%BB%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">创建型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%BB%93%E6%9E%84%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">结构型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">行为型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%89%A9%E5%B1%95/" class="">设计模式扩展</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-266e66094f86ce336245af3b8aaf0e2e" class="toggle"  />
+    <label for="section-266e66094f86ce336245af3b8aaf0e2e" class="flex justify-between">
+      <a role="button" class="">微服务</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/grpc/" class="">Grpc</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/grpc%E6%8B%A6%E6%88%AA%E5%99%A8retry/" class="">grpc拦截器retry</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3d14fec58473cc9c35cafaca50699647" class="toggle"  />
+    <label for="section-3d14fec58473cc9c35cafaca50699647" class="flex justify-between">
+      <a role="button" class="">web框架</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1/" class="">动态路由与静态路由</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/%E6%B5%81%E5%BC%8F%E6%95%B0%E6%8D%AE/" class="">流式数据</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>前端</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/vite&#43;vue%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE/" class="">Vite&#43;Vue快速搭建项目</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/vue3/" class="">Vue3</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/vue%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">Vue环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/webstorm-debug/" class="">WebStorm-debug</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ac8e4e2fda641053d78fc10cbbde236e" class="toggle"  />
+    <label for="section-ac8e4e2fda641053d78fc10cbbde236e" class="flex justify-between">
+      <a role="button" class="">C</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/c&#43;&#43;%E9%83%A8%E7%BD%B2paddleocr/" class="">C&#43;&#43;部署PaddleOCR</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/cgo/" class="">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/cgo%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/" class="">CGO遇到的问题解决</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Python</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-9fa9875ee3af29ba8922d532968a7155" class="toggle"  />
+    <label for="section-9fa9875ee3af29ba8922d532968a7155" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/%E5%9F%BA%E7%A1%80/python%E5%9F%BA%E7%A1%80/" class="">python基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/%E5%9F%BA%E7%A1%80/python%E5%AE%89%E8%A3%85/" class="">python安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/%E5%9F%BA%E7%A1%80/venv%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/" class="">venv虚拟环境</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-583fc129cceb6ebb566fe0a30ca770ee" class="toggle"  />
+    <label for="section-583fc129cceb6ebb566fe0a30ca770ee" class="flex justify-between">
+      <a role="button" class="">AI</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/ai/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/" class="">Yolov8快速上手 实践</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76d10924673a9347dff74c68c3ea9d86" class="toggle"  />
+    <label for="section-76d10924673a9347dff74c68c3ea9d86" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/argparse/" class="">argparse</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/collections/" class="">collections</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/detetime/" class="">datetime</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/uvicorn/" class="">uvicorn</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="">正则表达式</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>区块链</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle"  />
+    <label for="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="flex justify-between">
+      <a role="button" class="">Fabric</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">fabric相关机制与原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/" class="">智能合约</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/" class="">fabric-sdk-go详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/" class="">fabric-ca详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle"  />
+    <label for="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="flex justify-between">
+      <a role="button" class="">环境测试</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/" class="">fabric网络中的报错（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/" class="">fabric网络中的报错（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">fabric环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/" class="">solo节点测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/" class="">fabric多机搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/" class="">部署tape测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/" class="">手动生成ca证书搭建fabric网络</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/" class="">centos安装fabric1.2</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-25aef1d59a561fcefcaecb043ef8afd2" class="toggle"  />
+    <label for="section-25aef1d59a561fcefcaecb043ef8afd2" class="flex justify-between">
+      <a role="button" class="">配置文件</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/" class="">cryptogen生成的证书详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">docker-compose.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">configtx.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">crypto-config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/" class="">升级链码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/" class="">区块链网络添加组织</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/" class="">fabric浏览器搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/" class="">如何在已有组织中增加节点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/" class="">Fabric1.4多通道实验</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b07621083aa30b12de4c0333941e479f" class="toggle"  />
+    <label for="section-b07621083aa30b12de4c0333941e479f" class="flex justify-between">
+      <a role="button" class="">比特币</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">比特币相关机制与原理</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle"  />
+    <label for="section-ff5477999ef29208270c84e8b56b2758" class="flex justify-between">
+      <a role="button" class="">IPFS</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/" class="">go-ipfs-api</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" class="">ipfs-webui可视化工具搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/" class="">IPFS基本原理（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/" class="">IPFS私有网络搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-77a0a17b06e8d04cfb0fba9952941706" class="toggle"  />
+    <label for="section-77a0a17b06e8d04cfb0fba9952941706" class="flex justify-between">
+      <a role="button" class="">密码学</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" class="">区块链安全基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/" class="">椭圆曲线加密</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/" class="">密码学基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2e4d10b323fd668021dbd532575d8790" class="toggle"  />
+    <label for="section-2e4d10b323fd668021dbd532575d8790" class="flex justify-between">
+      <a role="button" class="">Docker</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/" class="">Docker基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/" class="">Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" class="">docker常用知识总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-70383d7f28a7ae4bf840a844eb61aa16" class="toggle"  />
+    <label for="section-70383d7f28a7ae4bf840a844eb61aa16" class="flex justify-between">
+      <a role="button" class="">共识算法</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">共识算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" class="">Raft共识算法</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5f7b667081fbae0581cd216f66d5102f" class="toggle"  />
+    <label for="section-5f7b667081fbae0581cd216f66d5102f" class="flex justify-between">
+      <a role="button" class="">博客</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8D%9A%E5%AE%A2/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%9B%BE%E4%B9%A6/" class="">图书</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%B7%A5%E5%85%B7%E5%BA%93/" class="">工具库</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="https://gitee.com/chaincode"  target="_blank" rel="noopener">
+        Gitee
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Sqlite数据库插入优化</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#sqlite数据库插入优化">SQLite数据库插入优化</a>
+      <ul>
+        <li><a href="#需求">需求</a></li>
+        <li><a href="#性能优化过程">性能优化过程</a>
+          <ul>
+            <li><a href="#现有性能">现有性能</a></li>
+            <li><a href="#第一次优化">第一次优化：</a></li>
+            <li><a href="#第二次优化">第二次优化：</a></li>
+            <li><a href="#第三次优化">第三次优化：</a></li>
+            <li><a href="#第四次优化">第四次优化：</a></li>
+            <li><a href="#第五次优化">第五次优化：</a></li>
+            <li><a href="#第六次优化">第六次优化：</a></li>
+          </ul>
+        </li>
+        <li><a href="#优化结果">优化结果</a></li>
+        <li><a href="#其他方案尝试">其他方案尝试：</a>
+          <ul>
+            <li><a href="#方案一">方案一：</a></li>
+            <li><a href="#方案二">方案二：</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><pre tabindex="0"><code>title: SQLite数据库插入优化
+date: 2022-05-24 15:47:27
+</code></pre><h1 id="sqlite数据库插入优化">
+  SQLite数据库插入优化
+  <a class="anchor" href="#sqlite%e6%95%b0%e6%8d%ae%e5%ba%93%e6%8f%92%e5%85%a5%e4%bc%98%e5%8c%96">#</a>
+</h1>
+<h2 id="需求">
+  需求
+  <a class="anchor" href="#%e9%9c%80%e6%b1%82">#</a>
+</h2>
+<p>视频取证业务中，由于部分监控录像品牌视频碎块太多，扫描视频过程中每三秒会产生百万级数据需要插入数据库，原有数据插入接口太慢，无法达到要求，导致我们产品的扫描速度很慢，极大影响客户体验。</p>
+<p>视频取证产品使用的是SQLite数据库，SQLite 是一种轻量级、基于文件的关系数据库管理系统 (RDBMS)，以其简单性、可移植性和独立性而闻名。它适用于需要独立数据库解决方案的嵌入式系统、移动应用程序和小型项目。SQLite的设计初衷是用于单用户或嵌入式应用，专注于轻量级、低资源消耗。因此，当插入数据量较大时，SQLite的性能会受到影响，比不上MySQL等其他数据库。若替换其他数据库完全没有必要。</p>
+<h2 id="性能优化过程">
+  性能优化过程
+  <a class="anchor" href="#%e6%80%a7%e8%83%bd%e4%bc%98%e5%8c%96%e8%bf%87%e7%a8%8b">#</a>
+</h2>
+<h3 id="现有性能">
+  现有性能
+  <a class="anchor" href="#%e7%8e%b0%e6%9c%89%e6%80%a7%e8%83%bd">#</a>
+</h3>
+<p>以465.76GB镜像文件为例，取最后十次提交日志：</p>
+<pre tabindex="0"><code>本次提交数量：5897       本次提交耗时：0.3652427      本次提交速率：16145.428779274713        总提交数量：126400613      总提交耗时：4654.896980299996      平均速率：27154.330919661686
+
+本次提交数量：358796       本次提交耗时：12.5037099      本次提交速率：28695.16350503301        总提交数量：126759409      总提交耗时：4667.4006901999965      平均速率：27158.45872546426
+
+ 本次提交数量：50902       本次提交耗时：3.0472488      本次提交速率：16704.24810734194        总提交数量：126810311      总提交耗时：4670.447938999996      平均速率：27151.637842076394
+ 
+本次提交数量：5102       本次提交耗时：0.997792      本次提交速率：5113.2901446393635        总提交数量：126815413      总提交耗时：4671.445730999996      平均速率：27146.93058691558
+
+本次提交数量：375604       本次提交耗时：14.2310447      本次提交速率：26393.28369195552        总提交数量：127191017      总提交耗时：4685.676775699996      平均速率：27144.64165766083
+
+ 本次提交数量：490755       本次提交耗时：17.804466      本次提交速率：27563.589944230844        总提交数量：127681772      总提交耗时：4703.481241699996      平均速率：27146.227536319784
+ 
+本次提交数量：254451       本次提交耗时：9.9592031      本次提交速率：25549.333359814704        总提交数量：127936223      总提交耗时：4713.440444799996      平均速率：27142.853399398085
+
+本次提交数量：543249       本次提交耗时：19.6061585      本次提交速率：27708.07958121934        总提交数量：128479472      总提交耗时：4733.046603299996      平均速率：27145.194790691683
+
+本次提交数量：424834       本次提交耗时：14.9654391      本次提交速率：28387.673569831975        总提交数量：128904306      总提交耗时：4748.012042399996      平均速率：27149.111006644
+
+本次提交数量：491245       本次提交耗时：18.247528      本次提交速率：26921.180775828925        总提交数量：129395551      总提交耗时：4766.259570399996      平均速率：27148.238380382798
+
+扫描完成！耗时：1h36m29.3569587s
+</code></pre><p>扫描任务总耗时1小时36分钟29秒，最终提交1亿两千万条数据，提交数据总耗时4766秒，平均速率每秒提交两万七千一百多条数据。</p>
+<p><strong>申明：由于环境影响，每次测试数据上下有波动。</strong></p>
+<h3 id="第一次优化">
+  第一次优化：
+  <a class="anchor" href="#%e7%ac%ac%e4%b8%80%e6%ac%a1%e4%bc%98%e5%8c%96">#</a>
+</h3>
+<h4 id="情况分析">
+  情况分析
+  <a class="anchor" href="#%e6%83%85%e5%86%b5%e5%88%86%e6%9e%90">#</a>
+</h4>
+<p>后台为了适配多种数据结构的适配，采用了统一的接口，并通过反射操作进行数据存储，反射会极大的影响数据处理性能。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">ds</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">DataService</span>) <span style="color:#a6e22e">SaveData</span>(<span style="color:#a6e22e">cid</span>, <span style="color:#a6e22e">eid</span>, <span style="color:#a6e22e">tid</span> <span style="color:#66d9ef">int64</span>, <span style="color:#a6e22e">typeName</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">datas</span> <span style="color:#66d9ef">interface</span>{}) (<span style="color:#a6e22e">row</span> <span style="color:#66d9ef">int64</span>, <span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">vmodel</span>.<span style="color:#a6e22e">DataType</span>[<span style="color:#a6e22e">typeName</span>]
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">ok</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;not exist typename %s&#34;</span>, <span style="color:#a6e22e">typeName</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">t</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">TypeOf</span>(<span style="color:#a6e22e">v</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">t</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;invalid vmodel.DataType: %s&#34;</span>, <span style="color:#a6e22e">typeName</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">Marshal</span>(<span style="color:#a6e22e">datas</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">dataArray</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">New</span>(<span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">PtrTo</span>(<span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">SliceOf</span>(<span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">PtrTo</span>(<span style="color:#a6e22e">t</span>))))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">Unmarshal</span>([]byte(<span style="color:#a6e22e">result</span>), <span style="color:#a6e22e">dataArray</span>.<span style="color:#a6e22e">Interface</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">arrayElem</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">dataArray</span>.<span style="color:#a6e22e">Elem</span>().<span style="color:#a6e22e">Elem</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">arrayElem</span>.<span style="color:#a6e22e">IsValid</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">arrayData</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">interface</span>{}, <span style="color:#a6e22e">arrayElem</span>.<span style="color:#a6e22e">Len</span>(), <span style="color:#a6e22e">arrayElem</span>.<span style="color:#a6e22e">Len</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> <span style="color:#f92672">!=</span> <span style="color:#a6e22e">arrayElem</span>.<span style="color:#a6e22e">Len</span>(); <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">e</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">arrayElem</span>.<span style="color:#a6e22e">Index</span>(<span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">CanAddr</span>() {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">arrayData</span>[<span style="color:#a6e22e">i</span>] = <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">Addr</span>().<span style="color:#a6e22e">Interface</span>()
+</span></span><span style="display:flex;"><span>		} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">arrayData</span>[<span style="color:#a6e22e">i</span>] = <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">Interface</span>()
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">row</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">proxy</span>.<span style="color:#a6e22e">Data</span>.<span style="color:#a6e22e">SaveData</span>(<span style="color:#a6e22e">cid</span>, <span style="color:#a6e22e">eid</span>, <span style="color:#a6e22e">typeName</span>, <span style="color:#a6e22e">arrayElem</span>.<span style="color:#a6e22e">Interface</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="优化方案">
+  优化方案
+  <a class="anchor" href="#%e4%bc%98%e5%8c%96%e6%96%b9%e6%a1%88">#</a>
+</h4>
+<p>针对大数据量的数据结构，单独适配提交接口，省去反射操作导致的性能影响。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">TypeName</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">file</span>.<span style="color:#a6e22e">RelateBlockType</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">service</span>.<span style="color:#a6e22e">Data</span>.<span style="color:#a6e22e">SaveData_RelateBlock</span>(<span style="color:#a6e22e">Task</span>.<span style="color:#a6e22e">CaseId</span>, <span style="color:#a6e22e">Task</span>.<span style="color:#a6e22e">EvidenceId</span>, <span style="color:#a6e22e">Task</span>.<span style="color:#a6e22e">Id</span>, <span style="color:#a6e22e">TypeName</span>, <span style="color:#a6e22e">Result</span>)
+</span></span><span style="display:flex;"><span>} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">service</span>.<span style="color:#a6e22e">Data</span>.<span style="color:#a6e22e">SaveData</span>(<span style="color:#a6e22e">Task</span>.<span style="color:#a6e22e">CaseId</span>, <span style="color:#a6e22e">Task</span>.<span style="color:#a6e22e">EvidenceId</span>, <span style="color:#a6e22e">Task</span>.<span style="color:#a6e22e">Id</span>, <span style="color:#a6e22e">TypeName</span>, <span style="color:#a6e22e">Result</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>使用事务机制，可以批量插入数据，可以极大的提升写入速度。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">dp</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">DataProxy</span>) <span style="color:#a6e22e">SaveData_RelateBlock</span>(<span style="color:#a6e22e">eid</span> <span style="color:#66d9ef">int64</span>, <span style="color:#a6e22e">typeName</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">relateBlock</span> []<span style="color:#f92672">*</span><span style="color:#a6e22e">file</span>.<span style="color:#a6e22e">RelateBlock</span>) (<span style="color:#a6e22e">row</span> <span style="color:#66d9ef">int64</span>, <span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">engin</span>, <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">GetDataEngine</span>(<span style="color:#a6e22e">eid</span>, <span style="color:#a6e22e">typeName</span>, <span style="color:#66d9ef">true</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">tableName</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">GetDataTableName</span>(<span style="color:#a6e22e">eid</span>, <span style="color:#a6e22e">typeName</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">batchSize</span> = <span style="color:#ae81ff">1000</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">totalRows</span> <span style="color:#f92672">:=</span> int64(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 开始事务
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">engin</span>.<span style="color:#a6e22e">Transaction</span>(<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">tx</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">DB</span>) <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; len(<span style="color:#a6e22e">relateBlock</span>); <span style="color:#a6e22e">i</span> <span style="color:#f92672">+=</span> <span style="color:#a6e22e">batchSize</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">end</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">batchSize</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">end</span> &gt; len(<span style="color:#a6e22e">relateBlock</span>) {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">end</span> = len(<span style="color:#a6e22e">relateBlock</span>)
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">batch</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">relateBlock</span>[<span style="color:#a6e22e">i</span>:<span style="color:#a6e22e">end</span>]
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">result</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">tx</span>.<span style="color:#a6e22e">Table</span>(<span style="color:#a6e22e">tableName</span>).<span style="color:#a6e22e">Create</span>(<span style="color:#a6e22e">batch</span>) <span style="color:#75715e">// 使用事务对象插入
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">result</span>.<span style="color:#a6e22e">Error</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">result</span>.<span style="color:#a6e22e">Error</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">totalRows</span> <span style="color:#f92672">+=</span> <span style="color:#a6e22e">result</span>.<span style="color:#a6e22e">RowsAffected</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">totalRows</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">totalRows</span>, <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>batchSize = 1000</strong>，自测最优速度，实测<strong>batchSize</strong> 最大值在3500-3700之间，当大于这个值时，会报错：<code>too many SQL variables</code>。网上说batchSize等于<code>SQLITE_MAX_VARIABLE_NUMBER</code>，经过测试好像不是，这个问题没有深究。</p>
+<ul>
+<li>版本在 2020-05-22 号前的 3.32.0 默认 <strong>999</strong></li>
+<li>版本在 3.32.0 后的默认 <strong>32766</strong></li>
+</ul>
+<p><code>SQLITE_MAX_VARIABLE_NUMBER</code> 限制了 SQL 查询中绑定变量（占位符）的最大数量。它的默认值是 32766，即每个查询最多允许 32766 个绑定变量。</p>
+<p>如何查询<code>SQLITE_MAX_VARIABLE_NUMBER</code>值？</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-s" data-lang="s"><span style="display:flex;"><span>sqlite3   （命令行输入）
+</span></span><span style="display:flex;"><span>SQLite version <span style="color:#ae81ff">3.47.0</span> <span style="color:#ae81ff">2024-10-21</span> <span style="color:#ae81ff">16</span><span style="color:#f92672">:</span><span style="color:#ae81ff">30</span><span style="color:#f92672">:</span><span style="color:#ae81ff">22</span>
+</span></span><span style="display:flex;"><span>Enter <span style="color:#e6db74">&#34;.help&#34;</span> for usage hints.
+</span></span><span style="display:flex;"><span>Connected to a transient in<span style="color:#f92672">-</span>memory database.
+</span></span><span style="display:flex;"><span>Use <span style="color:#e6db74">&#34;.open FILENAME&#34;</span> to reopen on a persistent database.
+</span></span><span style="display:flex;"><span>sqlite<span style="color:#f92672">&gt;</span> .limits （命令行再输入）
+</span></span><span style="display:flex;"><span>              length <span style="color:#ae81ff">1000000000</span>
+</span></span><span style="display:flex;"><span>          sql_length <span style="color:#ae81ff">1000000000</span>
+</span></span><span style="display:flex;"><span>              column <span style="color:#ae81ff">2000</span>
+</span></span><span style="display:flex;"><span>          expr_depth <span style="color:#ae81ff">1000</span>
+</span></span><span style="display:flex;"><span>     compound_select <span style="color:#ae81ff">500</span>
+</span></span><span style="display:flex;"><span>             vdbe_op <span style="color:#ae81ff">250000000</span>
+</span></span><span style="display:flex;"><span>        function_arg <span style="color:#ae81ff">127</span>
+</span></span><span style="display:flex;"><span>            attached <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span> like_pattern_length <span style="color:#ae81ff">50000</span>
+</span></span><span style="display:flex;"><span>     variable_number <span style="color:#ae81ff">32766</span>   （SQLITE_MAX_VARIABLE_NUMBER）
+</span></span><span style="display:flex;"><span>       trigger_depth <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>      worker_threads <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>sqlite<span style="color:#f92672">&gt;</span>
+</span></span></code></pre></div><h4 id="性能对比">
+  性能对比
+  <a class="anchor" href="#%e6%80%a7%e8%83%bd%e5%af%b9%e6%af%94">#</a>
+</h4>
+<pre tabindex="0"><code>本次提交数量：16071       本次提交耗时：0.1709622      本次提交速率：94003.23580300207        总提交数量：126664811      总提交耗时：1304.5277936      平均速率：97096.29156344254
+
+本次提交数量：452834       本次提交耗时：4.7283291      本次提交速率：95770.40650575697        总提交数量：127117645      总提交耗时：1309.2561227      平均速率：97091.50317957111
+
+本次提交数量：572900       本次提交耗时：5.5622101      本次提交速率：102998.6263913332        总提交数量：127690545      总提交耗时：1314.8183328      平均速率：97116.49268539922
+
+本次提交数量：255012       本次提交耗时：2.7220906      本次提交速率：93682.40719100239        总提交数量：127945557      总提交耗时：1317.5404234      平均速率：97109.39772901089
+
+本次提交数量：260614       本次提交耗时：2.5024996      本次提交速率：104141.47518744858        总提交数量：128206171      总提交耗时：1320.042923      平均速率：97122.7289402316
+
+本次提交数量：239560       本次提交耗时：2.3600754      本次提交速率：101505.23157014391        总提交数量：128445731      总提交耗时：1322.4029984      平均速率：97130.5503355701
+
+本次提交数量：288596       本次提交耗时：2.9334688      本次提交速率：98380.45661164011        总提交数量：128734327      总提交耗时：1325.3364671999998      平均速率：97133.31684894577
+
+本次提交数量：568353       本次提交耗时：5.5328899      本次提交速率：102722.62963338563        总提交数量：129302680      总提交耗时：1330.8693571      平均速率：97156.5535791988
+
+本次提交数量：9738       本次提交耗时：0.1054929      本次提交速率：92309.52983565719        总提交数量：129312418      总提交耗时：1330.9748499999998      平均速率：97156.16940470364
+
+本次提交数量：83133       本次提交耗时：1.0249508      本次提交速率：81109.25909809524        总提交数量：129395551      总提交耗时：1331.9998007999998      平均速率：97143.82158487184
+
+扫描完成！耗时：29m13.093422s
+</code></pre><p>可以看到扫描任务总耗时已经缩短到29分钟13秒，最终提交1亿两千万条数据，提交数据总耗时1331秒，平均速率每秒97143条数据。插入性能已经极大提生。</p>
+<h3 id="第二次优化">
+  第二次优化：
+  <a class="anchor" href="#%e7%ac%ac%e4%ba%8c%e6%ac%a1%e4%bc%98%e5%8c%96">#</a>
+</h3>
+<h4 id="情况分析-1">
+  情况分析
+  <a class="anchor" href="#%e6%83%85%e5%86%b5%e5%88%86%e6%9e%90-1">#</a>
+</h4>
+<p>因为业务需求，每次刚刚写入数据库的数据，会立马被读取，去进行缩略图提取的任务，而sqlite默认在读的时候会对库加锁，不让继续写。因此读文件导致的锁竞争也会整体影响写数据的速度。</p>
+<h4 id="优化方案-1">
+  优化方案
+  <a class="anchor" href="#%e4%bc%98%e5%8c%96%e6%96%b9%e6%a1%88-1">#</a>
+</h4>
+<p>WAL（Write-Ahead Logging）模式是SQLite3最新的日志模式，也是目前性能最佳的选择。WAL模式对并发读写访问提供了更好的支持，并减少了IO操作的次数，因此能够提高性能和响应时间。</p>
+<p>在WAL模式下，日志记录不再是直接写入数据库文件，而是写入一个称为写入日志（write-ahead-log）的文件。在写入日志文件之前，事务对数据库的修改会被写入内存中的WAL文件。这意味着数据库的修改操作不再阻塞其他事务的读写操作。</p>
+<p>WAL模式通过减少磁盘操作和并发读写访问的能力来提高性能。在WAL模式中，读操作可以立即完成，而不需要等待写操作完成。同时，WAL模式避免了频繁的IO操作，显著提升了写入性能。</p>
+<p>在WAL模式下，读操作可以立即完成，而不需要等待写操作完成。当一个事务需要读取数据库时，它会先读取WAL文件，并根据逻辑记录的内容重构数据库的状态。即使同时有其他事务在修改数据库，读操作也不会受到影响。</p>
+<p>写操作在WAL模式下也得到了改进。当一个事务执行写操作时，它首先将修改记录写入WAL文件，并将逻辑记录标记为“已提交”。然后，WAL文件的内容会按顺序写入数据库文件。通过这种方式，WAL模式避免了频繁的磁盘IO操作，提高了写入性能。</p>
+<p>Gorm开启WAL模式方法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">db</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">DbManager</span>) <span style="color:#a6e22e">getSqlDriver</span>(<span style="color:#a6e22e">dsn</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">WALModel</span> <span style="color:#66d9ef">bool</span>) (<span style="color:#f92672">*</span><span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">DB</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gormDb</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#a6e22e">sqlite</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#a6e22e">dsn</span>), <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Config</span>{})
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">WALModel</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">gormDb</span>.<span style="color:#a6e22e">Exec</span>(<span style="color:#e6db74">&#34;PRAGMA journal_mode=WAL;&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">gormDb</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="性能对比-1">
+  性能对比
+  <a class="anchor" href="#%e6%80%a7%e8%83%bd%e5%af%b9%e6%af%94-1">#</a>
+</h4>
+<pre tabindex="0"><code>本次提交数量：63541       本次提交耗时：0.7611553      本次提交速率：83479.6788513461        总提交数量：126338735      总提交耗时：1174.5417230999994      平均速率：107564.28019138459
+
+本次提交数量：207272       本次提交耗时：1.847883      本次提交速率：112167.27465970519        总提交数量：126546007      总提交耗时：1176.3896060999994      平均速率：107571.51061503252
+
+本次提交数量：213402       本次提交耗时：1.9882569      本次提交速率：107331.20051035658        总提交数量：126759409      总提交耗时：1178.3778629999993      平均速率：107571.10514388548
+
+本次提交数量：302122       本次提交耗时：2.6607481      本次提交速率：113547.76500639049        总提交数量：127061531      总提交耗时：1181.0386110999993      平均速率：107584.5698911207
+
+本次提交数量：369731       本次提交耗时：3.4887755      本次提交速率：105977.29776536209        总提交数量：127431262      总提交耗时：1184.5273865999993      平均速率：107579.83601018421
+
+本次提交数量：819281       本次提交耗时：7.422267      本次提交速率：110381.50473433522        总提交数量：128250543      总提交耗时：1191.9496535999992      平均速率：107597.28199311931
+
+本次提交数量：7839       本次提交耗时：0.2082594      本次提交速率：37640.557881180874        总提交数量：128258382      总提交耗时：1192.1579129999993      平均速率：107585.06117469362
+
+本次提交数量：436286       本次提交耗时：4.1007606      本次提交速率：106391.4825947167        总提交数量：128694668      总提交耗时：1196.2586735999994      平均速率：107580.96960142288
+
+本次提交数量：430331       本次提交耗时：3.7038419      本次提交速率：116185.03478779696        总提交数量：129124999      总提交耗时：1199.9625154999994      平均速率：107607.52717862716
+
+本次提交数量：270552       本次提交耗时：2.7364728      本次提交速率：98868.87967605598        总提交数量：129395551      总提交耗时：1202.6989882999994      平均速率：107587.64433892063
+
+扫描完成！耗时：27m12.9716868s
+</code></pre><p>可以看到扫描任务总耗时已经缩短到27分钟12秒，提交数据总耗时1202秒，平均速率每秒107587条数据。整体提升效果虽然不大，但由于并发读原因，缩略图任务从4小时12分钟，已缩短至 3小时46分分钟。</p>
+<h3 id="第三次优化">
+  第三次优化：
+  <a class="anchor" href="#%e7%ac%ac%e4%b8%89%e6%ac%a1%e4%bc%98%e5%8c%96">#</a>
+</h3>
+<h4 id="情况分析-2">
+  情况分析
+  <a class="anchor" href="#%e6%83%85%e5%86%b5%e5%88%86%e6%9e%90-2">#</a>
+</h4>
+<p>数据提交是在插件通过http请求传输到后台，再进行存储。因此文件传输也会影响插入速度。</p>
+<h4 id="优化方案-2">
+  优化方案
+  <a class="anchor" href="#%e4%bc%98%e5%8c%96%e6%96%b9%e6%a1%88-2">#</a>
+</h4>
+<p>由于是单机版产品，可以在插件中直接提交数据，减少http数据传输导致的速度太慢问题。</p>
+<h4 id="性能对比-2">
+  性能对比
+  <a class="anchor" href="#%e6%80%a7%e8%83%bd%e5%af%b9%e6%af%94-2">#</a>
+</h4>
+<pre tabindex="0"><code>本次提交数量：265830       本次提交耗时：1.727355      本次提交速率：153894.2487213109        总提交数量：126541024      总提交耗时：812.0033392999987      平均速率：155838.05863296922
+
+本次提交数量：238051       本次提交耗时：1.6474042      本次提交速率：144500.66352871992        总提交数量：126779075      总提交耗时：813.6507434999987      平均速率：155815.10373191247
+
+本次提交数量：411942       本次提交耗时：2.5760617      本次提交速率：159911.54249139296        总提交数量：127191017      总提交耗时：816.2268051999987      平均速率：155828.03234308705
+
+本次提交数量：447637       本次提交耗时：2.9583972      本次提交速率：151310.6488878505        总提交数量：127638654      总提交耗时：819.1852023999987      平均速率：155811.71830991586
+
+本次提交数量：9980       本次提交耗时：0.0691937      本次提交速率：144232.78419856145        总提交数量：127648634      总提交耗时：819.2543960999988      平均速率：155810.7403605792
+
+本次提交数量：754626       本次提交耗时：5.0771531      本次提交速率：148631.72040252242        总提交数量：128403260      总提交耗时：824.3315491999988      平均速率：155766.52394854158
+
+本次提交数量：9235       本次提交耗时：0.0687567      本次提交速率：134314.1831996009        总提交数量：128412495      总提交耗时：824.4003058999988      平均速率：155764.73477870916
+
+本次提交数量：291033       本次提交耗时：2.0696496      本次提交速率：140619.45558320597        总提交数量：128703528      总提交耗时：826.4699554999988      平均速率：155726.8079057233
+
+本次提交数量：288612       本次提交耗时：1.9096872      本次提交速率：151130.50975049735        总提交数量：128992140      总提交耗时：828.3796426999988      平均速率：155716.21192858677
+
+本次提交数量：403411       本次提交耗时：2.2078511      本次提交速率：182716.579030171        总提交数量：129395551      总提交耗时：830.5874937999988      平均速率：155787.9837655704
+
+扫描完成！耗时：20m38.326593s
+</code></pre><p>扫描时间已经缩短到20分钟38秒，提交数据总耗时830秒，平均速率每秒155787条数据。</p>
+<h3 id="第四次优化">
+  第四次优化：
+  <a class="anchor" href="#%e7%ac%ac%e5%9b%9b%e6%ac%a1%e4%bc%98%e5%8c%96">#</a>
+</h3>
+<h4 id="情况分析-3">
+  情况分析
+  <a class="anchor" href="#%e6%83%85%e5%86%b5%e5%88%86%e6%9e%90-3">#</a>
+</h4>
+<p>在SQLite中，数据库配置的参数都由编译指示（pragma）来实现的，而其中synchronous选项有三种可选状态，分别是full、normal、off。简要说来，full写入速度最慢，但保证数据是安全的，不受断电、系统崩溃等影响，而off可以加速数据库的一些操作，但如果系统崩溃或断电，则数据库可能会损毁。</p>
+<h4 id="优化方案-3">
+  优化方案
+  <a class="anchor" href="#%e4%bc%98%e5%8c%96%e6%96%b9%e6%a1%88-3">#</a>
+</h4>
+<p>SQLite3中，该选项的默认值就是full，如果我们再插入数据前将其改为off，则会提高效率，既禁用写同步。</p>
+<p>需要注意，打开写同步会导致系统崩溃或断电的情况下导致数据丢失，目前对于我们产品来说问题不大，但取消任务也可能会导致数据丢失，但目前没有考虑。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">db</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">DbManager</span>) <span style="color:#a6e22e">getSqlDriver</span>(<span style="color:#a6e22e">dsn</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">WALModel</span> <span style="color:#66d9ef">bool</span>) (<span style="color:#f92672">*</span><span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">DB</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gormDb</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#a6e22e">sqlite</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#a6e22e">dsn</span>), <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Config</span>{})
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">WALModel</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">gormDb</span>.<span style="color:#a6e22e">Exec</span>(<span style="color:#e6db74">&#34;PRAGMA journal_mode=WAL;&#34;</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">gormDb</span>.<span style="color:#a6e22e">Exec</span>(<span style="color:#e6db74">&#34;PRAGMA synchronous = OFF;&#34;</span>) <span style="color:#75715e">// 设置 PRAGMA synchronous 为 OFF，禁用写同步
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">gormDb</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="性能对比-3">
+  性能对比
+  <a class="anchor" href="#%e6%80%a7%e8%83%bd%e5%af%b9%e6%af%94-3">#</a>
+</h4>
+<pre tabindex="0"><code>本次提交数量：320239       本次提交耗时：1.5155745999999999      本次提交速率：211298.7377856557        总提交数量：126338735      总提交耗时：641.0061334000002      平均速率：197094.42455703023
+
+本次提交数量：304766       本次提交耗时：1.4957225      本次提交速率：203758.38432596956        总提交数量：126643501      总提交耗时：642.5018559000002      平均速率：197109.93802905208
+
+本次提交数量：326637       本次提交耗时：1.6357978      本次提交速率：199680.54731458865        总提交数量：126970138      总提交耗时：644.1376537000002      平均速率：197116.4661321521
+
+本次提交数量：668516       本次提交耗时：3.3291445      本次提交速率：200807.14429788193        总提交数量：127638654      总提交耗时：647.4667982000002      平均速率：197135.44285953158
+
+本次提交数量：9980       本次提交耗时：0.0449063      本次提交速率：222240.5319520869        总提交数量：127648634      总提交耗时：647.5117045000002      平均速率：197137.18395031724
+
+本次提交数量：640272       本次提交耗时：3.3323363      本次提交速率：192139.0707174423        总提交数量：128288906      总提交耗时：650.8440408000001      平均速率：197111.59349682406
+
+本次提交数量：63170       本次提交耗时：0.3055877      本次提交速率：206716.4352491936        总提交数量：128352076      总提交耗时：651.1496285000002      平均速率：197116.10109595564
+
+本次提交数量：470002       本次提交耗时：2.395864      本次提交速率：196172.23682145565        总提交数量：128822078      总提交耗时：653.5454925000001      平均速率：197112.64093830466
+
+本次提交数量：302921       本次提交耗时：1.5790298      本次提交速率：191839.9513422736        总提交数量：129124999      总提交耗时：655.1245223000001      平均速率：197099.93231007463
+
+本次提交数量：270552       本次提交耗时：1.4943262      本次提交速率：181052.83839632873        总提交数量：129395551      总提交耗时：656.6188485000001      平均速率：197063.41250421776
+
+扫描完成！耗时：18m3.6127236s
+</code></pre><p>扫描任务总耗时18分03秒，提交数据总耗时656秒，平均提交速率每秒197063条。</p>
+<h3 id="第五次优化">
+  第五次优化：
+  <a class="anchor" href="#%e7%ac%ac%e4%ba%94%e6%ac%a1%e4%bc%98%e5%8c%96">#</a>
+</h3>
+<h4 id="情况分析-4">
+  情况分析
+  <a class="anchor" href="#%e6%83%85%e5%86%b5%e5%88%86%e6%9e%90-4">#</a>
+</h4>
+<p>数据扫描过程中产生的数据会等待数据完全提交之后，再继续扫描。因此提交数据中间的时间浪费也是导致扫描速度慢的主要原因。</p>
+<h4 id="优化方案-4">
+  优化方案
+  <a class="anchor" href="#%e4%bc%98%e5%8c%96%e6%96%b9%e6%a1%88-4">#</a>
+</h4>
+<p>要保证插件在扫描的时候提交数据，提交数据的时候继续扫描，错开时间，同时还要保证数据提交协程每次只有一个？</p>
+<pre tabindex="0"><code>var concurrencyCh = make(chan struct{}, 1)
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ticker</span>.<span style="color:#a6e22e">C</span>: <span style="color:#75715e">//3秒提交一次数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">concurrencyCh</span> <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">struct</span>{}{}
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">relateFiles2</span> <span style="color:#f92672">:=</span> make([]<span style="color:#f92672">*</span><span style="color:#a6e22e">file2</span>.<span style="color:#a6e22e">RelateBlock</span>, len(<span style="color:#a6e22e">relateFiles</span>))
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">relateFiles</span> = <span style="color:#a6e22e">relateFiles</span>[:<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">wg</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">wg</span>.<span style="color:#a6e22e">Done</span>()
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">writeData</span>(<span style="color:#a6e22e">relateFiles2</span>)
+</span></span><span style="display:flex;"><span>			<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">concurrencyCh</span>
+</span></span><span style="display:flex;"><span>		}()
+</span></span></code></pre></div><p>注意数据拷贝，不然会导致数据错乱</p>
+<h4 id="性能对比-4">
+  性能对比
+  <a class="anchor" href="#%e6%80%a7%e8%83%bd%e5%af%b9%e6%af%94-4">#</a>
+</h4>
+<pre tabindex="0"><code>本次提交数量：411798       本次提交耗时：2.1555518      本次提交速率：191040.64212235587        总提交数量：125191532      总提交耗时：647.2781692999998      平均速率：193412.2575698615
+
+本次提交数量：450177       本次提交耗时：2.28864      本次提交速率：196700.6606543624        总提交数量：125641709      总提交耗时：649.5668092999998      平均速率：193423.84370808097
+
+本次提交数量：444626       本次提交耗时：2.3642943      本次提交速率：188058.6524274918        总提交数量：126086335      总提交耗时：651.9311035999998      平均速率：193404.3862974849
+
+本次提交数量：459672       本次提交耗时：2.3378427      本次提交速率：196622.2962733977        总提交数量：126546007      总提交耗时：654.2689462999998      平均速率：193415.88457718925
+
+本次提交数量：424131       本次提交耗时：2.1475108      本次提交速率：197498.89034318243        总提交数量：126970138      总提交耗时：656.4164570999998      平均速率：193429.24240648208
+
+本次提交数量：810616       本次提交耗时：4.3770795      本次提交速率：185195.63101378444        总提交数量：127780754      总提交耗时：660.7935365999998      平均速率：193374.70317502503
+
+本次提交数量：698718       本次提交耗时：3.6598641      本次提交速率：190913.64621981455        总提交数量：128479472      总提交耗时：664.4534006999999      平均速率：193361.147470458
+
+本次提交数量：466650       本次提交耗时：2.5062204      本次提交速率：186196.7127871116        总提交数量：128946122      总提交耗时：666.9596210999998      平均速率：193334.22582214556
+
+本次提交数量：255661       本次提交耗时：1.4855797      本次提交速率：172095.10873095534        总提交数量：129201783      总提交耗时：668.4452007999998      平均速率：193287.0231477022
+
+本次提交数量：193768       本次提交耗时：1.2214007      本次提交速率：158644.08789023946        总提交数量：129395551      总提交耗时：669.6666014999998      平均速率：193223.83811610774
+
+扫描完成！耗时：13m31.9696606s
+</code></pre><p>扫描任务总耗时13分31秒，提交数据总耗时669秒，平均提交速率每秒193223条。由于环境原因提交耗时和速率稍有下降，但整体扫描时间缩短，符合预期效果。</p>
+<h3 id="第六次优化">
+  第六次优化：
+  <a class="anchor" href="#%e7%ac%ac%e5%85%ad%e6%ac%a1%e4%bc%98%e5%8c%96">#</a>
+</h3>
+<h4 id="情况分析-5">
+  情况分析
+  <a class="anchor" href="#%e6%83%85%e5%86%b5%e5%88%86%e6%9e%90-5">#</a>
+</h4>
+<p><code>DEFAULT_PAGE_SIZE=4096</code> 是 SQLite 的一个配置选项，用来设置数据库的页面大小。SQLite 数据库的存储是基于“页面”的，每一页的数据通常包含一个数据库表或索引的多个记录。页面大小决定了每一页所能存储的数据量，影响着数据库的性能和空间效率。</p>
+<p>增大页面大小（例如 8192 字节或更大）通常能提高写入操作的效率，因为每次 I/O 操作会处理更多的数据，减少了磁盘寻址的开销。然而，较大的页面可能会导致：</p>
+<ul>
+<li>内存占用增大，因为 SQLite 会将更多的数据加载到内存中。</li>
+<li>对于非常小的数据库来说，较大的页面可能会导致内存浪费，因为每一页的存储量过大，未完全填充页面会造成空间浪费。</li>
+<li>缩短查询的效率。</li>
+</ul>
+<p>页面大小最大值为65536，通常为512到32768之间的2次幂。</p>
+<h4 id="优化方案-5">
+  优化方案
+  <a class="anchor" href="#%e4%bc%98%e5%8c%96%e6%96%b9%e6%a1%88-5">#</a>
+</h4>
+<p>实测PRAGMA page_size = 40960对于我的业务速度更快</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">db</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">DbManager</span>) <span style="color:#a6e22e">getSqlDriver</span>(<span style="color:#a6e22e">dsn</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">WALModel</span> <span style="color:#66d9ef">bool</span>) (<span style="color:#f92672">*</span><span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">DB</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gormDb</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#a6e22e">sqlite</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#a6e22e">dsn</span>), <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Config</span>{})
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">WALModel</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">gormDb</span>.<span style="color:#a6e22e">Exec</span>(<span style="color:#e6db74">&#34;PRAGMA page_size = 32768;&#34;</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">gormDb</span>.<span style="color:#a6e22e">Exec</span>(<span style="color:#e6db74">&#34;PRAGMA journal_mode=WAL;&#34;</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">gormDb</span>.<span style="color:#a6e22e">Exec</span>(<span style="color:#e6db74">&#34;PRAGMA synchronous = OFF;&#34;</span>) <span style="color:#75715e">// 设置 PRAGMA synchronous 为 OFF，禁用写同步
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">gormDb</span>.<span style="color:#a6e22e">Exec</span>(<span style="color:#e6db74">&#34;VACUUM;&#34;</span>)  <span style="color:#75715e">//设置页面大小后要执行VACUUM命令
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">gormDb</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>当然还有其他配置项可进行调整优化，具体获取方式如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Test_SQLite</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 连接 SQLite 数据库
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">db</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sql</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#e6db74">&#34;sqlite3&#34;</span>, <span style="color:#e6db74">&#34;your_database.db&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Close</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Exec</span>(<span style="color:#e6db74">&#34;PRAGMA journal_mode=WAL;&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 获取 SQLite 引擎的版本
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">version</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">row</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">QueryRow</span>(<span style="color:#e6db74">&#34;SELECT sqlite_version();&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">row</span>.<span style="color:#a6e22e">Scan</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">version</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 打印版本信息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;SQLite version:&#34;</span>, <span style="color:#a6e22e">version</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">limit</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">QueryRow</span>(<span style="color:#e6db74">&#34;SELECT sqlite_limit(9, -1)&#34;</span>).<span style="color:#a6e22e">Scan</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">limit</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Error getting limit: %v&#34;</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;SQLITE_MAX_VARIABLE_NUMBER = %d\n&#34;</span>, <span style="color:#a6e22e">limit</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 执行 PRAGMA compile_options 语句
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">rows</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Query</span>(<span style="color:#e6db74">&#34;PRAGMA compile_options;&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">rows</span>.<span style="color:#a6e22e">Close</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 打印所有选项，查找 SQLITE_MAX_VARIABLE_NUMBER
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">option</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">rows</span>.<span style="color:#a6e22e">Next</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rows</span>.<span style="color:#a6e22e">Scan</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">option</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">option</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">option</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;SQLITE_MAX_VARIABLE_NUMBER&#34;</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;SQLITE_MAX_VARIABLE_NUMBER is set.&#34;</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rows</span>.<span style="color:#a6e22e">Err</span>(); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>SQLite version: 3.46.1
+2024/11/08 20:02:59 Error getting limit: no such function: sqlite_limit
+SQLITE_MAX_VARIABLE_NUMBER = 0
+ATOMIC_INTRINSICS=1
+COMPILER=gcc-7.1.0
+DEFAULT_AUTOVACUUM
+DEFAULT_CACHE_SIZE=-2000
+DEFAULT_FILE_FORMAT=4
+DEFAULT_JOURNAL_SIZE_LIMIT=-1
+DEFAULT_MMAP_SIZE=0
+DEFAULT_PAGE_SIZE=4096
+DEFAULT_PCACHE_INITSZ=20
+DEFAULT_RECURSIVE_TRIGGERS
+DEFAULT_SECTOR_SIZE=4096
+DEFAULT_SYNCHRONOUS=2
+DEFAULT_WAL_AUTOCHECKPOINT=1000
+DEFAULT_WAL_SYNCHRONOUS=1
+DEFAULT_WORKER_THREADS=0
+DIRECT_OVERFLOW_READ
+ENABLE_FTS3
+ENABLE_FTS3_PARENTHESIS
+ENABLE_RTREE
+ENABLE_UPDATE_DELETE_LIMIT
+MALLOC_SOFT_LIMIT=1024
+MAX_ATTACHED=10
+MAX_COLUMN=2000
+MAX_COMPOUND_SELECT=500
+MAX_DEFAULT_PAGE_SIZE=8192
+MAX_EXPR_DEPTH=1000
+MAX_FUNCTION_ARG=127
+MAX_LENGTH=1000000000
+MAX_LIKE_PATTERN_LENGTH=50000
+MAX_MMAP_SIZE=0x7fff0000
+MAX_PAGE_COUNT=0xfffffffe
+MAX_PAGE_SIZE=65536
+MAX_SQL_LENGTH=1000000000
+MAX_TRIGGER_DEPTH=1000
+MAX_VARIABLE_NUMBER=32766
+MAX_VDBE_OP=250000000
+MAX_WORKER_THREADS=8
+MUTEX_W32
+OMIT_DEPRECATED
+SYSTEM_MALLOC
+TEMP_STORE=1
+THREADSAFE=1
+</code></pre><h4 id="性能对比-5">
+  性能对比
+  <a class="anchor" href="#%e6%80%a7%e8%83%bd%e5%af%b9%e6%af%94-5">#</a>
+</h4>
+<p>默认4096</p>
+<pre tabindex="0"><code>本次提交数量：434742       本次提交耗时：2.2563143      本次提交速率：192677.94384851435        总提交数量：124924843      总提交耗时：682.1520413999997      平均速率：183133.42981956524
+
+本次提交数量：442735       本次提交耗时：2.3260672      本次提交速率：190336.28951046645        总提交数量：125367578      总提交耗时：684.4781085999997      平均速率：183157.9073528314
+
+本次提交数量：475816       本次提交耗时：2.430444      本次提交速率：195773.28257717518        总提交数量：125843394      总提交耗时：686.9085525999997      平均速率：183202.54351714425
+
+本次提交数量：414459       本次提交耗时：2.2304693      本次提交速率：185816.94892639856        总提交数量：126257853      总提交耗时：689.1390218999996      平均速率：183211.00530905818
+
+本次提交数量：429761       本次提交耗时：2.2469453      本次提交速率：191264.55815368536        总提交数量：126687614      总提交耗时：691.3859671999996      平均速率：183237.1786674586
+
+本次提交数量：542287       本次提交耗时：2.8832281      本次提交速率：188083.28068112265        总提交数量：127229901      总提交耗时：694.2691952999996      平均速率：183257.30402747146
+
+本次提交数量：650415       本次提交耗时：3.4503263      本次提交速率：188508.25790012963        总提交数量：127880316      总提交耗时：697.7195215999997      平均速率：183283.270771537
+
+本次提交数量：692542       本次提交耗时：3.5574756      本次提交速率：194672.3120181063        总提交数量：128572858      总提交耗时：701.2769971999996      平均速率：183341.0457114022
+
+本次提交数量：496583       本次提交耗时：2.6779366      本次提交速率：185434.9352408119        总提交数量：129069441      总提交耗时：703.9549337999996      平均速率：183349.01114091754
+
+本次提交数量：364790       本次提交耗时：1.8958125      本次提交速率：192418.81778920649        总提交数量：129434231      总提交耗时：705.8507462999996      平均速率：183373.3713231608
+
+扫描完成！耗时：14m15.1331508s
+</code></pre><p>PRAGMA page_size = 8192;</p>
+<pre tabindex="0"><code>本次提交数量：351563       本次提交耗时：1.74048      本次提交速率：201991.97922412207        总提交数量：125408527      总提交耗时：696.8328506000005      平均速率：179969.3095582654
+
+本次提交数量：337177       本次提交耗时：1.6405582      本次提交速率：205525.77775052417        总提交数量：125745704      总提交耗时：698.4734088000005      平均速率：180029.33600011363
+
+本次提交数量：360320       本次提交耗时：1.7418034      本次提交速率：206866.05618062292        总提交数量：126106024      总提交耗时：700.2152122000005      平均速率：180096.09303372388
+
+本次提交数量：358488       本次提交耗时：1.7744909      本次提交速率：202023.01403743462        总提交数量：126464512      总提交耗时：701.9897031000005      平均速率：180151.5199461334
+
+本次提交数量：328199       本次提交耗时：1.7002102      本次提交速率：193034.36716236616        总提交数量：126792711      总提交耗时：703.6899133000005      平均速率：180182.64665099033
+
+本次提交数量：665446       本次提交耗时：3.6357474      本次提交速率：183028.6669530452        总提交数量：127458157      总提交耗时：707.3256607000005      平均速率：180197.27557156884
+
+本次提交数量：607733       本次提交耗时：3.1744789      本次提交速率：191443.38933864076        总提交数量：128065890      总提交耗时：710.5001396000006      平均速率：180247.5226424289
+
+本次提交数量：548586       本次提交耗时：3.0160173      本次提交速率：181890.86647480435        总提交数量：128614476      总提交耗时：713.5161569000006      平均速率：180254.46902112034
+
+本次提交数量：526139       本次提交耗时：3.0017366      本次提交速率：175278.20395700276        总提交数量：129140615      总提交耗时：716.5178935000006      平均速率：180233.6217581144
+
+本次提交数量：293616       本次提交耗时：1.7229108      本次提交速率：170418.57303349656        总提交数量：129434231      总提交耗时：718.2408043000006      平均速率：180210.077490859
+
+扫描完成！耗时：14m36.1238253s
+</code></pre><p>PRAGMA page_size = 32768</p>
+<pre tabindex="0"><code>本次提交数量：401703       本次提交耗时：2.113701      本次提交速率：190047.2204914508        总提交数量：125283406      总提交耗时：660.7282707      平均速率：189614.1145395067
+
+本次提交数量：415157       本次提交耗时：2.2785035000000002      本次提交速率：182205.99617248776        总提交数量：125698563      总提交耗时：663.0067742000001      平均速率：189588.65563880687
+
+本次提交数量：383705       本次提交耗时：2.041398      本次提交速率：187961.8771057873        总提交数量：126082268      总提交耗时：665.0481722000001      平均速率：189583.66216227005
+
+本次提交数量：457821       本次提交耗时：2.4507947      本次提交速率：186805.12080428444        总提交数量：126540089      总提交耗时：667.4989669      平均速率：189573.46044695427
+
+本次提交数量：371113       本次提交耗时：2.0288619      本次提交速率：182916.83628146403        总提交数量：126911202      总提交耗时：669.5278288000001      平均速率：189553.2889610637
+
+本次提交数量：667636       本次提交耗时：3.8167794      本次提交速率：174921.29621114596        总提交数量：127578838      总提交耗时：673.3446082      平均速率：189470.3491293212
+
+本次提交数量：701927       本次提交耗时：4.0077466      本次提交速率：175142.56016086446        总提交数量：128280765      总提交耗时：677.3523548000001      平均速率：189385.5747174262
+
+本次提交数量：580064       本次提交耗时：3.0862997      本次提交速率：187948.04665276027        总提交数量：128860829      总提交耗时：680.4386545000001      平均速率：189379.054449353
+
+本次提交数量：348194       本次提交耗时：1.8878260999999998      本次提交速率：184441.77670814068        总提交数量：129209023      总提交耗时：682.3264806000001      平均速率：189365.39424115673
+
+本次提交数量：225208       本次提交耗时：1.290852      本次提交速率：174464.61716757613        总提交数量：129434231      总提交耗时：683.6173326      平均速率：189337.2575966193
+
+扫描完成！耗时：13m53.8350117s
+</code></pre><p>PRAGMA page_size = 65536</p>
+<pre tabindex="0"><code>本次提交数量：408814       本次提交耗时：2.0995702      本次提交速率：194713.18463178797        总提交数量：125408527      总提交耗时：656.7121511000001      平均速率：190964.2250260473
+
+本次提交数量：434867       本次提交耗时：2.2103785      本次提交速率：196738.70334877036        总提交数量：125843394      总提交耗时：658.9225296000002      平均速率：190983.59571404153
+
+本次提交数量：402638       本次提交耗时：2.0581124      本次提交速率：195634.60188083022        总提交数量：126246032      总提交耗时：660.9806420000002      平均速率：190998.07767138808
+
+本次提交数量：396058       本次提交耗时：2.0033899      本次提交速率：197693.91869251212        总提交数量：126642090      总提交耗时：662.9840319000002      平均速率：191018.31100979185
+
+本次提交数量：458338       本次提交耗时：2.4742645      本次提交速率：185242.119425793        总提交数量：127100428      总提交耗时：665.4582964000002      平均速率：190996.8343434721
+
+本次提交数量：679254       本次提交耗时：3.4836216      本次提交速率：194985.01214942517        总提交数量：127779682      总提交耗时：668.9419180000002      平均速率：191017.60341471076
+
+本次提交数量：509680       本次提交耗时：2.763081      本次提交速率：184460.75232684094        总提交数量：128289362      总提交耗时：671.7049990000003      平均速率：190990.63158825762
+
+本次提交数量：452940       本次提交耗时：2.3351085      本次提交速率：193969.57357655972        总提交数量：128742302      总提交耗时：674.0401075000003      平均速率：191000.95167556472
+
+本次提交数量：590108       本次提交耗时：3.0712546      本次提交速率：192139.06916085692        总提交数量：129332410      总提交耗时：677.1113621000003      平均速率：191006.1139705101
+
+本次提交数量：101821       本次提交耗时：0.5229523      本次提交速率：194704.18238910125        总提交数量：129434231      总提交耗时：677.6343144000003      平均速率：191008.96788942176
+
+扫描完成！耗时：13m49.7302785s
+</code></pre><p>分别设置page_size = 4096、8192、32768、65536，测试其速度。可见总耗时有所下降，但幅度不大。由于测试环境影响，本次优化最优解不如第五次优化。若感觉影响不大，可不采用本次优化方式。</p>
+<h2 id="优化结果">
+  优化结果
+  <a class="anchor" href="#%e4%bc%98%e5%8c%96%e7%bb%93%e6%9e%9c">#</a>
+</h2>
+<p>到目前为止，扫描任务总耗时从1小时36分钟29秒已优化到13分31秒，已符合预期效果。数据插入性能已不再是影响扫描速度慢的主要原因，但是数据插入速度还有优化空间。</p>
+<h2 id="其他方案尝试">
+  其他方案尝试：
+  <a class="anchor" href="#%e5%85%b6%e4%bb%96%e6%96%b9%e6%a1%88%e5%b0%9d%e8%af%95">#</a>
+</h2>
+<h3 id="方案一">
+  方案一：
+  <a class="anchor" href="#%e6%96%b9%e6%a1%88%e4%b8%80">#</a>
+</h3>
+<h4 id="情况分析-6">
+  情况分析
+  <a class="anchor" href="#%e6%83%85%e5%86%b5%e5%88%86%e6%9e%90-6">#</a>
+</h4>
+<p>找到一个方法，说在执行插入前，可以先进行执行准备，执行准备相当于将sql语句提前编译，省去每次执行sql语句时候的语法检查等操作，可以极大的优化sql语句的执行效率，其原理有点像 LuaJit 将 Lua 语言成静态机器码，提高运行速度。</p>
+<h4 id="优化方案-6">
+  优化方案
+  <a class="anchor" href="#%e4%bc%98%e5%8c%96%e6%96%b9%e6%a1%88-6">#</a>
+</h4>
+<p><strong>但不知道是不是我使用方式不对，未达到想要的效果，实测速度比之前要慢，可留作参考</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">dp</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">DataProxy</span>) <span style="color:#a6e22e">SaveData_RelateBlock</span>(<span style="color:#a6e22e">cid</span>, <span style="color:#a6e22e">eid</span> <span style="color:#66d9ef">int64</span>, <span style="color:#a6e22e">typeName</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">relateBlock</span> []<span style="color:#f92672">*</span><span style="color:#a6e22e">file</span>.<span style="color:#a6e22e">RelateBlock</span>) (<span style="color:#a6e22e">row</span> <span style="color:#66d9ef">int64</span>, <span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">engin</span>, <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">GetDataEngine</span>(<span style="color:#a6e22e">cid</span>, <span style="color:#a6e22e">eid</span>, <span style="color:#a6e22e">typeName</span>, <span style="color:#66d9ef">true</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">tableName</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">GetDataTableName</span>(<span style="color:#a6e22e">eid</span>, <span style="color:#a6e22e">typeName</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">batchSize</span> = <span style="color:#ae81ff">1000</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">totalRows</span> <span style="color:#f92672">:=</span> int64(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 这里加锁  for循环  relateBlock缓存起来去拿
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">dp</span>.<span style="color:#a6e22e">Mutex</span>.<span style="color:#a6e22e">Lock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">dp</span>.<span style="color:#a6e22e">Mutex</span>.<span style="color:#a6e22e">Unlock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 开始事务
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">engin</span>.<span style="color:#a6e22e">Transaction</span>(<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">tx</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">DB</span>) <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 使用原生 SQL 通过 db.DB().Prepare 来获取预编译语句
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">sqlDB</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">tx</span>.<span style="color:#a6e22e">DB</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 创建一个预编译的插入语句
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">insertSQL</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;INSERT INTO %s (cid, eid, tid, nid, pid, `delete`, `index`, start_offset, `length`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">tableName</span>,
+</span></span><span style="display:flex;"><span>		)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">stmt</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sqlDB</span>.<span style="color:#a6e22e">Prepare</span>(<span style="color:#a6e22e">insertSQL</span>) <span style="color:#75715e">// 获取一个原生的预编译语句
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">stmt</span>.<span style="color:#a6e22e">Close</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; len(<span style="color:#a6e22e">relateBlock</span>); <span style="color:#a6e22e">i</span> <span style="color:#f92672">+=</span> <span style="color:#a6e22e">batchSize</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">end</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">batchSize</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">end</span> &gt; len(<span style="color:#a6e22e">relateBlock</span>) {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">end</span> = len(<span style="color:#a6e22e">relateBlock</span>)
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">batch</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">relateBlock</span>[<span style="color:#a6e22e">i</span>:<span style="color:#a6e22e">end</span>]
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">block</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">batch</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#75715e">// 执行预编译的插入语句，传入具体的参数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">execErr</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">stmt</span>.<span style="color:#a6e22e">Exec</span>(<span style="color:#a6e22e">block</span>.<span style="color:#a6e22e">Cid</span>, <span style="color:#a6e22e">block</span>.<span style="color:#a6e22e">Eid</span>, <span style="color:#a6e22e">block</span>.<span style="color:#a6e22e">Tid</span>, <span style="color:#a6e22e">block</span>.<span style="color:#a6e22e">Nid</span>, <span style="color:#a6e22e">block</span>.<span style="color:#a6e22e">Pid</span>, <span style="color:#a6e22e">block</span>.<span style="color:#a6e22e">Delete</span>, <span style="color:#a6e22e">block</span>.<span style="color:#a6e22e">Index</span>, <span style="color:#a6e22e">block</span>.<span style="color:#a6e22e">StartOffset</span>, <span style="color:#a6e22e">block</span>.<span style="color:#a6e22e">Length</span>)
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">execErr</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">execErr</span>
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">totalRows</span> <span style="color:#f92672">+=</span> int64(len(<span style="color:#a6e22e">batch</span>)) <span style="color:#75715e">// 累加已插入的行数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">totalRows</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">totalRows</span>, <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="方案二">
+  方案二：
+  <a class="anchor" href="#%e6%96%b9%e6%a1%88%e4%ba%8c">#</a>
+</h3>
+<h4 id="情况分析-7">
+  情况分析
+  <a class="anchor" href="#%e6%83%85%e5%86%b5%e5%88%86%e6%9e%90-7">#</a>
+</h4>
+<p>单个数据性能如果已无法提升，可考虑分库操作。SQLite 并没有像某些传统的关系型数据库（如 MySQL 或 PostgreSQL）那样支持严格的表级锁或行级锁。它的锁机制更侧重于整个数据库的锁定。换句话说，通常情况下，SQLite 会对整个数据库加锁，而不是单独对某个表进行加锁。相对来说分库简单。</p>
+<h4 id="优化方案-7">
+  优化方案
+  <a class="anchor" href="#%e4%bc%98%e5%8c%96%e6%96%b9%e6%a1%88-7">#</a>
+</h4>
+<p>由于我们的数据一向采用pid、nid作为查询条件。那么在插入数据库时，可以将pid作为区分条件，当pid为单数时，插入数据库1，但pid为单数时插入数据库2。</p>
+<p>查询时也根据单双数进入不同的数据库查询。还有添加索引等其他问题需要考虑，经过实测插入和查询可行，但目前为止性能已达到要求，已经没有必要，可预留作为后续优化方式。</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#sqlite数据库插入优化">SQLite数据库插入优化</a>
+      <ul>
+        <li><a href="#需求">需求</a></li>
+        <li><a href="#性能优化过程">性能优化过程</a>
+          <ul>
+            <li><a href="#现有性能">现有性能</a></li>
+            <li><a href="#第一次优化">第一次优化：</a></li>
+            <li><a href="#第二次优化">第二次优化：</a></li>
+            <li><a href="#第三次优化">第三次优化：</a></li>
+            <li><a href="#第四次优化">第四次优化：</a></li>
+            <li><a href="#第五次优化">第五次优化：</a></li>
+            <li><a href="#第六次优化">第六次优化：</a></li>
+          </ul>
+        </li>
+        <li><a href="#优化结果">优化结果</a></li>
+        <li><a href="#其他方案尝试">其他方案尝试：</a>
+          <ul>
+            <li><a href="#方案一">方案一：</a></li>
+            <li><a href="#方案二">方案二：</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

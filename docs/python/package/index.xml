@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Package on Soulmate</title>
+    <link>https://chain-code.github.io/docs/python/package/</link>
+    <description>Recent content in Package on Soulmate</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language><atom:link href="https://chain-code.github.io/docs/python/package/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>argparse</title>
+      <link>https://chain-code.github.io/docs/python/package/argparse/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/package/argparse/</guid>
+      <description>argparse # 在命令行程序中，经常需要获取命令行参数。Python内置的sys.argv保存了完整的参数列表，我们可以从中解析出需要的参数：
+# copy.py import sys print(sys.argv) source = sys.argv[1] target = sys.argv[2] # TODO... 运行上述copy.py，并传入参数，打印如下：
+[&amp;#39;copy.py&amp;#39;, &amp;#39;source.txt&amp;#39;, &amp;#39;copy.txt&amp;#39;] 这种方式能应付简单的参数，但参数稍微复杂点，比如可以使用-d复制目录，使用--filename *.py过滤文件名等，解析起来就非常麻烦。
+为了简化参数解析，我们可以使用内置的argparse库，定义好各个参数类型后，它能直接返回有效的参数。
+假设我们想编写一个备份MySQL数据库的命令行程序，需要输入的参数如下：
+host参数：表示MySQL主机名或IP，不输入则默认为localhost； port参数：表示MySQL的端口号，int类型，不输入则默认为3306； user参数：表示登录MySQL的用户名，必须输入； password参数：表示登录MySQL的口令，必须输入； gz参数：表示是否压缩备份文件，不输入则默认为False； outfile参数：表示备份文件保存在哪，必须输入。 其中，outfile是位置参数，而其他则是类似--user root这样的“关键字”参数。
+用argparse来解析参数，一个完整的示例如下：
+# backup.py import argparse def main(): # 定义一个ArgumentParser实例: parser = argparse.ArgumentParser( prog=&amp;#39;backup&amp;#39;, # 程序名 description=&amp;#39;Backup MySQL database.&amp;#39;, # 描述 epilog=&amp;#39;Copyright(r), 2023&amp;#39; # 说明信息 ) # 定义位置参数: parser.add_argument(&amp;#39;outfile&amp;#39;) # 定义关键字参数: parser.add_argument(&amp;#39;--host&amp;#39;, default=&amp;#39;localhost&amp;#39;) # 此参数必须为int类型: parser.add_argument(&amp;#39;--port&amp;#39;, default=&amp;#39;3306&amp;#39;, type=int) # 允许用户输入简写的-u: parser.</description>
+    </item>
+    
+    <item>
+      <title>collections</title>
+      <link>https://chain-code.github.io/docs/python/package/collections/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/package/collections/</guid>
+      <description>collections # collections是Python内建的一个集合模块，提供了许多有用的集合类。
+namedtuple # 我们知道tuple可以表示不变集合，例如，一个点的二维坐标就可以表示成：
+&amp;gt;&amp;gt;&amp;gt; p = (1, 2) 但是，看到(1, 2)，很难看出这个tuple是用来表示一个坐标的。
+定义一个class又小题大做了，这时，namedtuple就派上了用场：
+&amp;gt;&amp;gt;&amp;gt; from collections import namedtuple &amp;gt;&amp;gt;&amp;gt; Point = namedtuple(&amp;#39;Point&amp;#39;, [&amp;#39;x&amp;#39;, &amp;#39;y&amp;#39;]) &amp;gt;&amp;gt;&amp;gt; p = Point(1, 2) &amp;gt;&amp;gt;&amp;gt; p.x 1 &amp;gt;&amp;gt;&amp;gt; p.y 2 namedtuple是一个函数，它用来创建一个自定义的tuple对象，并且规定了tuple元素的个数，并可以用属性而不是索引来引用tuple的某个元素。
+这样一来，我们用namedtuple可以很方便地定义一种数据类型，它具备tuple的不变性，又可以根据属性来引用，使用十分方便。
+可以验证创建的Point对象是tuple的一种子类：
+&amp;gt;&amp;gt;&amp;gt; isinstance(p, Point) True &amp;gt;&amp;gt;&amp;gt; isinstance(p, tuple) True 类似的，如果要用坐标和半径表示一个圆，也可以用namedtuple定义：
+# namedtuple(&amp;#39;名称&amp;#39;, [属性list]): Circle = namedtuple(&amp;#39;Circle&amp;#39;, [&amp;#39;x&amp;#39;, &amp;#39;y&amp;#39;, &amp;#39;r&amp;#39;]) deque # 使用list存储数据时，按索引访问元素很快，但是插入和删除元素就很慢了，因为list是线性存储，数据量大的时候，插入和删除效率很低。
+deque是为了高效实现插入和删除操作的双向列表，适合用于队列和栈：
+&amp;gt;&amp;gt;&amp;gt; from collections import deque &amp;gt;&amp;gt;&amp;gt; q = deque([&amp;#39;a&amp;#39;, &amp;#39;b&amp;#39;, &amp;#39;c&amp;#39;]) &amp;gt;&amp;gt;&amp;gt; q.</description>
+    </item>
+    
+    <item>
+      <title>datetime</title>
+      <link>https://chain-code.github.io/docs/python/package/detetime/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/package/detetime/</guid>
+      <description>datetime # datetime是Python处理日期和时间的标准库。
+获取当前日期和时间 # 我们先看如何获取当前日期和时间：
+&amp;gt;&amp;gt;&amp;gt; from datetime import datetime &amp;gt;&amp;gt;&amp;gt; now = datetime.now() # 获取当前datetime &amp;gt;&amp;gt;&amp;gt; print(now) 2015-05-18 16:28:07.198690 &amp;gt;&amp;gt;&amp;gt; print(type(now)) &amp;lt;class &amp;#39;datetime.datetime&amp;#39;&amp;gt; 注意到datetime是模块，datetime模块还包含一个datetime类，通过from datetime import datetime导入的才是datetime这个类。
+如果仅导入import datetime，则必须引用全名datetime.datetime。
+datetime.now()返回当前日期和时间，其类型是datetime。
+获取指定日期和时间 # 要指定某个日期和时间，我们直接用参数构造一个datetime：
+&amp;gt;&amp;gt;&amp;gt; from datetime import datetime &amp;gt;&amp;gt;&amp;gt; dt = datetime(2015, 4, 19, 12, 20) # 用指定日期时间创建datetime &amp;gt;&amp;gt;&amp;gt; print(dt) 2015-04-19 12:20:00 datetime转换为timestamp # 在计算机中，时间实际上是用数字表示的。我们把1970年1月1日 00:00:00 UTC+00:00时区的时刻称为epoch time，记为0（1970年以前的时间timestamp为负数），当前时间就是相对于epoch time的秒数，称为timestamp。
+你可以认为：
+timestamp = 0 = 1970-1-1 00:00:00 UTC+0:00 对应的北京时间是：</description>
+    </item>
+    
+    <item>
+      <title>uvicorn</title>
+      <link>https://chain-code.github.io/docs/python/package/uvicorn/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/package/uvicorn/</guid>
+      <description>uvicorn # Uvicorn 是由 Starlette 框架的作者编写的 ASGI 服务器，旨在提供高性能的异步请求处理能力。它使用 asyncio 库实现异步 I/O 操作，支持 HTTP 和 WebSocket 协议，可与各种 ASGI 应用程序框架（如 FastAPI、Django、Starlette 等）配合使用。
+示例 # # main.pyfrom fastapi import FastAPIapp = FastAPI()@app.get(&amp;#34;/&amp;#34;)async def read_root():return {&amp;#34;message&amp;#34;: &amp;#34;Hello, World!&amp;#34;} from fastapi import FastAPIimport uvicornapp = FastAPI()@app.get(&amp;#34;/&amp;#34;)async def read_root():return {&amp;#34;message&amp;#34;: &amp;#34;Hello, World!&amp;#34;}if __name__ == &amp;#34;__main__&amp;#34;:host = &amp;#34;0.0.0.0&amp;#34;port = 8000uvicorn.run(app, host=host, port=port, log_level=40) 配置选项 # Uvicorn 提供了丰富的配置选项，以满足不同需求。可以通过命令行参数或配置文件来配置 Uvicorn 的行为。</description>
+    </item>
+    
+    <item>
+      <title>正则表达式</title>
+      <link>https://chain-code.github.io/docs/python/package/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/package/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</guid>
+      <description>正则表达式 # 字符串是编程时涉及到的最多的一种数据结构，对字符串进行操作的需求几乎无处不在。比如判断一个字符串是否是合法的Email地址，虽然可以编程提取@前后的子串，再分别判断是否是单词和域名，但这样做不但麻烦，而且代码难以复用。
+正则表达式是一种用来匹配字符串的强有力的武器。它的设计思想是用一种描述性的语言来给字符串定义一个规则，凡是符合规则的字符串，我们就认为它“匹配”了，否则，该字符串就是不合法的。
+所以我们判断一个字符串是否是合法的Email的方法是：
+创建一个匹配Email的正则表达式； 用该正则表达式去匹配用户的输入来判断是否合法。 因为正则表达式也是用字符串表示的，所以，我们要首先了解如何用字符来描述字符。
+在正则表达式中，如果直接给出字符，就是精确匹配。用\d可以匹配一个数字，\w可以匹配一个字母或数字，所以：
+&#39;00\d&#39;可以匹配&#39;007&#39;，但无法匹配&#39;00A&#39;； &#39;\d\d\d&#39;可以匹配&#39;010&#39;； &#39;\w\w\d&#39;可以匹配&#39;py3&#39;； .可以匹配任意字符，所以：
+&#39;py.&#39;可以匹配&#39;pyc&#39;、&#39;pyo&#39;、&#39;py!&#39;等等。 要匹配变长的字符，在正则表达式中，用*表示任意个字符（包括0个），用+表示至少一个字符，用?表示0个或1个字符，用{n}表示n个字符，用{n,m}表示n-m个字符：
+来看一个复杂的例子：\d{3}\s+\d{3,8}。
+我们来从左到右解读一下：
+\d{3}表示匹配3个数字，例如&#39;010&#39;； \s可以匹配一个空格（也包括Tab等空白符），所以\s+表示至少有一个空格，例如匹配&#39; &#39;，&#39; &#39;等； \d{3,8}表示3-8个数字，例如&#39;1234567&#39;。 综合起来，上面的正则表达式可以匹配以任意个空格隔开的带区号的电话号码。
+如果要匹配&#39;010-12345&#39;这样的号码呢？由于&#39;-&#39;是特殊字符，在正则表达式中，要用&#39;\&#39;转义，所以，上面的正则是\d{3}\-\d{3,8}。
+但是，仍然无法匹配&#39;010 - 12345&#39;，因为带有空格。所以我们需要更复杂的匹配方式。
+进阶 # 要做更精确地匹配，可以用[]表示范围，比如：
+[0-9a-zA-Z\_]可以匹配一个数字、字母或者下划线； [0-9a-zA-Z\_]+可以匹配至少由一个数字、字母或者下划线组成的字符串，比如&#39;a100&#39;，&#39;0_Z&#39;，&#39;Py3000&#39;等等； [a-zA-Z\_][0-9a-zA-Z\_]*可以匹配由字母或下划线开头，后接任意个由一个数字、字母或者下划线组成的字符串，也就是Python合法的变量； [a-zA-Z\_][0-9a-zA-Z\_]{0, 19}更精确地限制了变量的长度是1-20个字符（前面1个字符+后面最多19个字符）。 A|B可以匹配A或B，所以(P|p)ython可以匹配&#39;Python&#39;或者&#39;python&#39;。
+^表示行的开头，^\d表示必须以数字开头。
+$表示行的结束，\d$表示必须以数字结束。
+你可能注意到了，py也可以匹配&#39;python&#39;，但是加上^py$就变成了整行匹配，就只能匹配&#39;py&#39;了。
+re模块 # 有了准备知识，我们就可以在Python中使用正则表达式了。Python提供re模块，包含所有正则表达式的功能。由于Python的字符串本身也用\转义，所以要特别注意：
+s = &amp;#39;ABC\\-001&amp;#39; # Python的字符串 # 对应的正则表达式字符串变成 &amp;#39;ABC\-001&amp;#39; 因此我们强烈建议使用Python的r前缀，就不用考虑转义的问题了：
+s = r&amp;#39;ABC\-001&amp;#39; # Python的字符串 # 对应的正则表达式字符串不变：&amp;#39;ABC\-001&amp;#39; 先看看如何判断正则表达式是否匹配：
+&amp;gt;&amp;gt;&amp;gt; import re &amp;gt;&amp;gt;&amp;gt; re.match(r&amp;#39;^\d{3}\-\d{3,8}$&amp;#39;, &amp;#39;010-12345&amp;#39;) &amp;lt;_sre.SRE_Match object; span=(0, 9), match=&amp;#39;010-12345&amp;#39;&amp;gt; &amp;gt;&amp;gt;&amp;gt; re.</description>
+    </item>
+    
+  </channel>
+</rss>

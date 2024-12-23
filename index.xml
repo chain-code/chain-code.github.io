@@ -1544,6 +1544,16 @@ type emptyCtx int func (*emptyCtx) Deadline() (deadline time.Time, ok bool) { re
     </item>
     
     <item>
+      <title>gofpdf</title>
+      <link>https://chain-code.github.io/docs/golang/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/gofpdf/</link>
+      <pubDate>Wed, 19 Apr 2023 20:05:22 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/gofpdf/</guid>
+      <description>gofpdf # gofpdf 包实现了一个 PDF 文档生成器，它对文本、绘图和图像具有高级支持。
+https://github.com/jung-kurt/gofpdf</description>
+    </item>
+    
+    <item>
       <title>math</title>
       <link>https://chain-code.github.io/docs/golang/package/math/</link>
       <pubDate>Wed, 19 Apr 2023 20:05:22 +0800</pubDate>

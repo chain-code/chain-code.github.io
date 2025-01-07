@@ -554,10 +554,10 @@ $ virtualenv myproject$ source myproject/bin/activate 执行第一个命令在 
     
     <item>
       <title>resty</title>
-      <link>https://chain-code.github.io/docs/golang/package/resty/</link>
+      <link>https://chain-code.github.io/docs/golang/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/resty/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/golang/package/resty/</guid>
+      <guid>https://chain-code.github.io/docs/golang/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/resty/</guid>
       <description>介绍： # RESTful API 已成为现代 Web 开发的基石，可实现客户端与服务器之间的无缝通信。在本文中，我们将探索使用 Resty（一种流行的 HTTP 客户端库）在 Go 中执行常见操作（如 GET、POST、UPDATE 和 DELETE 请求）的强大功能和简便性。我们还将学习如何在请求中传递标头，从而使我们能够自定义和增强 API 交互。
 网址：https://github.com/go-resty/resty
 安装 Resty： # 首先，我们需要在 Go 环境中安装 Resty。我们可以使用以下命令来安装 Resty 包：
@@ -729,6 +729,21 @@ func Copy(dst Writer, src Reader) (written int64, err error) { return copyBuffer
       
       <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/</guid>
       <description>go语言在.csv文件中加入超链接 # func main() { // 打开文件以写入 CSV 数据 file, err := os.Create(&amp;#34;output.csv&amp;#34;) if err != nil { panic(err) } defer file.Close() // 创建 CSV writer writer := csv.NewWriter(file) defer writer.Flush() // 写入 CSV 头部 header := []string{&amp;#34;File Name&amp;#34;, &amp;#34;Hyperlink&amp;#34;} writer.Write(header) // 模拟一些文件名和相对路径数据 fileData := []struct { FileName string RelativePath string }{ {&amp;#34;video.MP4&amp;#34;, &amp;#34;./d/video.MP4&amp;#34;}, // 添加更多文件名和相对路径 } // 写入文件名和相对路径数据到 CSV 文件 for _, data := range fileData { // 构建超链接字符串 hyperlinkFormula := `=HYPERLINK(&amp;#34;` + data.</description>
+    </item>
+    
+    <item>
+      <title>并发编程</title>
+      <link>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</guid>
+      <description>sync.Pool # Go 并发相关库 sync 里面有一个有趣的 package Pool，sync.Pool 是个有趣的库，用很少的代码实现了很巧的功能。第一眼看到 Pool 这个名字，就让人想到池子，元素池化是常用的性能优化的手段（性能优化的几把斧头：并发，预处理，缓存）。比如，创建一个 100 个元素的池，然后就可以在池子里面直接获取到元素，免去了申请和初始化的流程，大大提高了性能。释放元素也是直接丢回池子而免去了真正释放元素带来的开销。
+但是再仔细一看 sync.Pool 的实现，发现比我预期的还更有趣。sync.Pool 除了最常见的池化提升性能的思路，最重要的是减少 GC 。常用于一些对象实例创建昂贵的场景。注意，Pool 是 Goroutine 并发安全的。
+对象池是在什么时候适合引入？
+一个对象会被大量创建，比如高并发场景。 该场景是会被稳定触发的，而不是一次性的。也不能是间隔很久才触发一次。 初始化 Pool 实例 New # 第一个步骤就是创建一个 Pool 实例，关键一点是配置 New 方法，声明 Pool 元素创建的方法。
+bufferpool := &amp;amp;sync.Pool { New: func() interface {} { println(&amp;#34;Create new instance&amp;#34;) return struct{}{} } } 申请对象 Get # buffer := bufferPool.Get()
+Get 方法会返回 Pool 已经存在的对象，如果没有，那么就走慢路径，也就是调用初始化的时候定义的 New 方法（也就是最开始定义的初始化行为）来初始化一个对象。
+释放对象 Put # bufferPool.Put(buffer)</description>
     </item>
     
     <item>

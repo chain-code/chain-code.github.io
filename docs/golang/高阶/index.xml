@@ -39,6 +39,21 @@ func main(){ var whatever [3]struct{} for i:=range whatever{ defer func(){ fmt.P
     </item>
     
     <item>
+      <title>并发编程</title>
+      <link>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</guid>
+      <description>sync.Pool # Go 并发相关库 sync 里面有一个有趣的 package Pool，sync.Pool 是个有趣的库，用很少的代码实现了很巧的功能。第一眼看到 Pool 这个名字，就让人想到池子，元素池化是常用的性能优化的手段（性能优化的几把斧头：并发，预处理，缓存）。比如，创建一个 100 个元素的池，然后就可以在池子里面直接获取到元素，免去了申请和初始化的流程，大大提高了性能。释放元素也是直接丢回池子而免去了真正释放元素带来的开销。
+但是再仔细一看 sync.Pool 的实现，发现比我预期的还更有趣。sync.Pool 除了最常见的池化提升性能的思路，最重要的是减少 GC 。常用于一些对象实例创建昂贵的场景。注意，Pool 是 Goroutine 并发安全的。
+对象池是在什么时候适合引入？
+一个对象会被大量创建，比如高并发场景。 该场景是会被稳定触发的，而不是一次性的。也不能是间隔很久才触发一次。 初始化 Pool 实例 New # 第一个步骤就是创建一个 Pool 实例，关键一点是配置 New 方法，声明 Pool 元素创建的方法。
+bufferpool := &amp;amp;sync.Pool { New: func() interface {} { println(&amp;#34;Create new instance&amp;#34;) return struct{}{} } } 申请对象 Get # buffer := bufferPool.Get()
+Get 方法会返回 Pool 已经存在的对象，如果没有，那么就走慢路径，也就是调用初始化的时候定义的 New 方法（也就是最开始定义的初始化行为）来初始化一个对象。
+释放对象 Put # bufferPool.Put(buffer)</description>
+    </item>
+    
+    <item>
       <title>Go避坑指南</title>
       <link>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E9%81%BF%E5%9D%91%E6%8C%87%E5%8D%97/</link>
       <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>

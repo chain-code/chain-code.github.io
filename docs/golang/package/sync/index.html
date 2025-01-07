@@ -25,7 +25,7 @@ package main import ( &#34;fmt&#34; &#34;sync&#34; ) var x = 10 var wg sync.Wait
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.67dc3a9fe2ee43da6f460d50d623703046464ec53784165c2fcc4c258cf6fca8.js" integrity="sha256-Z9w6n&#43;LuQ9pvRg1Q1iNwMEZGTsU3hBZcL8xMJYz2/Kg=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.203aca2f19ebb1b51916538cc9e11647d9c344eca6b1d70eefd949d41c01daf6.js" integrity="sha256-IDrKLxnrsbUZFlOMyeEWR9nDROymsdcO79lJ1BwB2vY=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -767,6 +767,19 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" class="">并发编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%81%BF%E5%9D%91%E6%8C%87%E5%8D%97/" class="">Go避坑指南</a>
   
 
@@ -854,19 +867,6 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/golang/package/flag/" class="">Flag</a>
-  
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/docs/golang/package/resty/" class="">resty</a>
   
 
         </li>
@@ -1029,12 +1029,25 @@ https://github.com/alex-shpak/hugo-book
   
     <input type="checkbox" id="section-98f45c00d30ea45270982f872bd1c0bb" class="toggle"  />
     <label for="section-98f45c00d30ea45270982f872bd1c0bb" class="flex justify-between">
-      <a role="button" class="">Package</a>
+      <a role="button" class="">第三方库</a>
     </label>
   
 
           
   <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/resty/" class="">resty</a>
+  
+
+        </li>
+      
     
       
         <li>
@@ -2972,11 +2985,21 @@ mutex.Unlock()
   sync.Once
   <a class="anchor" href="#synconce">#</a>
 </h3>
-<p>在编程的很多场景下我们需要确保某些操作在高并发的场景下只执行一次，例如只加载一次配置文件、只关闭一次通道等。</p>
-<p>Go语言中的sync包中提供了一个针对只执行一次场景的解决方案–sync.Once。</p>
-<p>sync.Once只有一个Do方法，其签名如下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">o</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Once</span>) <span style="color:#a6e22e">Do</span>(<span style="color:#a6e22e">f</span> <span style="color:#66d9ef">func</span>()) {}
-</span></span></code></pre></div><p>注意：如果要执行的函数f需要传递参数就需要搭配闭包来使用。</p>
+<p><strong>sync.Once 的使用场景</strong></p>
+<p><code>sync.Once</code> 是 Go 标准库提供的使函数只执行一次的实现，常应用于单例模式，例如初始化配置、保持数据库连接等。作用与 <code>init</code> 函数类似，但有区别。</p>
+<ul>
+<li>init 函数是当所在的 package 首次被加载时执行，若迟迟未被使用，则既浪费了内存，又延长了程序加载时间。</li>
+<li>sync.Once 可以在代码的任意位置初始化和调用，因此可以延迟到使用时再执行，并发场景下是线程安全的。</li>
+</ul>
+<p>在多数情况下，<code>sync.Once</code> 被用于控制变量的初始化，这个变量的读写满足如下三个条件：</p>
+<ul>
+<li>当且仅当第一次访问某个变量时，进行初始化（写）；</li>
+<li>变量初始化过程中，所有读都被阻塞，直到初始化完成；</li>
+<li>变量仅初始化一次，初始化完成后驻留在内存里。</li>
+</ul>
+<p><code>sync.Once</code> 仅提供了一个方法 <code>Do</code>，参数 f 是对象初始化函数。</p>
+<pre tabindex="0"><code>func (o *Once) Do(f func())
+</code></pre><p>注意：如果要执行的函数f需要传递参数就需要搭配闭包来使用。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
 </span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;fmt&#34;</span>
@@ -3012,11 +3035,64 @@ mutex.Unlock()
 </span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">wg</span>.<span style="color:#a6e22e">Wait</span>()
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>sync.Once其实内部包含一个互斥锁和一个布尔值，互斥锁保证布尔值和数据的安全，而布尔值用来记录初始化是否完成。这样设计就能保证初始化操作的时候是并发安全的并且初始化操作也不会被执行多次。</p>
-<h3 id="syncpool">
+<p><strong>闭包 = 函数 + 外部变量引用</strong></p>
+<p>闭包是函数和它引用的变量共同组成的实体，可以像变量一样被传递和调用。这使得闭包能够记住并访问它创建时的环境变量。</p>
+<pre tabindex="0"><code>// 闭包示例：计数器函数
+func counter() func() int {
+    count := 0
+    return func() int { // 闭包
+        count++        // 捕获外部变量 count
+        return count
+    }
+}
+</code></pre><h3 id="syncpool">
   sync.Pool
   <a class="anchor" href="#syncpool">#</a>
 </h3>
-<p>待补充</p>
+<p><strong>sync.Pool 的使用场景</strong></p>
+<blockquote>
+<p>一句话总结：保存和复用临时对象，减少内存分配，降低 GC 压力。</p>
+</blockquote>
+<p>举个简单的例子：</p>
+<pre tabindex="0"><code>type Student struct {
+	Name   string
+	Age    int32
+	Remark [1024]byte
+}
+
+var buf, _ = json.Marshal(Student{Name: &#34;Geektutu&#34;, Age: 25})
+
+func unmarsh() {
+	stu := &amp;Student{}
+	json.Unmarshal(buf, stu)
+}
+</code></pre><p>json 的反序列化在文本解析和网络通信过程中非常常见，当程序并发度非常高的情况下，短时间内需要创建大量的临时对象。而这些对象是都是分配在堆上的，会给 GC 造成很大压力，严重影响程序的性能。</p>
+<blockquote>
+<p>参考：<a href="https://geektutu.com/post/qa-golang-2.html#Q5-%e7%ae%80%e8%bf%b0-Go-%e8%af%ad%e8%a8%80GC-%e5%9e%83%e5%9c%be%e5%9b%9e%e6%94%b6-%e7%9a%84%e5%b7%a5%e4%bd%9c%e5%8e%9f%e7%90%86">垃圾回收(GC)的工作原理</a></p>
+</blockquote>
+<p>Go 语言从 1.3 版本开始提供了对象重用的机制，即 sync.Pool。sync.Pool 是可伸缩的，同时也是并发安全的，其大小仅受限于内存的大小。sync.Pool 用于存储那些被分配了但是没有被使用，而未来可能会使用的值。这样就可以不用再次经过内存分配，可直接复用已有对象，减轻 GC 的压力，从而提升系统的性能。</p>
+<p>sync.Pool 的大小是可伸缩的，高负载时会动态扩容，存放在池中的对象如果不活跃了会被自动清理。</p>
+<p><strong>如何使用</strong></p>
+<p>sync.Pool 的使用方式非常简单：</p>
+<ul>
+<li>声明对象池</li>
+</ul>
+<p>只需要实现 New 函数即可。对象池中没有对象时，将会调用 New 函数创建。</p>
+<pre tabindex="0"><code>var studentPool = sync.Pool{
+    New: func() interface{} { 
+        return new(Student) 
+    },
+}
+</code></pre><ul>
+<li>Get &amp; Put</li>
+</ul>
+<pre tabindex="0"><code>stu := studentPool.Get().(*Student)
+json.Unmarshal(buf, stu)
+studentPool.Put(stu)
+</code></pre><ul>
+<li><code>Get()</code> 用于从对象池中获取对象，因为返回值是 <code>interface{}</code>，因此需要类型转换。</li>
+<li><code>Put()</code> 则是在对象使用完毕后，返回对象池。</li>
+</ul>
 <h3 id="syncmap">
   sync.Map
   <a class="anchor" href="#syncmap">#</a>

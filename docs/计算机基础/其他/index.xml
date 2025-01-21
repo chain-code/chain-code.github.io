@@ -73,6 +73,20 @@ localhost在IPv6中通常解析为::1，这是IPv6下的环回地址。直接使
     </item>
     
     <item>
+      <title>Swagger</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/swagger/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/swagger/</guid>
+      <description>Swag将Go的注释转换为Swagger2.0文档。我们为流行的 Go Web Framework 创建了各种插件，这样可以与现有Go项目快速集成（使用Swagger UI）。
+官方文档
+快速开始 # 将注释添加到API源代码中，请参阅声明性注释格式。 使用如下命令下载swag： go install github.com/swaggo/swag/cmd/swag@latest 从源码开始构建的话，需要有Go环境（1.19及以上版本）。
+或者从github的release页面下载预编译好的二进制文件。
+在包含main.go文件的项目根目录运行swag init。这将会解析注释并生成需要的文件（docs文件夹和docs/docs.go）。 swag init 确保导入了生成的docs/docs.go文件，这样特定的配置文件才会被初始化。如果通用API注释没有写在main.go中，可以使用-g标识符来告知swag。
+swag init -g http/api.go (可选) 使用fmt格式化 SWAG 注释。(请先升级到最新版本) swag fmt swag cli # swag init -h NAME: swag init - Create docs.go USAGE: swag init [command options] [arguments...] OPTIONS: --generalInfo value, -g value API通用信息所在的go源文件路径，如果是相对路径则基于API解析目录 (默认: &amp;#34;main.go&amp;#34;) --dir value, -d value API解析目录 (默认: &amp;#34;./&amp;#34;) --exclude value 解析扫描时排除的目录，多个目录可用逗号分隔（默认：空） --propertyStrategy value, -p value 结构体字段命名规则，三种：snakecase,camelcase,pascalcase (默认: &amp;#34;camelcase&amp;#34;) --output value, -o value 文件(swagger.</description>
+    </item>
+    
+    <item>
       <title>Vim编程常用快捷键</title>
       <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -133,7 +147,7 @@ ssh-keygen -t rsa -C &amp;#34;github邮箱地址&amp;#34; -f ~/.ssh/github_rsa 2
 3、打开github_rsa.pub，复制有所内容，填入后点击“Add SSH key”按钮。接着可能会跳转页面需要输入你的GitHub密码，输入确定即可。
 配置git，访问不同host时使用不同的密钥 # 进入密钥生成的位置（C:/Users/用户名/.ssh/），手动创建一个config文件（注意这个config文件要无后缀）。
 在新建的config文件里面配置如下内容：
-# 自己的github账号配置 Host github.com port 22 User git HostName github.com PreferredAuthentications publickey IdentityFile C:\Users\xiaoqq\.ssh\github_rsa # 公司的gitlab账号配置(HostName为公司的gitlab地址) Host gitlab.com port 22 User git HostName gitlab.</description>
+# 自己的github账号配置 Host github.com port 22 User git HostName github.com PreferredAuthentications publickey IdentityFile C:\Users\xiaoqq\.ssh\github_rsa # 公司的gitlab账号配置(HostName为公司的gitlab地址) Host gitlab.xxx.cn port 22 User git HostName gitlab.</description>
     </item>
     
     <item>

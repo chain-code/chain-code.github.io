@@ -8,6 +8,15 @@
     <language>zh-cn</language>
     <lastBuildDate>Tue, 27 Dec 2022 21:22:31 +0000</lastBuildDate><atom:link href="https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Gin参数绑定</title>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/gin%E5%8F%82%E6%95%B0%E7%BB%91%E5%AE%9A/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/gin%E5%8F%82%E6%95%B0%E7%BB%91%E5%AE%9A/</guid>
+      <description>奇怪问题 # type BugReportParam struct { Desc string `json:&amp;#34;desc&amp;#34;`	Stack string `json:&amp;#34;stack&amp;#34;` Function string `json:&amp;#34;function&amp;#34;` Contact string `json:&amp;#34;contact&amp;#34;` Email string `json:&amp;#34;email&amp;#34;` ExtFiles []string `json:&amp;#34;extFiles&amp;#34;` } // BugReport godoc // //	@Description	日志反馈 //	@Tags	bug_Report //	@Accept	json //	@Produce	json //	@Param	body	body	param.BugReportParam	true	&amp;#34;日志反馈参数&amp;#34; //	@Success	200	{object}	response.Response //	@Failure	500	{object}	response.Response //	@Router	/bugreport [post] func (r BugReport) BugReport(c *gin.Context) { var par param.</description>
+    </item>
+    
+    <item>
       <title>动态路由与静态路由</title>
       <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1/</link>
       <pubDate>Tue, 27 Dec 2022 21:22:31 +0000</pubDate>

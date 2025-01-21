@@ -17,7 +17,7 @@ ssh-keygen -t rsa -C &#34;github邮箱地址&#34; -f ~/.ssh/github_rsa 2、将gi
 3、打开github_rsa.pub，复制有所内容，填入后点击“Add SSH key”按钮。接着可能会跳转页面需要输入你的GitHub密码，输入确定即可。
 配置git，访问不同host时使用不同的密钥 # 进入密钥生成的位置（C:/Users/用户名/.ssh/），手动创建一个config文件（注意这个config文件要无后缀）。
 在新建的config文件里面配置如下内容：
-# 自己的github账号配置 Host github.com port 22 User git HostName github.com PreferredAuthentications publickey IdentityFile C:\Users\xiaoqq\.ssh\github_rsa # 公司的gitlab账号配置(HostName为公司的gitlab地址) Host gitlab.com port 22 User git HostName gitlab.">
+# 自己的github账号配置 Host github.com port 22 User git HostName github.com PreferredAuthentications publickey IdentityFile C:\Users\xiaoqq\.ssh\github_rsa # 公司的gitlab账号配置(HostName为公司的gitlab地址) Host gitlab.xxx.cn port 22 User git HostName gitlab.">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="同时使用github和gitlab" />
@@ -35,7 +35,7 @@ ssh-keygen -t rsa -C &#34;github邮箱地址&#34; -f ~/.ssh/github_rsa 2、将gi
 3、打开github_rsa.pub，复制有所内容，填入后点击“Add SSH key”按钮。接着可能会跳转页面需要输入你的GitHub密码，输入确定即可。
 配置git，访问不同host时使用不同的密钥 # 进入密钥生成的位置（C:/Users/用户名/.ssh/），手动创建一个config文件（注意这个config文件要无后缀）。
 在新建的config文件里面配置如下内容：
-# 自己的github账号配置 Host github.com port 22 User git HostName github.com PreferredAuthentications publickey IdentityFile C:\Users\xiaoqq\.ssh\github_rsa # 公司的gitlab账号配置(HostName为公司的gitlab地址) Host gitlab.com port 22 User git HostName gitlab." />
+# 自己的github账号配置 Host github.com port 22 User git HostName github.com PreferredAuthentications publickey IdentityFile C:\Users\xiaoqq\.ssh\github_rsa # 公司的gitlab账号配置(HostName为公司的gitlab地址) Host gitlab.xxx.cn port 22 User git HostName gitlab." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8github%E5%92%8Cgitlab/" /><meta property="article:section" content="docs" />
 
@@ -45,7 +45,7 @@ ssh-keygen -t rsa -C &#34;github邮箱地址&#34; -f ~/.ssh/github_rsa 2、将gi
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.203aca2f19ebb1b51916538cc9e11647d9c344eca6b1d70eefd949d41c01daf6.js" integrity="sha256-IDrKLxnrsbUZFlOMyeEWR9nDROymsdcO79lJ1BwB2vY=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.03e9f57270261c572201df15eb24a00a2fe8168266310b2b041d5e342eb84305.js" integrity="sha256-A&#43;n1cnAmHFciAd8V6ySgCi/oFoJmMQsrBB1eNC64QwU=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -265,6 +265,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/schtasks%E4%BD%BF%E7%94%A8/" class="">schtask使用</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/swagger/" class="">Swagger</a>
   
 
         </li>
@@ -1261,6 +1274,19 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/python/ai/ocr%E8%AF%86%E5%88%AB/" class="">Ocr识别</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/python/ai/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/" class="">Yolov8快速上手 实践</a>
   
 
@@ -1782,6 +1808,19 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/gin%E5%8F%82%E6%95%B0%E7%BB%91%E5%AE%9A/" class="">Gin参数绑定</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1/" class="">动态路由与静态路由</a>
   
 
@@ -1849,6 +1888,19 @@ https://github.com/alex-shpak/hugo-book
 
           
   <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/restfulapi/" class="">Restful API</a>
+  
+
+        </li>
+      
     
       
         <li>
@@ -2782,7 +2834,7 @@ https://github.com/alex-shpak/hugo-book
 </span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span>    IdentityFile C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\x</span>iaoqq<span style="color:#ae81ff">\.</span>ssh<span style="color:#ae81ff">\g</span>ithub_rsa<span style="color:#960050;background-color:#1e0010">
 </span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
 </span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># 公司的gitlab账号配置(HostName为公司的gitlab地址)</span><span style="color:#960050;background-color:#1e0010">
-</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span>Host gitlab.com<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span>Host gitlab.xxx.cn<span style="color:#960050;background-color:#1e0010">
 </span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span>    port <span style="color:#ae81ff">22</span><span style="color:#960050;background-color:#1e0010">
 </span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span>    User git<span style="color:#960050;background-color:#1e0010">
 </span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span>    HostName gitlab.xxx.cn<span style="color:#960050;background-color:#1e0010">
@@ -2901,7 +2953,12 @@ ssh-add /Users/tianzhiwei/.ssh/gitlab_rsa
 <p>如果问题仍然存在，启用详细的 SSH 调试输出，看看连接过程中是否有其他错误提示：</p>
 <pre tabindex="0"><code>ssh -vT git@gitlab.forensix.cn
 </code></pre><p>这样可以帮助你进一步定位问题所在。</p>
-</article>
+<h4 id="mac配置文件位置">
+  mac配置文件位置
+  <a class="anchor" href="#mac%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6%e4%bd%8d%e7%bd%ae">#</a>
+</h4>
+<pre tabindex="0"><code>~/.ssh/config
+</code></pre></article>
  
       
 

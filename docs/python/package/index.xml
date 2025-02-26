@@ -59,6 +59,24 @@ timestamp = 0 = 1970-1-1 00:00:00 UTC+0:00 对应的北京时间是：</descript
     </item>
     
     <item>
+      <title>Decord</title>
+      <link>https://chain-code.github.io/docs/python/package/decord/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/package/decord/</guid>
+      <description>分关键帧记录 # import numpy as np from typing import Union, BinaryIO import decord def _read_video_key_frames2( video_file: Union[str, BinaryIO], start_time: int, end_time: int ) -&amp;gt; Generator[tuple[np.ndarray, int, int], None, None]: &amp;#34;&amp;#34;&amp;#34; 获取视频中的关键帧 :param video_file: 视频文件路径/流 :param start_time: 视频开始时间（毫秒） :param end_time: 视频结束时间（毫秒） :return: 生成器，产出（帧numpy数组，累计计数，时间戳） &amp;#34;&amp;#34;&amp;#34; try: # 初始化视频读取器（CPU 解码） video = decord.VideoReader(video_file) except Exception as e: raise RuntimeError(f&amp;#34;Failed to open video with Decord: {str(e)}&amp;#34;) frame_count = 0 total_frames = len(video) print(f&amp;#34;Total frames: {total_frames}&amp;#34;) fps = video.</description>
+    </item>
+    
+    <item>
+      <title>Opencv</title>
+      <link>https://chain-code.github.io/docs/python/package/opencv/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/package/opencv/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>uvicorn</title>
       <link>https://chain-code.github.io/docs/python/package/uvicorn/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

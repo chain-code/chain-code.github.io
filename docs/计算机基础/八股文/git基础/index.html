@@ -53,7 +53,7 @@ git reset --hard 版本号 从上面可以看到版本2的版本号为：" />
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.03e9f57270261c572201df15eb24a00a2fe8168266310b2b041d5e342eb84305.js" integrity="sha256-A&#43;n1cnAmHFciAd8V6ySgCi/oFoJmMQsrBB1eNC64QwU=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.504309dc727858560c9ba372afc698b9097ad5f806cd7d7b9fd060042e6e5bd5.js" integrity="sha256-UEMJ3HJ4WFYMm6Nyr8aYuQl61fgGzX17n9BgBC5uW9U=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -1254,6 +1254,19 @@ https://github.com/alex-shpak/hugo-book
         </li>
       
     
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/%E5%9F%BA%E7%A1%80/%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B/" class="">开发实例</a>
+  
+
+        </li>
+      
+    
   </ul>
 
         </li>
@@ -1283,6 +1296,32 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/python/ai/ocr%E8%AF%86%E5%88%AB/" class="">Ocr识别</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/ai/opencv_cuda%E7%BC%96%E8%AF%91/" class="">Opencv Cuda编译</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/ai/%E6%95%B0%E6%8D%AE%E9%9B%86/" class="">数据集</a>
   
 
         </li>
@@ -1359,6 +1398,21 @@ https://github.com/alex-shpak/hugo-book
   
 
         </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/decord/" class="">Decord</a>
+  
+
+        </li>
+      
+    
       
     
       
@@ -2800,6 +2854,7 @@ https://github.com/alex-shpak/hugo-book
             <li><a href="#git-pull-强制覆盖本地文件">git pull 强制覆盖本地文件</a></li>
             <li><a href="#gitignore中的文件并没有被忽略">.gitignore中的文件并没有被忽略</a></li>
             <li><a href="#git-多平台换行符问题lf-or-crlf">git 多平台换行符问题(LF or CRLF)</a></li>
+            <li><a href="#git-commit--m--回撤">git commit -m  回撤</a></li>
           </ul>
         </li>
       </ul>
@@ -3261,7 +3316,39 @@ $ git config --global core.safecrlf true
 </code></pre><p>也就是让代码仓库使用统一的换行符(LF)，如果代码中包含 CRLF 类型的文件时将无法提交，需要用 <code>dos2unix</code> 或者其他工具手动转换文件类型。当然，可以根据自己的需要进行更为合适的配置！</p>
 <p>忽略权限变化：</p>
 <pre tabindex="0"><code>git config --global core.filemode false
-</code></pre></article>
+</code></pre><h3 id="git-commit--m--回撤">
+  git commit -m  回撤
+  <a class="anchor" href="#git-commit--m--%e5%9b%9e%e6%92%a4">#</a>
+</h3>
+<p>Git 提供了几种方法来撤回 git commit，取决于你的具体需求：</p>
+<ol>
+<li>撤回最近一次 commit 但保留更改 (unstage 代码)</li>
+</ol>
+<pre tabindex="0"><code>git reset --soft HEAD~1
+</code></pre><p>作用：撤回最近的 commit，但保留代码在暂存区（staging area）。
+适用场景：想修改 commit 信息或继续添加文件后再重新提交。</p>
+<ol start="2">
+<li>撤回最近一次 commit 且取消暂存 (仅保留文件修改)</li>
+</ol>
+<pre tabindex="0"><code>git reset --mixed HEAD~1
+</code></pre><p>作用：撤回 commit 并取消 git add，但代码修改仍然保留在工作区。
+适用场景：想重新 git add 并重新提交 commit。</p>
+<ol start="3">
+<li>撤回最近一次 commit 并丢弃修改</li>
+</ol>
+<pre tabindex="0"><code>git reset --hard HEAD~1
+</code></pre><p>作用：撤回 commit 并删除所有未提交的更改，无法恢复！
+适用场景：完全撤销 commit 和文件修改，回到上一个 commit 状态。
+注意：慎用此命令，如果你想保留修改，请不要使用 &ndash;hard。</p>
+<ol start="4">
+<li>撤回已经推送到远程的 commit
+如果 commit 已经推送到远程仓库（如 GitHub），需要使用 git push -f 强制同步：</li>
+</ol>
+<pre tabindex="0"><code>git reset --soft HEAD~1  # 先回退 commit
+git push origin main --force  # 强制推送到远程
+</code></pre><p>注意：&ndash;force 可能导致远程代码丢失，请确保没有其他人基于此 commit 工作。</p>
+<p>如果你的 commit 不是最新的，而是中间的某个 commit，可以使用 git rebase -i HEAD~N 进行交互式修改。</p>
+</article>
  
       
 
@@ -3334,6 +3421,7 @@ $ git config --global core.safecrlf true
             <li><a href="#git-pull-强制覆盖本地文件">git pull 强制覆盖本地文件</a></li>
             <li><a href="#gitignore中的文件并没有被忽略">.gitignore中的文件并没有被忽略</a></li>
             <li><a href="#git-多平台换行符问题lf-or-crlf">git 多平台换行符问题(LF or CRLF)</a></li>
+            <li><a href="#git-commit--m--回撤">git commit -m  回撤</a></li>
           </ul>
         </li>
       </ul>

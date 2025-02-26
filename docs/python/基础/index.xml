@@ -57,5 +57,14 @@ $ virtualenv myproject$ source myproject/bin/activate 执行第一个命令在 
 python -m venv /path/to/new/virtual/environment 运行此命令将创建目标目录（父目录若不存在也将创建），并放置一个 pyvenv.cfg 文件在其中，文件中有一个 home 键，它的值指向运行此命令的 Python 安装（目标目录的常用名称是 .venv）。它还会创建一个 bin 子目录（在 Windows 上是 Scripts），其中包含 Python 二进制文件的副本或符号链接（视创建环境时使用的平台或参数而定）。它还会创建一个（初始为空的） lib/pythonX.Y/site-packages 子目录（在 Windows 上是 Lib\site-packages）。如果指定了一个现有的目录，这个目录就将被重新使用。</description>
     </item>
     
+    <item>
+      <title>开发实例</title>
+      <link>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B/</guid>
+      <description>继续执行主线程 # from concurrent.futures import ThreadPoolExecutor # 使用 ThreadPoolExecutor 创建线程池 executor = ThreadPoolExecutor(max_workers=len(models) + 1) # 提交生产者任务到线程池 executor.submit( DetectionService._producer_frames, read_data, mode, interval_seconds, start_time, end_time, queue_manager ) # 提交消费者任务到线程池 for key, value in CV_MODEL.items(): with queue_manager.lock: q = queue_manager.queues.get(key) executor.submit( DetectionService._consumer_frames, q, mode, diff, name, key, value ) 主线程等待 # from concurrent.futures import ThreadPoolExecutor # 使用 ThreadPoolExecutor 创建线程池，并设置最大工作线程数为 4 with ThreadPoolExecutor(max_workers=4) as executor: # 提交生产者任务到线程池 executor.submit( DetectionService._producer_frames, read_data, mode, interval_seconds, start_time, end_time, queue_manager ) # 提交消费者任务到线程池 for key, value in CV_MODEL.</description>
+    </item>
+    
   </channel>
 </rss>

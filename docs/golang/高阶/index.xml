@@ -39,6 +39,20 @@ func main(){ var whatever [3]struct{} for i:=range whatever{ defer func(){ fmt.P
     </item>
     
     <item>
+      <title>Go内存对齐</title>
+      <link>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90/</guid>
+      <description>内存对齐就是让数据在内存中的地址按照某种规则排列，通常是某个特定数字（比如 4 或 8）的倍数。为什么要这样做？因为处理器读取数据时效率最高的方式是一次性读取整个“块”，而不是零敲碎打。
+举个例子，假设你有一个 int32 类型的变量，占 4 个字节。如果它的内存地址是 4 的倍数，处理器可以一步到位读取整个变量。但如果地址偏了，比如是 5，处理器就得分成两次读取，还要额外拼接数据，效率自然下降。
+在 Golang 中，结构体字段会根据它们的类型和顺序自动对齐。合理的字段设计不仅能减少内存浪费，还能显著提升性能，尤其是在大数据处理或高并发场景下。
+Golang 中的内存对齐 # Golang 的编译器会自动为结构体字段进行内存对齐，但这并不意味着我们可以完全撒手不管。字段的顺序直接影响内存布局和程序性能。让我们通过一个例子来看看。
+未优化的结构体 # type User struct { Age int32 // 4 字节 IsAdmin bool // 1 字节 Score int64 // 8 字节 } 在这个结构体中，Age 是 4 字节，IsAdmin 是 1 字节，Score 是 8 字节。由于 Score 需要在 8 字节对齐的地址上，IsAdmin 后面可能会填充 3 个字节的“空隙”（padding）。最终，这个结构体的大小可能高达 24 字节（4 + 1 + 3 + 8 + 额外填充）。
+优化后的结构体 # 现在，我们调整一下顺序：</description>
+    </item>
+    
+    <item>
       <title>并发编程</title>
       <link>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

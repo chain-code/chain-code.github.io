@@ -8,6 +8,35 @@
     <language>zh-cn</language>
     <lastBuildDate>Tue, 30 Apr 2024 16:16:50 +0800</lastBuildDate><atom:link href="https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Mongodb安装</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mongodb%E5%AE%89%E8%A3%85/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mongodb%E5%AE%89%E8%A3%85/</guid>
+      <description> Mac版 # 官网下载
+https://www.mongodb.com/try/download/community
+解压
+目录 重新命名为mongodb，并把挪到：/usr/local目录下
+添加环境变量
+vi ~/.bash_profile export PATH=$PATH:/usr/local/mongoDB/bin source ~/.bash_profile mongod -version #返回下面信息生效 db version v7.0.4 Build Info: { &amp;#34;version&amp;#34;: &amp;#34;7.0.4&amp;#34;, &amp;#34;gitVersion&amp;#34;: &amp;#34;38f3e37057a43d2e9f41a39142681a76062d582e&amp;#34;, &amp;#34;modules&amp;#34;: [], &amp;#34;allocator&amp;#34;: &amp;#34;system&amp;#34;, &amp;#34;environment&amp;#34;: { &amp;#34;distarch&amp;#34;: &amp;#34;x86_64&amp;#34;, &amp;#34;target_arch&amp;#34;: &amp;#34;x86_64&amp;#34; } } 在目录：/usr/local/mongoDB 创建两个文件夹: data 和 log
+chmod 777 /usr/local/mongodb mkdir /usr/local/mongodb/data mkdir /usr/local/mongodb/log 启动MongoDB
+mongod --dbpath /usr/local/mongodb/data --logpath /usr/local/mongodb/log/mongod.log --logappend </description>
+    </item>
+    
+    <item>
+      <title>数据库规范化</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A7%84%E8%8C%83%E5%8C%96/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A7%84%E8%8C%83%E5%8C%96/</guid>
+      <description>数据库规范化 # 数据库规范化是设计数据库的方式，注重最小化数据重复和确保数据完整性。
+优点：
+最大限度地减少数据重复，从而最大限度地减少存储。 易于更新，确保数据完整性。 缺点：
+可能会降低查询性能，尤其是对于需要连接表的查询。 用例：
+数据完整性非常重要的系统，例如银行系统。</description>
+    </item>
+    
+    <item>
       <title>Xorm</title>
       <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/</link>
       <pubDate>Sun, 30 Apr 2023 16:16:50 +0800</pubDate>

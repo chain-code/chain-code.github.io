@@ -10,8 +10,7 @@
 如当输入链表{1,2,3}时，
 经反转后，原链表变为{3,2,1}，所以对应的输出为{3,2,1}。
 以上转换过程如下图所示：
-输入：{1,2,3}返回值：{3,2,1} func ReverseList( pHead *ListNode ) *ListNode { if pHead==nil||pHead.Next==nil{ return pHead } p:=&amp;ListNode{Val:-1,Next:pHead} //设置一个头节点，防止冲突 pHead=p p=pHead.Next q:=p for p.Next!=nil{ q=p.Next p.Next=q.Next q.Next=pHead.Next //这道题的重点在这里=头节点的下一个 pHead.Next=q } return pHead.Next } 链表内指定区间反转 # 将一个节点数为 size 链表 m 位置到 n 位置之间的区间反转，要求时间复杂度 O(n)O(n)，空间复杂度 O(1)O(1)。
-例如：给出的链表为 1→2→3→4→5→NULL1→2→3→4→5→NULL, m=2,n=4,返回 1→4→3→2→5→NULL1→4→3→2→5→NULL. func reverseBetween( head *ListNode , m int , n int ) *ListNode { // write code here if head.">
+输入：{1,2,3}返回值：{3,2,1} func ReverseList( pHead *ListNode ) *ListNode { if pHead==nil||pHead.Next==nil{ return pHead } p:=&amp;ListNode{Val:-1,Next:pHead} //设置一个头节点，防止冲突 pHead=p p=pHead.Next q:=p for p.Next!=nil{ q=p.Next p.Next=q.Next q.Next=pHead.Next //这道题的重点在这里=头节点的下一个 pHead.Next=q } return pHead.Next } # class ListNode: # def __init__(self, x): # self.val = x # self.next = None # # 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可 # # # @param head ListNode类 # @return ListNode类 # class Solution: def ReverseList(self , head: ListNode) -&gt; ListNode: if not head: #注意python判断为空的方法 return head # write code here phead=ListNode phead.">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="必刷top101" />
@@ -22,8 +21,7 @@
 如当输入链表{1,2,3}时，
 经反转后，原链表变为{3,2,1}，所以对应的输出为{3,2,1}。
 以上转换过程如下图所示：
-输入：{1,2,3}返回值：{3,2,1} func ReverseList( pHead *ListNode ) *ListNode { if pHead==nil||pHead.Next==nil{ return pHead } p:=&amp;ListNode{Val:-1,Next:pHead} //设置一个头节点，防止冲突 pHead=p p=pHead.Next q:=p for p.Next!=nil{ q=p.Next p.Next=q.Next q.Next=pHead.Next //这道题的重点在这里=头节点的下一个 pHead.Next=q } return pHead.Next } 链表内指定区间反转 # 将一个节点数为 size 链表 m 位置到 n 位置之间的区间反转，要求时间复杂度 O(n)O(n)，空间复杂度 O(1)O(1)。
-例如：给出的链表为 1→2→3→4→5→NULL1→2→3→4→5→NULL, m=2,n=4,返回 1→4→3→2→5→NULL1→4→3→2→5→NULL. func reverseBetween( head *ListNode , m int , n int ) *ListNode { // write code here if head." />
+输入：{1,2,3}返回值：{3,2,1} func ReverseList( pHead *ListNode ) *ListNode { if pHead==nil||pHead.Next==nil{ return pHead } p:=&amp;ListNode{Val:-1,Next:pHead} //设置一个头节点，防止冲突 pHead=p p=pHead.Next q:=p for p.Next!=nil{ q=p.Next p.Next=q.Next q.Next=pHead.Next //这道题的重点在这里=头节点的下一个 pHead.Next=q } return pHead.Next } # class ListNode: # def __init__(self, x): # self.val = x # self.next = None # # 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可 # # # @param head ListNode类 # @return ListNode类 # class Solution: def ReverseList(self , head: ListNode) -&gt; ListNode: if not head: #注意python判断为空的方法 return head # write code here phead=ListNode phead." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/%E5%BF%85%E5%88%B7top101/" /><meta property="article:section" content="docs" />
 <meta property="article:published_time" content="2022-09-17T11:40:17+08:00" />
@@ -33,7 +31,7 @@
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.b7a8ced0de77e7a60f2391c84c6bf6dcc32871d88b426cb3a568ed22e4c49240.js" integrity="sha256-t6jO0N5356YPI5HITGv23MMocdiLQmyzpWjtIuTEkkA=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.1d637d3872fa753758190f08f00d91e20a6f7f18805f59ad1e174ef28b1a63c8.js" integrity="sha256-HWN9OHL6dTdYGQ8I8A2R4gpvfxiAX1mtHhdO8osaY8g=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -508,6 +506,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/golangci-lint/" class="">golangci-lint</a>
   
 
         </li>
@@ -1328,6 +1339,123 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/python/ai/opencv_cuda%E7%BC%96%E8%AF%91/" class="">Opencv Cuda编译</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/ai/pytorch%E9%A3%9F%E8%B0%B1/" class="">pytorch食谱</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/ai/qwen2.5-vl%E9%83%A8%E7%BD%B2/" class="">Qwen2.5-vl部署</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/ai/trae%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97/" class="">Trae使用心得</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/ai/xinference%E5%9F%BA%E7%A1%80/" class="">Xinference基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/ai/yolo-world/" class="">yolo-world</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/ai/yolo%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" class="">yolo底层原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/ai/%E5%9B%BE%E5%83%8F%E5%A2%9E%E5%BC%BA%E4%BB%8B%E7%BB%8D/" class="">图像增强介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/ai/%E5%9B%BE%E5%83%8F%E8%B6%85%E5%88%86%E5%8E%9F%E7%90%86/" class="">图像超分原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/ai/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="">基础知识</a>
   
 
         </li>
@@ -2829,6 +2957,24 @@ https://github.com/alex-shpak/hugo-book
         </li>
       
     
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E6%94%B6%E8%97%8F/" class="">开源项目收藏</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
   </ul>
 
 
@@ -3094,6 +3240,31 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">pHead</span>.<span style="color:#a6e22e">Next</span>
 </span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># class ListNode:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#     def __init__(self, x):</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#         self.val = x</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#         self.next = None</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># </span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># @param head ListNode类 </span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># @return ListNode类</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">ReverseList</span>(self , head: ListNode) <span style="color:#f92672">-&gt;</span> ListNode:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> head:   <span style="color:#75715e">#注意python判断为空的方法</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> head
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># write code here</span>
+</span></span><span style="display:flex;"><span>        phead<span style="color:#f92672">=</span>ListNode
+</span></span><span style="display:flex;"><span>        phead<span style="color:#f92672">.</span>next<span style="color:#f92672">=</span>head
+</span></span><span style="display:flex;"><span>        p<span style="color:#f92672">=</span>head
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> p<span style="color:#f92672">.</span>next <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span>:  <span style="color:#75715e">#python 判断为空</span>
+</span></span><span style="display:flex;"><span>            q<span style="color:#f92672">=</span>p<span style="color:#f92672">.</span>next
+</span></span><span style="display:flex;"><span>            p<span style="color:#f92672">.</span>next<span style="color:#f92672">=</span>q<span style="color:#f92672">.</span>next
+</span></span><span style="display:flex;"><span>            q<span style="color:#f92672">.</span>next<span style="color:#f92672">=</span>phead<span style="color:#f92672">.</span>next
+</span></span><span style="display:flex;"><span>            phead<span style="color:#f92672">.</span>next<span style="color:#f92672">=</span>q
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> phead<span style="color:#f92672">.</span>next
 </span></span></code></pre></div><h3 id="链表内指定区间反转">
   链表内指定区间反转
   <a class="anchor" href="#%e9%93%be%e8%a1%a8%e5%86%85%e6%8c%87%e5%ae%9a%e5%8c%ba%e9%97%b4%e5%8f%8d%e8%bd%ac">#</a>
@@ -3137,7 +3308,25 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">head</span>.<span style="color:#a6e22e">Next</span>
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="链表中的节点每k个一组翻转">
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">reverseBetween</span>(self , head: ListNode, m: int, n: int) <span style="color:#f92672">-&gt;</span> ListNode:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># write code here</span>
+</span></span><span style="display:flex;"><span>        d<span style="color:#f92672">=</span>ListNode(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        d<span style="color:#f92672">.</span>next<span style="color:#f92672">=</span>head
+</span></span><span style="display:flex;"><span>        pre<span style="color:#f92672">=</span>d
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(m<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>            pre<span style="color:#f92672">=</span>pre<span style="color:#f92672">.</span>next
+</span></span><span style="display:flex;"><span>        cur<span style="color:#f92672">=</span>pre<span style="color:#f92672">.</span>next
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range (n<span style="color:#f92672">-</span>m):
+</span></span><span style="display:flex;"><span>            next<span style="color:#f92672">=</span>cur<span style="color:#f92672">.</span>next
+</span></span><span style="display:flex;"><span>            cur<span style="color:#f92672">.</span>next<span style="color:#f92672">=</span>next<span style="color:#f92672">.</span>next
+</span></span><span style="display:flex;"><span>            next<span style="color:#f92672">.</span>next<span style="color:#f92672">=</span>pre<span style="color:#f92672">.</span>next
+</span></span><span style="display:flex;"><span>            pre<span style="color:#f92672">.</span>next<span style="color:#f92672">=</span>next
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> d<span style="color:#f92672">.</span>next
+</span></span></code></pre></div><p>注意：</p>
+<pre tabindex="0"><code>head=&amp;ListNode{Val:-1,Next:head}  不能这样写
+主旨思想是，对区间内的链表按原列表反转方式，最后拼接
+</code></pre><h3 id="链表中的节点每k个一组翻转">
   链表中的节点每K个一组翻转
   <a class="anchor" href="#%e9%93%be%e8%a1%a8%e4%b8%ad%e7%9a%84%e8%8a%82%e7%82%b9%e6%af%8fk%e4%b8%aa%e4%b8%80%e7%bb%84%e7%bf%bb%e8%bd%ac">#</a>
 </h3>
@@ -3217,7 +3406,27 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">pHead1</span>.<span style="color:#a6e22e">Next</span>
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="合并k个已排序的链表">
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">Merge</span>(self , pHead1: ListNode, pHead2: ListNode) <span style="color:#f92672">-&gt;</span> ListNode:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># write code here</span>
+</span></span><span style="display:flex;"><span>        d<span style="color:#f92672">=</span>ListNode(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        d<span style="color:#f92672">.</span>next<span style="color:#f92672">=</span>pHead1
+</span></span><span style="display:flex;"><span>        pHead1<span style="color:#f92672">=</span>d
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> pHead1<span style="color:#f92672">.</span>next <span style="color:#f92672">and</span> pHead2:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> pHead1<span style="color:#f92672">.</span>next<span style="color:#f92672">.</span>val <span style="color:#f92672">&lt;</span> pHead2<span style="color:#f92672">.</span>val:
+</span></span><span style="display:flex;"><span>                pHead1<span style="color:#f92672">=</span>pHead1<span style="color:#f92672">.</span>next
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                p2<span style="color:#f92672">=</span>pHead2<span style="color:#f92672">.</span>next
+</span></span><span style="display:flex;"><span>                pHead2<span style="color:#f92672">.</span>next<span style="color:#f92672">=</span>pHead1<span style="color:#f92672">.</span>next
+</span></span><span style="display:flex;"><span>                pHead1<span style="color:#f92672">.</span>next<span style="color:#f92672">=</span>pHead2
+</span></span><span style="display:flex;"><span>                pHead2<span style="color:#f92672">=</span>p2
+</span></span><span style="display:flex;"><span>                pHead1<span style="color:#f92672">=</span>pHead1<span style="color:#f92672">.</span>next
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> pHead2:
+</span></span><span style="display:flex;"><span>            pHead1<span style="color:#f92672">.</span>next<span style="color:#f92672">=</span>pHead2
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> d<span style="color:#f92672">.</span>next
+</span></span></code></pre></div><p>核心思想在于pHead1.next.val &lt; pHead2.val</p>
+<h3 id="合并k个已排序的链表">
   合并K个已排序的链表
   <a class="anchor" href="#%e5%90%88%e5%b9%b6k%e4%b8%aa%e5%b7%b2%e6%8e%92%e5%ba%8f%e7%9a%84%e9%93%be%e8%a1%a8">#</a>
 </h3>
@@ -3258,6 +3467,35 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">pHead1</span>.<span style="color:#a6e22e">Next</span>
 </span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mergeKLists</span>(self, lists: List[ListNode]) <span style="color:#f92672">-&gt;</span> ListNode:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> lists:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 分治法合并</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>merge(lists, <span style="color:#ae81ff">0</span>, len(lists) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">merge</span>(self, lists: List[ListNode], left: int, right: int) <span style="color:#f92672">-&gt;</span> ListNode:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> left <span style="color:#f92672">==</span> right:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> lists[left]
+</span></span><span style="display:flex;"><span>        mid <span style="color:#f92672">=</span> left <span style="color:#f92672">+</span> (right <span style="color:#f92672">-</span> left) <span style="color:#f92672">//</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>        l1 <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>merge(lists, left, mid)
+</span></span><span style="display:flex;"><span>        l2 <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>merge(lists, mid <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, right)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>mergeTwoLists(l1, l2)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mergeTwoLists</span>(self, l1: ListNode, l2: ListNode) <span style="color:#f92672">-&gt;</span> ListNode:
+</span></span><span style="display:flex;"><span>        dummy <span style="color:#f92672">=</span> ListNode(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        tail <span style="color:#f92672">=</span> dummy
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> l1 <span style="color:#f92672">and</span> l2:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> l1<span style="color:#f92672">.</span>val <span style="color:#f92672">&lt;</span> l2<span style="color:#f92672">.</span>val:
+</span></span><span style="display:flex;"><span>                tail<span style="color:#f92672">.</span>next <span style="color:#f92672">=</span> l1
+</span></span><span style="display:flex;"><span>                l1 <span style="color:#f92672">=</span> l1<span style="color:#f92672">.</span>next
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                tail<span style="color:#f92672">.</span>next <span style="color:#f92672">=</span> l2
+</span></span><span style="display:flex;"><span>                l2 <span style="color:#f92672">=</span> l2<span style="color:#f92672">.</span>next
+</span></span><span style="display:flex;"><span>            tail <span style="color:#f92672">=</span> tail<span style="color:#f92672">.</span>next
+</span></span><span style="display:flex;"><span>        tail<span style="color:#f92672">.</span>next <span style="color:#f92672">=</span> l1 <span style="color:#66d9ef">if</span> l1 <span style="color:#66d9ef">else</span> l2
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> dummy<span style="color:#f92672">.</span>next
 </span></span></code></pre></div><h3 id="判断链表中是否有环">
   判断链表中是否有环
   <a class="anchor" href="#%e5%88%a4%e6%96%ad%e9%93%be%e8%a1%a8%e4%b8%ad%e6%98%af%e5%90%a6%e6%9c%89%e7%8e%af">#</a>

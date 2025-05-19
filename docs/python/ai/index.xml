@@ -57,6 +57,127 @@ visual Studio 2019</description>
     </item>
     
     <item>
+      <title>pytorch食谱</title>
+      <link>https://chain-code.github.io/docs/python/ai/pytorch%E9%A3%9F%E8%B0%B1/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/ai/pytorch%E9%A3%9F%E8%B0%B1/</guid>
+      <description>PyTorch食谱</description>
+    </item>
+    
+    <item>
+      <title>Qwen2.5-vl部署</title>
+      <link>https://chain-code.github.io/docs/python/ai/qwen2.5-vl%E9%83%A8%E7%BD%B2/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/ai/qwen2.5-vl%E9%83%A8%E7%BD%B2/</guid>
+      <description>Qwen2.5-vl部署 # 官方
+本地运行 Qwen2-VL
+使用vLLM部署Qwen2.5-VL-7B-Instruct模型的详细指南
+阿里最新开源模型Qwen2.5-VL本地部署教程：视觉理解超越GPT-4o！
+cudn加速库 # cudnn-windows-x86_64-8.9.7.29_cuda12-archive 仓库地址 # https://github.com/QwenLM/Qwen2.5-VL?tab=readme-ov-file
+模型地址 # https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct-AWQ
+环境对比 # (base) PS C:\Users\admin\python\qwen\Qwen2.5-VL&amp;gt; pip listPackage Version--------------------------------- ------------------aiobotocore 2.12.3aiohappyeyeballs 2.4.0aiohttp 3.10.5aioitertools 0.7.1aiosignal 1.2.0alabaster 0.7.16altair 5.0.1anaconda-anon-usage 0.4.4anaconda-catalogs 0.2.0anaconda-client 1.12.3anaconda-cloud-auth 0.5.1anaconda-navigator 2.6.3anaconda-project 0.11.1annotated-types 0.6.0anyio 4.2.0appdirs 1.4.4archspec 0.2.3argon2-cffi 21.3.0argon2-cffi-bindings 21.2.0arrow 1.2.3astroid 2.14.2astropy 6.</description>
+    </item>
+    
+    <item>
+      <title>Trae使用心得</title>
+      <link>https://chain-code.github.io/docs/python/ai/trae%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/ai/trae%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97/</guid>
+      <description>Trae介绍 # Trae 是字节跳动推出的一款融合了 AI 辅助编程、智能代码建议、生成代码文件 以及 灵活适配不同场景 的 IDE。它不仅能够帮助开发者更快地编写代码，还可以根据具体提示语生成代码并进行维护，从而优化开发流程，实现高效协作。
+选择 Trae ，主要因为它是国产软件，有中文界面和文档，并且完全免费，完全免费，完全免费。
+Trae下载官网
+主要功能 # 智能体 # 智能体是你面向不同开发场景的编程助手。除内置的智能体 Builder 外，你还可以创建自定义智能体，通过灵活配置提示词和工具集，使其更高效地帮你完成复杂任务。
+Trae 提供以下内置智能体：
+Builder：Builder 可以帮助你从 0 到 1 开发一个完整的项目。根据你的需求，Builder 会调用不同的工具，包括分析代码文件的工具、编辑代码文件的工具、运行命令的工具等等，从而更加精确且有效地处理你的需求。 Builder with MCP：在 Builder 的基础上，你配置的所有 MCP Server 都会默认添加至 Builder with MCP，且不可编辑。 上下文 # 当你需要参考某个特定函数、接口的代码，或者想要了解某个文件、文件夹的整体内容，又或者想对整个工作空间有一个全局的认识时，就可以使用该技巧向 AI 助手获取相关信息。
+可以选择Code、File、Folder、Workspace、Doc、Web不同功能。
+在选择代码上下文时，我们可以使用快捷键Ctrl+U添加,也可以将终端中的内容作为上下文
+模型 # Trae 预置了一系列业内表现比较出色的模型，你可以直接切换不同的模型进行使用。此外，Trae 还支持通过 API 密钥（API Key）接入自定义模型，从而满足个性化的需求。
+个人使用过程中，感觉Gemini-2.5-Pro-Preview模型、和Claude-3.7-Sonnet模型对于代码的理解相对于其他模型较好。
+AI修复 # Trae会自动探测代码中存在的明显问题，并指明具体位置
+根据指示，当鼠标位于上方会出现AI修复提示
+点击修复按钮，Trae会给出修改建议如下：
+代码补全 # 在光标所在位置，敲击回车键换行，AI 助手会阅读并理解当前代码，然后自动补全后续代码。
+按下 Tab 键，接受所有自动补全的代码。</description>
+    </item>
+    
+    <item>
+      <title>Xinference基础</title>
+      <link>https://chain-code.github.io/docs/python/ai/xinference%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/ai/xinference%E5%9F%BA%E7%A1%80/</guid>
+      <description>介绍 # Xinference 是一个开源的 AI 模型推理平台。你可以把它想象成一个用来部署和管理各种大型 AI 模型（特别是大语言模型 LLMs）的工具或框架。它的目标是让开发者和研究人员能够轻松地在自己的硬件（无论是个人电脑、服务器还是云实例）上运行和使用这些强大的模型。
+Xinference 的主要作用和特点：
+简化模型部署 (Simplified Deployment): 运行大型 AI 模型通常需要复杂的环境配置和依赖管理。Xinference 极大地简化了这个过程，让你可以用简单的命令或通过 Web UI 来下载、设置和启动模型。 统一的 API (Unified API): 它为不同类型的模型（如聊天模型、嵌入模型、重排序模型、图像模型、音频模型等）提供了一套统一的、简洁的 API 接口。这意味着你可以用类似的方式与各种不同的模型进行交互，降低了学习和使用的成本。 广泛的模型支持 (Broad Model Support): Xinference 支持非常多的开源模型，涵盖了： 大语言模型 (LLMs): 如 Llama, ChatGLM, Qwen, Baichuan, Mixtral, Yi 等。 嵌入模型 (Embedding Models): 用于将文本转换为向量表示。 重排序模型 (Rerank Models): 用于优化搜索结果排序。 多模态模型 (Multimodal Models): 如处理图像和文本的模型。 图像模型和音频模型 等。 灵活的部署选项 (Flexible Deployment Options): 本地运行: 可以在你的个人笔记本电脑或工作站上运行。 分布式集群: 可以将模型部署在多台机器组成的集群上，以获得更强的计算能力或服务更大的负载。 硬件兼容性 (Hardware Compatibility): 支持在多种硬件上运行，包括： CPU NVIDIA GPU AMD GPU Apple Silicon (M系列芯片) 类 OpenAI API 兼容性 (OpenAI-Compatible API): 对于很多流行的模型（特别是 LLMs），Xinference 提供了与 OpenAI API 兼容的接口。这意味着如果你之前使用过 OpenAI 的 API，可以很容易地将应用切换到使用通过 Xinference 部署的本地模型，只需修改 API 的基地址 (base URL) 和 API 密钥即可。 成本效益和数据隐私 (Cost-Effectiveness &amp;amp; Data Privacy): 通过在本地或私有云上部署模型，你可以更好地控制成本（相比于完全依赖商业 API），并且可以确保数据不离开你的控制范围，增强了数据隐私和安全性。 Web UI 管理界面: 提供了一个用户友好的 Web 界面，方便用户查看可用的模型、管理正在运行的模型实例以及进行简单的交互测试。 安装 # 安装 — Xinference</description>
+    </item>
+    
+    <item>
+      <title>yolo-world</title>
+      <link>https://chain-code.github.io/docs/python/ai/yolo-world/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/ai/yolo-world/</guid>
+      <description>YOLO-World：实时开放词汇的目标检测 # 本文档旨在介绍 YOLO-World，一个前沿的实时开放词汇目标检测模型。我们将探讨其核心概念、设计架构、关键用途，并将其与传统的 YOLO 模型进行对比，阐述其创新之处和优势。
+1. 引言：什么是 YOLO-World？ # YOLO-World 是一个革命性的目标检测系统，它将强大的 YOLO 实时检测框架与开放词汇（Open-Vocabulary） 能力相结合。这意味着 YOLO-World 不再局限于预先训练时定义好的固定类别集，而是能够根据用户在推理时提供的 任意文本描述（词汇、短语） 来实时检测图像或视频中的相应目标。
+其核心突破在于，它利用大规模视觉-语言预训练的知识，让模型能够理解文本提示（prompts）与图像中视觉内容之间的关联，从而实现对“世界万物”的检测潜力，而无需针对每一个新类别都进行重新训练。
+2. 用途与价值主张 # 传统的目标检测器（如标准 YOLO）在训练完成后，只能识别训练数据中包含的特定类别（例如 PASCAL VOC 的 20 类或 COCO 的 80 类）。如果需要检测新的物体类别，就必须收集大量标注数据并重新训练模型，成本高昂且灵活性差。
+YOLO-World 的出现旨在解决这一痛点，其主要用途和价值在于：
+极高的灵活性与适应性： 用户可以随时定义新的、甚至是训练时从未见过的物体类别进行检测，只需提供相应的文本描述即可。例如，你可以让它检测“戴着红色帽子的狗”、“损坏的包裹”或“特定的工具名称”。 零样本（Zero-Shot）检测： 无需为新类别准备任何标注样本即可进行检测。 降低数据标注和重训练成本： 大幅减少了为扩展检测能力而进行的数据收集、标注和模型训练工作。 3. 架构设计：YOLO-World 如何工作？ # YOLO-World 的设计巧妙地融合了 YOLO 的高效检测架构和视觉-语言模型（VLMs）的语义理解能力。其核心组件通常包括：
+YOLO 检测器骨干（Backbone）： 采用高效的 YOLO 系列骨干网络（如 YOLOv8 的 Darknet 变体）来提取图像的视觉特征。这些特征包含了丰富的空间和语义信息。 文本编码器（Text Encoder）： 使用强大的预训练文本编码器（如 CLIP 的文本编码器或其他 Transformer 模型）将用户输入的文本提示（类别名称、描述等）转换为高维度的文本嵌入向量（text embeddings）。这些向量捕获了文本的语义含义。 视觉-语言融合网络（Vision-Language Fusion Network）： 这是 YOLO-World 的关键创新。它不再是在模型输出端简单地比较视觉和文本特征，而是在检测网络的颈部（Neck）（例如 PANet 或其变种）中引入了文本嵌入信息。 RepVL-PAN (Region-Prompt Vision-Language Path Aggregation Network): YOLO-World 论文中提出的一种代表性结构。它允许文本嵌入在不同层级与视觉特征进行深度融合和交互。这使得模型能够将全局的文本语义信息有效地传递到局部的像素级特征，从而指导检测头关注与文本描述匹配的图像区域。 检测头（Detection Head）： 类似于标准 YOLO，检测头根据融合了文本信息的视觉特征来预测边界框（Bounding Boxes）和目标存在置信度（Objectness Score）。关键区别在于，类别的判断不再是输出固定类别的分数，而是通过计算检测到的物体视觉特征与输入文本提示的嵌入向量之间的相似度来确定该物体是否匹配某个文本描述。 预训练策略： YOLO-World 的强大能力来源于大规模的预训练。它在包含图像、对应边界框以及文本描述的大型数据集（如目标检测、视觉定位、图文对数据集）上进行训练，学习将视觉区域与自由形式的文本描述关联起来的能力。</description>
+    </item>
+    
+    <item>
+      <title>yolo底层原理</title>
+      <link>https://chain-code.github.io/docs/python/ai/yolo%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/ai/yolo%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/</guid>
+      <description>目标检测-YOLO的基本原理详解
+YOLO原理与实现
+深入理解YOLO原理
+Yolov8原理详细解析</description>
+    </item>
+    
+    <item>
+      <title>图像增强介绍</title>
+      <link>https://chain-code.github.io/docs/python/ai/%E5%9B%BE%E5%83%8F%E5%A2%9E%E5%BC%BA%E4%BB%8B%E7%BB%8D/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/ai/%E5%9B%BE%E5%83%8F%E5%A2%9E%E5%BC%BA%E4%BB%8B%E7%BB%8D/</guid>
+      <description>图像增强技术介绍 # 什么是图像增强？ # 图像增强 (Image Enhancement) 是指通过一系列图像处理技术，有选择性地突出图像中感兴趣的特征、抑制不必要的特征，或改善图像的视觉效果，使其更适合于人类观察或计算机分析。其目的不是试图恢复图像的原始信息（这更偏向于图像复原），而是改善图像的质量，使其在特定应用场景下更有用。
+常用的图像增强原理/类别：
+空间域增强 (Spatial Domain Enhancement): 直接对图像的像素值进行操作。 点操作 (Point Operations): 对单个像素进行处理，不考虑其邻域像素。常见的有： 灰度变换: 如对比度拉伸、亮度调整、伽马校正、直方图均衡化等。通过修改像素的灰度级来改善图像的对比度和动态范围。 伪彩色处理: 将灰度图像的不同灰度级映射为不同的颜色，以突出细节。 邻域操作 (Neighborhood Operations): 基于像素及其邻域像素的值进行处理。常见的有： 图像平滑 (Smoothing): 使用均值滤波、中值滤波、高斯滤波等去除噪声，模糊图像。 图像锐化 (Sharpening): 使用拉普拉斯算子、梯度算子（Sobel, Prewitt）等增强图像的边缘和细节，使图像更清晰。 频率域增强 (Frequency Domain Enhancement): 将图像变换到频率域（如傅里叶变换），对频率分量进行修改，然后再反变换回空间域。 低通滤波 (Low-pass Filtering): 衰减高频分量，保留低频分量，效果类似于空间域的平滑，可以去除噪声。 高通滤波 (High-pass Filtering): 衰减低频分量，保留高频分量，效果类似于空间域的锐化，可以增强边缘。 带通/带阻滤波: 保留或去除特定频率范围的分量。 同态滤波 (Homomorphic Filtering): 一种在频率域中同时压缩亮度范围和增强对比度的技术，常用于改善光照不均的图像。 基于深度学习的增强 (Deep Learning-based Enhancement): 利用深度神经网络（尤其是卷积神经网络 CNN、生成对抗网络 GAN、Transformer 等）学习从低质量图像到高质量图像的复杂映射关系。这是当前研究的热点和主流方向，在超分辨率、去噪、去模糊、去雨去雾、低光照增强等方面取得了突破性进展。 SwinIR 架构、超分原理及技术 # SwinIR 架构设计: SwinIR 将 Swin Transformer 成功应用于图像复原任务。其核心架构主要包括三个部分：</description>
+    </item>
+    
+    <item>
+      <title>图像超分原理</title>
+      <link>https://chain-code.github.io/docs/python/ai/%E5%9B%BE%E5%83%8F%E8%B6%85%E5%88%86%E5%8E%9F%E7%90%86/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/ai/%E5%9B%BE%E5%83%8F%E8%B6%85%E5%88%86%E5%8E%9F%E7%90%86/</guid>
+      <description>三分钟读懂《超分辨率技术》
+AIGC算法：GAN图像超分原理与实现
+图像超分辨率技术-简介
+一文掌握图像超分辨率重建（算法原理、Pytorch实现）——含完整代码和数据</description>
+    </item>
+    
+    <item>
+      <title>基础知识</title>
+      <link>https://chain-code.github.io/docs/python/ai/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/ai/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</guid>
+      <description>NumPy 数组 (numpy.ndarray) # 是什么？
+NumPy (Numerical Python) 是 Python 语言的一个核心库，专门用于进行科学计算，特别是处理大型多维数组和矩阵。 NumPy 最核心的对象是 ndarray（N-dimensional array），它是一个同质（所有元素类型相同，如全是整数或全是浮点数）的多维数组。你可以把它想象成一个灵活的、强大的网格结构，可以是一维（向量）、二维（矩阵）、三维（立方体）甚至更高维度。 为什么重要？
+性能： NumPy 底层是用 C 语言实现的，其数组操作（如数学运算、索引、切片）比 Python 内置的列表（list）快得多，尤其是处理大量数据时。这是因为它利用了向量化操作，避免了 Python 级别的循环。 内存效率： NumPy 数组在内存中是连续存储的（通常情况下），这使得访问和操作更加高效。 功能丰富： 提供了大量的数学函数（线性代gebra、傅里叶变换、随机数生成等）来操作这些数组。 生态基础： NumPy 是许多其他 Python 科学计算库（如 SciPy、Pandas、Scikit-learn、Matplotlib）的基础。很多库的输入输出都接受或返回 NumPy 数组。 关键特性：
+维度 (Dimensions/Axes)： 数组的“方向”数量，称为 ndim。 形状 (Shape)： 一个描述数组在每个维度上大小的元组，称为 shape。例如，一个 3x4 的矩阵，shape 是 (3, 4)。 数据类型 (Data Type/dtype)： 数组中元素的数据类型，如 int32, float64, uint8 (常用于图像)。 常见用途：
+任何需要高效数值计算的场景。 数据分析中的数据存储和预处理。 图像表示： 图像可以被看作是二维（灰度图）或三维（彩色图）的像素网格，NumPy 数组是表示它们的自然方式。例如，一个 640x480 的彩色图像可以用一个 shape 为 (480, 640, 3) 的 NumPy 数组表示（高度、宽度、颜色通道）。 示例：</description>
+    </item>
+    
+    <item>
       <title>数据集</title>
       <link>https://chain-code.github.io/docs/python/ai/%E6%95%B0%E6%8D%AE%E9%9B%86/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -81,14 +202,42 @@ visual Studio 2019</description>
       
       <guid>https://chain-code.github.io/docs/python/ai/%E8%A7%86%E9%A2%91%E8%B6%85%E5%88%86/</guid>
       <description>https://github.com/xinntao/ESRGAN?tab=readme-ov-file
-https://github.com/xinntao/Real-ESRGAN?tab=readme-ov-file#online-inference
-https://github.com/megvii-research/NAFNet?tab=readme-ov-file
-https://github.com/JyChen9811/FaithDiff
-https://github.com/JingyunLiang/SwinIR
+主打动漫类，最新代码7年前提交的，淘汰
+https://github.com/xinntao/Real-ESRGAN?tab=readme-ov-file#online-inference ****
+也是主打动漫类，star 30.3万
+文件保存在Real-ESRGAN
+https://github.com/megvii-research/NAFNet?tab=readme-ov-file ****
+图片处理效果还行，备选 目前仅支持图像增强 文件保存在NAFNet
+https://github.com/JingyunLiang/SwinIR ****
+文件保存在SwinIR
 https://github.com/DmitryUlyanov/deep-image-prior
+六七年前的老项目，淘汰
+https://github.com/cszn/BSRGAN *****
+文件保存在BSRGAN 感觉还行
+https://github.com/open-mmlab/mmagic?tab=readme-ov-file
+多个图片、视频处理的集成库 代码更新到2023年12月18日
 https://github.com/XPixelGroup/BasicSR
-https://github.com/megvii-research/NAFNet?tab=readme-ov-file
-https://github.com/ckkelvinchan/RealBasicVSR</description>
+继承库，但是代码更新到2022年8月31日
+https://github.com/ckkelvinchan/RealBasicVSR
+支持视频，也支持图片，具体要测
+https://github.com/TencentARC/GFPGAN
+注重人脸超分，仅能运行在Linux
+https://github.com/Fanghua-Yu/SUPIR
+许可协议只限个人使用 不让商用，可以借鉴里面的东西
+https://github.com/sczhou/CodeFormer
+许可协议 S-Lab 许可证 1.0 不让商用
+https://github.com/upscayl/upscayl
+底层用的 Real-ESRGAN 淘汰
+https://github.com/XPixelGroup/DiffBIR
+测试效果不理想，而且速度贼慢
+https://github.com/philz1337x/clarity-upscaler/
+AI 图像升级器和增强器 但是通过ai 变了原有图画信息，与需求不符，淘汰
+https://github.com/AaronFeng753/Waifu2x-Extension-GUI
+主要使用机器学习进行照片/视频/GIF 放大和视频帧插值 淘汰
+https://github.com/ohayonguy/PMRF
+注重于人脸处理，可以先放着，后续加 ***
+https://github.com/k4yt3x/video2x
+视频的暂时不看</description>
     </item>
     
     <item>

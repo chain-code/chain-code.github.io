@@ -3,13 +3,19 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content=" panic # 1、panic 中可以传任何值，不仅仅可以传 string
-func main(){ defer func(){ if r := recover();r != nil{ fmt.Println(r) } }() panic([]int{12312}) } [12312] ">
+<meta name="description" content="panic # 1、panic 中可以传任何值，不仅仅可以传 string
+func main(){ defer func(){ if r := recover();r != nil{ fmt.Println(r) } }() panic([]int{12312}) } [12312] 在Go语言中，宕机(panic)是程序遇到无法继续执行的严重错误时触发的机制。正确处理panic可以防止程序意外崩溃，提高系统稳定性。
+panic与recover基础 # panic机制 # panic是Go语言中处理不可恢复错误的机制，类似于其他语言的异常。当函数执行panic时：
+当前函数停止执行 开始执行延迟函数(defer) 逐层向上返回，直到被recover捕获或程序崩溃 funcriskyFunction(){panic(&#34;something went wrong!&#34;)} recover机制 # recover是用于捕获panic的内置函数，必须在defer函数中调用才有效：
+funcsafeFunction(){deferfunc(){if r :=recover(); r !=nil{fmt.Println(&#34;Recovered from panic:&#34;, r)}}()riskyFunction()} 宕机恢复最佳实践 # 基本恢复模式 # func ProtectedRun() {defer func() {if err := recover(); err != nil {log.">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="panic" />
-<meta property="og:description" content=" panic # 1、panic 中可以传任何值，不仅仅可以传 string
-func main(){ defer func(){ if r := recover();r != nil{ fmt.Println(r) } }() panic([]int{12312}) } [12312] " />
+<meta property="og:description" content="panic # 1、panic 中可以传任何值，不仅仅可以传 string
+func main(){ defer func(){ if r := recover();r != nil{ fmt.Println(r) } }() panic([]int{12312}) } [12312] 在Go语言中，宕机(panic)是程序遇到无法继续执行的严重错误时触发的机制。正确处理panic可以防止程序意外崩溃，提高系统稳定性。
+panic与recover基础 # panic机制 # panic是Go语言中处理不可恢复错误的机制，类似于其他语言的异常。当函数执行panic时：
+当前函数停止执行 开始执行延迟函数(defer) 逐层向上返回，直到被recover捕获或程序崩溃 funcriskyFunction(){panic(&#34;something went wrong!&#34;)} recover机制 # recover是用于捕获panic的内置函数，必须在defer函数中调用才有效：
+funcsafeFunction(){deferfunc(){if r :=recover(); r !=nil{fmt.Println(&#34;Recovered from panic:&#34;, r)}}()riskyFunction()} 宕机恢复最佳实践 # 基本恢复模式 # func ProtectedRun() {defer func() {if err := recover(); err != nil {log." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/panic/" /><meta property="article:section" content="docs" />
 
@@ -19,7 +25,7 @@ func main(){ defer func(){ if r := recover();r != nil{ fmt.Println(r) } }() pani
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.b7a8ced0de77e7a60f2391c84c6bf6dcc32871d88b426cb3a568ed22e4c49240.js" integrity="sha256-t6jO0N5356YPI5HITGv23MMocdiLQmyzpWjtIuTEkkA=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.1d637d3872fa753758190f08f00d91e20a6f7f18805f59ad1e174ef28b1a63c8.js" integrity="sha256-HWN9OHL6dTdYGQ8I8A2R4gpvfxiAX1mtHhdO8osaY8g=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -494,6 +500,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/golangci-lint/" class="">golangci-lint</a>
   
 
         </li>
@@ -1314,6 +1333,123 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/python/ai/opencv_cuda%E7%BC%96%E8%AF%91/" class="">Opencv Cuda编译</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/ai/pytorch%E9%A3%9F%E8%B0%B1/" class="">pytorch食谱</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/ai/qwen2.5-vl%E9%83%A8%E7%BD%B2/" class="">Qwen2.5-vl部署</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/ai/trae%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97/" class="">Trae使用心得</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/ai/xinference%E5%9F%BA%E7%A1%80/" class="">Xinference基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/ai/yolo-world/" class="">yolo-world</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/ai/yolo%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" class="">yolo底层原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/ai/%E5%9B%BE%E5%83%8F%E5%A2%9E%E5%BC%BA%E4%BB%8B%E7%BB%8D/" class="">图像增强介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/ai/%E5%9B%BE%E5%83%8F%E8%B6%85%E5%88%86%E5%8E%9F%E7%90%86/" class="">图像超分原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/ai/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="">基础知识</a>
   
 
         </li>
@@ -2815,6 +2951,24 @@ https://github.com/alex-shpak/hugo-book
         </li>
       
     
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E6%94%B6%E8%97%8F/" class="">开源项目收藏</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
   </ul>
 
 
@@ -2882,6 +3036,16 @@ https://github.com/alex-shpak/hugo-book
     <li>
       <ul>
         <li><a href="#panic">panic</a></li>
+        <li><a href="#panic与recover基础"><strong>panic与recover基础</strong></a>
+          <ul>
+            <li></li>
+            <li><a href="#宕机恢复最佳实践"><strong>宕机恢复最佳实践</strong></a></li>
+            <li><a href="#防止程序崩溃的策略"><strong>防止程序崩溃的策略</strong></a></li>
+            <li><a href="#高级防护模式"><strong>高级防护模式</strong></a></li>
+            <li><a href="#性能与安全权衡"><strong>性能与安全权衡</strong></a></li>
+            <li><a href="#总结">总结</a></li>
+          </ul>
+        </li>
       </ul>
     </li>
   </ul>
@@ -2912,7 +3076,254 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>   panic([]<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">12312</span>})
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><pre tabindex="0"><code>[12312]
-</code></pre></article>
+</code></pre><p>在Go语言中，宕机(panic)是程序遇到无法继续执行的严重错误时触发的机制。正确处理panic可以防止程序意外崩溃，提高系统稳定性。</p>
+<h2 id="panic与recover基础">
+  <strong>panic与recover基础</strong>
+  <a class="anchor" href="#panic%e4%b8%8erecover%e5%9f%ba%e7%a1%80">#</a>
+</h2>
+<h4 id="panic机制">
+  panic机制
+  <a class="anchor" href="#panic%e6%9c%ba%e5%88%b6">#</a>
+</h4>
+<p>panic是Go语言中处理不可恢复错误的机制，类似于其他语言的异常。当函数执行panic时：</p>
+<ol>
+<li>当前函数停止执行</li>
+<li>开始执行延迟函数(defer)</li>
+<li>逐层向上返回，直到被recover捕获或程序崩溃</li>
+</ol>
+<pre tabindex="0"><code>funcriskyFunction(){
+    panic(&#34;something went wrong!&#34;)
+}
+</code></pre><h4 id="recover机制">
+  recover机制
+  <a class="anchor" href="#recover%e6%9c%ba%e5%88%b6">#</a>
+</h4>
+<p>recover是用于捕获panic的内置函数，<strong>必须在defer函数中调用才有效</strong>：</p>
+<pre tabindex="0"><code>funcsafeFunction(){
+    deferfunc(){
+        if r :=recover(); r !=nil{
+            fmt.Println(&#34;Recovered from panic:&#34;, r)
+        }
+    }()
+    
+    riskyFunction()
+}
+</code></pre><h3 id="宕机恢复最佳实践">
+  <strong>宕机恢复最佳实践</strong>
+  <a class="anchor" href="#%e5%ae%95%e6%9c%ba%e6%81%a2%e5%a4%8d%e6%9c%80%e4%bd%b3%e5%ae%9e%e8%b7%b5">#</a>
+</h3>
+<h4 id="基本恢复模式">
+  基本恢复模式
+  <a class="anchor" href="#%e5%9f%ba%e6%9c%ac%e6%81%a2%e5%a4%8d%e6%a8%a1%e5%bc%8f">#</a>
+</h4>
+<pre tabindex="0"><code>func ProtectedRun() {
+    defer func() {
+        if err := recover(); err != nil {
+            log.Printf(&#34;Runtime panic caught: %v\n&#34;, err)
+            // 可以在这里添加恢复逻辑或清理工作
+        }
+    }()
+    
+    // 可能触发panic的代码
+    SomeBusinessLogic()
+}
+</code></pre><h4 id="协程中的panic恢复">
+  协程中的panic恢复
+  <a class="anchor" href="#%e5%8d%8f%e7%a8%8b%e4%b8%ad%e7%9a%84panic%e6%81%a2%e5%a4%8d">#</a>
+</h4>
+<p><strong>重要</strong>：每个goroutine都需要独立的recover机制，否则panic会导致整个程序崩溃。</p>
+<pre tabindex="0"><code>func safeGoRoutine() {
+    defer func() {
+        if r := recover(); r != nil {
+            fmt.Println(&#34;Goroutine recovered:&#34;, r)
+        }
+    }()
+    
+    // goroutine的业务逻辑
+    panic(&#34;goroutine panic&#34;)
+}
+
+func main() {
+    go safeGoRoutine()
+    time.Sleep(time.Second)
+}
+</code></pre><h4 id="获取panic堆栈信息">
+  获取panic堆栈信息
+  <a class="anchor" href="#%e8%8e%b7%e5%8f%96panic%e5%a0%86%e6%a0%88%e4%bf%a1%e6%81%af">#</a>
+</h4>
+<p>使用<code>runtime</code>包可以获取更详细的堆栈信息：</p>
+<pre tabindex="0"><code>import &#34;runtime/debug&#34;
+
+func ProtectedRun() {
+    defer func() {
+        if err := recover(); err != nil {
+            fmt.Printf(&#34;Panic: %v\nStack Trace:\n%s&#34;, err, debug.Stack())
+        }
+    }()
+    
+    // 业务代码
+}
+</code></pre><h3 id="防止程序崩溃的策略">
+  <strong>防止程序崩溃的策略</strong>
+  <a class="anchor" href="#%e9%98%b2%e6%ad%a2%e7%a8%8b%e5%ba%8f%e5%b4%a9%e6%ba%83%e7%9a%84%e7%ad%96%e7%95%a5">#</a>
+</h3>
+<h4 id="防御性编程">
+  防御性编程
+  <a class="anchor" href="#%e9%98%b2%e5%be%a1%e6%80%a7%e7%bc%96%e7%a8%8b">#</a>
+</h4>
+<p><strong>空指针检查</strong>：</p>
+<pre tabindex="0"><code>if somePtr == nil {
+    return errors.New(&#34;nil pointer encountered&#34;)
+}
+</code></pre><p><strong>数组/切片边界检查</strong>：</p>
+<pre tabindex="0"><code>if index &gt;= 0 &amp;&amp; index &lt; len(slice) {
+    value := slice[index]
+    // 安全使用
+}
+</code></pre><p><strong>类型断言检查</strong>：</p>
+<pre tabindex="0"><code>if str, ok := val.(string); ok {
+    // 安全使用str
+}
+</code></pre><h4 id="错误处理优于panic">
+  错误处理优于panic
+  <a class="anchor" href="#%e9%94%99%e8%af%af%e5%a4%84%e7%90%86%e4%bc%98%e4%ba%8epanic">#</a>
+</h4>
+<p>Go的哲学是<strong>显式错误处理优于异常</strong>，应尽量避免使用panic：</p>
+<pre tabindex="0"><code>// 不好的做法
+func Divide(a, b int) int {
+    if b == 0 {
+        panic(&#34;division by zero&#34;)
+    }
+    return a / b
+}
+
+// 好的做法
+func Divide(a, b int) (int, error) {
+    if b == 0 {
+        return 0, errors.New(&#34;division by zero&#34;)
+    }
+    return a / b, nil
+}
+</code></pre><h4 id="http服务的panic防护">
+  HTTP服务的panic防护
+  <a class="anchor" href="#http%e6%9c%8d%e5%8a%a1%e7%9a%84panic%e9%98%b2%e6%8a%a4">#</a>
+</h4>
+<pre tabindex="0"><code>func SafeHandler(handler http.HandlerFunc) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        defer func() {
+            if r := recover(); r != nil {
+                log.Printf(&#34;Handler panic: %v&#34;, r)
+                http.Error(w, &#34;Internal Server Error&#34;, http.StatusInternalServerError)
+            }
+        }()
+        handler(w, r)
+    }
+}
+
+// 使用
+http.HandleFunc(&#34;/&#34;, SafeHandler(myHandler))
+</code></pre><h4 id="长期运行的服务防护">
+  长期运行的服务防护
+  <a class="anchor" href="#%e9%95%bf%e6%9c%9f%e8%bf%90%e8%a1%8c%e7%9a%84%e6%9c%8d%e5%8a%a1%e9%98%b2%e6%8a%a4">#</a>
+</h4>
+<pre tabindex="0"><code>func SupervisedGo(f func()) {
+    go func() {
+        defer func() {
+            if r := recover(); r != nil {
+                log.Printf(&#34;Restarting goroutine after panic: %v&#34;, r)
+                // 可以添加延迟重启逻辑
+                time.Sleep(time.Second)
+                SupervisedGo(f)
+            }
+        }()
+        f()
+    }()
+}
+
+// 使用
+SupervisedGo(myLongRunningTask)
+</code></pre><h3 id="高级防护模式">
+  <strong>高级防护模式</strong>
+  <a class="anchor" href="#%e9%ab%98%e7%ba%a7%e9%98%b2%e6%8a%a4%e6%a8%a1%e5%bc%8f">#</a>
+</h3>
+<h4 id="全局panic处理器">
+  全局panic处理器
+  <a class="anchor" href="#%e5%85%a8%e5%b1%80panic%e5%a4%84%e7%90%86%e5%99%a8">#</a>
+</h4>
+<pre tabindex="0"><code>func SetGlobalPanicHandler() {
+    // 捕获未处理的goroutine panic
+    defer func() {
+        if r := recover(); r != nil {
+            log.Printf(&#34;Global panic handler: %v\n%s&#34;, r, debug.Stack())
+            // 可以选择优雅关闭或继续运行
+        }
+    }()
+    
+    // 主程序逻辑
+    MainProgram()
+}
+</code></pre><h4 id="优雅关闭机制">
+  优雅关闭机制
+  <a class="anchor" href="#%e4%bc%98%e9%9b%85%e5%85%b3%e9%97%ad%e6%9c%ba%e5%88%b6">#</a>
+</h4>
+<pre tabindex="0"><code>func main() {
+    // 设置信号捕获
+    sigChan := make(chan os.Signal, 1)
+    signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+    
+    // 设置panic处理
+    defer func() {
+        if r := recover(); r != nil {
+            log.Printf(&#34;Main panic: %v&#34;, r)
+            ShutdownCleanup()
+            os.Exit(1)
+        }
+    }()
+    
+    // 启动服务
+    server := StartHTTPServer()
+    
+    // 等待信号或错误
+    select {
+    case sig := &lt;-sigChan:
+        log.Printf(&#34;Received signal: %v&#34;, sig)
+    case err := &lt;-server.ErrorChan():
+        log.Printf(&#34;Server error: %v&#34;, err)
+    }
+    
+    ShutdownCleanup()
+}
+</code></pre><h3 id="性能与安全权衡">
+  <strong>性能与安全权衡</strong>
+  <a class="anchor" href="#%e6%80%a7%e8%83%bd%e4%b8%8e%e5%ae%89%e5%85%a8%e6%9d%83%e8%a1%a1">#</a>
+</h3>
+<ul>
+<li>不要过度使用recover：recover有一定的性能开销，只应在必要时使用</li>
+<li>关键路径避免panic：性能敏感路径应避免可能触发panic的操作</li>
+<li>测试panic场景：单元测试中应包含触发panic的测试用例</li>
+</ul>
+<h3 id="总结">
+  总结
+  <a class="anchor" href="#%e6%80%bb%e7%bb%93">#</a>
+</h3>
+<ul>
+<li>
+<p>panic用于真正不可恢复的错误，常规错误应使用error机制</p>
+</li>
+<li>
+<p>每个goroutine都需要独立的recover，否则会导致程序崩溃</p>
+</li>
+<li>
+<p>防御性编程，比事后恢复更重要</p>
+</li>
+<li>
+<p>关键服务应实现优雅恢复机制，而非直接崩溃</p>
+</li>
+<li>
+<p>记录详细的panic信息，有助于问题诊断</p>
+</li>
+</ul>
+</article>
  
       
 
@@ -2956,6 +3367,16 @@ https://github.com/alex-shpak/hugo-book
     <li>
       <ul>
         <li><a href="#panic">panic</a></li>
+        <li><a href="#panic与recover基础"><strong>panic与recover基础</strong></a>
+          <ul>
+            <li></li>
+            <li><a href="#宕机恢复最佳实践"><strong>宕机恢复最佳实践</strong></a></li>
+            <li><a href="#防止程序崩溃的策略"><strong>防止程序崩溃的策略</strong></a></li>
+            <li><a href="#高级防护模式"><strong>高级防护模式</strong></a></li>
+            <li><a href="#性能与安全权衡"><strong>性能与安全权衡</strong></a></li>
+            <li><a href="#总结">总结</a></li>
+          </ul>
+        </li>
       </ul>
     </li>
   </ul>

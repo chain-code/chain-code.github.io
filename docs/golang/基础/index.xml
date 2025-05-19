@@ -48,6 +48,19 @@ nil，未初始化的状态，只进行了声明，或者手动赋值为nil acti
     </item>
     
     <item>
+      <title>golangci-lint</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/golangci-lint/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/golangci-lint/</guid>
+      <description>golangci-lint # golangci-lint按照官方的说法是用于go语言的代码静态检查工具集（因为包含它多种 Go 代码检查工具）。
+官网 https://golangci-lint.run/
+特性： 1.快速：并行非执行 linters，可以复用 Go构建cache和caches分析结果 2.配置文件基于yaml语法进行配置 3.可以与常见开发工具集成，例如：VS Code、Sublime、Goland、Emacs、Vim、Atom、Github Actions 4.包含了很多 linters，不需要安装 5.执行结果输出带有美观，不仅带有颜色，还有源码行号和标识 6.尽可能的减少误报，可以通过设置忽略某些模式
+golangci-lint 的安装 # # macosbrew install golangci-lintbrew upgrade golangci-lint# linux and windows# binary will be $(go env GOPATH)/bin/golangci-lintcurl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.46.2golangci-lint --version 源码安装
+# Go 1.16+go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2# Go version &amp;lt; 1.16go get -u github.</description>
+    </item>
+    
+    <item>
       <title>Golang控流</title>
       <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/golang%E6%8E%A7%E6%B5%81/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -108,8 +121,11 @@ func (u *MyUser) MarshalJSON() ([]byte, error) { return json.Marshal(&amp;amp;st
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/panic/</guid>
-      <description> panic # 1、panic 中可以传任何值，不仅仅可以传 string
-func main(){ defer func(){ if r := recover();r != nil{ fmt.Println(r) } }() panic([]int{12312}) } [12312] </description>
+      <description>panic # 1、panic 中可以传任何值，不仅仅可以传 string
+func main(){ defer func(){ if r := recover();r != nil{ fmt.Println(r) } }() panic([]int{12312}) } [12312] 在Go语言中，宕机(panic)是程序遇到无法继续执行的严重错误时触发的机制。正确处理panic可以防止程序意外崩溃，提高系统稳定性。
+panic与recover基础 # panic机制 # panic是Go语言中处理不可恢复错误的机制，类似于其他语言的异常。当函数执行panic时：
+当前函数停止执行 开始执行延迟函数(defer) 逐层向上返回，直到被recover捕获或程序崩溃 funcriskyFunction(){panic(&amp;#34;something went wrong!&amp;#34;)} recover机制 # recover是用于捕获panic的内置函数，必须在defer函数中调用才有效：
+funcsafeFunction(){deferfunc(){if r :=recover(); r !=nil{fmt.Println(&amp;#34;Recovered from panic:&amp;#34;, r)}}()riskyFunction()} 宕机恢复最佳实践 # 基本恢复模式 # func ProtectedRun() {defer func() {if err := recover(); err != nil {log.</description>
     </item>
     
     <item>

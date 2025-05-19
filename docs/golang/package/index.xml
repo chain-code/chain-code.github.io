@@ -60,14 +60,15 @@ EXT4 # EXT4是Linux操作系统中使用的一种高性能的日志式文件系�
       <pubDate>Fri, 05 May 2023 11:36:52 +0800</pubDate>
       
       <guid>https://chain-code.github.io/docs/golang/package/strconv/</guid>
-      <description> strconv 字符串和数字相互转换 # 需引入&amp;quot;strconv&amp;quot;包
+      <description>strconv 字符串和数字相互转换 # 需引入&amp;quot;strconv&amp;quot;包
 string到int
 int,err:=strconv.Atoi(string) string到int64
 int64, err := strconv.ParseInt(string, 10, 64) int到string
 string:=strconv.Itoa(int) int64到string
 string:=strconv.FormatInt(int64,10) 10进制转16进制
 strconv.FormatInt(int64, 16) 想保留前面的数
-func main() {decimal := 2hex := fmt.Sprintf(&amp;#34;%02x&amp;#34;, decimal)fmt.Println(hex) // 输出：02} </description>
+func main() {decimal := 2hex := fmt.Sprintf(&amp;#34;%02x&amp;#34;, decimal)fmt.Println(hex) // 输出：02} 字符串转float64
+func ParseFloat(s string, bitSize int) (float64, error) func main() {s := &amp;#34;3.14&amp;#34;f, err := strconv.ParseFloat(s, 64) //32if err != nil {fmt.Println(&amp;#34;解析错误:&amp;#34;, err)return}fmt.Printf(&amp;#34;转换成功: %.2f (类型: %T)\n&amp;#34;, f, f) // 输出: 3.</description>
     </item>
     
     <item>

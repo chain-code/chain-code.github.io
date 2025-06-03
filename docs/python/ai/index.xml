@@ -81,26 +81,30 @@ cudn加速库 # cudnn-windows-x86_64-8.9.7.29_cuda12-archive 仓库地址 # http
     </item>
     
     <item>
-      <title>Trae使用心得</title>
-      <link>https://chain-code.github.io/docs/python/ai/trae%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97/</link>
+      <title>Trae使用介绍</title>
+      <link>https://chain-code.github.io/docs/python/ai/trae%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/python/ai/trae%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97/</guid>
+      <guid>https://chain-code.github.io/docs/python/ai/trae%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/</guid>
       <description>Trae介绍 # Trae 是字节跳动推出的一款融合了 AI 辅助编程、智能代码建议、生成代码文件 以及 灵活适配不同场景 的 IDE。它不仅能够帮助开发者更快地编写代码，还可以根据具体提示语生成代码并进行维护，从而优化开发流程，实现高效协作。
-选择 Trae ，主要因为它是国产软件，有中文界面和文档，并且完全免费，完全免费，完全免费。
+选择 Trae ，主要因为它是国产软件，有中文界面和文档，并且完全免费，完全免费，完全免费。缺点是bug较多，反应速度较慢，好的一点是字节几乎一天一更新，相信将来会变得更好。
 Trae下载官网
-主要功能 # 智能体 # 智能体是你面向不同开发场景的编程助手。除内置的智能体 Builder 外，你还可以创建自定义智能体，通过灵活配置提示词和工具集，使其更高效地帮你完成复杂任务。
-Trae 提供以下内置智能体：
-Builder：Builder 可以帮助你从 0 到 1 开发一个完整的项目。根据你的需求，Builder 会调用不同的工具，包括分析代码文件的工具、编辑代码文件的工具、运行命令的工具等等，从而更加精确且有效地处理你的需求。 Builder with MCP：在 Builder 的基础上，你配置的所有 MCP Server 都会默认添加至 Builder with MCP，且不可编辑。 上下文 # 当你需要参考某个特定函数、接口的代码，或者想要了解某个文件、文件夹的整体内容，又或者想对整个工作空间有一个全局的认识时，就可以使用该技巧向 AI 助手获取相关信息。
-可以选择Code、File、Folder、Workspace、Doc、Web不同功能。
-在选择代码上下文时，我们可以使用快捷键Ctrl+U添加,也可以将终端中的内容作为上下文
+主要功能 # 上下文 # 当你需要参考某个特定函数、接口的代码，或者想要了解某个文件、文件夹的整体内容，又或者想对整个工作空间有一个全局的认识时，就可以使用该技巧向 AI 助手获取相关信息。
+可以选择Code、File、Folder、Workspace、Doc、Web不同功能，能够更好地满足复杂开发需求。
+在选择代码上下文时，我常用的使用快捷键Ctrl+U添加,也可以将终端中的内容作为上下文
 模型 # Trae 预置了一系列业内表现比较出色的模型，你可以直接切换不同的模型进行使用。此外，Trae 还支持通过 API 密钥（API Key）接入自定义模型，从而满足个性化的需求。
 个人使用过程中，感觉Gemini-2.5-Pro-Preview模型、和Claude-3.7-Sonnet模型对于代码的理解相对于其他模型较好。
 AI修复 # Trae会自动探测代码中存在的明显问题，并指明具体位置
 根据指示，当鼠标位于上方会出现AI修复提示
 点击修复按钮，Trae会给出修改建议如下：
 代码补全 # 在光标所在位置，敲击回车键换行，AI 助手会阅读并理解当前代码，然后自动补全后续代码。
-按下 Tab 键，接受所有自动补全的代码。</description>
+按下 Tab 键，接受所有自动补全的代码。
+多模态图片 # 当你遇到一些用文字难以描述清楚的问题时，就可以使用该技巧通过添加图片的方式更准确高效地表达需求。
+规则 # 可以通过制定规则来规范 AI 在 Trae IDE 内的行为。
+比如：我告诉AI我的操作系统为Windows，跟我保持中文对话。
+智能体+MCP # 智能体 # 智能体是你面向不同开发场景的编程助手。除内置的智能体 Builder 外，你还可以创建自定义智能体，通过灵活配置提示词和工具集，使其更高效地帮你完成复杂任务。
+Trae 提供以下内置智能体：
+Builder：Builder 可以帮助你从 0 到 1 开发一个完整的项目。根据你的需求，Builder 会调用不同的工具，包括分析代码文件的工具、编辑代码文件的工具、运行命令的工具等等，从而更加精确且有效地处理你的需求。 Builder with MCP：在 Builder 的基础上，你配置的所有 MCP Server 都会默认添加至 Builder with MCP，且不可编辑。 MCP # AI 模型通过连接外部应用，来扩展功能。每个外部应用的接口，都不一样，如果要接入10个应用，就要写10种接入代码，非常麻烦。而且，要是换一个模型，可能所有接入代码都要重写。</description>
     </item>
     
     <item>

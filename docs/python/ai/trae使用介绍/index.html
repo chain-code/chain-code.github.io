@@ -3,34 +3,52 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="简介 # Linux crontab 是 Linux 系统中用于设置周期性被执行的指令的命令。
-当安装完成操作系统之后，默认便会启动此任务调度命令。
-crond 命令每分钟会定期检查是否有要执行的工作，如果有要执行的工作便会自动执行该工作。
-**注意：**新创建的 cron 任务，不会马上执行，至少要过 2 分钟后才可以，当然你可以重启 cron 来马上执行。
-Linux 任务调度的工作主要分为以下两类：
-**1、系统执行的工作：**系统周期性所要执行的工作，如备份系统数据、清理缓存 **2、个人执行的工作：**某个用户定期要做的工作，例如每隔 10 分钟检查邮件服务器是否有新信，这些工作可由每个用户自行设置 语法 # crontab [ -u user ] file crontab [ -u user ] { -l | -r | -e } 说明：
-crontab 是用来让使用者在固定时间或固定间隔执行程序之用，换句话说，也就是类似使用者的时程表。
--u user 是指设定指定 user 的时程表，这个前提是你必须要有其权限(比如说是 root)才能够指定他人的时程表。如果不使用 -u user 的话，就是表示设定自己的时程表。
-参数说明：
--e : 执行文字编辑器来设定时程表，内定的文字编辑器是 Vi/Vim，如果你想用别的文字编辑器，则请先设定 VISUAL 环境变数来指定使用那个文字编辑器(比如说 setenv VISUAL joe) -r : 删除目前的时程表 -l : 列出目前的时程表 查看当前用户的 crontab 文件：">
+<meta name="description" content="Trae介绍 # Trae 是字节跳动推出的一款融合了 AI 辅助编程、智能代码建议、生成代码文件 以及 灵活适配不同场景 的 IDE。它不仅能够帮助开发者更快地编写代码，还可以根据具体提示语生成代码并进行维护，从而优化开发流程，实现高效协作。
+选择 Trae ，主要因为它是国产软件，有中文界面和文档，并且完全免费，完全免费，完全免费。缺点是bug较多，反应速度较慢，好的一点是字节几乎一天一更新，相信将来会变得更好。
+Trae下载官网
+主要功能 # 上下文 # 当你需要参考某个特定函数、接口的代码，或者想要了解某个文件、文件夹的整体内容，又或者想对整个工作空间有一个全局的认识时，就可以使用该技巧向 AI 助手获取相关信息。
+可以选择Code、File、Folder、Workspace、Doc、Web不同功能，能够更好地满足复杂开发需求。
+在选择代码上下文时，我常用的使用快捷键Ctrl&#43;U添加,也可以将终端中的内容作为上下文
+模型 # Trae 预置了一系列业内表现比较出色的模型，你可以直接切换不同的模型进行使用。此外，Trae 还支持通过 API 密钥（API Key）接入自定义模型，从而满足个性化的需求。
+个人使用过程中，感觉Gemini-2.5-Pro-Preview模型、和Claude-3.7-Sonnet模型对于代码的理解相对于其他模型较好。
+AI修复 # Trae会自动探测代码中存在的明显问题，并指明具体位置
+根据指示，当鼠标位于上方会出现AI修复提示
+点击修复按钮，Trae会给出修改建议如下：
+代码补全 # 在光标所在位置，敲击回车键换行，AI 助手会阅读并理解当前代码，然后自动补全后续代码。
+按下 Tab 键，接受所有自动补全的代码。
+多模态图片 # 当你遇到一些用文字难以描述清楚的问题时，就可以使用该技巧通过添加图片的方式更准确高效地表达需求。
+规则 # 可以通过制定规则来规范 AI 在 Trae IDE 内的行为。
+比如：我告诉AI我的操作系统为Windows，跟我保持中文对话。
+智能体&#43;MCP # 智能体 # 智能体是你面向不同开发场景的编程助手。除内置的智能体 Builder 外，你还可以创建自定义智能体，通过灵活配置提示词和工具集，使其更高效地帮你完成复杂任务。
+Trae 提供以下内置智能体：
+Builder：Builder 可以帮助你从 0 到 1 开发一个完整的项目。根据你的需求，Builder 会调用不同的工具，包括分析代码文件的工具、编辑代码文件的工具、运行命令的工具等等，从而更加精确且有效地处理你的需求。 Builder with MCP：在 Builder 的基础上，你配置的所有 MCP Server 都会默认添加至 Builder with MCP，且不可编辑。 MCP # AI 模型通过连接外部应用，来扩展功能。每个外部应用的接口，都不一样，如果要接入10个应用，就要写10种接入代码，非常麻烦。而且，要是换一个模型，可能所有接入代码都要重写。">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
-<meta name="color-scheme" content="light dark"><meta property="og:title" content="crontab使用" />
-<meta property="og:description" content="简介 # Linux crontab 是 Linux 系统中用于设置周期性被执行的指令的命令。
-当安装完成操作系统之后，默认便会启动此任务调度命令。
-crond 命令每分钟会定期检查是否有要执行的工作，如果有要执行的工作便会自动执行该工作。
-**注意：**新创建的 cron 任务，不会马上执行，至少要过 2 分钟后才可以，当然你可以重启 cron 来马上执行。
-Linux 任务调度的工作主要分为以下两类：
-**1、系统执行的工作：**系统周期性所要执行的工作，如备份系统数据、清理缓存 **2、个人执行的工作：**某个用户定期要做的工作，例如每隔 10 分钟检查邮件服务器是否有新信，这些工作可由每个用户自行设置 语法 # crontab [ -u user ] file crontab [ -u user ] { -l | -r | -e } 说明：
-crontab 是用来让使用者在固定时间或固定间隔执行程序之用，换句话说，也就是类似使用者的时程表。
--u user 是指设定指定 user 的时程表，这个前提是你必须要有其权限(比如说是 root)才能够指定他人的时程表。如果不使用 -u user 的话，就是表示设定自己的时程表。
-参数说明：
--e : 执行文字编辑器来设定时程表，内定的文字编辑器是 Vi/Vim，如果你想用别的文字编辑器，则请先设定 VISUAL 环境变数来指定使用那个文字编辑器(比如说 setenv VISUAL joe) -r : 删除目前的时程表 -l : 列出目前的时程表 查看当前用户的 crontab 文件：" />
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="Trae使用介绍" />
+<meta property="og:description" content="Trae介绍 # Trae 是字节跳动推出的一款融合了 AI 辅助编程、智能代码建议、生成代码文件 以及 灵活适配不同场景 的 IDE。它不仅能够帮助开发者更快地编写代码，还可以根据具体提示语生成代码并进行维护，从而优化开发流程，实现高效协作。
+选择 Trae ，主要因为它是国产软件，有中文界面和文档，并且完全免费，完全免费，完全免费。缺点是bug较多，反应速度较慢，好的一点是字节几乎一天一更新，相信将来会变得更好。
+Trae下载官网
+主要功能 # 上下文 # 当你需要参考某个特定函数、接口的代码，或者想要了解某个文件、文件夹的整体内容，又或者想对整个工作空间有一个全局的认识时，就可以使用该技巧向 AI 助手获取相关信息。
+可以选择Code、File、Folder、Workspace、Doc、Web不同功能，能够更好地满足复杂开发需求。
+在选择代码上下文时，我常用的使用快捷键Ctrl&#43;U添加,也可以将终端中的内容作为上下文
+模型 # Trae 预置了一系列业内表现比较出色的模型，你可以直接切换不同的模型进行使用。此外，Trae 还支持通过 API 密钥（API Key）接入自定义模型，从而满足个性化的需求。
+个人使用过程中，感觉Gemini-2.5-Pro-Preview模型、和Claude-3.7-Sonnet模型对于代码的理解相对于其他模型较好。
+AI修复 # Trae会自动探测代码中存在的明显问题，并指明具体位置
+根据指示，当鼠标位于上方会出现AI修复提示
+点击修复按钮，Trae会给出修改建议如下：
+代码补全 # 在光标所在位置，敲击回车键换行，AI 助手会阅读并理解当前代码，然后自动补全后续代码。
+按下 Tab 键，接受所有自动补全的代码。
+多模态图片 # 当你遇到一些用文字难以描述清楚的问题时，就可以使用该技巧通过添加图片的方式更准确高效地表达需求。
+规则 # 可以通过制定规则来规范 AI 在 Trae IDE 内的行为。
+比如：我告诉AI我的操作系统为Windows，跟我保持中文对话。
+智能体&#43;MCP # 智能体 # 智能体是你面向不同开发场景的编程助手。除内置的智能体 Builder 外，你还可以创建自定义智能体，通过灵活配置提示词和工具集，使其更高效地帮你完成复杂任务。
+Trae 提供以下内置智能体：
+Builder：Builder 可以帮助你从 0 到 1 开发一个完整的项目。根据你的需求，Builder 会调用不同的工具，包括分析代码文件的工具、编辑代码文件的工具、运行命令的工具等等，从而更加精确且有效地处理你的需求。 Builder with MCP：在 Builder 的基础上，你配置的所有 MCP Server 都会默认添加至 Builder with MCP，且不可编辑。 MCP # AI 模型通过连接外部应用，来扩展功能。每个外部应用的接口，都不一样，如果要接入10个应用，就要写10种接入代码，非常麻烦。而且，要是换一个模型，可能所有接入代码都要重写。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/crontab%E4%BD%BF%E7%94%A8/" /><meta property="article:section" content="docs" />
+<meta property="og:url" content="https://chain-code.github.io/docs/python/ai/trae%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/" /><meta property="article:section" content="docs" />
 
 
-<title>crontab使用 | Soulmate</title>
+<title>Trae使用介绍 | Soulmate</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
@@ -199,7 +217,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <input type="checkbox" id="section-00c75bd1eabdaaae0cac73d13168e71f" class="toggle" checked />
+    <input type="checkbox" id="section-00c75bd1eabdaaae0cac73d13168e71f" class="toggle"  />
     <label for="section-00c75bd1eabdaaae0cac73d13168e71f" class="flex justify-between">
       <a role="button" class="">其他</a>
     </label>
@@ -215,7 +233,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/crontab%E4%BD%BF%E7%94%A8/" class="active">crontab使用</a>
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/crontab%E4%BD%BF%E7%94%A8/" class="">crontab使用</a>
   
 
         </li>
@@ -1313,7 +1331,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <input type="checkbox" id="section-583fc129cceb6ebb566fe0a30ca770ee" class="toggle"  />
+    <input type="checkbox" id="section-583fc129cceb6ebb566fe0a30ca770ee" class="toggle" checked />
     <label for="section-583fc129cceb6ebb566fe0a30ca770ee" class="flex justify-between">
       <a role="button" class="">AI</a>
     </label>
@@ -1381,7 +1399,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/python/ai/trae%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/" class="">Trae使用介绍</a>
+    <a href="/docs/python/ai/trae%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/" class="active">Trae使用介绍</a>
   
 
         </li>
@@ -3027,7 +3045,7 @@ https://github.com/alex-shpak/hugo-book
     <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
   </label>
 
-  <strong>crontab使用</strong>
+  <strong>Trae使用介绍</strong>
 
   <label for="toc-control">
     
@@ -3045,13 +3063,21 @@ https://github.com/alex-shpak/hugo-book
   <ul>
     <li>
       <ul>
-        <li>
+        <li><a href="#trae介绍">Trae介绍</a></li>
+        <li><a href="#主要功能">主要功能</a>
           <ul>
-            <li><a href="#简介">简介</a></li>
-            <li><a href="#语法">语法</a></li>
-            <li><a href="#格式">格式</a></li>
-            <li><a href="#实例">实例</a></li>
-            <li><a href="#脚本无法执行问题">脚本无法执行问题</a></li>
+            <li><a href="#上下文">上下文</a></li>
+            <li><a href="#模型">模型</a></li>
+            <li><a href="#ai修复">AI修复</a></li>
+            <li><a href="#代码补全">代码补全</a></li>
+            <li><a href="#多模态图片">多模态图片</a></li>
+            <li><a href="#规则">规则</a></li>
+            <li><a href="#智能体mcp">智能体+MCP</a></li>
+          </ul>
+        </li>
+        <li><a href="#使用心得">使用心得</a>
+          <ul>
+            <li><a href="#打铁思维抡好小锤">打铁思维抡好小锤</a></li>
           </ul>
         </li>
       </ul>
@@ -3068,235 +3094,393 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown"><h3 id="简介">
-  简介
-  <a class="anchor" href="#%e7%ae%80%e4%bb%8b">#</a>
+  <article class="markdown"><h2 id="trae介绍">
+  Trae介绍
+  <a class="anchor" href="#trae%e4%bb%8b%e7%bb%8d">#</a>
+</h2>
+<p><strong>Trae</strong> 是字节跳动推出的一款融合了 <strong>AI 辅助编程</strong>、<strong>智能代码建议</strong>、<strong>生成代码文件</strong> 以及 <strong>灵活适配不同场景</strong> 的 IDE。它不仅能够帮助开发者更快地编写代码，还可以根据具体提示语生成代码并进行维护，从而优化开发流程，实现高效协作。</p>
+<p>选择 Trae ，主要因为它是国产软件，有中文界面和文档，并且完全免费，完全免费，完全免费。缺点是bug较多，反应速度较慢，好的一点是字节几乎一天一更新，相信将来会变得更好。</p>
+<p>Trae下载<a href="https://sourl.cn/dLaMpy">官网</a></p>
+<h2 id="主要功能">
+  主要功能
+  <a class="anchor" href="#%e4%b8%bb%e8%a6%81%e5%8a%9f%e8%83%bd">#</a>
+</h2>
+<h3 id="上下文">
+  上下文
+  <a class="anchor" href="#%e4%b8%8a%e4%b8%8b%e6%96%87">#</a>
 </h3>
-<p>Linux <strong>crontab</strong> 是 Linux 系统中用于设置周期性被执行的指令的命令。</p>
-<p>当安装完成操作系统之后，默认便会启动此任务调度命令。</p>
-<p><strong>crond</strong> 命令每分钟会定期检查是否有要执行的工作，如果有要执行的工作便会自动执行该工作。</p>
-<p>**注意：**新创建的 cron 任务，不会马上执行，至少要过 2 分钟后才可以，当然你可以重启 cron 来马上执行。</p>
-<p>Linux 任务调度的工作主要分为以下两类：</p>
-<ul>
-<li>**1、系统执行的工作：**系统周期性所要执行的工作，如备份系统数据、清理缓存</li>
-<li>**2、个人执行的工作：**某个用户定期要做的工作，例如每隔 10 分钟检查邮件服务器是否有新信，这些工作可由每个用户自行设置</li>
-</ul>
-<h3 id="语法">
-  语法
-  <a class="anchor" href="#%e8%af%ad%e6%b3%95">#</a>
+<p>当你需要参考某个特定函数、接口的代码，或者想要了解某个文件、文件夹的整体内容，又或者想对整个工作空间有一个全局的认识时，就可以使用该技巧向 AI 助手获取相关信息。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271620362.png" alt="" /></p>
+<p>可以选择Code、File、Folder、Workspace、Doc、Web不同功能，能够更好地满足复杂开发需求。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271620610.png" alt="" /></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271620335.png" alt="" /></p>
+<p>在选择代码上下文时，我常用的使用快捷键<code>Ctrl+U</code>添加,也可以将终端中的内容作为上下文</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271620524.png" alt="" /></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271621396.png" alt="" /></p>
+<h3 id="模型">
+  模型
+  <a class="anchor" href="#%e6%a8%a1%e5%9e%8b">#</a>
 </h3>
-<pre tabindex="0"><code>crontab [ -u user ] file
-</code></pre><pre tabindex="0"><code>crontab [ -u user ] { -l | -r | -e }
-</code></pre><p><strong>说明：</strong></p>
-<p>crontab 是用来让使用者在固定时间或固定间隔执行程序之用，换句话说，也就是类似使用者的时程表。</p>
-<p>-u user 是指设定指定 user 的时程表，这个前提是你必须要有其权限(比如说是 root)才能够指定他人的时程表。如果不使用 -u user 的话，就是表示设定自己的时程表。</p>
-<p><strong>参数说明</strong>：</p>
-<ul>
-<li>-e : 执行文字编辑器来设定时程表，内定的文字编辑器是 Vi/Vim，如果你想用别的文字编辑器，则请先设定 VISUAL 环境变数来指定使用那个文字编辑器(比如说 setenv VISUAL joe)</li>
-<li>-r : 删除目前的时程表</li>
-<li>-l : 列出目前的时程表</li>
-</ul>
-<p>查看当前用户的 crontab 文件：</p>
-<pre tabindex="0"><code>crontab -l
-</code></pre><p>编辑当前用户的 crontab 文件：</p>
-<pre tabindex="0"><code>crontab -e
-</code></pre><p>删除当前用户的 crontab 文件：</p>
-<pre tabindex="0"><code>crontab -r
-</code></pre><p>列出某个用户的 crontab 文件（需要有相应的权限）：</p>
-<pre tabindex="0"><code>crontab -u username -l
-</code></pre><p>编辑某个用户的 crontab 文件（需要有相应的权限）：</p>
-<pre tabindex="0"><code>crontab -u username -e
-</code></pre><h3 id="格式">
-  格式
-  <a class="anchor" href="#%e6%a0%bc%e5%bc%8f">#</a>
+<p>Trae 预置了一系列业内表现比较出色的模型，你可以直接切换不同的模型进行使用。此外，Trae 还支持通过 API 密钥（API Key）接入自定义模型，从而满足个性化的需求。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271621340.png" alt="" /></p>
+<p>个人使用过程中，感觉Gemini-2.5-Pro-Preview模型、和Claude-3.7-Sonnet模型对于代码的理解相对于其他模型较好。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271621730.png" alt="" /></p>
+<h3 id="ai修复">
+  AI修复
+  <a class="anchor" href="#ai%e4%bf%ae%e5%a4%8d">#</a>
 </h3>
-<p>时间格式如下：</p>
-<pre tabindex="0"><code>f1 f2 f3 f4 f5 program
-</code></pre><ul>
-<li>其中 f1 是表示分钟，f2 表示小时，f3 表示一个月份中的第几日，f4 表示月份，f5 表示一个星期中的第几天。program 表示要执行的程序。</li>
-<li>当 f1 为 * 时表示每分钟都要执行 program，f2 为 * 时表示每小时都要执行程序，其馀类推</li>
-<li>当 f1 为 a-b 时表示从第 a 分钟到第 b 分钟这段时间内要执行，f2 为 a-b 时表示从第 a 到第 b 小时都要执行，其馀类推</li>
-<li>当 f1 为 */n 时表示每 n 分钟个时间间隔执行一次，f2 为 */n 表示每 n 小时个时间间隔执行一次，其馀类推</li>
-<li>当 f1 为 a, b, c,&hellip; 时表示第 a, b, c,&hellip; 分钟要执行，f2 为 a, b, c,&hellip; 时表示第 a, b, c&hellip;个小时要执行，其馀类推</li>
-</ul>
-<pre tabindex="0"><code>*    *    *    *    *
--    -    -    -    -
-|    |    |    |    |
-|    |    |    |    +----- 星期中星期几 (0 - 6) (星期天 为0)
-|    |    |    +---------- 月份 (1 - 12) 
-|    |    +--------------- 一个月中的第几天 (1 - 31)
-|    +-------------------- 小时 (0 - 23)
-+------------------------- 分钟 (0 - 59)
-</code></pre><p>使用者也可以将所有的设定先存放在文件中，用 crontab file 的方式来设定执行时间。</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">时间设置</th>
-<th style="text-align:left">含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left"><code>* * * * *</code></td>
-<td style="text-align:left">每分钟执行一次</td>
-</tr>
-<tr>
-<td style="text-align:left"><code>0 * * * *</code></td>
-<td style="text-align:left">每小时的第 0 分钟执行一次</td>
-</tr>
-<tr>
-<td style="text-align:left"><code>0 0 * * *</code></td>
-<td style="text-align:left">每天的午夜（0 点）执行一次</td>
-</tr>
-<tr>
-<td style="text-align:left"><code>0 0 * * 0</code></td>
-<td style="text-align:left">每周日的午夜（0 点）执行一次</td>
-</tr>
-<tr>
-<td style="text-align:left"><code>0 0 1 * *</code></td>
-<td style="text-align:left">每个月的第一天午夜（0 点）执行一次</td>
-</tr>
-<tr>
-<td style="text-align:left"><code>0 0 L * *</code></td>
-<td style="text-align:left">每个月的最后一天午夜（0 点）执行一次</td>
-</tr>
-<tr>
-<td style="text-align:left"><code>0 0 1 1 *</code></td>
-<td style="text-align:left">每年的第一天午夜（0 点）执行一次</td>
-</tr>
-<tr>
-<td style="text-align:left"><code>0 0 * * 3</code></td>
-<td style="text-align:left">每周三的午夜（0 点）执行一次</td>
-</tr>
-<tr>
-<td style="text-align:left"><code>0 0 1,15 * *</code></td>
-<td style="text-align:left">每个月的第 1 和第 15 天午夜（0 点）执行一次</td>
-</tr>
-<tr>
-<td style="text-align:left"><code>0 0 * * FRI</code></td>
-<td style="text-align:left">每周五的午夜（0 点）执行一次</td>
-</tr>
-<tr>
-<td style="text-align:left"><code>0 0 * * 5</code></td>
-<td style="text-align:left">每周五的午夜（0 点）执行一次</td>
-</tr>
-<tr>
-<td style="text-align:left"><code>0 8-17 * * *</code></td>
-<td style="text-align:left">每天的上午 8 点到下午 5 点每小时执行一次</td>
-</tr>
-<tr>
-<td style="text-align:left"><code>0 12 * * MON</code></td>
-<td style="text-align:left">每周一的中午（12 点）执行一次</td>
-</tr>
-<tr>
-<td style="text-align:left"><code>0 0 15 * *</code></td>
-<td style="text-align:left">每个月的第 15 天午夜（0 点）执行一次</td>
-</tr>
-<tr>
-<td style="text-align:left"><code>0 0 * * 3</code></td>
-<td style="text-align:left">每周三的午夜（0 点）执行一次</td>
-</tr>
-<tr>
-<td style="text-align:left"><code>0 8-17 * * *</code></td>
-<td style="text-align:left">每天的上午 8 点到下午 5 点每小时执行一次</td>
-</tr>
-<tr>
-<td style="text-align:left"><code>0 0 * * 1-5</code></td>
-<td style="text-align:left">每个工作日的午夜（0 点）执行一次</td>
-</tr>
-<tr>
-<td style="text-align:left"><code>0 0 1 * FRI</code></td>
-<td style="text-align:left">每个月的第一个星期五午夜（0 点）执行一次</td>
-</tr>
-<tr>
-<td style="text-align:left"><code>0 0 1,15 * *</code></td>
-<td style="text-align:left">每个月的第 1 和第 15 天午夜（0 点）执行一次</td>
-</tr>
-<tr>
-<td style="text-align:left"><code>0 0 15 1 *</code></td>
-<td style="text-align:left">每年的 1 月 15 日午夜（0 点）执行一次</td>
-</tr>
-<tr>
-<td style="text-align:left"><code>0 0 * * 7</code></td>
-<td style="text-align:left">每周日的午夜（0 点）执行一次</td>
-</tr>
-<tr>
-<td style="text-align:left"><code>0 0 * * 5</code></td>
-<td style="text-align:left">每周五的午夜（0 点）执行一次</td>
-</tr>
-</tbody>
-</table>
-<h3 id="实例">
-  实例
-  <a class="anchor" href="#%e5%ae%9e%e4%be%8b">#</a>
+<p>Trae会自动探测代码中存在的明显问题，并指明具体位置</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271621792.png" alt="" /></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271621912.png" alt="" /></p>
+<p>根据指示，当鼠标位于上方会出现AI修复提示</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271622924.png" alt="" /></p>
+<p>点击修复按钮，Trae会给出修改建议如下：</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271622676.png" alt="" /></p>
+<h3 id="代码补全">
+  代码补全
+  <a class="anchor" href="#%e4%bb%a3%e7%a0%81%e8%a1%a5%e5%85%a8">#</a>
 </h3>
-<p>每一分钟执行一次 /bin/ls：</p>
-<pre tabindex="0"><code>* * * * * /bin/ls
-</code></pre><p>在 12 月内, 每天的早上 6 点到 12 点，每隔 3 个小时 0 分钟执行一次 /usr/bin/backup：</p>
-<pre tabindex="0"><code>0 6-12/3 * 12 * /usr/bin/backup
-</code></pre><p>周一到周五每天下午 5:00 寄一封信给 <a href="mailto:alex@domain.name">alex@domain.name</a>：</p>
-<pre tabindex="0"><code>0 17 * * 1-5 mail -s &#34;hi&#34; alex@domain.name &lt; /tmp/maildata
-</code></pre><p>每月每天的午夜 0 点 20 分, 2 点 20 分, 4 点 20 分&hellip;.执行 echo &ldquo;haha&rdquo;：</p>
-<pre tabindex="0"><code>20 0-23/2 * * * echo &#34;haha&#34;
-</code></pre><p>下面再看看几个具体的例子：</p>
-<pre tabindex="0"><code>0 */2 * * * /sbin/service httpd restart  意思是每两个小时重启一次apache 
-
-50 7 * * * /sbin/service sshd start  意思是每天7：50开启ssh服务 
-
-50 22 * * * /sbin/service sshd stop  意思是每天22：50关闭ssh服务 
-
-0 0 1,15 * * fsck /home  每月1号和15号检查/home 磁盘 
-
-1 * * * * /home/bruce/backup  每小时的第一分执行 /home/bruce/backup这个文件 
-
-00 03 * * 1-5 find /home &#34;*.xxx&#34; -mtime +4 -exec rm {} \;  每周一至周五3点钟，在目录/home中，查找文件名为*.xxx的文件，并删除4天前的文件。
-
-30 6 */10 * * ls  意思是每月的1、11、21、31日是的6：30执行一次ls命令
-</code></pre><p>**注意：**当程序在你所指定的时间执行后，系统会发一封邮件给当前的用户，显示该程序执行的内容，若是你不希望收到这样的邮件，请在每一行空一格之后加上 <strong>&gt; /dev/null 2&gt;&amp;1</strong> 即可，如：</p>
-<pre tabindex="0"><code>20 03 * * * . /etc/profile;/bin/sh /var/www/runoob/test.sh &gt; /dev/null 2&gt;&amp;1 
-</code></pre><h3 id="脚本无法执行问题">
-  脚本无法执行问题
-  <a class="anchor" href="#%e8%84%9a%e6%9c%ac%e6%97%a0%e6%b3%95%e6%89%a7%e8%a1%8c%e9%97%ae%e9%a2%98">#</a>
+<p>在光标所在位置，敲击回车键换行，AI 助手会阅读并理解当前代码，然后自动补全后续代码。</p>
+<p>按下 Tab 键，接受所有自动补全的代码。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271622733.png" alt="" /></p>
+<h3 id="多模态图片">
+  多模态图片
+  <a class="anchor" href="#%e5%a4%9a%e6%a8%a1%e6%80%81%e5%9b%be%e7%89%87">#</a>
 </h3>
-<p>1、如果我们使用 crontab 来定时执行脚本，无法执行，但是如果直接通过命令（如：./test.sh)又可以正常执行，这主要是因为无法读取环境变量的原因。</p>
-<p><strong>解决方法：</strong></p>
-<ul>
-<li>
-<p>1、所有命令需要写成绝对路径形式，如: <strong>/usr/local/bin/docker</strong>。</p>
-</li>
-<li>
-<p>2、在 shell 脚本开头使用以下代码：</p>
-<pre tabindex="0"><code>#!/bin/sh
-
-. /etc/profile
-. ~/.bash_profile
-</code></pre></li>
-<li>
-<p>3、在 <strong>/etc/crontab</strong> 中添加环境变量，在可执行命令之前添加命令 <strong>. /etc/profile;/bin/sh</strong>，使得环境变量生效，例如：</p>
-<pre tabindex="0"><code>20 03 * * * . /etc/profile;/bin/sh /var/www/runoob/test.sh
-</code></pre></li>
-</ul>
-<p>2、<strong>使用crontab启动脚本，但找不到环境变量  pnpm  go  node</strong></p>
-<p><strong>解决方法：</strong></p>
-<pre tabindex="0"><code>sudo ln -s /....   /usr/bin
-</code></pre><h4 id="demo">
-  demo
-  <a class="anchor" href="#demo">#</a>
+<p>当你遇到一些用文字难以描述清楚的问题时，就可以使用该技巧通过添加图片的方式更准确高效地表达需求。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271622002.png" alt="" /></p>
+<h3 id="规则">
+  规则
+  <a class="anchor" href="#%e8%a7%84%e5%88%99">#</a>
+</h3>
+<p>可以通过制定规则来规范 AI 在 Trae IDE 内的行为。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271622863.png" alt="" /></p>
+<p>比如：我告诉AI我的操作系统为Windows，跟我保持中文对话。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271623484.png" alt="" /></p>
+<h3 id="智能体mcp">
+  智能体+MCP
+  <a class="anchor" href="#%e6%99%ba%e8%83%bd%e4%bd%93mcp">#</a>
+</h3>
+<h4 id="智能体">
+  智能体
+  <a class="anchor" href="#%e6%99%ba%e8%83%bd%e4%bd%93">#</a>
 </h4>
-<pre tabindex="0"><code>50 4 * * * /home/hl/go/src/../.sh &gt;/home/hl/vf_build.txt 2&gt;&amp;1
-* * * * * echo &#34;fuch&#34; &gt; /home/hl/test.txt
-注：要用绝对路径
-</code></pre><pre tabindex="0"><code>#!/bin/sh
-开头用的这个
-</code></pre><pre tabindex="0"><code>#!/bin/sh
+<p>智能体是你面向不同开发场景的编程助手。除内置的智能体 Builder 外，你还可以创建自定义智能体，通过灵活配置提示词和工具集，使其更高效地帮你完成复杂任务。</p>
+<p>Trae 提供以下内置智能体：</p>
+<ul>
+<li><strong>Builder</strong>：Builder 可以帮助你从 0 到 1 开发一个完整的项目。根据你的需求，Builder 会调用不同的工具，包括分析代码文件的工具、编辑代码文件的工具、运行命令的工具等等，从而更加精确且有效地处理你的需求。</li>
+<li><strong>Builder with MCP</strong>：在 Builder 的基础上，你配置的所有 MCP Server 都会默认添加至 Builder with MCP，且不可编辑。</li>
+</ul>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271623648.png" alt="" /></p>
+<h4 id="mcp">
+  MCP
+  <a class="anchor" href="#mcp">#</a>
+</h4>
+<p>AI 模型通过连接外部应用，来扩展功能。每个外部应用的接口，都不一样，如果要接入10个应用，就要写10种接入代码，非常麻烦。而且，要是换一个模型，可能所有接入代码都要重写。</p>
+<p>Anthropic 公司在2024年11月提出了 MCP 协议。外部应用只需要支持这个协议，提供一个 MCP 接口（又称 MCP 服务器），那么 AI 模型就可以用统一的格式接入，不需要了解外部应用的接入细节。</p>
+<p>所以，<strong>MCP 可以理解成一个 AI 与外部应用之间的适配层</strong>，由于 MCP 解决了 AI 应用的接入痛点，诞生至今仅半年，已经变得极其流行。</p>
+<h4 id="使用案例一自动提交代码">
+  使用案例一：自动提交代码
+  <a class="anchor" href="#%e4%bd%bf%e7%94%a8%e6%a1%88%e4%be%8b%e4%b8%80%e8%87%aa%e5%8a%a8%e6%8f%90%e4%ba%a4%e4%bb%a3%e7%a0%81">#</a>
+</h4>
+<p>我们可以利用MCP安装git服务，让其自己提交代码，生成commit message。</p>
+<h5 id="安装uv">
+  安装uv
+  <a class="anchor" href="#%e5%ae%89%e8%a3%85uv">#</a>
+</h5>
+<p>注意：设置环境变量</p>
+<pre tabindex="0"><code>powershell -ExecutionPolicy ByPass -c &#34;irm https://astral.sh/uv/install.ps1 | iex&#34;
+</code></pre><h5 id="添加git-mcp服务">
+  添加git mcp服务
+  <a class="anchor" href="#%e6%b7%bb%e5%8a%a0git-mcp%e6%9c%8d%e5%8a%a1">#</a>
+</h5>
+<p>在内置MCP市场中，选择Git服务，并配置安装。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271623823.png" alt="" /></p>
+<p><strong>配置信息：</strong></p>
+<pre tabindex="0"><code>{
+  &#34;mcpServers&#34;: {
+    &#34;git&#34;: {
+      &#34;command&#34;: &#34;uvx&#34;,
+      &#34;args&#34;: [
+        &#34;mcp-server-git&#34;,
+        &#34;--repository&#34;,
+        &#34;C:\\Users\\***\\go\\src\\VideoForensic\\master&#34;
+      ]
+    }
+  }
+}
+</code></pre><h5 id="添加代码提交智能体">
+  添加代码提交智能体
+  <a class="anchor" href="#%e6%b7%bb%e5%8a%a0%e4%bb%a3%e7%a0%81%e6%8f%90%e4%ba%a4%e6%99%ba%e8%83%bd%e4%bd%93">#</a>
+</h5>
+<p>配置安装之后，如果没有智能体，MCP是无法直接使用的，接下来新建一个智能体。</p>
+<p>点击新建智能体，并输入提示词，并保存。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271623919.png" alt="" /></p>
+<h5 id="提示词">
+  提示词
+  <a class="anchor" href="#%e6%8f%90%e7%a4%ba%e8%af%8d">#</a>
+</h5>
+<pre tabindex="0"><code>## 角色 (Role)
 
-export PATH=&#34;/usr/local/go/bin:$PATH&#34;
-export PATH=&#34;/home/hl/.nvm/versions/node/v16.17.0/bin:$PATH&#34;
+你是一个智能的 Git 版本控制助手。你的主要职责是协助用户安全、规范地将本地代码变更同步到远程仓库。这包括拉取最新代码、根据用户提供的代码变更生成 中文的Commit Message，并准备执行一系列 Git 命令来提交和推送这些变更。
 
-cd $(dirname $0)
+## 任务 (Task)
 
-python3 ./nightly/main.py ./build_local.json
-</code></pre><p>需要将所用编译环境变量引入脚本文件</p>
+1.  **同步远程开发分支 (Sync Remote Development Branch):**
+    *   首先，执行 `git pull origin dev` 命令，以确保本地 `dev` 分支（或当前工作分支，如果AI有能力推断的话）与远程 `origin/dev` 分支同步。
+    *   **冲突处理**:
+        *   **如果 `git pull origin dev` 成功且无冲突**：继续执行后续步骤。
+        *   **如果 `git pull origin dev` 遇到合并冲突**：你需要立即停止后续所有 Git 操作（`add`, `commit`, `push`）。并明确提示用户：“在 `git pull origin dev` 过程中检测到合并冲突。请先手动解决这些冲突，并在解决完毕后重新尝试提交操作。” 此时，AI不应尝试自动解决冲突或继续执行。
+
+2.  **分析代码变更 (Analyze Code Changes - 仅在 pull 成功后进行):**
+    *   在 `git pull` 成功且无冲突后，仔细理解用户提供的代码（可能是 `git diff` 的输出、变更的文件列表、或者对变更的文字描述）。
+
+3.  **生成 Commit Message (Generate Commit Message - 仅在 pull 成功后进行):**
+    *   根据代码变更，撰写一个简洁、清晰且符合行业最佳实践（例如 Conventional Commits 规范）的 Git Commit Message。
+    *   **风格要求**：
+        *   **类型 (Type)**：使用标准的 Commit 类型，例如 `feat` (新功能), `fix` (Bug 修复), `docs` (文档修改), `style` (代码风格调整，不影响代码逻辑), `refactor` (代码重构), `perf` (性能优化), `test` (测试相关), `chore` (构建过程或辅助工具的变动)。
+        *   **范围 (Scope)** (可选): 指明本次提交影响的范围，例如模块名。格式为 `type(scope): description`。
+        *   **描述 (Description)**：使用祈使句（动词开头），清晰描述本次提交所做的更改。例如：&#34;Add user login functionality&#34; 或 &#34;Fix issue with payment calculation&#34;。
+        *   **简洁性**：确保消息主题行（第一行）尽可能简短。
+
+4.  **准备并执行 Git 提交与推送命令 (Prepare &amp; Execute Git Commit &amp; Push - 仅在 pull 成功且 Commit Message 生成后进行):**
+    *   基于生成的 Commit Message，构建并准备执行以下固定的 Git 命令序列。
+    *   **目标分支**：`tianzhiwei`
+    *   **目标远程仓库**：`origin`
+</code></pre><h5 id="效果展示">
+  效果展示
+  <a class="anchor" href="#%e6%95%88%e6%9e%9c%e5%b1%95%e7%a4%ba">#</a>
+</h5>
+<p>接下来可选择刚刚生成的智能体，并输入”帮我提交代码“，回车之后，效果如下图所示：</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271623712.png" alt="" /></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271624245.png" alt="" /></p>
+<p>代码提交智能体会自动跟你你修改的内容生成commit message消息，并帮你提交代码。</p>
+<h4 id="使用案例二本地代码审核">
+  使用案例二：本地代码审核
+  <a class="anchor" href="#%e4%bd%bf%e7%94%a8%e6%a1%88%e4%be%8b%e4%ba%8c%e6%9c%ac%e5%9c%b0%e4%bb%a3%e7%a0%81%e5%ae%a1%e6%a0%b8">#</a>
+</h4>
+<p>在提交代码前如何才能发现潜在问题，从而进行及时改正？，我们创建代码审核智能体，在代码上传之前先帮你审核。</p>
+<h5 id="添加代码审核智能体">
+  添加代码审核智能体
+  <a class="anchor" href="#%e6%b7%bb%e5%8a%a0%e4%bb%a3%e7%a0%81%e5%ae%a1%e6%a0%b8%e6%99%ba%e8%83%bd%e4%bd%93">#</a>
+</h5>
+<p>git mcp服务安装如案例一所示，如下图所示创建代码审核智能体。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271624217.png" alt="" /></p>
+<h5 id="提示词-1">
+  提示词
+  <a class="anchor" href="#%e6%8f%90%e7%a4%ba%e8%af%8d-1">#</a>
+</h5>
+<pre tabindex="0"><code>你是一位经验丰富、注重细节的资深软件工程师和代码架构师，同时也是一位安全专家。你的任务是对提供的代码进行全面而深入的审查，并给出评分，指出修改建议时，标明原代码位置。
+你的目标是：
+1.  识别语法错误和风格问题：确保代码符合通用编码规范和最佳实践（如果未指定特定语言的风格指南，请使用最广泛接受的约定）。
+2.  评估代码逻辑：检查代码的正确性、健壮性、可读性和可维护性。指出任何逻辑缺陷、不清晰的流程或潜在的误解。
+3.  发现潜在漏洞：识别常见的安全漏洞。解释漏洞的原理和潜在风险。
+4.  提供优化建议：针对性能（时间复杂度、空间复杂度）、资源使用（内存、CPU）、代码冗余、可读性、可扩展性等方面提出具体的改进建议。
+5.  提供深层次反馈：不仅仅是表面问题，要深入探讨设计模式、架构选择、算法效率以及代码对未来变更的适应性。
+</code></pre><h5 id="效果展示-1">
+  效果展示
+  <a class="anchor" href="#%e6%95%88%e6%9e%9c%e5%b1%95%e7%a4%ba-1">#</a>
+</h5>
+<p>选用代码审核智能体，并输入”代码审核“,回车后，智能体会根据你git中已修改的代码做出优化建议，效果如下图所示：</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271624476.png" alt="" /></p>
+<p><strong>可惜目前Trae的MCP git服务只能配置一个仓库，尝试配置多仓库失败，有待改进。</strong></p>
+<h4 id="使用案例三自动寻找错误">
+  使用案例三：自动寻找错误
+  <a class="anchor" href="#%e4%bd%bf%e7%94%a8%e6%a1%88%e4%be%8b%e4%b8%89%e8%87%aa%e5%8a%a8%e5%af%bb%e6%89%be%e9%94%99%e8%af%af">#</a>
+</h4>
+<p>trae可以全局控制你整个项目的代码，但如果是运行中的错误，应该如何处理呢？我们通过添加文件系统MCP服务，让trae可以读取程序运行中的日志信息，从而分析错误日志，并根据trae天然的代码掌控能力，可以轻松定位问题原因，并给出合理建议。</p>
+<h5 id="添加文件系统">
+  添加文件系统
+  <a class="anchor" href="#%e6%b7%bb%e5%8a%a0%e6%96%87%e4%bb%b6%e7%b3%bb%e7%bb%9f">#</a>
+</h5>
+<p>在内置MCP市场中寻找filesystem服务，并配置。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271624140.png" alt="" /></p>
+<pre tabindex="0"><code>{
+  &#34;mcpServers&#34;: {
+    &#34;filesystem&#34;: {
+      &#34;command&#34;: &#34;npx&#34;,
+      &#34;args&#34;: [
+        &#34;-y&#34;,
+        &#34;@modelcontextprotocol/server-filesystem&#34;,
+        &#34;C:\\Users\\****\\AppData\\Roaming\\VideoForensic\\log&#34;
+      ]
+    }
+  }
+}
+</code></pre><h5 id="添加文件阅读智能体">
+  添加文件阅读智能体
+  <a class="anchor" href="#%e6%b7%bb%e5%8a%a0%e6%96%87%e4%bb%b6%e9%98%85%e8%af%bb%e6%99%ba%e8%83%bd%e4%bd%93">#</a>
+</h5>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271624484.png" alt="" /></p>
+<h5 id="提示词-2">
+  提示词
+  <a class="anchor" href="#%e6%8f%90%e7%a4%ba%e8%af%8d-2">#</a>
+</h5>
+<pre tabindex="0"><code>你是一个部署了 https://github.com/bunasQ/fs 文件系统操作能力的 MCP 服务智能体。你的主要任务是协助我分析和调试 trae 编辑器项目的运行日志。
+[任务目标]
+你的目标是：
+定位并读取项目最新的运行日志文件。
+提取日志的最后50行内容。
+分析这些日志内容，识别其中的错误信息。
+根据错误信息，定位到相关的源代码文件和行号。
+分析错误发生的潜在原因。
+提供具体的代码修改建议或进一步的调试方向。
+[执行步骤与所需信息]
+定位日志文件:
+项目的日志文件存储在固定目录：C:\Users\tianzhiwei\AppData\Roaming\VideoForensic\log\
+日志文件的名称由项目根目录下的 config.json 文件中的 &#34;function&#34; 字段值决定。
+你需要首先读取项目 config.json 文件 (请告诉我 config.json 相对于项目根目录的路径，如果它不在根目录，或者假设它就在项目根目录)。假设 config.json 内容为：
+{
+  &#34;function&#34;: &#34;videoanalytics&#34;,
+  // ... other configurations
+}
+提取 &#34;function&#34; 字段的值（例如，如果值为 video_analysis_task，则日志文件名为 video_analysis_task.log。
+完整的日志文件路径将是：C:\Users\tianzhiwei\AppData\Roaming\VideoForensic\log\&lt;FUNCTION_VALUE&gt;.log。
+读取日志内容:
+使用你的 fs 能力，打开上述定位到的日志文件。
+读取并返回该日志文件的最后 50 行内容。
+分析日志内容:
+我将提供你读取到的最后 50 行日志内容，格式如下（这只是示例，你将处理实际读取到的内容）：
+[cn: eid:1] error: 2025/05/27 13:26:30 video.go:79: ---  video process err:abnormal end, &lt;nil&gt;,model:yolo-v8-base-object
+[cn: eid:1] error: 2025/05/27 13:26:30 video.go:23: video process err:abnormal end, &lt;nil&gt;,model:yolo-v8-base-object
+[cn: eid:1] info: 2025/05/27 13:26:30 instance.go:24: cancel 20250527132610 task success，taskID[1]
+[cn: eid:1] error: 2025/05/27 13:26:30 interface.go:82: 20250527132610 task failed[abnormal end, &lt;nil&gt;,model:yolo-v8-base-object]
+[cn: eid:1] error: 2025/05/27 13:26:30 object.go:27: start object detection task failed[abnormal end, &lt;nil&gt;,model:yolo-v8-base-object]
+[cn: eid:1] info: 2025/05/27 13:29:12 object.go:40: &amp;{DetectionParam:{BasicDetectionParam:{Cid:66 Eid:1 DetectionTid:2 Cancel:false TaskName:2025052713261 TaskType:3 VideoNids:[1000000001 1000000006 1000000011 1000000093] AiEngineHost:http://127.0.0.1:9120 HlsPost:http://127.0.0.1:9002} Stime:0 Etime:0 VideoDuration:0 ModelClass:[car truck bike bus motorcycle fire smoke person] DetectionType:keyFrame} taskName: pool:&lt;nil&gt; taskNode:&lt;nil&gt; ClassList:map[] progressController:{videoNum:0 mainProgress:0 modelProgress:{mu:{state:0 sema:0} read:{_:[] _:{} v:&lt;nil&gt;} dirty:map[] misses:0} endNum:0} videoClass:{VideoName: VideoPath: MountKind:0 RemuxVideoPath: Duration:0 VideoNode:&lt;nil&gt;}}
+[cn: eid:1] info: 2025/05/27 13:29:12 aiEngine.go:61: The AI engine is  initialized, begin task
+[cn: eid:1] info: 2025/05/27 13:29:12 yolo.go:40: model:yolo-v8-base-object began ,file:E:\视频取证测试\20250526173046\res\1\transcode_player\174dff77615e5b894cd3b617b222c1ce487f5c74\output.mkv
+[cn: eid:1] info: 2025/05/27 13:29:28 object.go:40: &amp;{DetectionParam:{BasicDetectionParam:{Cid:66 Eid:1 DetectionTid:2 Cancel:true TaskName: TaskType:3 VideoNids:[] AiEngineHost:http://127.0.0.1:9120 HlsPost:} Stime:0 Etime:0 VideoDuration:0 ModelClass:[] DetectionType:} taskName: pool:&lt;nil&gt; taskNode:&lt;nil&gt; ClassList:map[] progressController:{videoNum:0 mainProgress:0 modelProgress:{mu:{state:0 sema:0} read:{_:[] _:{} v:&lt;nil&gt;} dirty:map[] misses:0} endNum:0} videoClass:{VideoName: VideoPath: MountKind:0 RemuxVideoPath: Duration:0 VideoNode:&lt;nil&gt;}}
+[cn: eid:1] info: 2025/05/27 13:29:28 instance.go:24: cancel  task success，taskID[2]
+[cn: eid:1] error: 2025/05/27 13:29:28 video.go:63: video detection err:abnormal end, context canceled,model:yolo-v8-base-object ,model:yolo-v8-base-object
+[cn: eid:1] error: 2025/05/27 13:29:28 video.go:79: ---  video process err:context canceled
+[cn: eid:1] error: 2025/05/27 13:29:28 video.go:23: video process err:context canceled
+[cn: eid:1] info: 2025/05/27 13:29:28 instance.go:24: cancel 2025052713261 task success，taskID[2]
+[cn: eid:1] error: 2025/05/27 13:29:28 interface.go:82: 2025052713261 task failed[context canceled]
+[cn: eid:1] error: 2025/05/27 13:29:28 object.go:27: start object detection task failed[context canceled]
+[cn: eid:1] info: 2025/05/27 13:34:14 videoanalysis.go:75: Unknown param，type:update , content: [exit]
+[cn: eid:1] error: 2025/05/27 13:34:14 task.go:238: exit error:退出案件导致任务取消
+[cn: eid:1] info: 2025/05/27 13:34:14 log.go:29: 插件 AI分析(videoanalytics) 解析失败：退出案件导致任务取消，耗时：8m6.3061826s
+Use code with caution.
+请重点关注包含 error: 关键字的日志行。
+对于每一条 error 日志：
+提取错误信息：例如，video process err:abnormal end, &lt;nil&gt;,model:yolo-v8-base-object 或 exit error:退出案件导致任务取消。
+定位源代码：从日志中提取文件名和行号，例如 video.go:79 或 task.go:238。
+分析错误原因：根据错误信息和常见的编程实践（特别是 Go 语言，因为文件名是 .go），推断可能的原因。例如：
+abnormal end, &lt;nil&gt; 可能表示goroutine意外退出，&lt;nil&gt;可能指未正确处理的错误返回值。
+context canceled 通常表示操作因为上下文被取消而终止，需要检查取消操作的逻辑是否符合预期。
+退出案件导致任务取消 是一个业务逻辑相关的错误，说明程序在处理“退出案件”场景时，相关的任务被取消了。
+提供修改建议：
+对于 abnormal end, &lt;nil&gt;：建议检查 video.go:79 和 video.go:23 附近的代码，确保所有可能的错误都被正确处理和返回，而不是返回 nil 错误但流程异常终止。检查是否有 panic 未被 recover。
+对于 context canceled：建议检查 video.go:63, video.go:79, video.go:23, interface.go:82, object.go:27 等处，确认任务取消的逻辑是否正确，是否在不应取消时被取消，或者取消后资源是否正确释放。
+对于 task.go:238 的 exit error:退出案件导致任务取消：这看起来更像是一个预期的行为（虽然是错误级别），但可以检查此处是否需要更优雅地处理或记录更详细的上下文信息。如果这是非预期的，那么需要检查“退出案件”的逻辑。
+[输出格式要求]
+请按以下格式组织你的分析结果：
+MCP 服务智能体日志分析报告：
+
+1.  **读取的日志文件名**：[实际读取的日志文件名]
+2.  **最后50行日志内容**：
+    [此处粘贴实际读取的最后50行日志]
+
+3.  **错误分析与建议**：
+
+    *   **错误 1**:
+        *   **日志原文**: [包含错误的单行日志]
+        *   **定位代码**: [文件路径:行号]
+        *   **错误信息**: [提取的错误描述]
+        *   **可能原因**: [你的分析，包含代码]
+        *   **修改建议**: [你的建议，包含代码]
+
+    *   **错误 2**:
+        *   **日志原文**: [包含错误的单行日志]
+        *   **定位代码**: [文件路径:行号]
+        *   **错误信息**: [提取的错误描述]
+        *   **可能原因**: [你的分析，包含代码]
+        *   **修改建议**: [你的建议，包含代码]
+
+    *   ... (以此类推，分析所有识别到的 error 日志) ...
+
+    *   **总体建议 (如果适用)**: [基于所有错误的综合性建议或观察]
+Use code with caution.
+[附加说明]
+假设项目代码文件（如 video.go, task.go 等）位于你可以访问或推断的路径下，以便你的分析更具上下文。
+如果日志中出现的文件路径 (如 E:\视频取证测试\...) 对你分析错误有帮助，也请加以利用。
+如果 config.json 不在项目根目录，请在实际操作时告诉我它的确切相对路径。
+如果日志文件名除了 config.json 的 function 字段外还有其他固定部分或后缀 (如 .log)，请在生成最终日志路径时考虑进去。默认假设日志文件名为 FUNCTION_VALUE 或 FUNCTION_VALUE.log。
+分析这些日志内容，识别其中的错误信息。
+根据错误信息，定位到相关的源代码文件和行号。
+分析错误发生的潜在原因。
+提供具体的代码修改建议或进一步的调试方向。
+</code></pre><h5 id="错误解决">
+  错误解决：
+  <a class="anchor" href="#%e9%94%99%e8%af%af%e8%a7%a3%e5%86%b3">#</a>
+</h5>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271624185.png" alt="" /></p>
+<p>由于trae限制了项目的访问权限，导致无法访问项目外的路径，需要在项目规则中添加允许访问C:\Users\tianzhiwei\AppData\Roaming\VideoForensic，并将log文件目录加入真个项目工作区。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271625065.png" alt="" /></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271625861.png" alt="" /></p>
+<h5 id="效果展示-2">
+  效果展示
+  <a class="anchor" href="#%e6%95%88%e6%9e%9c%e5%b1%95%e7%a4%ba-2">#</a>
+</h5>
+<p>选用文件系统智能体，并输入”config.json文件在当前目录的videoanalytics目录下，请帮我分析日志错误原因“,回车后，效果如下所示：</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271625624.png" alt="" /></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271625695.png" alt="" /></p>
+<p>​                                                                                  。。。。。。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271625623.png" alt="" /></p>
+<h2 id="使用心得">
+  使用心得
+  <a class="anchor" href="#%e4%bd%bf%e7%94%a8%e5%bf%83%e5%be%97">#</a>
+</h2>
+<h3 id="打铁思维抡好小锤">
+  打铁思维抡好小锤
+  <a class="anchor" href="#%e6%89%93%e9%93%81%e6%80%9d%e7%bb%b4%e6%8a%a1%e5%a5%bd%e5%b0%8f%e9%94%a4">#</a>
+</h3>
+<p>在某个视频中看到过这样一个关于程序员与AI关系的论述：在铁匠铺里，老师傅握着小锤子，在通红的铁块上轻轻敲击给徒弟指引捶打点；徒弟抡着沉重的大锤，捶打老师傅刚刚敲击过的地方，把铁坯砸成需要的形状。最后老师傅修补细节，敲打花纹。</p>
+<p>程序员就像老师傅，用经验和智慧设计系统架构，比如决定需要哪些功能模块；AI像徒弟，力大无穷，可以快速完成重复性工作：自动生成界面代码、检查代码拼写错误等。</p>
+<p>基于目前AI的发展，如果你想让它直接生成一个大且复杂的项目是非常困难的。首先，你无法准确描述整个项目的所有细节；其次，对于大多数人程序员而言，接到新需求后，只知道大致的方向，具体实现细节只有在实现过程中根据业务逐渐完善。因此，可以先给它一个大致的方向，搭好框架，然后逐步填充里面的内容。</p>
+<p>如下：</p>
+<blockquote>
+<p>1、仿照此接口，在ai文件夹下，新建go文件，在此接口基础上，新增数据提交方法，新增进度更新方法</p>
+<pre tabindex="0"><code>type AiAnalyticsInterface interface {
+	cancelTask() (err error)
+	startTask() (err error)
+	beginTask(rootNodeNid int64) (err error)
+	upNodeStatus(status string)
+	submitData(data interface{}) (err error)
+	updateProgress(progress int)
+}
+</code></pre></blockquote>
+<blockquote>
+<p>2、videoanalysis.go 16-46 继续仿照这些函数，丰富上面的接口</p>
+</blockquote>
+<blockquote>
+<p>3、ai 在此文件夹下，新增目标物体、目标场景、目标图像、目标自定义四个文件夹，并分别参照 scene.go 文件，创建相应的文件与函数简单实现 ai_interface.go 14-14 接口</p>
+</blockquote>
+<blockquote>
+<p>4、remark.go remark.go frame.go node.go videoanalysis.go 将这几个文件放到上层目录的basic文件夹下，并复制涉及到的相关函数，到相应文件，并写好注释。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202505271626395.png" alt="" /></p>
+</blockquote>
+<blockquote>
+<p>5、parser 在此文件夹下建立一个公共的文件夹，并将 common.go 移入该文件夹</p>
+</blockquote>
+<blockquote>
+<p>6、analyzer.go 7-10 参照这里的方法，以枚举形式创建任务类型常量，枚举类型为int analyzer.go 12-15 注意命名以分析类型为前缀，若AnalyticType不符合语境可自行修改</p>
+</blockquote>
+<blockquote>
+<p>7、videoanalysis.go 130-141 根据刚刚的常量，修改这里。注意：analyze文件夹中的所有函数均已弃用，请使用basic和ai文件夹中的函数</p>
+</blockquote>
+<blockquote>
+<p>8、object.go 55-55 查看上下文，并解决报错</p>
+</blockquote>
+<blockquote>
+<p>9、请阅读object/object.go文件，这是一个实现目标识别的接口。因为业务发生变动，请根据我的描述一步一步搭建任务框架。 object.go 82-109 这是任务启动函数入口，在函数中第一步：创建任务节点，第二步：获取视频列表，第三步：创建上下文，第四步：开始任务</p>
+</blockquote>
+<blockquote>
+<p>10、node.go 106-410 请仔细阅读上下文，这段代码将数据查出来后，在底层做了处理，我现在需要改成先拿出数据在外层做处理。注意：1、每次查到的数据只有VideoTapeInfo或者VideoRepairRecord两种情况之一 2、 node.go 127-129 这里存在反选逻辑， node.go 127-129 node.go 148-150 这里将部分数据放入map，在 node.go 327-329 这里处理时将其过滤掉了</p>
+</blockquote>
+<blockquote>
+<p>&hellip;&hellip;..</p>
+</blockquote>
 </article>
  
       
@@ -3340,13 +3524,21 @@ python3 ./nightly/main.py ./build_local.json
   <ul>
     <li>
       <ul>
-        <li>
+        <li><a href="#trae介绍">Trae介绍</a></li>
+        <li><a href="#主要功能">主要功能</a>
           <ul>
-            <li><a href="#简介">简介</a></li>
-            <li><a href="#语法">语法</a></li>
-            <li><a href="#格式">格式</a></li>
-            <li><a href="#实例">实例</a></li>
-            <li><a href="#脚本无法执行问题">脚本无法执行问题</a></li>
+            <li><a href="#上下文">上下文</a></li>
+            <li><a href="#模型">模型</a></li>
+            <li><a href="#ai修复">AI修复</a></li>
+            <li><a href="#代码补全">代码补全</a></li>
+            <li><a href="#多模态图片">多模态图片</a></li>
+            <li><a href="#规则">规则</a></li>
+            <li><a href="#智能体mcp">智能体+MCP</a></li>
+          </ul>
+        </li>
+        <li><a href="#使用心得">使用心得</a>
+          <ul>
+            <li><a href="#打铁思维抡好小锤">打铁思维抡好小锤</a></li>
           </ul>
         </li>
       </ul>

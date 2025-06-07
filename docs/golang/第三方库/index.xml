@@ -21,6 +21,22 @@ package mainimport (&amp;#34;fmt&amp;#34;&amp;#34;log&amp;#34;&amp;#34;githu
     </item>
     
     <item>
+      <title>diskqueue</title>
+      <link>https://chain-code.github.io/docs/golang/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/diskqueue/</link>
+      <pubDate>Wed, 19 Apr 2023 20:05:22 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/diskqueue/</guid>
+      <description>diskqueue # github.com/nsqio/go-diskqueue 是 NSQ（一个实时分布式消息平台）官方团队开发的一个 Go 语言库，主要用于实现基于磁盘的持久化队列。它的核心作用是为消息系统提供可靠的消息存储和异步处理能力，尤其适合需要高吞吐、持久化和故障恢复的场景。
+https://github.com/nsqio/go-diskqueue?tab=readme-ov-file
+nsq # https://github.com/nsqio
+NSQ是一个实时分布式消息传递平台，旨在大规模运行，每天处理数十亿条消息。
+它支持分布式和去中心化拓扑，消除单点故障，实现容错和高可用性，并提供可靠的消息传递保证。请参阅功能和保障。
+NSQ操作简单，易于配置和部署（所有参数均可在命令行中指定，且编译后的二进制文件无运行时依赖）。为了实现最大的灵活性，它与数据格式无关（消息可以是 JSON、MsgPack、Protocol Buffers 或其他任何格式）。官方的 Go 和 Python 库开箱即用（以及许多其他客户端库），如果您有兴趣构建自己的客户端，可以参考协议规范。
+案例： # 实现队列缓冲，当有大量的数据需要缓存，并且需要保证前后顺序一致，就能用到这个
+// Helper for serialization (using gob as an example)func serializeDetectionResult(data *file2.DetectionResult) ([]byte, error) {var buf bytes.Bufferencoder := gob.NewEncoder(&amp;amp;buf)if err := encoder.Encode(data); err != nil {return nil, fmt.Errorf(&amp;#34;failed to serialize DetectionResult: %w&amp;#34;, err)}return buf.Bytes(), nil}func deserializeDetectionResult(data []byte) (*file2.</description>
+    </item>
+    
+    <item>
       <title>gofpdf</title>
       <link>https://chain-code.github.io/docs/golang/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/gofpdf/</link>
       <pubDate>Wed, 19 Apr 2023 20:05:22 +0800</pubDate>

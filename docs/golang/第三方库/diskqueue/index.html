@@ -3,36 +3,30 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="title: 几种常见数据库的备份与恢复 date: 2022-05-24 15:47:27 MySQL的数据备份与恢复 # 1. 数据的备份类型 # 数据的备份类型根据其自身的特性主要分为以下几组：
-1.完全备份　完全备份指的是备份整个数据集( 即整个数据库 )
-2.部分备份 部分备份指的是备份部分数据集(例如: 只备份一个表) 而部分备份又分为：
-增量备份 增量备份指的是备份自上一次备份以来(增量或完全)以来变化的数据。特点: 节约空间、还原麻烦 差异备份 差异备份指的是备份自上一次完全备份以来变化的数据。特点: 浪费空间、还原比增量备份简单 2. MySQL备份数据的方式 # 在MySQl中备份数据一般有三种方式：
-热备份 热备份指的是当数据库进行备份时, 数据库的读写操作均不是受影响
-温备份 温备份指的是当数据库进行备份时, 数据库的读操作可以执行, 但是不能执行写操作
-冷备份 冷备份指的是当数据库进行备份时, 数据库不能进行读写操作, 即数据库要下线
-MySQL中进行不同方式的备份还要考虑存储引擎是否支持： 1）MyISAM 热备 × 温备 √ 冷备 √ 2）InnoDB 热备 √ 温备 √ 冷备 √
-我们考虑完数据备份, 数据库的运行状态之后还需要考虑对于MySQL数据库中数据的备份方式：
-（1）物理备份 物理备份一般就是通过tar,cp等命令直接打包复制数据库的数据文件达到备份的效果 （2）逻辑备份 逻辑备份一般就是通过特定工具从数据库中导出数据并另存备份(逻辑备份会丢失数据精度) 3.备份工具 # 常用的备份工具有：
-mysqldump： 逻辑备份工具, 适用于所有的存储引擎, 支持温备、完全备份、部分备份、对于InnoDB存储引擎支持热备 cp, tar 等归档复制工具： 物理备份工具, 适用于所有的存储引擎, 冷备、完全备份、部分备份 lvm2 snapshot： 几乎热备, 借助文件系统管理工具进行备份 mysqlhotcopy： 名不副实的的一个工具, 几乎冷备, 仅支持MyISAM存储引擎 xtrabackup： 一款非常强大的InnoDB/XtraDB热备工具, 支持完全备份、增量备份, 由percona提供 下面介绍一下mysqldump的使用">
+<meta name="description" content="diskqueue # github.com/nsqio/go-diskqueue 是 NSQ（一个实时分布式消息平台）官方团队开发的一个 Go 语言库，主要用于实现基于磁盘的持久化队列。它的核心作用是为消息系统提供可靠的消息存储和异步处理能力，尤其适合需要高吞吐、持久化和故障恢复的场景。
+https://github.com/nsqio/go-diskqueue?tab=readme-ov-file
+nsq # https://github.com/nsqio
+NSQ是一个实时分布式消息传递平台，旨在大规模运行，每天处理数十亿条消息。
+它支持分布式和去中心化拓扑，消除单点故障，实现容错和高可用性，并提供可靠的消息传递保证。请参阅功能和保障。
+NSQ操作简单，易于配置和部署（所有参数均可在命令行中指定，且编译后的二进制文件无运行时依赖）。为了实现最大的灵活性，它与数据格式无关（消息可以是 JSON、MsgPack、Protocol Buffers 或其他任何格式）。官方的 Go 和 Python 库开箱即用（以及许多其他客户端库），如果您有兴趣构建自己的客户端，可以参考协议规范。
+案例： # 实现队列缓冲，当有大量的数据需要缓存，并且需要保证前后顺序一致，就能用到这个
+// Helper for serialization (using gob as an example)func serializeDetectionResult(data *file2.DetectionResult) ([]byte, error) {var buf bytes.Bufferencoder := gob.NewEncoder(&amp;buf)if err := encoder.Encode(data); err != nil {return nil, fmt.Errorf(&#34;failed to serialize DetectionResult: %w&#34;, err)}return buf.Bytes(), nil}func deserializeDetectionResult(data []byte) (*file2.">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
-<meta name="color-scheme" content="light dark"><meta property="og:title" content="" />
-<meta property="og:description" content="title: 几种常见数据库的备份与恢复 date: 2022-05-24 15:47:27 MySQL的数据备份与恢复 # 1. 数据的备份类型 # 数据的备份类型根据其自身的特性主要分为以下几组：
-1.完全备份　完全备份指的是备份整个数据集( 即整个数据库 )
-2.部分备份 部分备份指的是备份部分数据集(例如: 只备份一个表) 而部分备份又分为：
-增量备份 增量备份指的是备份自上一次备份以来(增量或完全)以来变化的数据。特点: 节约空间、还原麻烦 差异备份 差异备份指的是备份自上一次完全备份以来变化的数据。特点: 浪费空间、还原比增量备份简单 2. MySQL备份数据的方式 # 在MySQl中备份数据一般有三种方式：
-热备份 热备份指的是当数据库进行备份时, 数据库的读写操作均不是受影响
-温备份 温备份指的是当数据库进行备份时, 数据库的读操作可以执行, 但是不能执行写操作
-冷备份 冷备份指的是当数据库进行备份时, 数据库不能进行读写操作, 即数据库要下线
-MySQL中进行不同方式的备份还要考虑存储引擎是否支持： 1）MyISAM 热备 × 温备 √ 冷备 √ 2）InnoDB 热备 √ 温备 √ 冷备 √
-我们考虑完数据备份, 数据库的运行状态之后还需要考虑对于MySQL数据库中数据的备份方式：
-（1）物理备份 物理备份一般就是通过tar,cp等命令直接打包复制数据库的数据文件达到备份的效果 （2）逻辑备份 逻辑备份一般就是通过特定工具从数据库中导出数据并另存备份(逻辑备份会丢失数据精度) 3.备份工具 # 常用的备份工具有：
-mysqldump： 逻辑备份工具, 适用于所有的存储引擎, 支持温备、完全备份、部分备份、对于InnoDB存储引擎支持热备 cp, tar 等归档复制工具： 物理备份工具, 适用于所有的存储引擎, 冷备、完全备份、部分备份 lvm2 snapshot： 几乎热备, 借助文件系统管理工具进行备份 mysqlhotcopy： 名不副实的的一个工具, 几乎冷备, 仅支持MyISAM存储引擎 xtrabackup： 一款非常强大的InnoDB/XtraDB热备工具, 支持完全备份、增量备份, 由percona提供 下面介绍一下mysqldump的使用" />
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="diskqueue" />
+<meta property="og:description" content="diskqueue # github.com/nsqio/go-diskqueue 是 NSQ（一个实时分布式消息平台）官方团队开发的一个 Go 语言库，主要用于实现基于磁盘的持久化队列。它的核心作用是为消息系统提供可靠的消息存储和异步处理能力，尤其适合需要高吞吐、持久化和故障恢复的场景。
+https://github.com/nsqio/go-diskqueue?tab=readme-ov-file
+nsq # https://github.com/nsqio
+NSQ是一个实时分布式消息传递平台，旨在大规模运行，每天处理数十亿条消息。
+它支持分布式和去中心化拓扑，消除单点故障，实现容错和高可用性，并提供可靠的消息传递保证。请参阅功能和保障。
+NSQ操作简单，易于配置和部署（所有参数均可在命令行中指定，且编译后的二进制文件无运行时依赖）。为了实现最大的灵活性，它与数据格式无关（消息可以是 JSON、MsgPack、Protocol Buffers 或其他任何格式）。官方的 Go 和 Python 库开箱即用（以及许多其他客户端库），如果您有兴趣构建自己的客户端，可以参考协议规范。
+案例： # 实现队列缓冲，当有大量的数据需要缓存，并且需要保证前后顺序一致，就能用到这个
+// Helper for serialization (using gob as an example)func serializeDetectionResult(data *file2.DetectionResult) ([]byte, error) {var buf bytes.Bufferencoder := gob.NewEncoder(&amp;buf)if err := encoder.Encode(data); err != nil {return nil, fmt.Errorf(&#34;failed to serialize DetectionResult: %w&#34;, err)}return buf.Bytes(), nil}func deserializeDetectionResult(data []byte) (*file2." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/" /><meta property="article:section" content="docs" />
-
-
-<title>常见数据库的备份与恢复 | Soulmate</title>
+<meta property="og:url" content="https://chain-code.github.io/docs/golang/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/diskqueue/" /><meta property="article:section" content="docs" />
+<meta property="article:published_time" content="2023-04-19T20:05:22+08:00" />
+<meta property="article:modified_time" content="2023-04-19T20:05:22+08:00" />
+<title>diskqueue | Soulmate</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
@@ -1104,7 +1098,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <input type="checkbox" id="section-98f45c00d30ea45270982f872bd1c0bb" class="toggle"  />
+    <input type="checkbox" id="section-98f45c00d30ea45270982f872bd1c0bb" class="toggle" checked />
     <label for="section-98f45c00d30ea45270982f872bd1c0bb" class="flex justify-between">
       <a role="button" class="">第三方库</a>
     </label>
@@ -1133,7 +1127,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/golang/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/diskqueue/" class="">diskqueue</a>
+    <a href="/docs/golang/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/diskqueue/" class="active">diskqueue</a>
   
 
         </li>
@@ -1895,7 +1889,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/" class="active">常见数据库的备份与恢复</a>
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/" class="">常见数据库的备份与恢复</a>
   
 
         </li>
@@ -3042,7 +3036,7 @@ https://github.com/alex-shpak/hugo-book
     <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
   </label>
 
-  <strong>常见数据库的备份与恢复</strong>
+  <strong>diskqueue</strong>
 
   <label for="toc-control">
     
@@ -3060,25 +3054,10 @@ https://github.com/alex-shpak/hugo-book
   <ul>
     <li>
       <ul>
-        <li><a href="#mysql的数据备份与恢复">MySQL的数据备份与恢复</a>
+        <li><a href="#diskqueue">diskqueue</a>
           <ul>
-            <li><a href="#1-数据的备份类型">1. 数据的备份类型</a></li>
-            <li><a href="#2-mysql备份数据的方式">2. MySQL备份数据的方式</a></li>
-            <li><a href="#3备份工具">3.备份工具</a></li>
-            <li><a href="#4-mysqldump-的介绍与使用">4. mysqldump 的介绍与使用</a></li>
-          </ul>
-        </li>
-        <li><a href="#mongodb的数据备份与恢复">MongoDB的数据备份与恢复</a>
-          <ul>
-            <li><a href="#mongodump的介绍与使用">mongodump的介绍与使用</a></li>
-            <li><a href="#二单节点意外关闭后恢复数据">二、单节点意外关闭后恢复数据</a></li>
-            <li><a href="#三mongodb-数据恢复">三、MongoDB 数据恢复</a></li>
-          </ul>
-        </li>
-        <li><a href="#postgresql数据备份与恢复">PostgreSQL数据备份与恢复</a>
-          <ul>
-            <li><a href="#postgresql备份方案">PostgreSQL备份方案</a></li>
-            <li><a href="#postgresql逻辑备份恢复">PostgreSQL逻辑备份恢复</a></li>
+            <li><a href="#nsq">nsq</a></li>
+            <li><a href="#案例">案例：</a></li>
           </ul>
         </li>
       </ul>
@@ -3095,459 +3074,172 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown"><pre tabindex="0"><code>title: 几种常见数据库的备份与恢复
-date: 2022-05-24 15:47:27
-</code></pre><h2 id="mysql的数据备份与恢复">
-  MySQL的数据备份与恢复
-  <a class="anchor" href="#mysql%e7%9a%84%e6%95%b0%e6%8d%ae%e5%a4%87%e4%bb%bd%e4%b8%8e%e6%81%a2%e5%a4%8d">#</a>
+  <article class="markdown"><h2 id="diskqueue">
+  diskqueue
+  <a class="anchor" href="#diskqueue">#</a>
 </h2>
-<h3 id="1-数据的备份类型">
-  1. 数据的备份类型
-  <a class="anchor" href="#1-%e6%95%b0%e6%8d%ae%e7%9a%84%e5%a4%87%e4%bb%bd%e7%b1%bb%e5%9e%8b">#</a>
+<p><code>github.com/nsqio/go-diskqueue</code> 是 NSQ（一个实时分布式消息平台）官方团队开发的一个 Go 语言库，主要用于实现<strong>基于磁盘的持久化队列</strong>。它的核心作用是为消息系统提供可靠的消息存储和异步处理能力，尤其适合需要高吞吐、持久化和故障恢复的场景。</p>
+<p><a href="https://github.com/nsqio/go-diskqueue?tab=readme-ov-file">https://github.com/nsqio/go-diskqueue?tab=readme-ov-file</a></p>
+<h3 id="nsq">
+  nsq
+  <a class="anchor" href="#nsq">#</a>
 </h3>
-<p>数据的备份类型根据其自身的特性主要分为以下几组：</p>
-<ul>
-<li>
-<p>1.完全备份　　
-完全备份指的是备份整个数据集( 即整个数据库 )</p>
-</li>
-<li>
-<p>2.部分备份
-部分备份指的是备份部分数据集(例如: 只备份一个表)
-而部分备份又分为：</p>
-<ul>
-<li>增量备份
-增量备份指的是备份自上一次备份以来(增量或完全)以来变化的数据。特点: 节约空间、还原麻烦</li>
-<li>差异备份
-差异备份指的是备份自上一次完全备份以来变化的数据。特点: 浪费空间、还原比增量备份简单</li>
-</ul>
-</li>
-</ul>
-<h3 id="2-mysql备份数据的方式">
-  2. MySQL备份数据的方式
-  <a class="anchor" href="#2-mysql%e5%a4%87%e4%bb%bd%e6%95%b0%e6%8d%ae%e7%9a%84%e6%96%b9%e5%bc%8f">#</a>
+<p><a href="https://github.com/nsqio">https://github.com/nsqio</a></p>
+<p><strong>NSQ</strong>是一个实时分布式消息传递平台，旨在大规模运行，每天处理数十亿条消息。</p>
+<p>它支持<em>分布式</em>和<em>去中心化</em>拓扑，消除单点故障，实现容错和高可用性，并提供可靠的消息传递保证。请参阅<a href="http://nsq.io/overview/features_and_guarantees.html">功能和保障</a>。</p>
+<p><strong>NSQ</strong>操作简单，易于配置和部署（所有参数均可在命令行中指定，且编译后的二进制文件无运行时依赖）。为了实现最大的灵活性，它与数据格式无关（消息可以是 JSON、MsgPack、Protocol Buffers 或其他任何格式）。官方的 Go 和 Python 库开箱即用（以及许多其他<a href="http://nsq.io/clients/client_libraries.html">客户端库</a>），如果您有兴趣构建自己的客户端，可以参考<a href="http://nsq.io/clients/tcp_protocol_spec.html">协议规范</a>。</p>
+<h3 id="案例">
+  案例：
+  <a class="anchor" href="#%e6%a1%88%e4%be%8b">#</a>
 </h3>
-<p>在MySQl中备份数据一般有三种方式：</p>
-<ul>
-<li>
-<p>热备份
-热备份指的是当数据库进行备份时, 数据库的读写操作均不是受影响</p>
-</li>
-<li>
-<p>温备份
-温备份指的是当数据库进行备份时, 数据库的读操作可以执行, 但是不能执行写操作</p>
-</li>
-<li>
-<p>冷备份
-冷备份指的是当数据库进行备份时, 数据库不能进行读写操作, 即数据库要下线</p>
-</li>
-</ul>
-<p>MySQL中进行不同方式的备份还要考虑存储引擎是否支持：
-1）MyISAM 　　　　
-热备 ×
-温备 √
-冷备 √
-2）InnoDB
-热备 √
-温备 √
-冷备 √</p>
-<p>我们考虑完数据备份, 数据库的运行状态之后还需要考虑对于MySQL数据库中数据的备份方式：</p>
-<ul>
-<li>（1）物理备份
-物理备份一般就是通过tar,cp等命令直接打包复制数据库的数据文件达到备份的效果</li>
-<li>（2）逻辑备份
-逻辑备份一般就是通过特定工具从数据库中导出数据并另存备份(逻辑备份会丢失数据精度)</li>
-</ul>
-<h3 id="3备份工具">
-  3.备份工具
-  <a class="anchor" href="#3%e5%a4%87%e4%bb%bd%e5%b7%a5%e5%85%b7">#</a>
-</h3>
-<p>常用的备份工具有：</p>
-<ul>
-<li>mysqldump：
-逻辑备份工具, 适用于所有的存储引擎, 支持温备、完全备份、部分备份、对于InnoDB存储引擎支持热备</li>
-<li>cp, tar 等归档复制工具：
-物理备份工具, 适用于所有的存储引擎, 冷备、完全备份、部分备份</li>
-<li>lvm2 snapshot：
-几乎热备, 借助文件系统管理工具进行备份</li>
-<li>mysqlhotcopy：
-名不副实的的一个工具, 几乎冷备, 仅支持MyISAM存储引擎</li>
-<li>xtrabackup：
-一款非常强大的InnoDB/XtraDB热备工具, 支持完全备份、增量备份, 由percona提供</li>
-</ul>
-<p>下面介绍一下mysqldump的使用</p>
-<h3 id="4-mysqldump-的介绍与使用">
-  4. mysqldump 的介绍与使用
-  <a class="anchor" href="#4-mysqldump-%e7%9a%84%e4%bb%8b%e7%bb%8d%e4%b8%8e%e4%bd%bf%e7%94%a8">#</a>
-</h3>
-<p>mysqldump 属于逻辑备份，也是最常见的备份工具了</p>
-<h4 id="备份实例">
-  备份实例
-  <a class="anchor" href="#%e5%a4%87%e4%bb%bd%e5%ae%9e%e4%be%8b">#</a>
-</h4>
-<pre tabindex="0"><code># 备份整个数据库
-mysqldump -u root -h host -p dbname &gt; backdb.sql
+<p>实现队列缓冲，当有大量的数据需要缓存，并且需要保证前后顺序一致，就能用到这个</p>
+<pre tabindex="0"><code>// Helper for serialization (using gob as an example)
+func serializeDetectionResult(data *file2.DetectionResult) ([]byte, error) {
+	var buf bytes.Buffer
+	encoder := gob.NewEncoder(&amp;buf)
+	if err := encoder.Encode(data); err != nil {
+		return nil, fmt.Errorf(&#34;failed to serialize DetectionResult: %w&#34;, err)
+	}
+	return buf.Bytes(), nil
+}
 
-# 备份数据库中的某个表
-mysqldump -u root -h host -p dbname tbname1, tbname2 &gt; backdb.sql
+func deserializeDetectionResult(data []byte) (*file2.DetectionResult, error) {
+	var result file2.DetectionResult
+	decoder := gob.NewDecoder(bytes.NewReader(data))
+	if err := decoder.Decode(&amp;result); err != nil {
+		return nil, fmt.Errorf(&#34;failed to deserialize DetectionResult: %w&#34;, err)
+	}
+	return &amp;result, nil
+}
 
-# 备份多个数据库
-mysqldump -u root -h host -p --databases dbname1, dbname2 &gt; backdb.sql
+func log(lvl diskqueue.LogLevel, f string, args ...interface{}) {
+	api.Log.Infof(f, args...)
+}
 
-# 备份系统中所有数据库
-mysqldump -u root -h host -p --all-databases &gt; backdb.sql
-</code></pre><h4 id="还原">
-  还原
-  <a class="anchor" href="#%e8%bf%98%e5%8e%9f">#</a>
-</h4>
-<p>mysql命令导入sql文件还原</p>
-<pre tabindex="0"><code># 在系统命令行中，输入如下实现还原：
-mysql -u root -p dbname &lt; backup.sql
+// 处理并转发检测结果，带有数据库缓冲功能，防止yolo数据积压
+// inputData  数据传入通道
+// outputData 数据传入出通道
+func RelayDetWithDiskQueueBuffer(ctx context.Context, wg *sync.WaitGroup, inputData chan *file2.DetectionResult) (outputData chan *file2.DetectionResult, errData chan error) {
+	// 1. Setup DiskQueue
+	outputData = make(chan *file2.DetectionResult, 10)
+	errData = make(chan error, 3) // 增加容量以防快速连续错误
+	// 使用临时目录确保唯一性，并在结束时清理
+	tempDir, err := ioutil.TempDir(filepath.Join(filepath.Dir(api.GetCasePath()), &#34;data&#34;), &#34;diskqueue_relay_*&#34;)
+	if err != nil {
+		close(outputData)
+		errData &lt;- fmt.Errorf(&#34;failed to create temp dir for diskqueue: %w&#34;, err)
+		close(errData)
+		return
+	}
+	api.Log.Infof(&#34;DiskQueue data will be stored in: %s&#34;, tempDir)
 
-# 在登录进入mysql系统中,通过source指令找到对应系统中的文件进行还原：
-MYSQL&gt; source backup.sql;
-</code></pre><h2 id="mongodb的数据备份与恢复">
-  MongoDB的数据备份与恢复
-  <a class="anchor" href="#mongodb%e7%9a%84%e6%95%b0%e6%8d%ae%e5%a4%87%e4%bb%bd%e4%b8%8e%e6%81%a2%e5%a4%8d">#</a>
-</h2>
-<p>MongoDB 备份的几种方式：</p>
-<ul>
-<li>mongodump</li>
-<li>系统快照(这里不做详细介绍，具体内容见官网：Back Up with Filesystem Snapshots)</li>
-<li>cp 或者 rsync</li>
-</ul>
-<h3 id="mongodump的介绍与使用">
-  mongodump的介绍与使用
-  <a class="anchor" href="#mongodump%e7%9a%84%e4%bb%8b%e7%bb%8d%e4%b8%8e%e4%bd%bf%e7%94%a8">#</a>
-</h3>
-<h4 id="1-mongodump概述">
-  1. mongodump概述
-  <a class="anchor" href="#1-mongodump%e6%a6%82%e8%bf%b0">#</a>
-</h4>
-<p><strong>mongodump</strong> 是 MongoDB 官方提供的备份工具，它可以从 MongoDB 数据库读取数据，并生成 BSON 文件，mongodump 适合用于备份和恢复数据量较小的 MongoDB 数据库，不适用于大数据量备份。</p>
-<p><strong>默认情况下 mongodump 不获取 local 数据库里面的内容。</strong></p>
-<p>mongodump 仅备份数据库中的文档，不备份索引，所以我们还原后，需要重新生成索引。</p>
-<p>mongodump 备份过程中会对 mongod 服务的性能产生影响，我们建议在业务低峰期进行操作。如果我们备份的数据，大于系统内存，我们备份的时候容易出现错误。</p>
-<blockquote>
-<p>在执行 mongodump 的时候，mongod 服务还是可以提供服务的，可以进行修改数据，如果我们在备份的时候加上参数 &ndash;oplog 的话，那么 oplog 是会记录这一次操作的，如果我们想在 restore 的时候也有日志记录，我们可以使用 mongorestore &ndash;oplogReplay 进行恢复</p>
-</blockquote>
-<h5 id="mongodump常用命令和参数">
-  mongodump常用命令和参数
-  <a class="anchor" href="#mongodump%e5%b8%b8%e7%94%a8%e5%91%bd%e4%bb%a4%e5%92%8c%e5%8f%82%e6%95%b0">#</a>
-</h5>
-<p>官方文档：<a href="https://docs.mongodb.com/manual/reference/program/mongodump/">mongodump</a></p>
-<p>mongodump 默认输出的目录名为 dump ,如果输出路径包含 dump 目录，会直接覆盖的。 默认备份是没有压缩的。</p>
-<p>参数：</p>
-<pre tabindex="0"><code>--host &lt;hostname&gt;&lt;:port&gt;, -h &lt;hostname&gt;&lt;:port&gt;  # 指定备份的主机ip和端口号，默认值localhost:27017
---port # 指定端口号 默认27017
+	// diskqueue 参数可以根据需要调整
+	// name, dataPath, maxBytesPerFile, minMsgSize, maxMsgSize, syncEvery, syncTimeout,logf
+	dq := diskqueue.New(
+		&#34;detection_results_queue&#34;, // 队列名称
+		tempDir,                   // 数据路径
+		1024*1024*100,             // 每个文件最大100MB
+		0,                         // 最小消息尺寸 (0 for default)
+		1024*1024*5,               // 最大消息尺寸 5MB (根据你的 DetectionResult 大小调整)
+		100,                       // 每写入 N 条消息后执行一次 fsync (大致)
+		2*time.Second,             // 每隔多久强制 fsync 一次
+		log,                       // 使用你的日志Infof (diskqueue 需要一个 func(string, ...interface{}))
+	)
 
---username &lt;username&gt;, -u &lt;username&gt; # 指定用户名
---password &lt;password&gt;, -p &lt;password&gt; # 指定密码
---authenticationDatabase &lt;dbname&gt; # 指定认证的数据库
---authenticationMechanism &lt;name&gt; # 指定认证的算法 ，默认值 SCRAM-SHA-1
---db &lt;database&gt;, -d &lt;database&gt; # 指定备份的数据库，未指定的话，备份所有的数据库，但不包含local库
---collection &lt;collection&gt;, -c &lt;collection&gt; # 指定备份的集合，未指定则备份指定库中的所有集合。
---query &lt;json&gt;, -q &lt;json&gt;  # 指定 json 作为查询条件。来备份我们过滤后的数据。
---queryFile &lt;path&gt;  # 指定 json 文档路径，以该文档的内容作为查询条件，来备份我们过滤后的数据。
---quit # 通过抑制 MongoDB的复制，连接等活动，来实现备份。
---gzip  # 开启压缩，3.2版本后可以使用，输出为文件的话会带有后缀.gz
---out &lt;path&gt;, -o &lt;path&gt;  # 输出的目录路径
+	// --- Goroutine 1: Writer (inputData -&gt; diskqueue) ---
+	wg.Add(1)
+	go func() {
+		defer func() {
+			close(outputData)
+			//关闭diskqueue
+			if err := dq.Close(); err != nil { // 关闭 diskqueue，这将清空所有内部channel并fsync
+				api.Log.Errorf(&#34;Failed to close diskqueue: %v&#34;, err)
+				select {
+				case errData &lt;- fmt.Errorf(&#34;failed to close diskqueue: %w&#34;, err):
+				default:
+				}
+			}
+			//删除目录
+			if err := os.RemoveAll(tempDir); err != nil { // 清理磁盘队列文件
+				api.Log.Errorf(&#34;Failed to remove diskqueue temp dir %s: %v&#34;, tempDir, err)
+				select {
+				case errData &lt;- fmt.Errorf(&#34;failed to remove diskqueue temp dir %s: %w&#34;, tempDir, err):
+				default:
+				}
+			}
+			close(errData)
+			wg.Done()
+		}()
 
---repir # 修复数据时使用 下面有详细介绍
---oplog # mongodump 会将 mongodump 执行期间的 oplog 日志 输出到文件 oplog.bson，这就意味着从备份开始到备份结束的数据操作我们都可以记录下来。
---archive &lt;file&gt; # 输出到单个存档文件或者是直接输出。
+		diskQueueReadChan := dq.ReadChan()
 
+		for {
+			currentDepth := dq.Depth()
+			select {
+			case input, ok := &lt;-inputData:
+				if !ok {
+					api.Log.Info(&#34;Writer: Input channel closed. Exiting.&#34;)
+					inputData = nil // 防止再次选中此 case
+					continue        // Input channel closed, nothing more to write
+				}
+				// 序列化并存入 diskqueue
+				serializedData, serErr := serializeDetectionResult(input)
+				if serErr != nil {
+					api.Log.Errorf(&#34;Writer: Failed to serialize input data: %v&#34;, serErr)
+					select {
+					case errData &lt;- fmt.Errorf(&#34;serialization error: %w&#34;, serErr):
+					default:
+					}
+					return // Skip this item, try next
+				}
 
---dumpDbUsersAndRoles # 只有在 使用 --db 时才适用，备份数据库的包含的用户和角色。
---excludeCollection string # 排除指定的集合，如果要排除多个，使用多个--excludeCollection
---numParallelCollections int, -j int # 并行导出的集合数，默认为4
+				putErr := dq.Put(serializedData)
+				if putErr != nil {
+					api.Log.Errorf(&#34;Writer: Failed to put data into diskqueue: %v&#34;, putErr)
+					select {
+					case errData &lt;- fmt.Errorf(&#34;diskqueue put error: %w&#34;, putErr):
+					default:
+					}
+					return
+				}
+			case &lt;-ctx.Done():
+				api.Log.Info(&#34;Writer: Context cancelled. Exiting.&#34;)
+				return
+			default:
+				//如果有容量了
+				if len(outputData) &lt; cap(outputData)/2 {
+					if currentDepth &gt; 0 {
+						serializedData, ok := &lt;-diskQueueReadChan
+						if ok {
+							deserialized, err := deserializeDetectionResult(serializedData)
+							if err != nil {
+								api.Log.Errorf(&#34;Failed to deserialize data from diskqueue: %v&#34;, err)
+								select {
+								case errData &lt;- fmt.Errorf(&#34;deserialization error from diskqueue: %w&#34;, err):
+								default:
+								}
+								return
+							}
+							outputData &lt;- deserialized
+						} else {
+							return
+						}
+					}
+				} else {
+					time.Sleep(10 * time.Millisecond)
+				}
+			}
 
+			// 终止条件：输入关闭，磁盘队列读取通道关闭（意味着队列空且dq已关闭或正在关闭），并且没有待发送项
+			if inputData == nil &amp;&amp; currentDepth == 0 {
+				api.Log.Info(&#34;All data processed. Exiting relay goroutine normally.&#34;)
+				return
+			}
+		}
+	}()
 
---ssl  # 指定 TLS/SSL 协议
---sslCAFile filename # 指定认证文件名
---sslPEMKeyFile &lt;filename&gt;
---sslPEMKeyPassword &lt;value&gt;
---sslCRLFile &lt;filename&gt;
---sslAllowInvalidCertificates
---sslAllowInvalidHostnames
---sslFIPSMode
-</code></pre><h5 id="备份示例">
-  备份示例：
-  <a class="anchor" href="#%e5%a4%87%e4%bb%bd%e7%a4%ba%e4%be%8b">#</a>
-</h5>
-<p>语法：mongodump -h  host:port -d dbname -o dbdirectory</p>
-<p>-h：数据库服务器地址+服务端口</p>
-<p>-d：要备份的数据库的名称</p>
-<p>-c：备份的数据表</p>
-<p>-o：备份数据库的存放目录</p>
-<p>如果数据库开启了登录认证，则需要添加用户认证信息</p>
-<pre tabindex="0"><code># 导出指定数据库到指定目录
-mongodump -h 127.0.0.1:27017 -u=账号 -p=密码 --authenticationDatabase=admin  -d deployservice -o /data/backup/mongodump-2024-5-16/
-</code></pre><pre tabindex="0"><code>root@c02e337bf417:/# ls
-bin   data  docker-entrypoint-initdb.d	etc   js-yaml.js  lib32  libx32  mnt  proc  run   srv  tmp  var
-boot  dev   dump			home  lib	  lib64  media	 opt  root  sbin  sys  usr
-root@c02e337bf417:/# mongodump -h 127.0.0.1:27017 -u=admin -p=123456 --authenticationDatabase=admin -d deployservice -o /data/backup/mongodump-2024-5-16
-2024-05-16T08:37:30.456+0000	writing deployservice.deploys to /data/backup/mongodump-2024-5-16/deployservice/deploys.bson
-2024-05-16T08:37:30.457+0000	writing deployservice.records to /data/backup/mongodump-2024-5-16/deployservice/records.bson
-2024-05-16T08:37:30.457+0000	writing deployservice.services to /data/backup/mongodump-2024-5-16/deployservice/services.bson
-2024-05-16T08:37:30.479+0000	done dumping deployservice.services (72 documents)
-2024-05-16T08:37:30.479+0000	writing deployservice.loopholes to /data/backup/mongodump-2024-5-16/deployservice/loopholes.bson
-2024-05-16T08:37:30.504+0000	done dumping deployservice.loopholes (59 documents)
-2024-05-16T08:37:30.504+0000	writing deployservice.backups to /data/backup/mongodump-2024-5-16/deployservice/backups.bson
-2024-05-16T08:37:30.545+0000	done dumping deployservice.backups (27 documents)
-2024-05-16T08:37:30.545+0000	writing deployservice.servers to /data/backup/mongodump-2024-5-16/deployservice/servers.bson
-2024-05-16T08:37:30.566+0000	done dumping deployservice.servers (13 documents)
-2024-05-16T08:37:30.567+0000	writing deployservice.vulnerabilities to /data/backup/mongodump-2024-5-16/deployservice/vulnerabilities.bson
-2024-05-16T08:37:30.568+0000	writing deployservice.logs to /data/backup/mongodump-2024-5-16/deployservice/logs.bson
-2024-05-16T08:37:30.574+0000	done dumping deployservice.records (596 documents)
-2024-05-16T08:37:30.575+0000	writing deployservice.users to /data/backup/mongodump-2024-5-16/deployservice/users.bson
-2024-05-16T08:37:30.587+0000	done dumping deployservice.vulnerabilities (10 documents)
-2024-05-16T08:37:30.588+0000	writing deployservice.sessioninfos to /data/backup/mongodump-2024-5-16/deployservice/sessioninfos.bson
-2024-05-16T08:37:30.592+0000	done dumping deployservice.users (8 documents)
-2024-05-16T08:37:30.592+0000	writing deployservice.migrations to /data/backup/mongodump-2024-5-16/deployservice/migrations.bson
-2024-05-16T08:37:30.604+0000	done dumping deployservice.sessioninfos (5 documents)
-2024-05-16T08:37:30.605+0000	writing deployservice.vdbs to /data/backup/mongodump-2024-5-16/deployservice/vdbs.bson
-2024-05-16T08:37:30.609+0000	done dumping deployservice.migrations (4 documents)
-2024-05-16T08:37:30.610+0000	writing deployservice.settings to /data/backup/mongodump-2024-5-16/deployservice/settings.bson
-2024-05-16T08:37:30.625+0000	done dumping deployservice.vdbs (2 documents)
-2024-05-16T08:37:30.627+0000	writing deployservice.tasks to /data/backup/mongodump-2024-5-16/deployservice/tasks.bson
-2024-05-16T08:37:30.648+0000	done dumping deployservice.settings (1 document)
-2024-05-16T08:37:30.648+0000	writing deployservice.sessions to /data/backup/mongodump-2024-5-16/deployservice/sessions.bson
-2024-05-16T08:37:30.649+0000	done dumping deployservice.tasks (0 documents)
-2024-05-16T08:37:30.649+0000	writing deployservice.rules to /data/backup/mongodump-2024-5-16/deployservice/rules.bson
-2024-05-16T08:37:30.666+0000	done dumping deployservice.sessions (0 documents)
-2024-05-16T08:37:30.667+0000	done dumping deployservice.rules (0 documents)
-2024-05-16T08:37:30.701+0000	done dumping deployservice.logs (10812 documents)
-2024-05-16T08:37:30.792+0000	done dumping deployservice.deploys (1193 documents)
-root@c02e337bf417:/# cd /data/backup/mongodump-2024-5-16/
-root@c02e337bf417:/data/backup/mongodump-2024-5-16# ls
-deployservice
-root@c02e337bf417:/data/backup/mongodump-2024-5-16# ls deployservice/
-backups.bson		 migrations.bson	   services.bson	       tasks.bson
-backups.metadata.json	 migrations.metadata.json  services.metadata.json      tasks.metadata.json
-deploys.bson		 records.bson		   sessioninfos.bson	       users.bson
-deploys.metadata.json	 records.metadata.json	   sessioninfos.metadata.json  users.metadata.json
-logs.bson		 rules.bson		   sessions.bson	       vdbs.bson
-logs.metadata.json	 rules.metadata.json	   sessions.metadata.json      vdbs.metadata.json
-loopholes.bson		 servers.bson		   settings.bson	       vulnerabilities.bson
-loopholes.metadata.json  servers.metadata.json	   settings.metadata.json      vulnerabilities.metadata.json
-</code></pre><pre tabindex="0"><code># 也可以导出特定表,例如导出数据库的 users 表 到指定目录
-mongodump -h 127.0.0.1:27017 -u=账号 -p=密码 --authenticationDatabase=admin  -c users -d deployservice -o /data/backup/users
-</code></pre><pre tabindex="0"><code>root@c02e337bf417:/data/backup# ls
-mongodump-2024-5-16
-root@c02e337bf417:/data/backup# mongodump -h 127.0.0.1:27017 -u=admin -p=123456 --authenticationDatabase=admin  -c users -d deployservice -o /data/backup/users
-2024-05-16T08:43:10.217+0000	writing deployservice.users to /data/backup/users/deployservice/users.bson
-2024-05-16T08:43:10.218+0000	done dumping deployservice.users (8 documents)
-root@c02e337bf417:/data/backup# ls
-mongodump-2024-5-16  users
-</code></pre><h5 id="查看备份数据">
-  查看备份数据
-  <a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e5%a4%87%e4%bb%bd%e6%95%b0%e6%8d%ae">#</a>
-</h5>
-<p>以上备份的数据都是二进制的，是直接查看不到的，可以通过工具 bsondump(安装 MongoDB 自带了) 来进行查看,例如</p>
-<pre tabindex="0"><code>root@c02e337bf417:/data/backup/mongodump-2024-5-16/deployservice# ls
-backups.bson		 migrations.bson	   services.bson	       tasks.bson
-backups.metadata.json	 migrations.metadata.json  services.metadata.json      tasks.metadata.json
-deploys.bson		 records.bson		   sessioninfos.bson	       users.bson
-deploys.metadata.json	 records.metadata.json	   sessioninfos.metadata.json  users.metadata.json
-logs.bson		 rules.bson		   sessions.bson	       vdbs.bson
-logs.metadata.json	 rules.metadata.json	   sessions.metadata.json      vdbs.metadata.json
-loopholes.bson		 servers.bson		   settings.bson	       vulnerabilities.bson
-loopholes.metadata.json  servers.metadata.json	   settings.metadata.json      vulnerabilities.metadata.json
-root@c02e337bf417:/data/backup/mongodump-2024-5-16/deployservice# bsondump migrations.bson
-{&#34;_id&#34;:{&#34;$oid&#34;:&#34;5ffd4a425c6af8aa4f3e64f4&#34;},&#34;name&#34;:&#34;20200909_update_service_schema&#34;,&#34;__v&#34;:{&#34;$numberInt&#34;:&#34;0&#34;},&#34;createAt&#34;:{&#34;$date&#34;:{&#34;$numberLong&#34;:&#34;1610435138557&#34;}},&#34;status&#34;:&#34;done&#34;,&#34;updateAt&#34;:{&#34;$date&#34;:{&#34;$numberLong&#34;:&#34;1715409734303&#34;}},&#34;duration&#34;:{&#34;$numberInt&#34;:&#34;14&#34;},&#34;message&#34;:null}
-{&#34;_id&#34;:{&#34;$oid&#34;:&#34;63199c816e25985082415721&#34;},&#34;name&#34;:&#34;20220908_update_server_password&#34;,&#34;__v&#34;:{&#34;$numberInt&#34;:&#34;0&#34;},&#34;createAt&#34;:{&#34;$date&#34;:{&#34;$numberLong&#34;:&#34;1662622848971&#34;}},&#34;status&#34;:&#34;done&#34;,&#34;updateAt&#34;:{&#34;$date&#34;:{&#34;$numberLong&#34;:&#34;1715409734352&#34;}},&#34;duration&#34;:{&#34;$numberInt&#34;:&#34;99&#34;},&#34;message&#34;:null}
-{&#34;_id&#34;:{&#34;$oid&#34;:&#34;6458d945370b214d125ed703&#34;},&#34;name&#34;:&#34;202303017_update_server_password&#34;,&#34;__v&#34;:{&#34;$numberInt&#34;:&#34;0&#34;},&#34;createAt&#34;:{&#34;$date&#34;:{&#34;$numberLong&#34;:&#34;1683544389220&#34;}},&#34;status&#34;:&#34;done&#34;,&#34;updateAt&#34;:{&#34;$date&#34;:{&#34;$numberLong&#34;:&#34;1715409734356&#34;}},&#34;duration&#34;:{&#34;$numberInt&#34;:&#34;59&#34;},&#34;message&#34;:null}
-{&#34;_id&#34;:{&#34;$oid&#34;:&#34;65ae38706ce52db7b5ae8918&#34;},&#34;name&#34;:&#34;202401017_init_vulnerability_database&#34;,&#34;__v&#34;:{&#34;$numberInt&#34;:&#34;0&#34;},&#34;createAt&#34;:{&#34;$date&#34;:{&#34;$numberLong&#34;:&#34;1705916528598&#34;}},&#34;status&#34;:&#34;done&#34;,&#34;updateAt&#34;:{&#34;$date&#34;:{&#34;$numberLong&#34;:&#34;1709546970264&#34;}},&#34;duration&#34;:{&#34;$numberInt&#34;:&#34;17&#34;},&#34;message&#34;:null}
-2024-05-16T08:46:55.806+0000	4 objects found
-</code></pre><h4 id="2-cp-或者rsync">
-  2. cp 或者rsync
-  <a class="anchor" href="#2-cp-%e6%88%96%e8%80%85rsync">#</a>
-</h4>
-<p>可以直接复制数据文件，但是必须在复制文件前停止对 MongoDB 的操作，否则复制的文件是无效的。</p>
-<h3 id="二单节点意外关闭后恢复数据">
-  二、单节点意外关闭后恢复数据
-  <a class="anchor" href="#%e4%ba%8c%e5%8d%95%e8%8a%82%e7%82%b9%e6%84%8f%e5%a4%96%e5%85%b3%e9%97%ad%e5%90%8e%e6%81%a2%e5%a4%8d%e6%95%b0%e6%8d%ae">#</a>
-</h3>
-<p>有时mongodb异常退出后会造成服务无法启动，比如服务器异常断电场景</p>
-<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202408231943066.png" alt="" /></p>
-<h4 id="数据修复流程">
-  数据修复流程：
-  <a class="anchor" href="#%e6%95%b0%e6%8d%ae%e4%bf%ae%e5%a4%8d%e6%b5%81%e7%a8%8b">#</a>
-</h4>
-<ul>
-<li>
-<p>先备份现有的数据
-可以用 cp 命令将现有的数据的整个目录的所有文件都备份一份。</p>
-</li>
-<li>
-<p>使用 mongod &ndash;repair</p>
-</li>
-</ul>
-<pre tabindex="0"><code>#针对 所有数据库
-mongod --repair
-
-#针对 单个数据库
-mongod --dbpath /data/mongodb/data/djx  --repair
-</code></pre><p>一般情况下，不应该手动删除该mongod.lock文件。而是使用上述过程来恢复数据库。在严峻的情况下，您可以删除文件，使用可能损坏的文件启动数据库，并尝试从数据库中恢复数据，但这存在风险。</p>
-<h5 id="docker容器-数据修复流程">
-  docker容器-数据修复流程：
-  <a class="anchor" href="#docker%e5%ae%b9%e5%99%a8-%e6%95%b0%e6%8d%ae%e4%bf%ae%e5%a4%8d%e6%b5%81%e7%a8%8b">#</a>
-</h5>
-<p>docker-compose 以交互式方式运行容器</p>
-<p>模板添加 ：container_name: mymongo(自定义容器名)</p>
-<p>例如</p>
-<pre tabindex="0"><code>services:
-  redis:
-    image: ${REGISTRY}/docker/redis:${REDIS_TAG}
-    restart: always
-    volumes:
-      - ./redis/data:/data
-    networks:
-      - deploy_net
-
-  mongo:
-    image: ${REGISTRY}/docker/mongo:${MONGO_TAG}
-    container_name: mymongo
-    command: --wiredTigerCacheSizeGB=${MONGO_CACHE_GB}
-</code></pre><p>执行命令如下</p>
-<pre tabindex="0"><code>docker-compose run your_service sh        #以交互式方式启动容器
-mongod --dbpath=data/db(mongo db的路径) --repair   #这里的/data/db是容器里面的db路径
-
-例如：
-docker-compose run mymongo  sh                       # 启动容器
-mongod --dbpath=data/db --repair                   # 修复
-</code></pre><h3 id="三mongodb-数据恢复">
-  三、MongoDB 数据恢复
-  <a class="anchor" href="#%e4%b8%89mongodb-%e6%95%b0%e6%8d%ae%e6%81%a2%e5%a4%8d">#</a>
-</h3>
-<h4 id="1mongorestore特点">
-  1、mongorestore特点
-  <a class="anchor" href="#1mongorestore%e7%89%b9%e7%82%b9">#</a>
-</h4>
-<ul>
-<li>mongorestore 可以创建新的数据库或将数据添加到现有的数据库，但是 mongorestore 仅仅执行insert 操作，不执行 update操作。这就意味着如果将文档还原到现有的数据库，现有的数据库中的文档的_id的值和要还原的文档中的_id 值是一样的，是不会将数据库原有的值覆盖的。</li>
-<li>重建索引，mongorestore 会重建索引。</li>
-<li>mongorestore 不恢复 system.profile 的数据</li>
-</ul>
-<h4 id="2mongorestore-常用参数">
-  2、mongorestore 常用参数
-  <a class="anchor" href="#2mongorestore-%e5%b8%b8%e7%94%a8%e5%8f%82%e6%95%b0">#</a>
-</h4>
-<pre tabindex="0"><code>--help # 查看帮助
---quiet # 通过抑制 MongoDB的复制，连接等活动，来实现数据恢复。
-
---host &lt;hostname&gt;&lt;:port&gt;, -h &lt;hostname&gt;&lt;:port&gt;  # 指定恢复的主机ip和端口号，默认值localhost:27017
---port # 指定端口号 默认27017
-
---username &lt;username&gt;, -u &lt;username&gt; # 指定用户名
---password &lt;password&gt;, -p &lt;password&gt; # 指定密码
---authenticationDatabase &lt;dbname&gt; # 指定认证的数据库
---authenticationMechanism &lt;name&gt; # 指定认证的算法 ，默认值 SCRAM-SHA-1
---objcheck # 开启验证，验证还原操作，确保没有无效的文档插入数据库。会有较小的性能影响
---oplogReplay # 恢复备份数据并将 mongodump 执行期间的操作(记录在导出的日志)恢复。
---oplogLimit  # 指定恢复
---oplogFile # 指定 Oplog 路径
---keepIndexVersion # 阻止mongorestore在还原过程中将索引升级到最新版本。
---restoreDbUsersAndRoles # 还原指定的数据库用户和角色。
---maintainInsertionOrder # 默认值为False,如果为 True,mongorestore 将按照输入源的文档顺序插入，否则是 随机执行插入。
---numParallelCollections int, -j int # 指定并行恢复的集合数。
---numInsertionWorkersPerCollection int # 默认值为 1，指定每个集合恢复的并发数，大数据量导入增加该值可提高 恢复速度。
---gzip # 从压缩文档中 恢复。
---archive # 从归档文件中恢复。
---dir # 指定还原数据储存目录。
-</code></pre><h4 id="3mongorestore-恢复示例">
-  3、mongorestore 恢复示例
-  <a class="anchor" href="#3mongorestore-%e6%81%a2%e5%a4%8d%e7%a4%ba%e4%be%8b">#</a>
-</h4>
-<p>语法：mongorestore -h host:port -d dbname &ndash;dir dbdirectory</p>
-<p>-h：数据库服务器地址+服务端口</p>
-<p>-d：恢复数据库后的数据库名称</p>
-<p>-c：需要恢复的数据表</p>
-<p>&ndash;dir：备份数据库所在的位置</p>
-<p>如果数据库开启了登录认证，则需要添加用户认证信息</p>
-<pre tabindex="0"><code># 恢复 deployservice数据库的所有表
-mongorestore -h 127.0.0.1:27017 -u=账号 -p=密码 --authenticationDatabase=admin  -d deployservice  /data/backup/mongodump-2024-5-16
-
-# 恢复 deployservice数据库中特定的表，比如只恢复users 表
-mongorestore -h 127.0.0.1:27017 -u=账号 -p=密码 --authenticationDatabase=admin -d deployservice /data/backup/mongodump-2024-5-16 /deployservice/users.bson
-</code></pre><h2 id="postgresql数据备份与恢复">
-  PostgreSQL数据备份与恢复
-  <a class="anchor" href="#postgresql%e6%95%b0%e6%8d%ae%e5%a4%87%e4%bb%bd%e4%b8%8e%e6%81%a2%e5%a4%8d">#</a>
-</h2>
-<h3 id="postgresql备份方案">
-  PostgreSQL备份方案
-  <a class="anchor" href="#postgresql%e5%a4%87%e4%bb%bd%e6%96%b9%e6%a1%88">#</a>
-</h3>
-<ul>
-<li>方案一：逻辑备份——使用pg_dump</li>
-<li>方案二：物理备份——使用pg_rman(暂不介绍)</li>
-</ul>
-<h3 id="postgresql逻辑备份恢复">
-  PostgreSQL逻辑备份恢复
-  <a class="anchor" href="#postgresql%e9%80%bb%e8%be%91%e5%a4%87%e4%bb%bd%e6%81%a2%e5%a4%8d">#</a>
-</h3>
-<h4 id="逻辑备份pg_dump">
-  逻辑备份：pg_dump
-  <a class="anchor" href="#%e9%80%bb%e8%be%91%e5%a4%87%e4%bb%bdpg_dump">#</a>
-</h4>
-<h5 id="1pg_dump简介">
-  1、pg_dump简介
-  <a class="anchor" href="#1pg_dump%e7%ae%80%e4%bb%8b">#</a>
-</h5>
-<p>pg_dump 是 PostgreSQL 自带的备份工具，可以将 PostgreSQL 数据库备份为一个 SQL 脚本，可以用来还原数据库。</p>
-<p>pg_dump 通常会随着 PostgreSQL 安装包一起提供。如果你已经安装了 PostgreSQL，则 pg_dump 应该已经在系统中可用。如果你使用的是 Linux 系统，你可以通过以下命令来查找 pg_dump 的位置：<code>which pg_dump</code></p>
-<ul>
-<li>pg_dump 支持备份表，备份用户，备份数据库</li>
-<li>pg_dumpall 支持导出全库的数据</li>
-<li>pg_dump 可以把数据备份成SQL文本的形式，也可以自定义为tar包等二进制</li>
-</ul>
-<h5 id="2备份数据操作">
-  2、备份数据操作
-  <a class="anchor" href="#2%e5%a4%87%e4%bb%bd%e6%95%b0%e6%8d%ae%e6%93%8d%e4%bd%9c">#</a>
-</h5>
-<p>常用备份命令（查看帮助信息） <code>pg_dump --help</code></p>
-<p>备份操作实例</p>
-<pre tabindex="0"><code># 备份准备
-mkdir -p /pgbak
-chown postgres.postgres /pgbak
-</code></pre><pre tabindex="0"><code># 本机备份
-# 方式一：使用重定向符号
-bash-5.0# pg_dump -U demo testdb &gt; /pgbak/testdb.sql
-bash-5.0# cd pgbak/
-bash-5.0# ls
-testdb.sql
-bash-5.0#
-</code></pre><pre tabindex="0"><code># 方式二：使用pg参数
-bash-5.0# pg_dump -U demo testdb --file=/pgbak/backup-testdb11.sql
-bash-5.0# ls
-testdb.sql    backup-testdb11.sql
-</code></pre><pre tabindex="0"><code># 压缩备份
-若遇到数据库容量比较大时，可以选择压缩备份
-ash-5.0# pg_dump -U demo  testdb --format=custom --file=/pgbak/db_testdb000.dump
-bash-5.0# ls
-db_testdb000.dump  testdb.sql         backup-testdb11.sql
-</code></pre><h4 id="22-恢复">
-  2.2 恢复
-  <a class="anchor" href="#22-%e6%81%a2%e5%a4%8d">#</a>
-</h4>
-<h5 id="恢复方式">
-  恢复方式
-  <a class="anchor" href="#%e6%81%a2%e5%a4%8d%e6%96%b9%e5%bc%8f">#</a>
-</h5>
-<ul>
-<li>psql恢复：一般恢复SQL文本</li>
-<li>pg_restore恢复：一般恢复压缩的二进制文件</li>
-</ul>
-<h5 id="恢复实现">
-  恢复实现
-  <a class="anchor" href="#%e6%81%a2%e5%a4%8d%e5%ae%9e%e7%8e%b0">#</a>
-</h5>
-<pre tabindex="0"><code># 基于sql文件恢复
-pgsql --dbname=db_name --file=backup_db_name.sql
-
-# 基于dump压缩文件恢复
-pg_restore --dbname=db_name backup_db_name.dump
+	return outputData, errData
+}
 </code></pre></article>
  
       
@@ -3591,25 +3283,10 @@ pg_restore --dbname=db_name backup_db_name.dump
   <ul>
     <li>
       <ul>
-        <li><a href="#mysql的数据备份与恢复">MySQL的数据备份与恢复</a>
+        <li><a href="#diskqueue">diskqueue</a>
           <ul>
-            <li><a href="#1-数据的备份类型">1. 数据的备份类型</a></li>
-            <li><a href="#2-mysql备份数据的方式">2. MySQL备份数据的方式</a></li>
-            <li><a href="#3备份工具">3.备份工具</a></li>
-            <li><a href="#4-mysqldump-的介绍与使用">4. mysqldump 的介绍与使用</a></li>
-          </ul>
-        </li>
-        <li><a href="#mongodb的数据备份与恢复">MongoDB的数据备份与恢复</a>
-          <ul>
-            <li><a href="#mongodump的介绍与使用">mongodump的介绍与使用</a></li>
-            <li><a href="#二单节点意外关闭后恢复数据">二、单节点意外关闭后恢复数据</a></li>
-            <li><a href="#三mongodb-数据恢复">三、MongoDB 数据恢复</a></li>
-          </ul>
-        </li>
-        <li><a href="#postgresql数据备份与恢复">PostgreSQL数据备份与恢复</a>
-          <ul>
-            <li><a href="#postgresql备份方案">PostgreSQL备份方案</a></li>
-            <li><a href="#postgresql逻辑备份恢复">PostgreSQL逻辑备份恢复</a></li>
+            <li><a href="#nsq">nsq</a></li>
+            <li><a href="#案例">案例：</a></li>
           </ul>
         </li>
       </ul>

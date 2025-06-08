@@ -17,13 +17,7 @@
 阻塞：是指调用结果返回前，当前线程会被挂起，即阻塞。
 非阻塞：是指调用结果没返回，也不会阻塞当前线程。
 形象比喻：
-小Q去钓鱼，抛完线后就傻傻的看着有没有动静，有则拉杆(同步阻塞) 小Q去钓鱼，拿鱼网捞一下，有没有鱼立即知道，不用等，直接就捞(同步非阻塞) 小Q去钓鱼，这个鱼缸比较牛皮，扔了后自己就打王者荣耀去了，因为鱼上钩了这个鱼缸带的报警器会通知我。这样实现异步(异步非阻塞） 异常的类型 # 故障 终止 自陷 缓存 # 为了缓解数据库的压力，往往在数据库前面增加一个缓存：
-缓存穿透 # 在缓存中查不到key，只能去数据库查询；当有大量请求直接穿透了缓存打到数据库，就是缓存穿透。
-解决
-系统写好参数校验 缓存空值，过期时间短一些 布隆过滤器 缓存雪崩 # 同一时间大规模key同时失效，大量的请求直接打在数据库上面，导致数据库压力巨大，如果在高并发的情况下，可能瞬间会导致数据库宕机。
-原因
-Redis宕机 大规模key使用了相同的过期时间 解决
-原有实效时间加随机值 熔断机制 数据库容灾，分库分表、读写分离 防止Redis宕机：Redis集群 缓存击穿 # 大并发集中对一个热点的key进行访问，突然这个key实效，导致大并发全部打在数据库上，导致数据库压力剧增。">
+小Q去钓鱼，抛完线后就傻傻的看着有没有动静，有则拉杆(同步阻塞) 小Q去钓鱼，拿鱼网捞一下，有没有鱼立即知道，不用等，直接就捞(同步非阻塞) 小Q去钓鱼，这个鱼缸比较牛皮，扔了后自己就打王者荣耀去了，因为鱼上钩了这个鱼缸带的报警器会通知我。这样实现异步(异步非阻塞） 异常的类型 # 故障 终止 自陷 三者的核心区别 # 类型 触发原因 保存的指令地址 是否可恢复 典型场景 故障 可修复的错误 故障指令地址 是（修复后重试） 缺页、权限不足 终止 不可恢复的错误 无（直接终止） 否 硬件故障、内存损坏 自陷 程序主动请求 下一条指令地址 是（继续执行） 系统调用、调试断点 总结 # 故障：像“临时堵车”，修复后可继续原路行驶。 终止：像“桥梁坍塌”，必须终止行程。 自陷：像“主动进服务区”，完成后继续旅程。 缓存 # 为了缓解数据库的压力，往往在数据库前面增加一个缓存：">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="操作系统基础" />
@@ -41,13 +35,7 @@ Redis宕机 大规模key使用了相同的过期时间 解决
 阻塞：是指调用结果返回前，当前线程会被挂起，即阻塞。
 非阻塞：是指调用结果没返回，也不会阻塞当前线程。
 形象比喻：
-小Q去钓鱼，抛完线后就傻傻的看着有没有动静，有则拉杆(同步阻塞) 小Q去钓鱼，拿鱼网捞一下，有没有鱼立即知道，不用等，直接就捞(同步非阻塞) 小Q去钓鱼，这个鱼缸比较牛皮，扔了后自己就打王者荣耀去了，因为鱼上钩了这个鱼缸带的报警器会通知我。这样实现异步(异步非阻塞） 异常的类型 # 故障 终止 自陷 缓存 # 为了缓解数据库的压力，往往在数据库前面增加一个缓存：
-缓存穿透 # 在缓存中查不到key，只能去数据库查询；当有大量请求直接穿透了缓存打到数据库，就是缓存穿透。
-解决
-系统写好参数校验 缓存空值，过期时间短一些 布隆过滤器 缓存雪崩 # 同一时间大规模key同时失效，大量的请求直接打在数据库上面，导致数据库压力巨大，如果在高并发的情况下，可能瞬间会导致数据库宕机。
-原因
-Redis宕机 大规模key使用了相同的过期时间 解决
-原有实效时间加随机值 熔断机制 数据库容灾，分库分表、读写分离 防止Redis宕机：Redis集群 缓存击穿 # 大并发集中对一个热点的key进行访问，突然这个key实效，导致大并发全部打在数据库上，导致数据库压力剧增。" />
+小Q去钓鱼，抛完线后就傻傻的看着有没有动静，有则拉杆(同步阻塞) 小Q去钓鱼，拿鱼网捞一下，有没有鱼立即知道，不用等，直接就捞(同步非阻塞) 小Q去钓鱼，这个鱼缸比较牛皮，扔了后自己就打王者荣耀去了，因为鱼上钩了这个鱼缸带的报警器会通知我。这样实现异步(异步非阻塞） 异常的类型 # 故障 终止 自陷 三者的核心区别 # 类型 触发原因 保存的指令地址 是否可恢复 典型场景 故障 可修复的错误 故障指令地址 是（修复后重试） 缺页、权限不足 终止 不可恢复的错误 无（直接终止） 否 硬件故障、内存损坏 自陷 程序主动请求 下一条指令地址 是（继续执行） 系统调用、调试断点 总结 # 故障：像“临时堵车”，修复后可继续原路行驶。 终止：像“桥梁坍塌”，必须终止行程。 自陷：像“主动进服务区”，完成后继续旅程。 缓存 # 为了缓解数据库的压力，往往在数据库前面增加一个缓存：" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" /><meta property="article:section" content="docs" />
 <meta property="article:published_time" content="2022-08-07T12:20:19+00:00" />
@@ -57,7 +45,7 @@ Redis宕机 大规模key使用了相同的过期时间 解决
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.b475b5afa895825adc06caa7984d6979ea1aa752d99e8dd20e62071b1590e72a.js" integrity="sha256-tHW1r6iVglrcBsqnmE1peeoap1LZno3SDmIHGxWQ5yo=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.d44736c5cb29679e44b2df7ced267b684c8138e777aadac762c5de809bb3dd67.js" integrity="sha256-1Ec2xcspZ55Est987SZ7aEyBOOd3qtrHYsXegJuz3Wc=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -165,6 +153,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" class="">布隆过滤器</a>
   
 
         </li>
@@ -3086,6 +3087,7 @@ https://github.com/alex-shpak/hugo-book
             <li><a href="#缓存">缓存</a></li>
             <li><a href="#内存">内存</a></li>
             <li><a href="#进程线程协程">进程、线程、协程</a></li>
+            <li><a href="#2-堆heap-自由储物间"><strong>2. 堆（Heap）—— “自由储物间”</strong></a></li>
             <li><a href="#死锁">死锁</a></li>
           </ul>
         </li>
@@ -3175,6 +3177,54 @@ https://github.com/alex-shpak/hugo-book
 <li><strong>终止</strong></li>
 <li><strong>自陷</strong></li>
 </ul>
+<h5 id="三者的核心区别">
+  <strong>三者的核心区别</strong>
+  <a class="anchor" href="#%e4%b8%89%e8%80%85%e7%9a%84%e6%a0%b8%e5%bf%83%e5%8c%ba%e5%88%ab">#</a>
+</h5>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"><strong>类型</strong></th>
+<th style="text-align:center"><strong>触发原因</strong></th>
+<th style="text-align:center"><strong>保存的指令地址</strong></th>
+<th style="text-align:center"><strong>是否可恢复</strong></th>
+<th style="text-align:center"><strong>典型场景</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>故障</strong></td>
+<td style="text-align:center">可修复的错误</td>
+<td style="text-align:center">故障指令地址</td>
+<td style="text-align:center">是（修复后重试）</td>
+<td style="text-align:center">缺页、权限不足</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>终止</strong></td>
+<td style="text-align:center">不可恢复的错误</td>
+<td style="text-align:center">无（直接终止）</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">硬件故障、内存损坏</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>自陷</strong></td>
+<td style="text-align:center">程序主动请求</td>
+<td style="text-align:center">下一条指令地址</td>
+<td style="text-align:center">是（继续执行）</td>
+<td style="text-align:center">系统调用、调试断点</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h5 id="总结">
+  <strong>总结</strong>
+  <a class="anchor" href="#%e6%80%bb%e7%bb%93">#</a>
+</h5>
+<ul>
+<li><strong>故障</strong>：像“临时堵车”，修复后可继续原路行驶。</li>
+<li><strong>终止</strong>：像“桥梁坍塌”，必须终止行程。</li>
+<li><strong>自陷</strong>：像“主动进服务区”，完成后继续旅程。</li>
+</ul>
 <h3 id="缓存">
   缓存
   <a class="anchor" href="#%e7%bc%93%e5%ad%98">#</a>
@@ -3193,6 +3243,20 @@ https://github.com/alex-shpak/hugo-book
 <li><font color='red'>布隆过滤器</font></li>
 </ul>
 <p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208121455023.webp" alt="" /></p>
+<h5 id="布隆过滤器为什么能解决缓存穿透">
+  布隆过滤器为什么能解决缓存穿透？
+  <a class="anchor" href="#%e5%b8%83%e9%9a%86%e8%bf%87%e6%bb%a4%e5%99%a8%e4%b8%ba%e4%bb%80%e4%b9%88%e8%83%bd%e8%a7%a3%e5%86%b3%e7%bc%93%e5%ad%98%e7%a9%bf%e9%80%8f">#</a>
+</h5>
+<p>缓存穿透是指<strong>查询一个不存在的数据</strong>，导致请求绕过缓存直接访问数据库（因为缓存无法存储不存在的数据）。恶意攻击或高频查询不存在的数据会导致数据库压力激增。</p>
+<ol>
+<li>前置拦截：在查询缓存前，先通过布隆过滤器判断数据是否存在：
+<ul>
+<li><strong>若布隆过滤器返回“不存在”</strong>：直接返回空结果，避免访问缓存和数据库。</li>
+<li><strong>若返回“可能存在”</strong>：继续查询缓存或数据库。</li>
+</ul>
+</li>
+<li><strong>拦截无效请求</strong>：恶意查询不存在的数据会被布隆过滤器快速拦截（因为第一次查询就会标记为不存在），避免穿透到数据库。</li>
+</ol>
 <h4 id="缓存雪崩">
   缓存雪崩
   <a class="anchor" href="#%e7%bc%93%e5%ad%98%e9%9b%aa%e5%b4%a9">#</a>
@@ -3292,9 +3356,9 @@ https://github.com/alex-shpak/hugo-book
 </h5>
 <p><u>引入多级页表的主要目的是为了避免把全部页表一直放在内存中占用过多的空间，特别是那些根本不需要的页表就不需要保留在内存中。</u></p>
 <p><u>多级页表属于时间换空间场景。</u></p>
-<h5 id="总结">
+<h5 id="总结-1">
   总结
-  <a class="anchor" href="#%e6%80%bb%e7%bb%93">#</a>
+  <a class="anchor" href="#%e6%80%bb%e7%bb%93-1">#</a>
 </h5>
 <p>为了提高内存的空间性能，提出了多级页表的概念；但是提到空间性能是以浪费时间性能为基础的，因此为了补充损失的时间性能，提出了快表的概念。不论是快表还是多级页表实际上都利用到了程序的局部性原理。</p>
 <h4 id="内存溢出out-of-memory简称oom">
@@ -3458,6 +3522,68 @@ https://github.com/alex-shpak/hugo-book
 <blockquote>
 <p>1、进程</p>
 <p>​	进程是具有独立功能的程序关于某个数据集合上的一次运动活动，<font color='green'>进程是系统进行资源分配和调度的一个独立单位。每个进程都有自己的独立内存空间，拥有自己独立的堆和栈，既不共享堆，也不共享栈，进程由操作系统调度。</font>不同进程通过进程间通信来通信。<font color='green'>由于进程比较重量，占据独立的内存，所以上下文进程间的切换开销（栈、寄存器、虚拟内存、文件句柄等）比较大，但相对比较稳定安全。</font></p>
+<p><strong>堆和栈指的是什么？</strong></p>
+<p>**堆（Heap）<strong>和</strong>栈（Stack）**是操作系统为进程分配的两种核心内存区域，分别用于不同的数据存储需求。以下是形象化的解释和举例：</p>
+<p><strong>1. 栈（Stack）—— “临时工作台”</strong></p>
+<ul>
+<li><strong>作用</strong>：存储函数调用时的临时数据（后进先出）。</li>
+<li>存储内容：
+<ul>
+<li>局部变量（如函数内定义的 <code>int x</code>）。</li>
+<li>函数参数（如调用 <code>func(a, b)</code> 时的 <code>a</code> 和 <code>b</code>）。</li>
+<li>返回地址（函数执行完后回到哪里）。</li>
+</ul>
+</li>
+<li>特点：
+<ul>
+<li><strong>自动分配/释放</strong>：函数调用时压栈（push），返回时弹栈（pop）。</li>
+<li><strong>大小固定</strong>：默认较小（如Linux中8MB），可能溢出（递归过深会“栈溢出”）。</li>
+<li><strong>线程私有</strong>：每个线程有自己的栈。</li>
+</ul>
+</li>
+</ul>
+<p><strong>🌰 形象举例</strong></p>
+<p>假设你在厨房做菜：</p>
+<ul>
+<li>栈像你手边的临时操作台：
+<ul>
+<li>切菜时，菜刀、砧板、切好的菜临时放在台面上（局部变量）。</li>
+<li>做完一道菜后，台面清空（函数返回，栈帧弹出）。</li>
+<li>如果同时堆太多食材（如递归太深），台面会放不下（Stack Overflow）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-堆heap-自由储物间">
+  <strong>2. 堆（Heap）—— “自由储物间”</strong>
+  <a class="anchor" href="#2-%e5%a0%86heap-%e8%87%aa%e7%94%b1%e5%82%a8%e7%89%a9%e9%97%b4">#</a>
+</h3>
+<ul>
+<li><strong>作用</strong>：存储动态分配的数据（手动申请/释放）。</li>
+<li>存储内容：
+<ul>
+<li><code>malloc</code> / <code>new</code> 创建的对象（如C中的 <code>int* arr = malloc(100)</code>）。</li>
+<li>全局变量、复杂数据结构（如链表、树）。</li>
+</ul>
+</li>
+<li>特点：
+<ul>
+<li><strong>手动管理</strong>：需显式分配（<code>malloc</code>）和释放（<code>free</code>），否则内存泄漏。</li>
+<li><strong>大小灵活</strong>：受系统剩余内存限制。</li>
+<li><strong>进程共享</strong>：同一进程的所有线程共享堆。</li>
+</ul>
+</li>
+</ul>
+<p><strong>🌰 形象举例</strong></p>
+<p>继续厨房的比喻：</p>
+<ul>
+<li>堆像厨房的大储物柜：
+<ul>
+<li>你从柜子里拿出一个锅（<code>malloc</code>）炖汤，用完要放回去（<code>free</code>），否则柜子越来越满（内存泄漏）。</li>
+<li>柜子里的食材（数据）可以被所有厨师（线程）共用，但需要协调（同步机制）。</li>
+<li>如果乱放物品，柜子会杂乱（内存碎片）。</li>
+</ul>
+</li>
+</ul>
 <p>2、线程</p>
 <p>​	<font color='green'>线程是进程的一个实体，是CPU调度和分派的基本单位，它是比进程更小的能独立运行的基本单位。线程自己基本上不拥有系统资源，而拥有自己独立的栈和共享的堆，共享堆，不共享栈，线程也有由操作系统调度。</font>只拥有一点在运行中必不可少的资源，但是<font color='green'>它可与同属于一个进程的其他的线程共享进程所拥有的全部资源。线程间通信主要通过共享内存，上下文切换很快，资源开销较少，但相比进程不够稳定容易丢失数据。</font></p>
 <p>3、协程</p>
@@ -3494,10 +3620,31 @@ https://github.com/alex-shpak/hugo-book
   <a class="anchor" href="#%e8%bf%9b%e7%a8%8b%e9%97%b4%e7%9a%84%e9%80%9a%e4%bf%a1%e4%b8%83%e7%a7%8d%e6%96%b9%e5%bc%8f">#</a>
 </h4>
 <ul>
-<li>管道/匿名管道（pipes)：用于具有亲缘关系的父子进程间或者兄弟进程之间的通信。</li>
+<li>管道/匿名管道（pipes)：用于具有亲缘关系的父子进程间或者兄弟进程之间的通信。
+<ul>
+<li>管道实际是一段由操作系统内核维护的<strong>内存队列</strong>（FIFO），数据写入端（写管道）和读取端（读管道）通过文件描述符（File Descriptor）访问。</li>
+<li><strong>单向通信</strong>：数据只能从一端写入，另一端读出（若需双向通信，需创建两个管道）。</li>
+<li>生命周期：
+<ul>
+<li><strong>匿名管道</strong>：随进程结束而销毁（仅用于有亲缘关系的进程）。</li>
+<li><strong>命名管道（FIFO）</strong>：以文件形式存在于文件系统，无亲缘关系的进程也可访问。</li>
+</ul>
+</li>
+<li>举例：<strong>Shell命令的管道符 <code>|</code></strong></li>
+</ul>
+</li>
 <li>有名管道（Names pipes)：匿名管道由于没有名字，只能用于亲缘关系的进程间通信。有名管道严格遵循先进先出，以磁盘文件的方式存在，可以实现本机任意两个进程通信。</li>
-<li>信号（signal）：信号是一种比较复杂的通信方式，用于通知接收进程某个事件已经发生。</li>
-<li>消息队列（Message Queuing）：消息队列是消息的链表，具有特定的格式，存放在内存中并由消息队列标识符标识。管道和消息队列的通信数据都是先进先出原则。与管道（匿名管道：只存在于内存中的文件；有名管道：存在于实际的磁盘介质或者文件系统）不同的是消息队列存放在内核中，只有在内核重启(即，操作系统重启)或者显式地删除一个消息队列时，该消息队列才会被真正的删除。消息队列可以实现消息的随机查询,消息不一定要以先进先出的次序读取,也可以按消息的类型读取.比 FIFO 更有优势。<strong>消息队列克服了信号承载信息量少，管道只能承载无格式字节流以及缓冲区大小受限等缺点。</strong></li>
+<li>信号（signal）：信号是一种比较复杂的通信方式，用于通知接收进程某个事件已经发生。
+<ul>
+<li>举例：比如按下<code>Ctrl+C</code>触发信号终止进程</li>
+</ul>
+</li>
+<li>消息队列（Message Queuing）：消息队列是消息的链表，具有特定的格式，存放在内存中并由消息队列标识符标识。管道和消息队列的通信数据都是先进先出原则。与管道（匿名管道：只存在于内存中的文件；有名管道：存在于实际的磁盘介质或者文件系统）不同的是消息队列存放在内核中，只有在内核重启(即，操作系统重启)或者显式地删除一个消息队列时，该消息队列才会被真正的删除。消息队列可以实现消息的随机查询,消息不一定要以先进先出的次序读取,也可以按消息的类型读取.比 FIFO 更有优势。<strong>消息队列克服了信号承载信息量少，管道只能承载无格式字节流以及缓冲区大小受限等缺点。</strong>
+<ul>
+<li>举例：多个进程将日志信息发入队列，日志服务进程统一读取并写入文件。</li>
+<li>举例：服务A通过消息队列向服务B发送事件通知（如订单创建）</li>
+</ul>
+</li>
 <li>信号量（semaphores）：信号量是一个计数器，用于多进程对共享数据的访问，信号量的意图在于进程间同步。这种通信方式主要用于解决和同步相关的问题并避免竞争条件。</li>
 <li>共享内存（shared memory）：使得多个进程可以访问同一块内存空间，不同进程可以及时看到对方进程中对共享内存中数据的更新。这种方式需要依靠某种同步操作，如互斥锁和信号量等。可以说这是最有用的进程间通信方式。</li>
 <li>套接字（sockets）：此方法主要用于客户端和服务器之间通过网络进行通信。套接字是支持TCP/IP的网络通信的基本操作单元，可以看做是不同主机之间的进程进行双向通信的端点，简单的说就是通信的两方的一种约定，用套接字中的相关函数来完成通信。</li>
@@ -3517,11 +3664,67 @@ https://github.com/alex-shpak/hugo-book
 </h4>
 <p>为了确定首先执行哪个进程以及最后执行哪个进程以实现最大 CPU 利用率，计算机科学家已经定义了一些算法，它们是：</p>
 <ul>
-<li><strong>先到先服务(FCFS)调度算法</strong> : 从就绪队列中选择一个最先进入该队列的进程为之分配资源，使它立即执行并一直执行到完成或发生某事件而被阻塞放弃占用 CPU 时再重新调度。</li>
-<li><strong>短作业优先(SJF)的调度算法</strong> : 从就绪队列中选出一个估计运行时间最短的进程为之分配资源，使它立即执行并一直执行到完成或发生某事件而被阻塞放弃占用 CPU 时再重新调度。</li>
-<li><strong>时间片轮转调度算法</strong> : 时间片轮转调度是一种最古老，最简单，最公平且使用最广的算法，又称 RR(Round robin)调度。每个进程被分配一个时间段，称作它的时间片，即该进程允许运行的时间。</li>
-<li><font color='red'><strong>多级反馈队列调度算法</strong></font> ：前面介绍的几种进程调度的算法都有一定的局限性。如<strong>短进程优先的调度算法，仅照顾了短进程而忽略了长进程</strong> 。多级反馈队列调度算法既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。，因而它是目前<strong>被公认的一种较好的进程调度算法</strong>，UNIX 操作系统采取的便是这种调度算法。</li>
-<li><strong>优先级调度</strong> ： 为每个流程分配优先级，首先执行具有最高优先级的进程，依此类推。具有相同优先级的进程以 FCFS 方式执行。可以根据内存要求，时间要求或任何其他资源要求来确定优先级。</li>
+<li>
+<p><strong>先到先服务(FCFS)调度算法</strong> : 从就绪队列中选择一个最先进入该队列的进程为之分配资源，使它立即执行并一直执行到完成或发生某事件而被阻塞放弃占用 CPU 时再重新调度。</p>
+</li>
+<li>
+<p><strong>短作业优先(SJF)的调度算法</strong> : 从就绪队列中选出一个估计运行时间最短的进程为之分配资源，使它立即执行并一直执行到完成或发生某事件而被阻塞放弃占用 CPU 时再重新调度。</p>
+</li>
+<li>
+<p><strong>时间片轮转调度算法</strong> : 时间片轮转调度是一种最古老，最简单，最公平且使用最广的算法，又称 RR(Round robin)调度。每个进程被分配一个时间段，称作它的时间片，即该进程允许运行的时间。</p>
+</li>
+<li>
+<p><font color='red'><strong>多级反馈队列调度算法</strong></font> ：前面介绍的几种进程调度的算法都有一定的局限性。如<strong>短进程优先的调度算法，仅照顾了短进程而忽略了长进程</strong> 。多级反馈队列调度算法既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。，因而它是目前<strong>被公认的一种较好的进程调度算法</strong>，UNIX 操作系统采取的便是这种调度算法。</p>
+<p>基本结构</p>
+<ul>
+<li><strong>多级队列</strong>：系统维护多个优先级不同的就绪队列（通常3~5级），编号从高到低（Q0优先级最高，Qn最低）。</li>
+<li>队列特性：
+<ul>
+<li><strong>优先级</strong>：高优先级队列中的进程优先被调度。</li>
+<li><strong>时间片大小</strong>：高优先级队列的时间片较短（如10ms），低优先级队列的时间片较长（如100ms），以减少上下文切换开销。</li>
+<li><strong>调度策略</strong>：高优先级队列可能采用轮转（RR），低优先级队列可能采用先来先服务（FCFS）。</li>
+</ul>
+</li>
+</ul>
+<p><strong>工作流程</strong></p>
+<ol>
+<li><strong>新进程到达</strong>：
+<ul>
+<li>放入最高优先级队列（Q0）的队尾，分配短时间片。</li>
+</ul>
+</li>
+<li><strong>进程执行</strong>：
+<ul>
+<li>若进程在时间片内完成，则退出系统。</li>
+<li>若未完成，则被<strong>降级</strong>到下一级队列（如Q0→Q1），并分配更长时间片。</li>
+<li>若进程在低优先级队列中因等待I/O等原因主动放弃CPU，则可能被<strong>升级</strong>到更高优先级队列（避免饥饿）。</li>
+</ul>
+</li>
+<li><strong>调度规则</strong>：
+<ul>
+<li>总是优先调度高优先级队列中的进程。</li>
+<li>仅当高优先级队列为空时，才调度下一级队列的进程。</li>
+</ul>
+</li>
+</ol>
+<p><strong>关键机制</strong></p>
+<ul>
+<li>动态优先级调整：
+<ul>
+<li><strong>惩罚CPU密集型进程</strong>：长时间占用CPU的进程会逐渐降级，减少其对交互式进程的影响。</li>
+<li><strong>奖励I/O密集型进程</strong>：频繁释放CPU的进程（如交互式任务）可能被提升优先级，保证快速响应。</li>
+</ul>
+</li>
+<li>防饥饿机制：
+<ul>
+<li><strong>周期性的优先级重置</strong>：所有进程定期被重新放入最高优先级队列（如每隔几秒），防止低优先级进程长期得不到执行。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>优先级调度</strong> ： 为每个流程分配优先级，首先执行具有最高优先级的进程，依此类推。具有相同优先级的进程以 FCFS 方式执行。可以根据内存要求，时间要求或任何其他资源要求来确定优先级。</p>
+</li>
 </ul>
 <h4 id="线程间的三种同步方式">
   线程间的三种同步方式
@@ -3819,6 +4022,7 @@ request(R2)  request(R2)
             <li><a href="#缓存">缓存</a></li>
             <li><a href="#内存">内存</a></li>
             <li><a href="#进程线程协程">进程、线程、协程</a></li>
+            <li><a href="#2-堆heap-自由储物间"><strong>2. 堆（Heap）—— “自由储物间”</strong></a></li>
             <li><a href="#死锁">死锁</a></li>
           </ul>
         </li>

@@ -25,7 +25,7 @@ package main import ( &#34;fmt&#34; &#34;sync&#34; ) var x = 10 var wg sync.Wait
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.b475b5afa895825adc06caa7984d6979ea1aa752d99e8dd20e62071b1590e72a.js" integrity="sha256-tHW1r6iVglrcBsqnmE1peeoap1LZno3SDmIHGxWQ5yo=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.d44736c5cb29679e44b2df7ced267b684c8138e777aadac762c5de809bb3dd67.js" integrity="sha256-1Ec2xcspZ55Est987SZ7aEyBOOd3qtrHYsXegJuz3Wc=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -133,6 +133,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" class="">布隆过滤器</a>
   
 
         </li>
@@ -3057,6 +3070,7 @@ https://github.com/alex-shpak/hugo-book
             <li><a href="#synconce">sync.Once</a></li>
             <li><a href="#syncpool">sync.Pool</a></li>
             <li><a href="#syncmap">sync.Map</a></li>
+            <li><a href="#synccond">sync.Cond</a></li>
           </ul>
         </li>
       </ul>
@@ -3082,6 +3096,22 @@ https://github.com/alex-shpak/hugo-book
           </ul>
         </li>
         <li><a href="#总结">总结</a></li>
+      </ul>
+    </li>
+    <li><a href="#synccond-详解">sync.Cond 详解</a>
+      <ul>
+        <li><a href="#作用">作用</a></li>
+        <li><a href="#核心方法">核心方法</a></li>
+        <li><a href="#基本用法-1">基本用法</a></li>
+        <li><a href="#示例说明-1">示例说明</a>
+          <ul>
+            <li><a href="#示例1简单的等待-通知-1">示例1：简单的等待-通知</a></li>
+            <li><a href="#示例2生产者-消费者模型-1">示例2：生产者-消费者模型</a></li>
+            <li><a href="#示例3多个goroutine等待同一事件-1">示例3：多个goroutine等待同一事件</a></li>
+          </ul>
+        </li>
+        <li><a href="#注意事项-1">注意事项</a></li>
+        <li><a href="#与-channel-的比较">与 channel 的比较</a></li>
       </ul>
     </li>
   </ul>
@@ -3543,7 +3573,172 @@ studentPool.Put(stu)
 </span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">wg</span>.<span style="color:#a6e22e">Wait</span>()
 </span></span><span style="display:flex;"><span>	<span style="color:#75715e">//报错：fatal error: concurrent map writes
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
-</span></span></code></pre></div><h1 id="go-syncmap---基本原理">
+</span></span></code></pre></div><h3 id="synccond">
+  sync.Cond
+  <a class="anchor" href="#synccond">#</a>
+</h3>
+<p><code>sync.Cond</code> 是 Go 语言标准库中提供的一个条件变量，用于协调多个 goroutine 之间的同步。它允许一组 goroutine 在满足特定条件时被唤醒执行。</p>
+<p><code>sync.Cond</code> 的主要作用是：</p>
+<ol>
+<li>让 goroutine 在特定条件不满足时进入等待状态</li>
+<li>当条件可能满足时，唤醒一个或所有等待的 goroutine</li>
+<li>解决生产者-消费者问题等需要等待特定条件的并发场景</li>
+</ol>
+<p><code>sync.Cond</code> 提供了三个主要方法：</p>
+<ol>
+<li><code>Wait()</code> - 使当前 goroutine 进入等待状态</li>
+<li><code>Signal()</code> - 唤醒一个等待的 goroutine</li>
+<li><code>Broadcast()</code> - 唤醒所有等待的 goroutine</li>
+</ol>
+<h4 id="基本用法">
+  基本用法
+  <a class="anchor" href="#%e5%9f%ba%e6%9c%ac%e7%94%a8%e6%b3%95">#</a>
+</h4>
+<p>使用 <code>sync.Cond</code> 的基本模式：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">cond</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">NewCond</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">Mutex</span>{})
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Lock</span>()
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 检查条件是否满足
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">for</span> !<span style="color:#a6e22e">condition</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">Wait</span>() <span style="color:#75715e">// 等待时会自动释放锁，被唤醒后重新获取锁
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 条件满足，执行操作
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Unlock</span>()
+</span></span></code></pre></div><h4 id="示例说明">
+  示例说明
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b%e8%af%b4%e6%98%8e">#</a>
+</h4>
+<h5 id="示例1简单的等待-通知">
+  示例1：简单的等待-通知
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b1%e7%ae%80%e5%8d%95%e7%9a%84%e7%ad%89%e5%be%85-%e9%80%9a%e7%9f%a5">#</a>
+</h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;sync&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;time&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">m</span> <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">Mutex</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">NewCond</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">m</span>)
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Lock</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;子goroutine: 准备通知&#34;</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Signal</span>() <span style="color:#75715e">// 唤醒一个等待的goroutine
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Unlock</span>()
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Lock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;主goroutine: 开始等待&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Wait</span>() <span style="color:#75715e">// 等待时会释放锁
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;主goroutine: 收到通知&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Unlock</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h5 id="示例2生产者-消费者模型">
+  示例2：生产者-消费者模型
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b2%e7%94%9f%e4%ba%a7%e8%80%85-%e6%b6%88%e8%b4%b9%e8%80%85%e6%a8%a1%e5%9e%8b">#</a>
+</h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;sync&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;time&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> (
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">m</span>     <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">Mutex</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">cond</span>  = <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">NewCond</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">m</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">queue</span> []<span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 消费者
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#ae81ff">3</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">id</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">for</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Lock</span>()
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">for</span> len(<span style="color:#a6e22e">queue</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;消费者%d: 等待数据\n&#34;</span>, <span style="color:#a6e22e">id</span>)
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">Wait</span>()
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>				<span style="color:#75715e">// 取出数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#a6e22e">item</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">queue</span>[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">queue</span> = <span style="color:#a6e22e">queue</span>[<span style="color:#ae81ff">1</span>:]
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;消费者%d: 消费 %d\n&#34;</span>, <span style="color:#a6e22e">id</span>, <span style="color:#a6e22e">item</span>)
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Unlock</span>()
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}(<span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 生产者
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#ae81ff">5</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Lock</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">queue</span> = append(<span style="color:#a6e22e">queue</span>, <span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;生产者: 生产 %d\n&#34;</span>, <span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">Signal</span>() <span style="color:#75715e">// 通知一个消费者
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#75715e">// cond.Broadcast() // 通知所有消费者
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Unlock</span>()
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h5 id="示例3多个goroutine等待同一事件">
+  示例3：多个goroutine等待同一事件
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b3%e5%a4%9a%e4%b8%aagoroutine%e7%ad%89%e5%be%85%e5%90%8c%e4%b8%80%e4%ba%8b%e4%bb%b6">#</a>
+</h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;sync&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;time&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> (
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">m</span>    <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">Mutex</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">cond</span> = <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">NewCond</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">m</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">done</span> <span style="color:#66d9ef">bool</span>
+</span></span><span style="display:flex;"><span>	)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#ae81ff">5</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">id</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Lock</span>()
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">for</span> !<span style="color:#a6e22e">done</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;goroutine %d: 等待条件满足\n&#34;</span>, <span style="color:#a6e22e">id</span>)
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">Wait</span>()
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;goroutine %d: 条件已满足\n&#34;</span>, <span style="color:#a6e22e">id</span>)
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Unlock</span>()
+</span></span><span style="display:flex;"><span>		}(<span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Lock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">done</span> = <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;主goroutine: 广播通知所有等待者&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">Broadcast</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Unlock</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="注意事项">
+  注意事项
+  <a class="anchor" href="#%e6%b3%a8%e6%84%8f%e4%ba%8b%e9%a1%b9">#</a>
+</h4>
+<ol>
+<li>调用 <code>Wait()</code> 前必须持有锁</li>
+<li><code>Wait()</code> 返回时锁会被重新获取</li>
+<li>通常需要在循环中检查条件，因为虚假唤醒是可能的</li>
+<li><code>Signal()</code> 和 <code>Broadcast()</code> 不需要持有锁，但通常也会在持有锁的情况下调用</li>
+<li>条件变量的检查应该使用 <code>for</code> 循环而不是 <code>if</code> 语句，以防止虚假唤醒</li>
+</ol>
+<h1 id="go-syncmap---基本原理">
   go sync.Map - 基本原理
   <a class="anchor" href="#go-syncmap---%e5%9f%ba%e6%9c%ac%e5%8e%9f%e7%90%86">#</a>
 </h1>
@@ -3868,6 +4063,197 @@ fmt.Println(m.Load(&#34;foo&#34;)) // 1 true
 </ul>
 </li>
 </ul>
+<h1 id="synccond-详解">
+  sync.Cond 详解
+  <a class="anchor" href="#synccond-%e8%af%a6%e8%a7%a3">#</a>
+</h1>
+<p><code>sync.Cond</code> 是 Go 语言标准库中提供的一个条件变量，用于协调多个 goroutine 之间的同步。它允许一组 goroutine 在满足特定条件时被唤醒执行。</p>
+<h2 id="作用">
+  作用
+  <a class="anchor" href="#%e4%bd%9c%e7%94%a8">#</a>
+</h2>
+<p><code>sync.Cond</code> 的主要作用是：</p>
+<ol>
+<li>让 goroutine 在特定条件不满足时进入等待状态</li>
+<li>当条件可能满足时，唤醒一个或所有等待的 goroutine</li>
+<li>解决生产者-消费者问题等需要等待特定条件的并发场景</li>
+</ol>
+<h2 id="核心方法">
+  核心方法
+  <a class="anchor" href="#%e6%a0%b8%e5%bf%83%e6%96%b9%e6%b3%95">#</a>
+</h2>
+<p><code>sync.Cond</code> 提供了三个主要方法：</p>
+<ol>
+<li><code>Wait()</code> - 使当前 goroutine 进入等待状态</li>
+<li><code>Signal()</code> - 唤醒一个等待的 goroutine</li>
+<li><code>Broadcast()</code> - 唤醒所有等待的 goroutine</li>
+</ol>
+<h2 id="基本用法-1">
+  基本用法
+  <a class="anchor" href="#%e5%9f%ba%e6%9c%ac%e7%94%a8%e6%b3%95-1">#</a>
+</h2>
+<p>使用 <code>sync.Cond</code> 的基本模式：</p>
+<p>go</p>
+<p>复制</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">cond</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">NewCond</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">Mutex</span>{})
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Lock</span>()
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 检查条件是否满足
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">for</span> !<span style="color:#a6e22e">condition</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">Wait</span>() <span style="color:#75715e">// 等待时会自动释放锁，被唤醒后重新获取锁
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 条件满足，执行操作
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Unlock</span>()
+</span></span></code></pre></div><h2 id="示例说明-1">
+  示例说明
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b%e8%af%b4%e6%98%8e-1">#</a>
+</h2>
+<h3 id="示例1简单的等待-通知-1">
+  示例1：简单的等待-通知
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b1%e7%ae%80%e5%8d%95%e7%9a%84%e7%ad%89%e5%be%85-%e9%80%9a%e7%9f%a5-1">#</a>
+</h3>
+<p>go</p>
+<p>复制</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;sync&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;time&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">m</span> <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">Mutex</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">NewCond</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">m</span>)
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Lock</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;子goroutine: 准备通知&#34;</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Signal</span>() <span style="color:#75715e">// 唤醒一个等待的goroutine
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Unlock</span>()
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Lock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;主goroutine: 开始等待&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Wait</span>() <span style="color:#75715e">// 等待时会释放锁
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;主goroutine: 收到通知&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Unlock</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="示例2生产者-消费者模型-1">
+  示例2：生产者-消费者模型
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b2%e7%94%9f%e4%ba%a7%e8%80%85-%e6%b6%88%e8%b4%b9%e8%80%85%e6%a8%a1%e5%9e%8b-1">#</a>
+</h3>
+<p>go</p>
+<p>复制</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;sync&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;time&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> (
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">m</span>     <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">Mutex</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">cond</span>  = <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">NewCond</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">m</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">queue</span> []<span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 消费者
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#ae81ff">3</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">id</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">for</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Lock</span>()
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">for</span> len(<span style="color:#a6e22e">queue</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;消费者%d: 等待数据\n&#34;</span>, <span style="color:#a6e22e">id</span>)
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">Wait</span>()
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>				<span style="color:#75715e">// 取出数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#a6e22e">item</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">queue</span>[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">queue</span> = <span style="color:#a6e22e">queue</span>[<span style="color:#ae81ff">1</span>:]
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;消费者%d: 消费 %d\n&#34;</span>, <span style="color:#a6e22e">id</span>, <span style="color:#a6e22e">item</span>)
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Unlock</span>()
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}(<span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 生产者
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#ae81ff">5</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Lock</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">queue</span> = append(<span style="color:#a6e22e">queue</span>, <span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;生产者: 生产 %d\n&#34;</span>, <span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">Signal</span>() <span style="color:#75715e">// 通知一个消费者
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#75715e">// cond.Broadcast() // 通知所有消费者
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Unlock</span>()
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="示例3多个goroutine等待同一事件-1">
+  示例3：多个goroutine等待同一事件
+  <a class="anchor" href="#%e7%a4%ba%e4%be%8b3%e5%a4%9a%e4%b8%aagoroutine%e7%ad%89%e5%be%85%e5%90%8c%e4%b8%80%e4%ba%8b%e4%bb%b6-1">#</a>
+</h3>
+<p>go</p>
+<p>复制</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;sync&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;time&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> (
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">m</span>    <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">Mutex</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">cond</span> = <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">NewCond</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">m</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">done</span> <span style="color:#66d9ef">bool</span>
+</span></span><span style="display:flex;"><span>	)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#ae81ff">5</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">id</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Lock</span>()
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">for</span> !<span style="color:#a6e22e">done</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;goroutine %d: 等待条件满足\n&#34;</span>, <span style="color:#a6e22e">id</span>)
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">Wait</span>()
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;goroutine %d: 条件已满足\n&#34;</span>, <span style="color:#a6e22e">id</span>)
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Unlock</span>()
+</span></span><span style="display:flex;"><span>		}(<span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Lock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">done</span> = <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;主goroutine: 广播通知所有等待者&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">Broadcast</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cond</span>.<span style="color:#a6e22e">L</span>.<span style="color:#a6e22e">Unlock</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="注意事项-1">
+  注意事项
+  <a class="anchor" href="#%e6%b3%a8%e6%84%8f%e4%ba%8b%e9%a1%b9-1">#</a>
+</h2>
+<ol>
+<li>调用 <code>Wait()</code> 前必须持有锁</li>
+<li><code>Wait()</code> 返回时锁会被重新获取</li>
+<li>通常需要在循环中检查条件，因为虚假唤醒是可能的</li>
+<li><code>Signal()</code> 和 <code>Broadcast()</code> 不需要持有锁，但通常也会在持有锁的情况下调用</li>
+<li>条件变量的检查应该使用 <code>for</code> 循环而不是 <code>if</code> 语句，以防止虚假唤醒</li>
+</ol>
+<h2 id="与-channel-的比较">
+  与 channel 的比较
+  <a class="anchor" href="#%e4%b8%8e-channel-%e7%9a%84%e6%af%94%e8%be%83">#</a>
+</h2>
+<p><code>sync.Cond</code> 和 channel 都可以用于 goroutine 间的同步，但适用场景不同：</p>
+<ul>
+<li><code>sync.Cond</code> 更适合需要广播通知或多个 goroutine 等待同一条件的场景</li>
+<li>channel 更适合一对一的通信或数据传递</li>
+</ul>
+<p><code>sync.Cond</code> 提供了更底层的同步原语，可以构建更复杂的同步模式。</p>
 </article>
  
       
@@ -3920,6 +4306,7 @@ fmt.Println(m.Load(&#34;foo&#34;)) // 1 true
             <li><a href="#synconce">sync.Once</a></li>
             <li><a href="#syncpool">sync.Pool</a></li>
             <li><a href="#syncmap">sync.Map</a></li>
+            <li><a href="#synccond">sync.Cond</a></li>
           </ul>
         </li>
       </ul>
@@ -3945,6 +4332,22 @@ fmt.Println(m.Load(&#34;foo&#34;)) // 1 true
           </ul>
         </li>
         <li><a href="#总结">总结</a></li>
+      </ul>
+    </li>
+    <li><a href="#synccond-详解">sync.Cond 详解</a>
+      <ul>
+        <li><a href="#作用">作用</a></li>
+        <li><a href="#核心方法">核心方法</a></li>
+        <li><a href="#基本用法-1">基本用法</a></li>
+        <li><a href="#示例说明-1">示例说明</a>
+          <ul>
+            <li><a href="#示例1简单的等待-通知-1">示例1：简单的等待-通知</a></li>
+            <li><a href="#示例2生产者-消费者模型-1">示例2：生产者-消费者模型</a></li>
+            <li><a href="#示例3多个goroutine等待同一事件-1">示例3：多个goroutine等待同一事件</a></li>
+          </ul>
+        </li>
+        <li><a href="#注意事项-1">注意事项</a></li>
+        <li><a href="#与-channel-的比较">与 channel 的比较</a></li>
       </ul>
     </li>
   </ul>

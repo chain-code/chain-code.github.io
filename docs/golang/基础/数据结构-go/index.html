@@ -17,7 +17,7 @@
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.b475b5afa895825adc06caa7984d6979ea1aa752d99e8dd20e62071b1590e72a.js" integrity="sha256-tHW1r6iVglrcBsqnmE1peeoap1LZno3SDmIHGxWQ5yo=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.d44736c5cb29679e44b2df7ced267b684c8138e777aadac762c5de809bb3dd67.js" integrity="sha256-1Ec2xcspZ55Est987SZ7aEyBOOd3qtrHYsXegJuz3Wc=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -125,6 +125,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" class="">布隆过滤器</a>
   
 
         </li>
@@ -3076,6 +3089,15 @@ https://github.com/alex-shpak/hugo-book
             <li><a href="#二分查找1">二分查找1</a></li>
           </ul>
         </li>
+        <li><a href="#并查集">并查集</a>
+          <ul>
+            <li><a href="#初始化">初始化</a></li>
+            <li><a href="#查找-1">查找</a></li>
+            <li><a href="#合并">合并</a></li>
+            <li><a href="#相关算法-5">相关算法</a></li>
+          </ul>
+        </li>
+        <li><a href="#堆">堆</a></li>
         <li><a href="#排序">排序</a>
           <ul>
             <li><a href="#算法比较">算法比较</a></li>
@@ -4496,7 +4518,88 @@ void put(int key, int value) 如果关键字 key 已经存在，则变更其�
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="排序">
+</span></span></code></pre></div><h2 id="并查集">
+  并查集
+  <a class="anchor" href="#%e5%b9%b6%e6%9f%a5%e9%9b%86">#</a>
+</h2>
+<p>并查集是一种用于管理元素所属集合的数据结构，实现为一个森林，其中每棵树表示一个集合，树中的节点表示对应集合中的元素。</p>
+<p>顾名思义，并查集支持两种操作：</p>
+<ul>
+<li>合并（Union）：合并两个元素所属集合（合并对应的树）</li>
+<li>查询（Find）：查询某个元素所属集合（查询对应的树的根节点），这可以用于判断两个元素是否属于同一集合</li>
+</ul>
+<p>并查集在经过修改后可以支持单个元素的删除、移动；使用动态开点线段树还可以实现可持久化并查集。</p>
+<h3 id="初始化">
+  初始化
+  <a class="anchor" href="#%e5%88%9d%e5%a7%8b%e5%8c%96">#</a>
+</h3>
+<p>初始时，每个元素都位于一个单独的集合，表示为一棵只有根节点的树。方便起见，我们将根节点的父亲设为自己。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202506071101237.png" alt="" /></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">UnionFind</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">parent</span> []<span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewUnionFind</span>(<span style="color:#a6e22e">n</span> <span style="color:#66d9ef">int</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">UnionFind</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">uf</span> <span style="color:#f92672">:=</span> new(<span style="color:#a6e22e">UnionFind</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">uf</span>.<span style="color:#a6e22e">parent</span> = make([]<span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">n</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">n</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">uf</span>.<span style="color:#a6e22e">parent</span>[<span style="color:#a6e22e">i</span>] = <span style="color:#a6e22e">i</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">uf</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="查找-1">
+  查找
+  <a class="anchor" href="#%e6%9f%a5%e6%89%be-1">#</a>
+</h3>
+<p>我们需要沿着树向上移动，直至找到根节点。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">uf</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">UnionFind</span>) <span style="color:#a6e22e">find</span>(<span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">uf</span>.<span style="color:#a6e22e">parent</span>[<span style="color:#a6e22e">x</span>] <span style="color:#f92672">!=</span> <span style="color:#a6e22e">x</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">uf</span>.<span style="color:#a6e22e">parent</span>[<span style="color:#a6e22e">x</span>] = <span style="color:#a6e22e">uf</span>.<span style="color:#a6e22e">find</span>(<span style="color:#a6e22e">uf</span>.<span style="color:#a6e22e">parent</span>[<span style="color:#a6e22e">x</span>])<span style="color:#75715e">//让当前节点不断等于它的父节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">uf</span>.<span style="color:#a6e22e">parent</span>[<span style="color:#a6e22e">x</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>//非路径压缩版</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">uf</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">UnionFind</span>) <span style="color:#a6e22e">find2</span>(<span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">uf</span>.<span style="color:#a6e22e">parent</span>[<span style="color:#a6e22e">x</span>] <span style="color:#f92672">!=</span> <span style="color:#a6e22e">x</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">x</span> = <span style="color:#a6e22e">uf</span>.<span style="color:#a6e22e">parent</span>[<span style="color:#a6e22e">x</span>]<span style="color:#75715e">//让x=数组中的值，下一次循环查它的父节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">uf</span>.<span style="color:#a6e22e">parent</span>[<span style="color:#a6e22e">x</span>]
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">uf</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">UnionFind</span>) <span style="color:#a6e22e">find2</span>(<span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">uf</span>.<span style="color:#a6e22e">parent</span>[<span style="color:#a6e22e">x</span>] <span style="color:#f92672">==</span> <span style="color:#a6e22e">x</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">uf</span>.<span style="color:#a6e22e">parent</span>[<span style="color:#a6e22e">x</span>]
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">uf</span>.<span style="color:#a6e22e">find</span>(<span style="color:#a6e22e">uf</span>.<span style="color:#a6e22e">parent</span>[<span style="color:#a6e22e">x</span>])
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="合并">
+  合并
+  <a class="anchor" href="#%e5%90%88%e5%b9%b6">#</a>
+</h3>
+<p>要合并两棵树，我们只需要将一棵树的根节点连到另一棵树的根节点。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202506071108606.png" alt="" /></p>
+<pre tabindex="0"><code>func (uf *UnionFind) union(x, y int) {
+	x, y = uf.find(x), uf.find(y) //查找根节点
+	if x == y {                   //同一棵树
+		return
+	}
+	if x &gt; y { //// 总是让字典序更小的作为集合代表字符  根据情况，也可以换成最大的或者不换
+		x, y = y, x
+	}
+	uf.parent[y] = x
+}
+</code></pre><h3 id="相关算法-5">
+  相关算法
+  <a class="anchor" href="#%e7%9b%b8%e5%85%b3%e7%ae%97%e6%b3%95-5">#</a>
+</h3>
+<p><a href="https://leetcode.cn/problems/lexicographically-smallest-equivalent-string/solutions/3687876/an-zi-dian-xu-pai-lie-zui-xiao-de-deng-x-rfy2/?envType=daily-question&amp;envId=2025-06-05">https://leetcode.cn/problems/lexicographically-smallest-equivalent-string/solutions/3687876/an-zi-dian-xu-pai-lie-zui-xiao-de-deng-x-rfy2/?envType=daily-question&envId=2025-06-05</a></p>
+<h2 id="堆">
+  堆
+  <a class="anchor" href="#%e5%a0%86">#</a>
+</h2>
+<h2 id="排序">
   排序
   <a class="anchor" href="#%e6%8e%92%e5%ba%8f">#</a>
 </h2>
@@ -5003,6 +5106,15 @@ void put(int key, int value) 如果关键字 key 已经存在，则变更其�
             <li><a href="#二分查找1">二分查找1</a></li>
           </ul>
         </li>
+        <li><a href="#并查集">并查集</a>
+          <ul>
+            <li><a href="#初始化">初始化</a></li>
+            <li><a href="#查找-1">查找</a></li>
+            <li><a href="#合并">合并</a></li>
+            <li><a href="#相关算法-5">相关算法</a></li>
+          </ul>
+        </li>
+        <li><a href="#堆">堆</a></li>
         <li><a href="#排序">排序</a>
           <ul>
             <li><a href="#算法比较">算法比较</a></li>

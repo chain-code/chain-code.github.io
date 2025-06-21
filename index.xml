@@ -287,6 +287,19 @@ crontab 是用来让使用者在固定时间或固定间隔执行程序之用，
     </item>
     
     <item>
+      <title>cursor续杯</title>
+      <link>https://chain-code.github.io/docs/ai/basic/cursor%E7%BB%AD%E6%9D%AF/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/basic/cursor%E7%BB%AD%E6%9D%AF/</guid>
+      <description>https://github.com/yeongpin/cursor-free-vip?tab=readme-ov-file
+Windows：PowerShell
+irm https://raw.githubusercontent.com/yeongpin/cursor-free-vip/main/scripts/install.ps1 | iex 先重置机器码
+再用2925邮箱注册账号
+不断更改账号</description>
+    </item>
+    
+    <item>
       <title>datetime</title>
       <link>https://chain-code.github.io/docs/python/package/detetime/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -337,6 +350,25 @@ cmd -x * *为0，false有可能表示一个文件名或文件，也有可能表�
       
       <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/gin%E5%8F%82%E6%95%B0%E7%BB%91%E5%AE%9A/</guid>
       <description>奇怪问题 # type BugReportParam struct { Desc string `json:&amp;#34;desc&amp;#34;`	Stack string `json:&amp;#34;stack&amp;#34;` Function string `json:&amp;#34;function&amp;#34;` Contact string `json:&amp;#34;contact&amp;#34;` Email string `json:&amp;#34;email&amp;#34;` ExtFiles []string `json:&amp;#34;extFiles&amp;#34;` } // BugReport godoc // //	@Description	日志反馈 //	@Tags	bug_Report //	@Accept	json //	@Produce	json //	@Param	body	body	param.BugReportParam	true	&amp;#34;日志反馈参数&amp;#34; //	@Success	200	{object}	response.Response //	@Failure	500	{object}	response.Response //	@Router	/bugreport [post] func (r BugReport) BugReport(c *gin.Context) { var par param.</description>
+    </item>
+    
+    <item>
+      <title>Go 中使用 sync.Pool 时可能遇到的陷阱</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/go-%E4%B8%AD%E4%BD%BF%E7%94%A8-sync.pool-%E6%97%B6%E5%8F%AF%E8%83%BD%E9%81%87%E5%88%B0%E7%9A%84%E9%99%B7%E9%98%B1/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/go-%E4%B8%AD%E4%BD%BF%E7%94%A8-sync.pool-%E6%97%B6%E5%8F%AF%E8%83%BD%E9%81%87%E5%88%B0%E7%9A%84%E9%99%B7%E9%98%B1/</guid>
+      <description>虽然 sync.Pool 使用起来很简单，但如果使用不当，还是有可能出现问题的，例如，
+对象重置不彻底：若未正确重置对象状态（例如忘记清空某个字段），可能导致脏数据污染，引发逻辑错误。 长时间占用对象：若某个 Goroutine 持有对象时间过长（例如执行阻塞操作），可能导致其他 Goroutine 频繁创建新对象，削弱池的优势。 高并发下池对象不足问题：若并发量远高于池中对象数量，New 函数会被频繁调用，可能抵消复用对象的收益。 返回池对象引用：应该限制池对象仅在局部作用域内使用，不应暴露给外部，否则会导致 data race 问题。 由于前两个问题相对简单直接，本文仅讨论后两个问题。
+关于“高并发下池对象不足问题” # 下面通过真实场景案例，分析一下 “并发量远高于池中对象数量，导致 New 函数频繁调用，抵消对象复用收益” 的问题。
+案例 1：高并发 HTTP 服务器的 JSON 序列化缓冲区 # 场景描述 # 某电商平台的商品详情接口需要处理 每秒 10 万次（QPS） 的请求。每个请求需要将商品数据序列化为 JSON 返回给客户端。为优化性能，开发团队使用 sync.Pool 缓存 *bytes.Buffer 对象，避免重复分配内存。
+代码实现
+效果
+New 调用频率下降 70%，GC 频率恢复至正常水平。 请求延迟从 15ms 降低到 5ms。 *案例 2：实时日志处理系统的临时对象池* # 场景描述
+某日志分析服务需实时解析海量日志条目（每秒 50 万条），每条日志需解析为结构体并暂存到内存队列。开发团队使用 sync.Pool 缓存日志解析的临时结构体对象。
+代码实现
+问题现象
+内存占用波动剧烈：服务内存使用量周期性骤增，与 GC 周期高度相关。 解析性能下降：日志处理吞吐量从 50 万条/秒下降到 30 万条/秒。 根因分析</description>
     </item>
     
     <item>
@@ -413,7 +445,9 @@ func AddFloat32(a float32, b float32) float32 {return a + b}func AddString(a 
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/grpc/</guid>
-      <description>GRPC # 介绍 # gRPC 是一个高性能、开源和通用的 RPC 框架，面向移动和 HTTP/2 设计。
+      <description>GRPC # https://github.com/shimingyah/pool
+基于GRPC的多路复用、超时重连特性，我们很容易实现GRPC连接池。
+介绍 # gRPC 是一个高性能、开源和通用的 RPC 框架，面向移动和 HTTP/2 设计。
 gRPC基于 HTTP/2标准设计，带来诸如双向流、流控、头部压缩、单 TCP连接上的多复用请求等特。这些特性使得 其在移动设备上表现更好，更省电和节省空间占用。
 在 gRPC里客户端应用可以像调用本地对象一样直接调用另一台不同的机器上服务端应用的方法，使得您能够更容 易地创建分布式应用和服务。与许多 RPC系统类似， gRPC也是基于以下理念：
 定义一个服务，指定其能够被远程调用的方法（包含参数和返回类型）。
@@ -497,6 +531,15 @@ localhost在IPv6中通常解析为::1，这是IPv6下的环回地址。直接使
     </item>
     
     <item>
+      <title>MCP服务</title>
+      <link>https://chain-code.github.io/docs/ai/basic/mcp%E6%9C%8D%E5%8A%A1/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/basic/mcp%E6%9C%8D%E5%8A%A1/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Mongodb安装</title>
       <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mongodb%E5%AE%89%E8%A3%85/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -514,10 +557,10 @@ mongod --dbpath /usr/local/mongodb/data --logpath /usr/local/mongodb/log/mongod.
     
     <item>
       <title>Ocr识别</title>
-      <link>https://chain-code.github.io/docs/python/ai/ocr%E8%AF%86%E5%88%AB/</link>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/ocr%E8%AF%86%E5%88%AB/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/python/ai/ocr%E8%AF%86%E5%88%AB/</guid>
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/ocr%E8%AF%86%E5%88%AB/</guid>
       <description>使用项目：
 https://github.com/shibing624/imgocr
 https://github.com/WenmuZhou/PytorchOCR</description>
@@ -534,10 +577,10 @@ https://github.com/WenmuZhou/PytorchOCR</description>
     
     <item>
       <title>Opencv Cuda编译</title>
-      <link>https://chain-code.github.io/docs/python/ai/opencv_cuda%E7%BC%96%E8%AF%91/</link>
+      <link>https://chain-code.github.io/docs/ai/basic/opencv_cuda%E7%BC%96%E8%AF%91/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/python/ai/opencv_cuda%E7%BC%96%E8%AF%91/</guid>
+      <guid>https://chain-code.github.io/docs/ai/basic/opencv_cuda%E7%BC%96%E8%AF%91/</guid>
       <description>相关参考资料 # 安装python
 原生python官网下载地址，选择Windows版本。
 cmake安装
@@ -632,6 +675,17 @@ XML 已经成为多种行业标准的编写工具，Protobuf 只是 Google 公�
     </item>
     
     <item>
+      <title>python内存泄漏排查方法</title>
+      <link>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/python%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E6%8E%92%E6%9F%A5%E6%96%B9%E6%B3%95/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/python%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E6%8E%92%E6%9F%A5%E6%96%B9%E6%B3%95/</guid>
+      <description>https://docs.python.org/zh-cn/3.13/library/tracemalloc.html
+https://blog.csdn.net/kuailebeihun_/article/details/140575926
+https://zhuanlan.zhihu.com/p/436577356</description>
+    </item>
+    
+    <item>
       <title>python基础</title>
       <link>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/python%E5%9F%BA%E7%A1%80/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -671,26 +725,55 @@ $ virtualenv myproject$ source myproject/bin/activate 执行第一个命令在 
     
     <item>
       <title>pytorch食谱</title>
-      <link>https://chain-code.github.io/docs/python/ai/pytorch%E9%A3%9F%E8%B0%B1/</link>
+      <link>https://chain-code.github.io/docs/ai/basic/pytorch%E9%A3%9F%E8%B0%B1/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/python/ai/pytorch%E9%A3%9F%E8%B0%B1/</guid>
+      <guid>https://chain-code.github.io/docs/ai/basic/pytorch%E9%A3%9F%E8%B0%B1/</guid>
       <description>PyTorch食谱</description>
     </item>
     
     <item>
-      <title>Qwen2.5-vl部署</title>
-      <link>https://chain-code.github.io/docs/python/ai/qwen2.5-vl%E9%83%A8%E7%BD%B2/</link>
+      <title>Qwen2.5-vl源码部署</title>
+      <link>https://chain-code.github.io/docs/ai/generative-ai/qwen2.5-vl%E6%BA%90%E7%A0%81%E9%83%A8%E7%BD%B2/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/python/ai/qwen2.5-vl%E9%83%A8%E7%BD%B2/</guid>
-      <description>Qwen2.5-vl部署 # 官方
+      <guid>https://chain-code.github.io/docs/ai/generative-ai/qwen2.5-vl%E6%BA%90%E7%A0%81%E9%83%A8%E7%BD%B2/</guid>
+      <description>Qwen2.5-vl源码部署 # 官方
 本地运行 Qwen2-VL
 使用vLLM部署Qwen2.5-VL-7B-Instruct模型的详细指南
 阿里最新开源模型Qwen2.5-VL本地部署教程：视觉理解超越GPT-4o！
 cudn加速库 # cudnn-windows-x86_64-8.9.7.29_cuda12-archive 仓库地址 # https://github.com/QwenLM/Qwen2.5-VL?tab=readme-ov-file
 模型地址 # https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct-AWQ
 环境对比 # (base) PS C:\Users\admin\python\qwen\Qwen2.5-VL&amp;gt; pip listPackage Version--------------------------------- ------------------aiobotocore 2.12.3aiohappyeyeballs 2.4.0aiohttp 3.10.5aioitertools 0.7.1aiosignal 1.2.0alabaster 0.7.16altair 5.0.1anaconda-anon-usage 0.4.4anaconda-catalogs 0.2.0anaconda-client 1.12.3anaconda-cloud-auth 0.5.1anaconda-navigator 2.6.3anaconda-project 0.11.1annotated-types 0.6.0anyio 4.2.0appdirs 1.4.4archspec 0.2.3argon2-cffi 21.3.0argon2-cffi-bindings 21.2.0arrow 1.2.3astroid 2.14.2astropy 6.</description>
+    </item>
+    
+    <item>
+      <title>Reid数据集</title>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/reid%E6%95%B0%E6%8D%AE%E9%9B%86/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/reid%E6%95%B0%E6%8D%AE%E9%9B%86/</guid>
+      <description>单模态 # Market-1501：Person Re-Identification Meets Image Search：
+链接：https://pan.baidu.com/s/1ntIi2Op
+2015年，论文 Person Re-Identification Meets Image Search 提出了 Market 1501 数据集，现在 Market 1501 数据集已经成为行人重识别领域最常用的数据集之一。
+Market 1501 的行人图片采集自清华大学校园的 6 个摄像头，一共标注了 1501 个行人。其中，751 个行人标注用于训练集，750 个行人标注用于测试集，训练集和测试集中没有重复的行人 ID，也就是说出现在训练集中的 751 个行人均未出现在测试集中。
+训练集：751 个行人，12936 张图片 测试集：750 个行人，19732 张图片 query 集：750 个行人，3368 张图片 query 集的行人图片都是手动标注的图片，从 6 个摄像头中为测试集中的每个行人选取一张图片，构成 query 集。测试集中的每个行人至多有 6 张图片，query 集共有 3368 张图片。
+网络模型训练时，会用到训练集；测试模型好坏时，会用到测试集和 query 集。此时测试集也被称作 gallery 集。因此实际用到的子集为，训练集、gallery 集 和 query 集。
+MARS: A Video Benchmark for Large-Scale Person Re-identification（基于视频）</description>
+    </item>
+    
+    <item>
+      <title>Reid行人重识别</title>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/reid%E8%A1%8C%E4%BA%BA%E9%87%8D%E8%AF%86%E5%88%AB/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/reid%E8%A1%8C%E4%BA%BA%E9%87%8D%E8%AF%86%E5%88%AB/</guid>
+      <description>原理 # 在监控拍不到人脸的情况下，ReID可以代替人脸识别来在视频序列中找到我要找到目标对象。那么他的应用就很广了，可以做安防，可以做个人定位，在商场上可以配合推荐系统，搭建出个性化的推荐服务等等
+我们利用训练后的网络计算特征从所有搜索到的图像中提取特征，并计算搜索图与地库之间的特征距离。然后根据计算出的距离对它们进行排序。排名越高，相似性越高，上图中，绿色边框的是正确检索的结果，红色边框的是错误检索的结果。
+代码仓库：https://github.com/JDAI-CV/fast-reid
+提供了针对ReID任务的完整的工具箱，包括训练、评估、微调和模型部署，另外实现了在多个任务中的最先进的模型。
+实操 # 模型初始化 # 创建ONNX推理会话，使用CUDA执行提供者
+class ReidModel: def __init__(self, model_name, model_dir): &amp;#34;&amp;#34;&amp;#34; 初始化 ReidModel 实例。 Args: model_name (str): Reid 模型的特定名称 model_dir (str): 包含 Reid ONNX 模型文件的目录路径。 &amp;#34;&amp;#34;&amp;#34; self._key = b&amp;#39;fm20Za6uii..........AvPdMhxXs=&amp;#39; img_onnx_model_path = os.path.join(model_dir, &amp;#34;weights.onnx&amp;#34;) decrypted_model = decrypt_model(img_onnx_model_path, self._key) //模型解密 img_sess_options = onnxruntime.SessionOptions() img_run_options = onnxruntime.RunOptions() img_run_options.log_severity_level = 2 self.input_height = 384 self.input_width = 128 self.session = onnxruntime.InferenceSession(decrypted_model, sess_options=img_sess_options, providers=[&amp;#34;CUDAExecutionProvider&amp;#34;])# NVIDIA GPU (CUDA) self.input_name = self.</description>
     </item>
     
     <item>
@@ -755,11 +838,11 @@ swag init -g http/api.go (可选) 使用fmt格式化 SWAG 注释。(请先升级
     </item>
     
     <item>
-      <title>Trae使用介绍</title>
-      <link>https://chain-code.github.io/docs/python/ai/trae%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/</link>
+      <title>Trae使用心得分享</title>
+      <link>https://chain-code.github.io/docs/ai/basic/trae%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97%E5%88%86%E4%BA%AB/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/python/ai/trae%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/</guid>
+      <guid>https://chain-code.github.io/docs/ai/basic/trae%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97%E5%88%86%E4%BA%AB/</guid>
       <description>Trae介绍 # Trae 是字节跳动推出的一款融合了 AI 辅助编程、智能代码建议、生成代码文件 以及 灵活适配不同场景 的 IDE。它不仅能够帮助开发者更快地编写代码，还可以根据具体提示语生成代码并进行维护，从而优化开发流程，实现高效协作。
 选择 Trae ，主要因为它是国产软件，有中文界面和文档，并且完全免费，完全免费，完全免费。缺点是bug较多，反应速度较慢，好的一点是字节几乎一天一更新，相信将来会变得更好。
 Trae下载官网
@@ -824,10 +907,10 @@ python -m venv /path/to/new/virtual/environment 运行此命令将创建目标�
     
     <item>
       <title>Xinference基础</title>
-      <link>https://chain-code.github.io/docs/python/ai/xinference%E5%9F%BA%E7%A1%80/</link>
+      <link>https://chain-code.github.io/docs/ai/generative-ai/xinference%E5%9F%BA%E7%A1%80/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/python/ai/xinference%E5%9F%BA%E7%A1%80/</guid>
+      <guid>https://chain-code.github.io/docs/ai/generative-ai/xinference%E5%9F%BA%E7%A1%80/</guid>
       <description>介绍 # Xinference 是一个开源的 AI 模型推理平台。你可以把它想象成一个用来部署和管理各种大型 AI 模型（特别是大语言模型 LLMs）的工具或框架。它的目标是让开发者和研究人员能够轻松地在自己的硬件（无论是个人电脑、服务器还是云实例）上运行和使用这些强大的模型。
 Xinference 的主要作用和特点：
 简化模型部署 (Simplified Deployment): 运行大型 AI 模型通常需要复杂的环境配置和依赖管理。Xinference 极大地简化了这个过程，让你可以用简单的命令或通过 Web UI 来下载、设置和启动模型。 统一的 API (Unified API): 它为不同类型的模型（如聊天模型、嵌入模型、重排序模型、图像模型、音频模型等）提供了一套统一的、简洁的 API 接口。这意味着你可以用类似的方式与各种不同的模型进行交互，降低了学习和使用的成本。 广泛的模型支持 (Broad Model Support): Xinference 支持非常多的开源模型，涵盖了： 大语言模型 (LLMs): 如 Llama, ChatGLM, Qwen, Baichuan, Mixtral, Yi 等。 嵌入模型 (Embedding Models): 用于将文本转换为向量表示。 重排序模型 (Rerank Models): 用于优化搜索结果排序。 多模态模型 (Multimodal Models): 如处理图像和文本的模型。 图像模型和音频模型 等。 灵活的部署选项 (Flexible Deployment Options): 本地运行: 可以在你的个人笔记本电脑或工作站上运行。 分布式集群: 可以将模型部署在多台机器组成的集群上，以获得更强的计算能力或服务更大的负载。 硬件兼容性 (Hardware Compatibility): 支持在多种硬件上运行，包括： CPU NVIDIA GPU AMD GPU Apple Silicon (M系列芯片) 类 OpenAI API 兼容性 (OpenAI-Compatible API): 对于很多流行的模型（特别是 LLMs），Xinference 提供了与 OpenAI API 兼容的接口。这意味着如果你之前使用过 OpenAI 的 API，可以很容易地将应用切换到使用通过 Xinference 部署的本地模型，只需修改 API 的基地址 (base URL) 和 API 密钥即可。 成本效益和数据隐私 (Cost-Effectiveness &amp;amp; Data Privacy): 通过在本地或私有云上部署模型，你可以更好地控制成本（相比于完全依赖商业 API），并且可以确保数据不离开你的控制范围，增强了数据隐私和安全性。 Web UI 管理界面: 提供了一个用户友好的 Web 界面，方便用户查看可用的模型、管理正在运行的模型实例以及进行简单的交互测试。 安装 # 安装 — Xinference</description>
@@ -835,10 +918,10 @@ Xinference 的主要作用和特点：
     
     <item>
       <title>yolo-world</title>
-      <link>https://chain-code.github.io/docs/python/ai/yolo-world/</link>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/yolo-world/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/python/ai/yolo-world/</guid>
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/yolo-world/</guid>
       <description>YOLO-World：实时开放词汇的目标检测 # 本文档旨在介绍 YOLO-World，一个前沿的实时开放词汇目标检测模型。我们将探讨其核心概念、设计架构、关键用途，并将其与传统的 YOLO 模型进行对比，阐述其创新之处和优势。
 1. 引言：什么是 YOLO-World？ # YOLO-World 是一个革命性的目标检测系统，它将强大的 YOLO 实时检测框架与开放词汇（Open-Vocabulary） 能力相结合。这意味着 YOLO-World 不再局限于预先训练时定义好的固定类别集，而是能够根据用户在推理时提供的 任意文本描述（词汇、短语） 来实时检测图像或视频中的相应目标。
 其核心突破在于，它利用大规模视觉-语言预训练的知识，让模型能够理解文本提示（prompts）与图像中视觉内容之间的关联，从而实现对“世界万物”的检测潜力，而无需针对每一个新类别都进行重新训练。
@@ -850,14 +933,23 @@ YOLO 检测器骨干（Backbone）： 采用高效的 YOLO 系列骨干网络（
     
     <item>
       <title>yolo底层原理</title>
-      <link>https://chain-code.github.io/docs/python/ai/yolo%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/</link>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/yolo%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/python/ai/yolo%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/</guid>
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/yolo%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/</guid>
       <description>目标检测-YOLO的基本原理详解
 YOLO原理与实现
 深入理解YOLO原理
 Yolov8原理详细解析</description>
+    </item>
+    
+    <item>
+      <title>yolo数据集</title>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/yolo%E6%95%B0%E6%8D%AE%E9%9B%86/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/yolo%E6%95%B0%E6%8D%AE%E9%9B%86/</guid>
+      <description>https://data.baai.ac.cn/data</description>
     </item>
     
     <item>
@@ -955,10 +1047,10 @@ ssh-keygen -t rsa -C &amp;#34;github邮箱地址&amp;#34; -f ~/.ssh/github_rsa 2
     
     <item>
       <title>图像增强介绍</title>
-      <link>https://chain-code.github.io/docs/python/ai/%E5%9B%BE%E5%83%8F%E5%A2%9E%E5%BC%BA%E4%BB%8B%E7%BB%8D/</link>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/%E5%9B%BE%E5%83%8F%E5%A2%9E%E5%BC%BA%E4%BB%8B%E7%BB%8D/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/python/ai/%E5%9B%BE%E5%83%8F%E5%A2%9E%E5%BC%BA%E4%BB%8B%E7%BB%8D/</guid>
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/%E5%9B%BE%E5%83%8F%E5%A2%9E%E5%BC%BA%E4%BB%8B%E7%BB%8D/</guid>
       <description>图像增强技术介绍 # 什么是图像增强？ # 图像增强 (Image Enhancement) 是指通过一系列图像处理技术，有选择性地突出图像中感兴趣的特征、抑制不必要的特征，或改善图像的视觉效果，使其更适合于人类观察或计算机分析。其目的不是试图恢复图像的原始信息（这更偏向于图像复原），而是改善图像的质量，使其在特定应用场景下更有用。
 常用的图像增强原理/类别：
 空间域增强 (Spatial Domain Enhancement): 直接对图像的像素值进行操作。 点操作 (Point Operations): 对单个像素进行处理，不考虑其邻域像素。常见的有： 灰度变换: 如对比度拉伸、亮度调整、伽马校正、直方图均衡化等。通过修改像素的灰度级来改善图像的对比度和动态范围。 伪彩色处理: 将灰度图像的不同灰度级映射为不同的颜色，以突出细节。 邻域操作 (Neighborhood Operations): 基于像素及其邻域像素的值进行处理。常见的有： 图像平滑 (Smoothing): 使用均值滤波、中值滤波、高斯滤波等去除噪声，模糊图像。 图像锐化 (Sharpening): 使用拉普拉斯算子、梯度算子（Sobel, Prewitt）等增强图像的边缘和细节，使图像更清晰。 频率域增强 (Frequency Domain Enhancement): 将图像变换到频率域（如傅里叶变换），对频率分量进行修改，然后再反变换回空间域。 低通滤波 (Low-pass Filtering): 衰减高频分量，保留低频分量，效果类似于空间域的平滑，可以去除噪声。 高通滤波 (High-pass Filtering): 衰减低频分量，保留高频分量，效果类似于空间域的锐化，可以增强边缘。 带通/带阻滤波: 保留或去除特定频率范围的分量。 同态滤波 (Homomorphic Filtering): 一种在频率域中同时压缩亮度范围和增强对比度的技术，常用于改善光照不均的图像。 基于深度学习的增强 (Deep Learning-based Enhancement): 利用深度神经网络（尤其是卷积神经网络 CNN、生成对抗网络 GAN、Transformer 等）学习从低质量图像到高质量图像的复杂映射关系。这是当前研究的热点和主流方向，在超分辨率、去噪、去模糊、去雨去雾、低光照增强等方面取得了突破性进展。 SwinIR 架构、超分原理及技术 # SwinIR 架构设计: SwinIR 将 Swin Transformer 成功应用于图像复原任务。其核心架构主要包括三个部分：</description>
@@ -966,10 +1058,10 @@ ssh-keygen -t rsa -C &amp;#34;github邮箱地址&amp;#34; -f ~/.ssh/github_rsa 2
     
     <item>
       <title>图像超分原理</title>
-      <link>https://chain-code.github.io/docs/python/ai/%E5%9B%BE%E5%83%8F%E8%B6%85%E5%88%86%E5%8E%9F%E7%90%86/</link>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/%E5%9B%BE%E5%83%8F%E8%B6%85%E5%88%86%E5%8E%9F%E7%90%86/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/python/ai/%E5%9B%BE%E5%83%8F%E8%B6%85%E5%88%86%E5%8E%9F%E7%90%86/</guid>
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/%E5%9B%BE%E5%83%8F%E8%B6%85%E5%88%86%E5%8E%9F%E7%90%86/</guid>
       <description>三分钟读懂《超分辨率技术》
 AIGC算法：GAN图像超分原理与实现
 图像超分辨率技术-简介
@@ -977,11 +1069,32 @@ AIGC算法：GAN图像超分原理与实现
     </item>
     
     <item>
-      <title>基础知识</title>
-      <link>https://chain-code.github.io/docs/python/ai/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</link>
+      <title>在CGO中集成和调用DLL文件</title>
+      <link>https://chain-code.github.io/docs/c/%E5%9C%A8cgo%E4%B8%AD%E9%9B%86%E6%88%90%E5%92%8C%E8%B0%83%E7%94%A8dll%E6%96%87%E4%BB%B6/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/python/ai/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</guid>
+      <guid>https://chain-code.github.io/docs/c/%E5%9C%A8cgo%E4%B8%AD%E9%9B%86%E6%88%90%E5%92%8C%E8%B0%83%E7%94%A8dll%E6%96%87%E4%BB%B6/</guid>
+      <description>前言 # CGO是Go语言中的一种机制，用于调用C代码或集成C库，它可以让我们通过Go程序直接使用C语言写的库文件（如.dll文件）。这种功能在需要利用已有的C库时非常有用，尤其是在Windows环境下的DLL文件调用。
+本文将围绕如何在CGO中集成和调用DLL文件，介绍相关步骤和注意事项。
+本文不会涉及到C动态库的内部实现，重点是使用CGO调用动态库的方法介绍
+不同类型C库的分发方式 # 要使用C库，首先需要对不同类型库的相关文件有一个基本认识，c库通常有以下两种类型
+静态库 头文件（*.h） 库文件（.lib/.a） 动态库 头文件（*.h） 库文件（.lib/.a）（这里的lib库是导入库类型，包含函数所在的DLL文件和文件中函数位置的信息，并没有具体的实现） 动态库（.dll/.so） 区分静态库和动态库 # 因为正常链接过程都是使用.lib或者.a的文件，在没有明确告知库类型的情况下，可能会不知道自己使用的是静态库还是动态库，因此需要一个方法来区分，以MSVC环境的为例
+使用lib命令行工具
+lib /list *库文件* 如果输出都是.obj目标文件，那么就是静态库，相反如果是.dll动态库，那么这个.lib文件就是动态库的导入库
+lib /list avp.lib
+CGO调用DLL动态库函数的方法 # 要使用CGO，需要确保Go编译器开启了cgo，可以用go env来检查，确保环境变量CGO_ENABLED=1（现在默认都是开启的，后面编译阶段如果出现问题可以排查一下是否是这个原因导致的）；以及需要配置好MingW的环境，这步不再赘述
+编译时链接动态库 # 编译时链接动态库是指在编译时通过#cgo LDFLAGS指定动态库，生成的可执行文件在运行时会自动依赖这些库。Go程序启动时会自动加载这些动态库，无需手动管理动态库的加载和函数的绑定。
+和静态库的链接方法一样，在LDFLAGS中指定库目录以及链接的库即可
+/* #cgo LDFLAGS: -L${SRCDIR}/../lib -lavp */ import &amp;#34;C&amp;#34; 后续使用就引入头文件，直接调用库函数即可
+/* #include &amp;lt;stdlib.h&amp;gt; #include &amp;#34;c_avp.h&amp;#34; */ import &amp;#34;C&amp;#34; func (meTool *MediaTool) cGetVideoInfo(cInputVideoPath *C.char, needDecodeData C.bool) (result string) { // c_get_video_properties接口 在c_avp.h中声明 result = C.GoString(C.c_get_video_properties(cInputImagePath, needDecodeData)) return } 这种方案的优缺点：</description>
+    </item>
+    
+    <item>
+      <title>基础知识</title>
+      <link>https://chain-code.github.io/docs/ai/basic/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/basic/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</guid>
       <description>NumPy 数组 (numpy.ndarray) # 是什么？
 NumPy (Numerical Python) 是 Python 语言的一个核心库，专门用于进行科学计算，特别是处理大型多维数组和矩阵。 NumPy 最核心的对象是 ndarray（N-dimensional array），它是一个同质（所有元素类型相同，如全是整数或全是浮点数）的多维数组。你可以把它想象成一个灵活的、强大的网格结构，可以是一维（向量）、二维（矩阵）、三维（立方体）甚至更高维度。 为什么重要？
 性能： NumPy 底层是用 C 语言实现的，其数组操作（如数学运算、索引、切片）比 Python 内置的列表（list）快得多，尤其是处理大量数据时。这是因为它利用了向量化操作，避免了 Python 级别的循环。 内存效率： NumPy 数组在内存中是连续存储的（通常情况下），这使得访问和操作更加高效。 功能丰富： 提供了大量的数学函数（线性代gebra、傅里叶变换、随机数生成等）来操作这些数组。 生态基础： NumPy 是许多其他 Python 科学计算库（如 SciPy、Pandas、Scikit-learn、Matplotlib）的基础。很多库的输入输出都接受或返回 NumPy 数组。 关键特性：
@@ -1028,10 +1141,10 @@ Get 方法会返回 Pool 已经存在的对象，如果没有，那么就走慢�
     
     <item>
       <title>开发实例</title>
-      <link>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B/</link>
+      <link>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B-%E5%89%AF%E6%9C%AC/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B/</guid>
+      <guid>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B-%E5%89%AF%E6%9C%AC/</guid>
       <description>继续执行主线程 # from concurrent.futures import ThreadPoolExecutor # 使用 ThreadPoolExecutor 创建线程池 executor = ThreadPoolExecutor(max_workers=len(models) + 1) # 提交生产者任务到线程池 executor.submit( DetectionService._producer_frames, read_data, mode, interval_seconds, start_time, end_time, queue_manager ) # 提交消费者任务到线程池 for key, value in CV_MODEL.items(): with queue_manager.lock: q = queue_manager.queues.get(key) executor.submit( DetectionService._consumer_frames, q, mode, diff, name, key, value ) 主线程等待 # from concurrent.futures import ThreadPoolExecutor # 使用 ThreadPoolExecutor 创建线程池，并设置最大工作线程数为 4 with ThreadPoolExecutor(max_workers=4) as executor: # 提交生产者任务到线程池 executor.submit( DetectionService._producer_frames, read_data, mode, interval_seconds, start_time, end_time, queue_manager ) # 提交消费者任务到线程池 for key, value in CV_MODEL.</description>
     </item>
     
@@ -1089,15 +1202,6 @@ Get 方法会返回 Pool 已经存在的对象，如果没有，那么就走慢�
     </item>
     
     <item>
-      <title>数据集</title>
-      <link>https://chain-code.github.io/docs/python/ai/%E6%95%B0%E6%8D%AE%E9%9B%86/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://chain-code.github.io/docs/python/ai/%E6%95%B0%E6%8D%AE%E9%9B%86/</guid>
-      <description>https://data.baai.ac.cn/data</description>
-    </item>
-    
-    <item>
       <title>正则表达式</title>
       <link>https://chain-code.github.io/docs/python/package/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -1128,10 +1232,10 @@ s = r&amp;#39;ABC\-001&amp;#39; # Python的字符串 # 对应的正则表达式�
     
     <item>
       <title>相关工具库</title>
-      <link>https://chain-code.github.io/docs/python/ai/%E7%9B%B8%E5%85%B3%E5%B7%A5%E5%85%B7%E5%BA%93/</link>
+      <link>https://chain-code.github.io/docs/ai/basic/%E7%9B%B8%E5%85%B3%E5%B7%A5%E5%85%B7%E5%BA%93/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/python/ai/%E7%9B%B8%E5%85%B3%E5%B7%A5%E5%85%B7%E5%BA%93/</guid>
+      <guid>https://chain-code.github.io/docs/ai/basic/%E7%9B%B8%E5%85%B3%E5%B7%A5%E5%85%B7%E5%BA%93/</guid>
       <description>工具集合库 # Awesome DeepSeek Integrations</description>
     </item>
     
@@ -1149,10 +1253,10 @@ s = r&amp;#39;ABC\-001&amp;#39; # Python的字符串 # 对应的正则表达式�
     
     <item>
       <title>视频超分</title>
-      <link>https://chain-code.github.io/docs/python/ai/%E8%A7%86%E9%A2%91%E8%B6%85%E5%88%86/</link>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/%E8%A7%86%E9%A2%91%E8%B6%85%E5%88%86/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/python/ai/%E8%A7%86%E9%A2%91%E8%B6%85%E5%88%86/</guid>
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/%E8%A7%86%E9%A2%91%E8%B6%85%E5%88%86/</guid>
       <description>https://github.com/xinntao/ESRGAN?tab=readme-ov-file
 主打动漫类，最新代码7年前提交的，淘汰
 https://github.com/xinntao/Real-ESRGAN?tab=readme-ov-file#online-inference ****
@@ -1221,6 +1325,15 @@ A类IP段 0.0.0.0 到 127.255.255.255 即首位为‘0’的IP地址。 B类IP�
 greeter-session=ukui-greeteruser-session=ukuigreeter-setup-script=/usr/lib/ukui-greeter/ukui-greeter-nm-start.sh# ↓↓↓↓追加的内容↓↓↓↓allow-guest=falsegreeter-show-manual-login=true# ↑↑↑↑追加的内容↑↑↑↑ 开机自动登录到“root” # sudo vim /etc/lightdm/lightdm.conf lightdm.conf
 [SeatDefaults]autologin-guest=false# ↓↓↓↓修改的内容↓↓↓↓autologin-user=root# ↑↑↑↑修改的内容↑↑↑↑autologin-user-timeout=0 关闭“麒麟安全授权认证” # sudo vim /etc/default/grub grub
 # ...GRUB_DEFAULT=0GRUB_TIMEOUT=5GRUB_DISTRIBUTOR=`lsb_release -i -s 2&amp;gt; /dev/null || echo Debian`GRUB_DISTRIBUTOR_RELEASE=`lsb_release -d -s | awk -F&amp;#34; &amp;#34; &amp;#39;{print $2 &amp;#34; &amp;#34; $3}&amp;#39; 2&amp;gt; /dev/null || echo &amp;#34;&amp;#34;`GRUB_CMDLINE_LINUX_DEFAULT=&amp;#34;quiet splash&amp;#34;GRUB_CMDLINE_LINUX=&amp;#34;&amp;#34;# ↓↓↓↓修改的内容↓↓↓↓# GRUB_CMDLINE_LINUX_SECURITY=&amp;#34;audit=0 security=kysec&amp;#34;GRUB_CMDLINE_LINUX_SECURITY=&amp;#34;audit=0 security=&amp;#34;# ↑↑↑↑修改的内容↑↑↑↑# .</description>
+    </item>
+    
+    <item>
+      <title>项目收藏</title>
+      <link>https://chain-code.github.io/docs/ai/basic/%E9%A1%B9%E7%9B%AE%E6%94%B6%E8%97%8F/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/basic/%E9%A1%B9%E7%9B%AE%E6%94%B6%E8%97%8F/</guid>
+      <description>https://github.com/Yuliang-Liu/MonkeyOCR</description>
     </item>
     
     <item>
@@ -1782,6 +1895,26 @@ s := []int{5, 2, 6, 3, 1, 4} // 未排序的切片数据sort.Ints(s) //排序�
       <description>strings.Split # func Split(s, sep string) []string strings.Split 函数用于通过指定的分隔符切割字符串，并返回切割后的字符串切片。
 func main() {fmtPrintln(stringsSplit(&amp;#34;Linux, Unix, Windows, Android&amp;#34;, &amp;#34;, &amp;#34;))fmtPrintln(stringsSplit(&amp;#34; Linux is very very very good! &amp;#34;, &amp;#34; &amp;#34;))}输出：返回的是字符串数组。[Linux Unix Windows Android][ Linux is very very very good! ] strings.Split(s, sep)1s：待分割的字符串（字符串类型的参数）sep：分隔符 （字符串类型的参数）返回值：返回一个字符串切片。 strings.Join # func Join(elems []string, sep string) string 作用：使用 sep 作为分隔符，将elems 中的所有字符连接起来：
 func main() { elems := []string{&amp;#34;I&amp;#34;, &amp;#34;like&amp;#34;, &amp;#34;golang&amp;#34;, &amp;#34;!</description>
+    </item>
+    
+    <item>
+      <title>fts</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/fts/</link>
+      <pubDate>Sun, 30 Apr 2023 16:16:50 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/fts/</guid>
+      <description>Fts # fts是sqlite的一个支持全文检索的扩展模块，是个五脏俱全的全文搜索引擎
+拼音数据的来源是 https://github.com/mozillazg/pinyin-data
+项目地址：https://github.com/wangfenjin/simple
+以GO为例，其他语言的操作方式可能不一样，但理论是通用的。sqlite的fts5模块默认是不开启的，在编译时要加上fts5编译标签。
+假如原表名是 student_info 其中有 id name age addr 四个字段
+需要作为搜索目标的字段是 name addr
+需要搜索出的字段有 name age addr
+下载 # 从发布页面下载预编译的链接库或自己编译，用预编译的版本方便快速测试，实际发布时要测一下目标平台是否表现正常。 比如我们遇到的预编译版在win7上缺少依赖库，在debian10上glibc版本过低，需要自己编译。
+发布页地址：https://github.com/wangfenjin/simple/releases
+注册驱动 # sql.Register( &amp;#34;sqlite3_simple&amp;#34;, &amp;amp;sqlite3.SQLiteDriver{ Extensions: []string{ &amp;#34;simple.dll&amp;#34;, }, }, ) 在打开数据库时选择上面注册的驱动
+db, err := gorm.Open(sqlite.Dialector{ DriverName: &amp;#34;sqlite3_simple&amp;#34;, DSN: &amp;#34;test_fts5.db&amp;#34;, }) 创建fts5虚拟表 # 虚拟表是fts5需要的 具体如何操作自行查阅fts5文档，关键点是通过tokenize=&amp;quot;simple&amp;quot;指定分词器。 文档地址:https://www.sqlite.org/fts5.html
+CREATE VIRTUAL TABLE IF NOT EXISTS student_info_fts USING fts5( name, -- 需要分词搜索的字段 addr, -- 需要分词搜索的字段 age UNINDEXED, -- 无需分词的字段 避免回表 content=student_info, -- 原表名 content_rowid=id, -- 原表id tokenize=&amp;#34;simple&amp;#34; -- 使用simple分词器 ) 创建触发器 # 通过触发器来同步修改索引表是推荐的方案，如果表的更新频次比较高，应该使用定时同步刷新的机制，而不是触发器。</description>
     </item>
     
     <item>
@@ -2801,6 +2934,66 @@ npm i hexo-theme-butterfly 三 在hexo工作文件夹的根配置文件_config.<
     
     <item>
       <title></title>
+      <link>https://chain-code.github.io/docs/ai/basic/ai%E7%9F%A5%E8%AF%86%E6%99%AE%E5%8F%8A/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/basic/ai%E7%9F%A5%E8%AF%86%E6%99%AE%E5%8F%8A/</guid>
+      <description>title: &amp;#34;AI知识普及&amp;#34; weight: 1 # bookFlatSection: false # bookToc: true # bookHidden: false # bookCollapseSection: false # bookComments: false # bookSearchExclude: false AI的起源 # 人工神经网络的萌芽（1950年代） # 人工智能概念的提出后，发展出了符号主义、联结主义(神经网络)，相继取得了一批令人瞩目的研究成果，如机器定理证明、跳棋程序、人机对话等，掀起人工智能发展的第一个高潮。
+1943年：首次出现神经网络理论。 1957年：首个人工神经网络模型“感知器”被提出。 停滞期开始（1960年代-1980年代） # 人工智能发展初期的突破性进展大大提升了人们对人工智能的期望，人们开始尝试更具挑战性的任务，然而计算力及理论等的匮乏使得不切实际目标的落空，人工智能的发展走入低谷。
+1969年：提出“感知器”的局限性。 1986年：提出多层感知器理论。 人工神经网络的复苏（1990年代-2000年代） # 人工智能走入应用发展的新高潮。专家系统模拟人类专家的知识和经验解决特定领域的问题，实现了人工智能从理论研究走向实际应用、从一般推理策略探讨转向运用专门知识的重大突破。而机器学习(特别是神经网络)探索不同的学习策略和各种学习方法，在大量的实际应用中也开始慢慢复苏。
+2006年：提出深度信念网络结构。 人工智能的平稳发展（20世纪90年代—2010年） # 由于互联网技术的迅速发展，加速了人工智能的创新研究，促使人工智能技术进一步走向实用化，人工智能相关的各个领域都取得长足进步。在2000年代初，由于专家系统的项目都需要编码太多的显式规则，这降低了效率并增加了成本，人工智能研究的重心从基于知识系统转向了机器学习方向。
+深度学习的发展（2010年代-2020年代） # 随着大数据、云计算、互联网、物联网等信息技术的发展，泛在感知数据和图形处理器等计算平台推动以深度神经网络为代表的人工智能技术飞速发展，大幅跨越了科学与应用之间的技术鸿沟，诸如图像分类、语音识别、知识问答、人机对弈、无人驾驶等人工智能技术实现了重大的技术突破，迎来爆发式增长的新高潮。
+2012年：AlexNet在ILSVRC竞赛中夺冠，标志着深度学习的突破。 2016年：阿尔法围棋（AlphaGo）赢得围棋比赛，展示了深度学习的强大能力。 生成式人工智能热潮的开始（2020年代至今） # 2022年，生成式人工智能（Generative AI）迎来了突破性进展，特别是在自然语言处理、图像生成、代码生成等领域取得显著成果。以OpenAI发布的GPT-3、GPT-4为代表的大型语言模型，能够生成与人类语言高度相似的文本内容，广泛应用于自动写作、对话系统、文本摘要等场景。同时，扩散模型（Diffusion Model）在图像生成领域崭露头角，能够生成高度逼真的图像和多模态内容，推动了艺术创作、虚拟现实、游戏设计等行业的变革。生成式人工智能的崛起标志着人工智能进入一个更加智能化、创意化、个性化的新阶段，正在深刻影响各行各业的发展。
+人工智能，机器学习，深度学习等范围和概念 # 神经网络 # 神经网络(Artificial Neural Networks)：人工神经网络的简称， 是一种应用类似于大脑神经突触联接的结构或网络，进行信息处理的数学模型 。神经网络是一门重要机器学习技术，它是目前最火热的研究方向—深度学习之基础。
+神经元 一个神经元通常具有多个树突，主要用来接受传入信息；而轴突只有一条，轴突尾端有许多轴突末梢可以给其他多个神经元传递信息。轴突末梢跟其他神经元的树突产生连接，从而传递信号。这个连接的位置在生物学上叫做“突触”。
+单层神经网络数学模型 1943年，心理学家McCulloch和数学家Pitts参考了生物神经元的结构，发表了抽象的神经元模型MP，神经元模型是一个包含输入，输出与计算功能的模型。输入可以类比为神经元的树突，而输出可以类比为神经元的轴突，计算则可以类比为细胞核。具体的神经元模型如下图所示：
+一个简单神经元模型中每一个有向箭头线称为 连接 ；每一个连接上有一个值，称为权值或权重。连接是神经元中最重要的东西。每一个连接上都有一个权重。一个神经网络的训练算法就是让权重的值调整到最佳，以使得整个网络的预测效果最好。
+深度神经网络架构 深度神经网络又名深度学习网络，拥有多个隐藏层，包含数百万个链接在一起的人工神经元。名为权重的数字代表节点之间的连接。如果节点之间相互激励，则该权重为正值，如果节点之间相互压制，则该权重为负值。节点的权重值越高，对其他节点的影响力就越大。
+代码示例 # 通过简单的神经网络来拟合二元一次方程</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/</guid>
+      <description>title: &amp;#34;YOLOv8快速上手+实践&amp;#34; weight: 2 # bookFlatSection: false # bookToc: true # bookHidden: false # bookCollapseSection: false # bookComments: false # bookSearchExclude: false YOLOv8快速上手+实践 # 前言 # 本文旨在快速上手并不涉及细致的训练超参数调优和YOLO源码层面的解析。
+YOLOv8是YOLO家族中流行的实时目标检测系统，以其快速、准确和高效的特性在计算机视觉领域中广泛应用（目前YOLO的发展很快，YOLOv10就在前不久也已经正式发布）。本文将详细介绍如何在NVIDIA GPU环境下部署YOLOv8，从环境配置、库安装，到模型训练和应用的全流程操作，并在其中结合实际的火焰特征识别的实践。
+环境部署（N卡） # 需要提前准备好要使用的Python环境，此步骤不再赘述
+安装和配置CUDA # 前往nvidia的开发者网站，选择下载CUDA toolkit
+先检查一下本地环境显卡驱动支持的最高CUDA版本，查看的CUDA toolkit 版本不能高于显卡驱动支持的最高版本
+方式一：打开N卡的控制面板，在系统信息的组件里
+方式二：使用命令nvidia-smi查看CUDA版本
+其次建议要下载前先确认下准备使用的Pytorch版本，尽量CUDA toolkit的版本和Pytorch支持的保持一致，起码不能使用低版本
+最新版的CUDA：https://developer.nvidia.com/cuda-downloads 历史版本：https://developer.nvidia.com/cuda-toolkit-archive 跟着安装程序走即可，最后检查一下安装是否成功：
+nvcc --version 成功输出版本信息即为成功
+【可选】下载&amp;amp;安装CUDNN库 # cuDNN 是用于深度神经网络的 GPU 加速库
+继续回到之前的N卡开发者网站上，需要注册登录后才能下载
+最新版本：https://developer.nvidia.com/cudnn 历史版本：https://developer.nvidia.com/rdp/cudnn-archive 下载的版本也需要和CUDA的大版本一一对应
+下载下来的CUDNN库包括bin、include和lib目录，将目录下对应的所有文件复制到之前CUDA toolkit
+的安装目录下即可
+安装PyTorch # 官网：https://pytorch.org/get-started/locally/
+选择自己环境的配置项，复制pip或者conda的命令来安装即可
+pip3 install torch torchvision torchaudio --index-url https://download.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://chain-code.github.io/docs/ai/generative-ai/%E5%88%A9%E7%94%A8dspy%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90prompt/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/generative-ai/%E5%88%A9%E7%94%A8dspy%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90prompt/</guid>
+      <description>title: &amp;#34;利用DSPy自动生成Prompt&amp;#34; weight: 1 # bookFlatSection: false # bookToc: true # bookHidden: false # bookCollapseSection: false # bookComments: false # bookSearchExclude: false 什么是DSPy # 这里直接引用文章 DSPy 入门： 再见提示，你好编程 中的介绍，详细内容请看原文
+DSPy（&amp;ldquo;Declarative Self-improving Language Programs (in Python)&amp;quot;，发音为 &amp;ldquo;dee-es-pie&amp;rdquo;）是斯坦福大学 NLP 研究人员开发的 &amp;ldquo;基础模型编程 &amp;ldquo;框架。它强调编程而非提示，并将构建基于 LM 的管道从操作提示转向编程。因此，它旨在解决构建基于 LM 应用程序时的脆弱性问题。
+DSPy Github
+可以参考官方Github先安装一下
+数据准备 # 我利用豆包生成了一部分数据
+[ { &amp;#34;query&amp;#34;: &amp;#34;腾讯2021年和2022年分别盈利多少？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;腾讯2021年盈利多少？&amp;#34;, &amp;#34;腾讯2022年盈利多少？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;苹果公司和微软公司哪个市值更高？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;苹果公司的市值是多少？&amp;#34;, &amp;#34;微软公司的市值是多少？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;为什么电动汽车越来越受欢迎？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;电动汽车的市场份额如何变化？&amp;#34;, &amp;#34;电动汽车有哪些优势？&amp;#34;, &amp;#34;政策和基础设施如何支持电动汽车发展？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;什么是机器学习？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;机器学习的定义是什么？&amp;#34;, &amp;#34;机器学习有哪些主要类型？&amp;#34;, &amp;#34;机器学习的应用领域有哪些？&amp;#34;, &amp;#34;机器学习与人工智能的关系是什么？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;如何制定一个有效的健身计划？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;制定健身计划前需要评估哪些身体指标？&amp;#34;, &amp;#34;健身目标有哪些类型？&amp;#34;, &amp;#34;如何根据目标选择适合的训练方式？&amp;#34;, &amp;#34;如何安排训练频率和强度？&amp;#34;, &amp;#34;如何制定合理的饮食计划？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;华为、苹果和三星在智能手机市场的份额分别是多少？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;华为在智能手机市场的份额是多少？&amp;#34;, &amp;#34;苹果在智能手机市场的份额是多少？&amp;#34;, &amp;#34;三星在智能手机市场的份额是多少？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;2023年全球票房最高的电影是哪部，它的导演是谁，票房收入是多少？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;2023年全球票房排名如何？&amp;#34;, &amp;#34;2023年全球票房最高的电影是哪部？&amp;#34;, &amp;#34;这部电影的导演是谁？&amp;#34;, &amp;#34;这部电影的全球票房收入是多少？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;世界上最高的三座山峰分别是什么，它们的海拔高度是多少，位于哪个国家或地区？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;世界上海拔最高的山峰有哪些？&amp;#34;, &amp;#34;世界上最高的三座山峰分别是什么？&amp;#34;, &amp;#34;这三座山峰的海拔高度分别是多少？&amp;#34;, &amp;#34;这三座山峰分别位于哪个国家或地区？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;如果一个正方形的边长增加20%，那么它的面积会增加多少百分比？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;正方形的面积公式是什么？&amp;#34;, &amp;#34;边长增加20%后新的边长是多少？&amp;#34;, &amp;#34;新的面积是多少？&amp;#34;, &amp;#34;面积增加的百分比如何计算？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;请列出所有位于北半球、人口超过1000万且属于发达国家的城市。&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;如何确定城市是否位于北半球？&amp;#34;, &amp;#34;哪些城市的人口超过1000万？&amp;#34;, &amp;#34;如何定义发达国家？&amp;#34;, &amp;#34;如何筛选同时满足这三个条件的城市？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;从经济学和环境科学的角度分析，推广电动汽车对减少碳排放和促进经济发展有哪些影响？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;电动汽车如何减少碳排放？&amp;#34;, &amp;#34;推广电动汽车的经济成本和效益是什么？&amp;#34;, &amp;#34;电动汽车产业对经济发展有哪些促进作用？&amp;#34;, &amp;#34;如何平衡环保目标和经济发展需求？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;企业在决定是否推出新产品时，应该考虑哪些因素？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;市场需求和竞争情况如何？&amp;#34;, &amp;#34;新产品的研发成本和生产难度如何？&amp;#34;, &amp;#34;新产品的营销策略和渠道有哪些？&amp;#34;, &amp;#34;新产品的潜在风险和回报如何？&amp;#34;, &amp;#34;企业的资源和能力是否支持新产品的推出？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;分析某城市过去十年的人口变化情况，并预测未来五年的人口趋势。&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;如何获取该城市过去十年的人口数据？&amp;#34;, &amp;#34;人口变化的主要原因是什么？&amp;#34;, &amp;#34;如何分析人口增长或减少的趋势？&amp;#34;, &amp;#34;有哪些因素可能影响未来人口趋势？&amp;#34;, &amp;#34;如何建立人口预测模型？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;解释为什么植物需要阳光进行光合作用。&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;什么是光合作用？&amp;#34;, &amp;#34;阳光在光合作用中的作用是什么？&amp;#34;, &amp;#34;光合作用的化学过程是什么？&amp;#34;, &amp;#34;植物如何捕获和利用光能？&amp;#34;, &amp;#34;光合作用对植物生长和生存的重要性是什么？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;为什么越来越多的年轻人选择独居生活？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;独居生活的定义是什么？&amp;#34;, &amp;#34;独居生活在年轻人中的流行趋势如何？&amp;#34;, &amp;#34;经济因素如何影响年轻人的居住选择？&amp;#34;, &amp;#34;社会观念和价值观的变化如何影响独居现象？&amp;#34;, &amp;#34;独居生活对个人和社会有哪些影响？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;如何设计一个吸引人的用户界面？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;用户界面设计的基本原则有哪些？&amp;#34;, &amp;#34;如何了解目标用户的需求和偏好？&amp;#34;, &amp;#34;如何选择合适的颜色、字体和布局？&amp;#34;, &amp;#34;如何设计直观的导航和交互元素？&amp;#34;, &amp;#34;如何测试和优化用户界面设计？&amp;#34; ] } ] 数据读取 # import dspy with open(&amp;#34;test.</description>
+    </item>
+    
+    <item>
+      <title></title>
       <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/go%E5%AE%89%E5%85%A8%E6%8C%87%E5%8D%97/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
@@ -2822,32 +3015,6 @@ docker 命令 # sudo netstat -antup | grep docker 显示当前系统上与 Docke
       <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB%E5%90%88%E9%9B%86/</guid>
       <description>title: &amp;#34;经验分享合集&amp;#34;weight: 1# bookFlatSection: false# bookToc: true# bookHidden: false# bookCollapseSection: false# bookComments: false# bookSearchExclude: false [TOC]
 Go部分 # xorm # 若使用纯 go 版本的 sqlite 驱动 github.com/glebarez/go-sqlite 需要注意 xorm 默认的驱动没有 sqlite 类型，需要手动 RegisterDriver ，示例如下： package main import ( &amp;#34;fmt&amp;#34; _ &amp;#34;github.com/glebarez/go-sqlite&amp;#34; &amp;#34;github.com/go-xorm/xorm&amp;#34; &amp;#34;strings&amp;#34; &amp;#34;xorm.io/core&amp;#34; ) type sqlite3Driver struct {} func (p *sqlite3Driver) Parse(driverName, dataSourceName string) (*core.Uri, error) { if strings.Contains(dataSourceName, &amp;#34;?&amp;#34;) { dataSourceName = dataSourceName[:strings.</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://chain-code.github.io/docs/python/ai/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://chain-code.github.io/docs/python/ai/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/</guid>
-      <description>title: &amp;#34;YOLOv8快速上手+实践&amp;#34; weight: 2 # bookFlatSection: false # bookToc: true # bookHidden: false # bookCollapseSection: false # bookComments: false # bookSearchExclude: false YOLOv8快速上手+实践 # 前言 # 本文旨在快速上手并不涉及细致的训练超参数调优和YOLO源码层面的解析。
-YOLOv8是YOLO家族中流行的实时目标检测系统，以其快速、准确和高效的特性在计算机视觉领域中广泛应用（目前YOLO的发展很快，YOLOv10就在前不久也已经正式发布）。本文将详细介绍如何在NVIDIA GPU环境下部署YOLOv8，从环境配置、库安装，到模型训练和应用的全流程操作，并在其中结合实际的火焰特征识别的实践。
-环境部署（N卡） # 需要提前准备好要使用的Python环境，此步骤不再赘述
-安装和配置CUDA # 前往nvidia的开发者网站，选择下载CUDA toolkit
-先检查一下本地环境显卡驱动支持的最高CUDA版本，查看的CUDA toolkit 版本不能高于显卡驱动支持的最高版本
-方式一：打开N卡的控制面板，在系统信息的组件里
-方式二：使用命令nvidia-smi查看CUDA版本
-其次建议要下载前先确认下准备使用的Pytorch版本，尽量CUDA toolkit的版本和Pytorch支持的保持一致，起码不能使用低版本
-最新版的CUDA：https://developer.nvidia.com/cuda-downloads 历史版本：https://developer.nvidia.com/cuda-toolkit-archive 跟着安装程序走即可，最后检查一下安装是否成功：
-nvcc --version 成功输出版本信息即为成功
-【可选】下载&amp;amp;安装CUDNN库 # cuDNN 是用于深度神经网络的 GPU 加速库
-继续回到之前的N卡开发者网站上，需要注册登录后才能下载
-最新版本：https://developer.nvidia.com/cudnn 历史版本：https://developer.nvidia.com/rdp/cudnn-archive 下载的版本也需要和CUDA的大版本一一对应
-下载下来的CUDNN库包括bin、include和lib目录，将目录下对应的所有文件复制到之前CUDA toolkit
-的安装目录下即可
-安装PyTorch # 官网：https://pytorch.org/get-started/locally/
-选择自己环境的配置项，复制pip或者conda的命令来安装即可
-pip3 install torch torchvision torchaudio --index-url https://download.</description>
     </item>
     
     <item>

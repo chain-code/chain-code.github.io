@@ -49,6 +49,8 @@
   </url><url>
     <loc>https://chain-code.github.io/docs/python/package/argparse/</loc>
   </url><url>
+    <loc>https://chain-code.github.io/docs/ai/basic/</loc>
+  </url><url>
     <loc>https://chain-code.github.io/docs/c/c&#43;&#43;%E9%83%A8%E7%BD%B2paddleocr/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/c/cgo/</loc>
@@ -59,7 +61,11 @@
   </url><url>
     <loc>https://chain-code.github.io/docs/python/package/collections/</loc>
   </url><url>
+    <loc>https://chain-code.github.io/docs/ai/computer-vision/</loc>
+  </url><url>
     <loc>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/crontab%E4%BD%BF%E7%94%A8/</loc>
+  </url><url>
+    <loc>https://chain-code.github.io/docs/ai/basic/cursor%E7%BB%AD%E6%9D%AF/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/python/package/detetime/</loc>
   </url><url>
@@ -67,7 +73,11 @@
   </url><url>
     <loc>https://chain-code.github.io/docs/golang/package/flag/</loc>
   </url><url>
+    <loc>https://chain-code.github.io/docs/ai/generative-ai/</loc>
+  </url><url>
     <loc>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/gin%E5%8F%82%E6%95%B0%E7%BB%91%E5%AE%9A/</loc>
+  </url><url>
+    <loc>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/go-%E4%B8%AD%E4%BD%BF%E7%94%A8-sync.pool-%E6%97%B6%E5%8F%AF%E8%83%BD%E9%81%87%E5%88%B0%E7%9A%84%E9%99%B7%E9%98%B1/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/golangci-lint/</loc>
   </url><url>
@@ -89,13 +99,15 @@
   </url><url>
     <loc>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/localhost%E4%B8%8E127.0.0.1/</loc>
   </url><url>
+    <loc>https://chain-code.github.io/docs/ai/basic/mcp%E6%9C%8D%E5%8A%A1/</loc>
+  </url><url>
     <loc>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mongodb%E5%AE%89%E8%A3%85/</loc>
   </url><url>
-    <loc>https://chain-code.github.io/docs/python/ai/ocr%E8%AF%86%E5%88%AB/</loc>
+    <loc>https://chain-code.github.io/docs/ai/computer-vision/ocr%E8%AF%86%E5%88%AB/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/python/package/opencv/</loc>
   </url><url>
-    <loc>https://chain-code.github.io/docs/python/ai/opencv_cuda%E7%BC%96%E8%AF%91/</loc>
+    <loc>https://chain-code.github.io/docs/ai/basic/opencv_cuda%E7%BC%96%E8%AF%91/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/panic/</loc>
   </url><url>
@@ -103,13 +115,19 @@
   </url><url>
     <loc>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/</loc>
   </url><url>
+    <loc>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/python%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E6%8E%92%E6%9F%A5%E6%96%B9%E6%B3%95/</loc>
+  </url><url>
     <loc>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/python%E5%9F%BA%E7%A1%80/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/python%E5%AE%89%E8%A3%85/</loc>
   </url><url>
-    <loc>https://chain-code.github.io/docs/python/ai/pytorch%E9%A3%9F%E8%B0%B1/</loc>
+    <loc>https://chain-code.github.io/docs/ai/basic/pytorch%E9%A3%9F%E8%B0%B1/</loc>
   </url><url>
-    <loc>https://chain-code.github.io/docs/python/ai/qwen2.5-vl%E9%83%A8%E7%BD%B2/</loc>
+    <loc>https://chain-code.github.io/docs/ai/generative-ai/qwen2.5-vl%E6%BA%90%E7%A0%81%E9%83%A8%E7%BD%B2/</loc>
+  </url><url>
+    <loc>https://chain-code.github.io/docs/ai/computer-vision/reid%E6%95%B0%E6%8D%AE%E9%9B%86/</loc>
+  </url><url>
+    <loc>https://chain-code.github.io/docs/ai/computer-vision/reid%E8%A1%8C%E4%BA%BA%E9%87%8D%E8%AF%86%E5%88%AB/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/restfulapi/</loc>
   </url><url>
@@ -119,7 +137,7 @@
   </url><url>
     <loc>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/swagger/</loc>
   </url><url>
-    <loc>https://chain-code.github.io/docs/python/ai/trae%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/</loc>
+    <loc>https://chain-code.github.io/docs/ai/basic/trae%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97%E5%88%86%E4%BA%AB/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/url/</loc>
   </url><url>
@@ -129,11 +147,13 @@
   </url><url>
     <loc>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</loc>
   </url><url>
-    <loc>https://chain-code.github.io/docs/python/ai/xinference%E5%9F%BA%E7%A1%80/</loc>
+    <loc>https://chain-code.github.io/docs/ai/generative-ai/xinference%E5%9F%BA%E7%A1%80/</loc>
   </url><url>
-    <loc>https://chain-code.github.io/docs/python/ai/yolo-world/</loc>
+    <loc>https://chain-code.github.io/docs/ai/computer-vision/yolo-world/</loc>
   </url><url>
-    <loc>https://chain-code.github.io/docs/python/ai/yolo%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/</loc>
+    <loc>https://chain-code.github.io/docs/ai/computer-vision/yolo%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/</loc>
+  </url><url>
+    <loc>https://chain-code.github.io/docs/ai/computer-vision/yolo%E6%95%B0%E6%8D%AE%E9%9B%86/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/</loc>
   </url><url>
@@ -147,13 +167,15 @@
   </url><url>
     <loc>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8github%E5%92%8Cgitlab/</loc>
   </url><url>
-    <loc>https://chain-code.github.io/docs/python/ai/%E5%9B%BE%E5%83%8F%E5%A2%9E%E5%BC%BA%E4%BB%8B%E7%BB%8D/</loc>
+    <loc>https://chain-code.github.io/docs/ai/computer-vision/%E5%9B%BE%E5%83%8F%E5%A2%9E%E5%BC%BA%E4%BB%8B%E7%BB%8D/</loc>
   </url><url>
-    <loc>https://chain-code.github.io/docs/python/ai/%E5%9B%BE%E5%83%8F%E8%B6%85%E5%88%86%E5%8E%9F%E7%90%86/</loc>
+    <loc>https://chain-code.github.io/docs/ai/computer-vision/%E5%9B%BE%E5%83%8F%E8%B6%85%E5%88%86%E5%8E%9F%E7%90%86/</loc>
+  </url><url>
+    <loc>https://chain-code.github.io/docs/c/%E5%9C%A8cgo%E4%B8%AD%E9%9B%86%E6%88%90%E5%92%8C%E8%B0%83%E7%94%A8dll%E6%96%87%E4%BB%B6/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/</loc>
   </url><url>
-    <loc>https://chain-code.github.io/docs/python/ai/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</loc>
+    <loc>https://chain-code.github.io/docs/ai/basic/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/io.copy/</loc>
   </url><url>
@@ -161,25 +183,25 @@
   </url><url>
     <loc>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</loc>
   </url><url>
-    <loc>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B/</loc>
+    <loc>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B-%E5%89%AF%E6%9C%AC/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A7%84%E8%8C%83%E5%8C%96/</loc>
   </url><url>
-    <loc>https://chain-code.github.io/docs/python/ai/%E6%95%B0%E6%8D%AE%E9%9B%86/</loc>
-  </url><url>
     <loc>https://chain-code.github.io/docs/python/package/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</loc>
   </url><url>
-    <loc>https://chain-code.github.io/docs/python/ai/%E7%9B%B8%E5%85%B3%E5%B7%A5%E5%85%B7%E5%BA%93/</loc>
+    <loc>https://chain-code.github.io/docs/ai/basic/%E7%9B%B8%E5%85%B3%E5%B7%A5%E5%85%B7%E5%BA%93/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E8%8E%B7%E5%8F%96%E5%86%85%E7%BD%91%E6%B4%BB%E8%B7%83ip/</loc>
   </url><url>
-    <loc>https://chain-code.github.io/docs/python/ai/%E8%A7%86%E9%A2%91%E8%B6%85%E5%88%86/</loc>
+    <loc>https://chain-code.github.io/docs/ai/computer-vision/%E8%A7%86%E9%A2%91%E8%B6%85%E5%88%86/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E9%80%9A%E8%BF%87%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81%E8%AE%A1%E7%AE%97ip%E5%9C%B0%E5%9D%80%E8%8C%83%E5%9B%B4/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E9%85%8D%E7%BD%AEkylinv10/</loc>
+  </url><url>
+    <loc>https://chain-code.github.io/docs/ai/basic/%E9%A1%B9%E7%9B%AE%E6%94%B6%E8%97%8F/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/golang/</loc>
     <lastmod>2023-05-05T11:51:49+08:00</lastmod>
@@ -216,8 +238,6 @@
   </url><url>
     <loc>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/</loc>
     <lastmod>2021-03-22T18:51:50+00:00</lastmod>
-  </url><url>
-    <loc>https://chain-code.github.io/docs/python/ai/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</loc>
   </url><url>
@@ -262,6 +282,8 @@
   </url><url>
     <loc>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</loc>
     <lastmod>2021-03-24T17:12:42+00:00</lastmod>
+  </url><url>
+    <loc>https://chain-code.github.io/docs/ai/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/c/</loc>
   </url><url>
@@ -357,6 +379,9 @@
   </url><url>
     <loc>https://chain-code.github.io/docs/golang/package/strings/</loc>
     <lastmod>2023-05-05T11:36:12+08:00</lastmod>
+  </url><url>
+    <loc>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/fts/</loc>
+    <lastmod>2023-04-30T16:16:50+08:00</lastmod>
   </url><url>
     <loc>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/</loc>
     <lastmod>2023-04-30T16:16:50+08:00</lastmod>
@@ -532,11 +557,15 @@
     <loc>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/</loc>
     <lastmod>2021-01-11T16:12:38+00:00</lastmod>
   </url><url>
+    <loc>https://chain-code.github.io/docs/ai/basic/ai%E7%9F%A5%E8%AF%86%E6%99%AE%E5%8F%8A/</loc>
+  </url><url>
+    <loc>https://chain-code.github.io/docs/ai/computer-vision/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/</loc>
+  </url><url>
+    <loc>https://chain-code.github.io/docs/ai/generative-ai/%E5%88%A9%E7%94%A8dspy%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90prompt/</loc>
+  </url><url>
     <loc>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/go%E5%AE%89%E5%85%A8%E6%8C%87%E5%8D%97/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB%E5%90%88%E9%9B%86/</loc>
-  </url><url>
-    <loc>https://chain-code.github.io/docs/python/ai/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8F%92%E5%85%A5%E4%BC%98%E5%8C%96/</loc>
   </url><url>

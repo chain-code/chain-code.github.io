@@ -48,6 +48,25 @@ nil，未初始化的状态，只进行了声明，或者手动赋值为nil acti
     </item>
     
     <item>
+      <title>Go 中使用 sync.Pool 时可能遇到的陷阱</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/go-%E4%B8%AD%E4%BD%BF%E7%94%A8-sync.pool-%E6%97%B6%E5%8F%AF%E8%83%BD%E9%81%87%E5%88%B0%E7%9A%84%E9%99%B7%E9%98%B1/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/go-%E4%B8%AD%E4%BD%BF%E7%94%A8-sync.pool-%E6%97%B6%E5%8F%AF%E8%83%BD%E9%81%87%E5%88%B0%E7%9A%84%E9%99%B7%E9%98%B1/</guid>
+      <description>虽然 sync.Pool 使用起来很简单，但如果使用不当，还是有可能出现问题的，例如，
+对象重置不彻底：若未正确重置对象状态（例如忘记清空某个字段），可能导致脏数据污染，引发逻辑错误。 长时间占用对象：若某个 Goroutine 持有对象时间过长（例如执行阻塞操作），可能导致其他 Goroutine 频繁创建新对象，削弱池的优势。 高并发下池对象不足问题：若并发量远高于池中对象数量，New 函数会被频繁调用，可能抵消复用对象的收益。 返回池对象引用：应该限制池对象仅在局部作用域内使用，不应暴露给外部，否则会导致 data race 问题。 由于前两个问题相对简单直接，本文仅讨论后两个问题。
+关于“高并发下池对象不足问题” # 下面通过真实场景案例，分析一下 “并发量远高于池中对象数量，导致 New 函数频繁调用，抵消对象复用收益” 的问题。
+案例 1：高并发 HTTP 服务器的 JSON 序列化缓冲区 # 场景描述 # 某电商平台的商品详情接口需要处理 每秒 10 万次（QPS） 的请求。每个请求需要将商品数据序列化为 JSON 返回给客户端。为优化性能，开发团队使用 sync.Pool 缓存 *bytes.Buffer 对象，避免重复分配内存。
+代码实现
+效果
+New 调用频率下降 70%，GC 频率恢复至正常水平。 请求延迟从 15ms 降低到 5ms。 *案例 2：实时日志处理系统的临时对象池* # 场景描述
+某日志分析服务需实时解析海量日志条目（每秒 50 万条），每条日志需解析为结构体并暂存到内存队列。开发团队使用 sync.Pool 缓存日志解析的临时结构体对象。
+代码实现
+问题现象
+内存占用波动剧烈：服务内存使用量周期性骤增，与 GC 周期高度相关。 解析性能下降：日志处理吞吐量从 50 万条/秒下降到 30 万条/秒。 根因分析</description>
+    </item>
+    
+    <item>
       <title>golangci-lint</title>
       <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/golangci-lint/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

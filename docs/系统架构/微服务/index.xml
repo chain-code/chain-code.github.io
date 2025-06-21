@@ -12,7 +12,9 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/grpc/</guid>
-      <description>GRPC # 介绍 # gRPC 是一个高性能、开源和通用的 RPC 框架，面向移动和 HTTP/2 设计。
+      <description>GRPC # https://github.com/shimingyah/pool
+基于GRPC的多路复用、超时重连特性，我们很容易实现GRPC连接池。
+介绍 # gRPC 是一个高性能、开源和通用的 RPC 框架，面向移动和 HTTP/2 设计。
 gRPC基于 HTTP/2标准设计，带来诸如双向流、流控、头部压缩、单 TCP连接上的多复用请求等特。这些特性使得 其在移动设备上表现更好，更省电和节省空间占用。
 在 gRPC里客户端应用可以像调用本地对象一样直接调用另一台不同的机器上服务端应用的方法，使得您能够更容 易地创建分布式应用和服务。与许多 RPC系统类似， gRPC也是基于以下理念：
 定义一个服务，指定其能够被远程调用的方法（包含参数和返回类型）。

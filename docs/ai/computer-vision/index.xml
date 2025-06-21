@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Computer Vision on Soulmate</title>
+    <link>https://chain-code.github.io/docs/ai/computer-vision/</link>
+    <description>Recent content in Computer Vision on Soulmate</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language><atom:link href="https://chain-code.github.io/docs/ai/computer-vision/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Ocr识别</title>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/ocr%E8%AF%86%E5%88%AB/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/ocr%E8%AF%86%E5%88%AB/</guid>
+      <description>使用项目：
+https://github.com/shibing624/imgocr
+https://github.com/WenmuZhou/PytorchOCR</description>
+    </item>
+    
+    <item>
+      <title>Reid数据集</title>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/reid%E6%95%B0%E6%8D%AE%E9%9B%86/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/reid%E6%95%B0%E6%8D%AE%E9%9B%86/</guid>
+      <description>单模态 # Market-1501：Person Re-Identification Meets Image Search：
+链接：https://pan.baidu.com/s/1ntIi2Op
+2015年，论文 Person Re-Identification Meets Image Search 提出了 Market 1501 数据集，现在 Market 1501 数据集已经成为行人重识别领域最常用的数据集之一。
+Market 1501 的行人图片采集自清华大学校园的 6 个摄像头，一共标注了 1501 个行人。其中，751 个行人标注用于训练集，750 个行人标注用于测试集，训练集和测试集中没有重复的行人 ID，也就是说出现在训练集中的 751 个行人均未出现在测试集中。
+训练集：751 个行人，12936 张图片 测试集：750 个行人，19732 张图片 query 集：750 个行人，3368 张图片 query 集的行人图片都是手动标注的图片，从 6 个摄像头中为测试集中的每个行人选取一张图片，构成 query 集。测试集中的每个行人至多有 6 张图片，query 集共有 3368 张图片。
+网络模型训练时，会用到训练集；测试模型好坏时，会用到测试集和 query 集。此时测试集也被称作 gallery 集。因此实际用到的子集为，训练集、gallery 集 和 query 集。
+MARS: A Video Benchmark for Large-Scale Person Re-identification（基于视频）</description>
+    </item>
+    
+    <item>
+      <title>Reid行人重识别</title>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/reid%E8%A1%8C%E4%BA%BA%E9%87%8D%E8%AF%86%E5%88%AB/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/reid%E8%A1%8C%E4%BA%BA%E9%87%8D%E8%AF%86%E5%88%AB/</guid>
+      <description>原理 # 在监控拍不到人脸的情况下，ReID可以代替人脸识别来在视频序列中找到我要找到目标对象。那么他的应用就很广了，可以做安防，可以做个人定位，在商场上可以配合推荐系统，搭建出个性化的推荐服务等等
+我们利用训练后的网络计算特征从所有搜索到的图像中提取特征，并计算搜索图与地库之间的特征距离。然后根据计算出的距离对它们进行排序。排名越高，相似性越高，上图中，绿色边框的是正确检索的结果，红色边框的是错误检索的结果。
+代码仓库：https://github.com/JDAI-CV/fast-reid
+提供了针对ReID任务的完整的工具箱，包括训练、评估、微调和模型部署，另外实现了在多个任务中的最先进的模型。
+实操 # 模型初始化 # 创建ONNX推理会话，使用CUDA执行提供者
+class ReidModel: def __init__(self, model_name, model_dir): &amp;#34;&amp;#34;&amp;#34; 初始化 ReidModel 实例。 Args: model_name (str): Reid 模型的特定名称 model_dir (str): 包含 Reid ONNX 模型文件的目录路径。 &amp;#34;&amp;#34;&amp;#34; self._key = b&amp;#39;fm20Za6uii..........AvPdMhxXs=&amp;#39; img_onnx_model_path = os.path.join(model_dir, &amp;#34;weights.onnx&amp;#34;) decrypted_model = decrypt_model(img_onnx_model_path, self._key) //模型解密 img_sess_options = onnxruntime.SessionOptions() img_run_options = onnxruntime.RunOptions() img_run_options.log_severity_level = 2 self.input_height = 384 self.input_width = 128 self.session = onnxruntime.InferenceSession(decrypted_model, sess_options=img_sess_options, providers=[&amp;#34;CUDAExecutionProvider&amp;#34;])# NVIDIA GPU (CUDA) self.input_name = self.</description>
+    </item>
+    
+    <item>
+      <title>yolo-world</title>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/yolo-world/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/yolo-world/</guid>
+      <description>YOLO-World：实时开放词汇的目标检测 # 本文档旨在介绍 YOLO-World，一个前沿的实时开放词汇目标检测模型。我们将探讨其核心概念、设计架构、关键用途，并将其与传统的 YOLO 模型进行对比，阐述其创新之处和优势。
+1. 引言：什么是 YOLO-World？ # YOLO-World 是一个革命性的目标检测系统，它将强大的 YOLO 实时检测框架与开放词汇（Open-Vocabulary） 能力相结合。这意味着 YOLO-World 不再局限于预先训练时定义好的固定类别集，而是能够根据用户在推理时提供的 任意文本描述（词汇、短语） 来实时检测图像或视频中的相应目标。
+其核心突破在于，它利用大规模视觉-语言预训练的知识，让模型能够理解文本提示（prompts）与图像中视觉内容之间的关联，从而实现对“世界万物”的检测潜力，而无需针对每一个新类别都进行重新训练。
+2. 用途与价值主张 # 传统的目标检测器（如标准 YOLO）在训练完成后，只能识别训练数据中包含的特定类别（例如 PASCAL VOC 的 20 类或 COCO 的 80 类）。如果需要检测新的物体类别，就必须收集大量标注数据并重新训练模型，成本高昂且灵活性差。
+YOLO-World 的出现旨在解决这一痛点，其主要用途和价值在于：
+极高的灵活性与适应性： 用户可以随时定义新的、甚至是训练时从未见过的物体类别进行检测，只需提供相应的文本描述即可。例如，你可以让它检测“戴着红色帽子的狗”、“损坏的包裹”或“特定的工具名称”。 零样本（Zero-Shot）检测： 无需为新类别准备任何标注样本即可进行检测。 降低数据标注和重训练成本： 大幅减少了为扩展检测能力而进行的数据收集、标注和模型训练工作。 3. 架构设计：YOLO-World 如何工作？ # YOLO-World 的设计巧妙地融合了 YOLO 的高效检测架构和视觉-语言模型（VLMs）的语义理解能力。其核心组件通常包括：
+YOLO 检测器骨干（Backbone）： 采用高效的 YOLO 系列骨干网络（如 YOLOv8 的 Darknet 变体）来提取图像的视觉特征。这些特征包含了丰富的空间和语义信息。 文本编码器（Text Encoder）： 使用强大的预训练文本编码器（如 CLIP 的文本编码器或其他 Transformer 模型）将用户输入的文本提示（类别名称、描述等）转换为高维度的文本嵌入向量（text embeddings）。这些向量捕获了文本的语义含义。 视觉-语言融合网络（Vision-Language Fusion Network）： 这是 YOLO-World 的关键创新。它不再是在模型输出端简单地比较视觉和文本特征，而是在检测网络的颈部（Neck）（例如 PANet 或其变种）中引入了文本嵌入信息。 RepVL-PAN (Region-Prompt Vision-Language Path Aggregation Network): YOLO-World 论文中提出的一种代表性结构。它允许文本嵌入在不同层级与视觉特征进行深度融合和交互。这使得模型能够将全局的文本语义信息有效地传递到局部的像素级特征，从而指导检测头关注与文本描述匹配的图像区域。 检测头（Detection Head）： 类似于标准 YOLO，检测头根据融合了文本信息的视觉特征来预测边界框（Bounding Boxes）和目标存在置信度（Objectness Score）。关键区别在于，类别的判断不再是输出固定类别的分数，而是通过计算检测到的物体视觉特征与输入文本提示的嵌入向量之间的相似度来确定该物体是否匹配某个文本描述。 预训练策略： YOLO-World 的强大能力来源于大规模的预训练。它在包含图像、对应边界框以及文本描述的大型数据集（如目标检测、视觉定位、图文对数据集）上进行训练，学习将视觉区域与自由形式的文本描述关联起来的能力。</description>
+    </item>
+    
+    <item>
+      <title>yolo底层原理</title>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/yolo%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/yolo%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/</guid>
+      <description>目标检测-YOLO的基本原理详解
+YOLO原理与实现
+深入理解YOLO原理
+Yolov8原理详细解析</description>
+    </item>
+    
+    <item>
+      <title>yolo数据集</title>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/yolo%E6%95%B0%E6%8D%AE%E9%9B%86/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/yolo%E6%95%B0%E6%8D%AE%E9%9B%86/</guid>
+      <description>https://data.baai.ac.cn/data</description>
+    </item>
+    
+    <item>
+      <title>图像增强介绍</title>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/%E5%9B%BE%E5%83%8F%E5%A2%9E%E5%BC%BA%E4%BB%8B%E7%BB%8D/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/%E5%9B%BE%E5%83%8F%E5%A2%9E%E5%BC%BA%E4%BB%8B%E7%BB%8D/</guid>
+      <description>图像增强技术介绍 # 什么是图像增强？ # 图像增强 (Image Enhancement) 是指通过一系列图像处理技术，有选择性地突出图像中感兴趣的特征、抑制不必要的特征，或改善图像的视觉效果，使其更适合于人类观察或计算机分析。其目的不是试图恢复图像的原始信息（这更偏向于图像复原），而是改善图像的质量，使其在特定应用场景下更有用。
+常用的图像增强原理/类别：
+空间域增强 (Spatial Domain Enhancement): 直接对图像的像素值进行操作。 点操作 (Point Operations): 对单个像素进行处理，不考虑其邻域像素。常见的有： 灰度变换: 如对比度拉伸、亮度调整、伽马校正、直方图均衡化等。通过修改像素的灰度级来改善图像的对比度和动态范围。 伪彩色处理: 将灰度图像的不同灰度级映射为不同的颜色，以突出细节。 邻域操作 (Neighborhood Operations): 基于像素及其邻域像素的值进行处理。常见的有： 图像平滑 (Smoothing): 使用均值滤波、中值滤波、高斯滤波等去除噪声，模糊图像。 图像锐化 (Sharpening): 使用拉普拉斯算子、梯度算子（Sobel, Prewitt）等增强图像的边缘和细节，使图像更清晰。 频率域增强 (Frequency Domain Enhancement): 将图像变换到频率域（如傅里叶变换），对频率分量进行修改，然后再反变换回空间域。 低通滤波 (Low-pass Filtering): 衰减高频分量，保留低频分量，效果类似于空间域的平滑，可以去除噪声。 高通滤波 (High-pass Filtering): 衰减低频分量，保留高频分量，效果类似于空间域的锐化，可以增强边缘。 带通/带阻滤波: 保留或去除特定频率范围的分量。 同态滤波 (Homomorphic Filtering): 一种在频率域中同时压缩亮度范围和增强对比度的技术，常用于改善光照不均的图像。 基于深度学习的增强 (Deep Learning-based Enhancement): 利用深度神经网络（尤其是卷积神经网络 CNN、生成对抗网络 GAN、Transformer 等）学习从低质量图像到高质量图像的复杂映射关系。这是当前研究的热点和主流方向，在超分辨率、去噪、去模糊、去雨去雾、低光照增强等方面取得了突破性进展。 SwinIR 架构、超分原理及技术 # SwinIR 架构设计: SwinIR 将 Swin Transformer 成功应用于图像复原任务。其核心架构主要包括三个部分：</description>
+    </item>
+    
+    <item>
+      <title>图像超分原理</title>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/%E5%9B%BE%E5%83%8F%E8%B6%85%E5%88%86%E5%8E%9F%E7%90%86/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/%E5%9B%BE%E5%83%8F%E8%B6%85%E5%88%86%E5%8E%9F%E7%90%86/</guid>
+      <description>三分钟读懂《超分辨率技术》
+AIGC算法：GAN图像超分原理与实现
+图像超分辨率技术-简介
+一文掌握图像超分辨率重建（算法原理、Pytorch实现）——含完整代码和数据</description>
+    </item>
+    
+    <item>
+      <title>视频超分</title>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/%E8%A7%86%E9%A2%91%E8%B6%85%E5%88%86/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/%E8%A7%86%E9%A2%91%E8%B6%85%E5%88%86/</guid>
+      <description>https://github.com/xinntao/ESRGAN?tab=readme-ov-file
+主打动漫类，最新代码7年前提交的，淘汰
+https://github.com/xinntao/Real-ESRGAN?tab=readme-ov-file#online-inference ****
+也是主打动漫类，star 30.3万
+文件保存在Real-ESRGAN
+https://github.com/megvii-research/NAFNet?tab=readme-ov-file ****
+图片处理效果还行，备选 目前仅支持图像增强 文件保存在NAFNet
+https://github.com/JingyunLiang/SwinIR ****
+文件保存在SwinIR
+https://github.com/DmitryUlyanov/deep-image-prior
+六七年前的老项目，淘汰
+https://github.com/cszn/BSRGAN *****
+文件保存在BSRGAN 感觉还行
+https://github.com/open-mmlab/mmagic?tab=readme-ov-file
+多个图片、视频处理的集成库 代码更新到2023年12月18日
+https://github.com/XPixelGroup/BasicSR
+继承库，但是代码更新到2022年8月31日
+https://github.com/ckkelvinchan/RealBasicVSR
+支持视频，也支持图片，具体要测
+https://github.com/TencentARC/GFPGAN
+注重人脸超分，仅能运行在Linux
+https://github.com/Fanghua-Yu/SUPIR
+许可协议只限个人使用 不让商用，可以借鉴里面的东西
+https://github.com/sczhou/CodeFormer
+许可协议 S-Lab 许可证 1.0 不让商用
+https://github.com/upscayl/upscayl
+底层用的 Real-ESRGAN 淘汰
+https://github.com/XPixelGroup/DiffBIR
+测试效果不理想，而且速度贼慢
+https://github.com/philz1337x/clarity-upscaler/
+AI 图像升级器和增强器 但是通过ai 变了原有图画信息，与需求不符，淘汰
+https://github.com/AaronFeng753/Waifu2x-Extension-GUI
+主要使用机器学习进行照片/视频/GIF 放大和视频帧插值 淘汰
+https://github.com/ohayonguy/PMRF
+注重于人脸处理，可以先放着，后续加 ***
+https://github.com/k4yt3x/video2x
+视频的暂时不看</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/</guid>
+      <description>title: &amp;#34;YOLOv8快速上手+实践&amp;#34; weight: 2 # bookFlatSection: false # bookToc: true # bookHidden: false # bookCollapseSection: false # bookComments: false # bookSearchExclude: false YOLOv8快速上手+实践 # 前言 # 本文旨在快速上手并不涉及细致的训练超参数调优和YOLO源码层面的解析。
+YOLOv8是YOLO家族中流行的实时目标检测系统，以其快速、准确和高效的特性在计算机视觉领域中广泛应用（目前YOLO的发展很快，YOLOv10就在前不久也已经正式发布）。本文将详细介绍如何在NVIDIA GPU环境下部署YOLOv8，从环境配置、库安装，到模型训练和应用的全流程操作，并在其中结合实际的火焰特征识别的实践。
+环境部署（N卡） # 需要提前准备好要使用的Python环境，此步骤不再赘述
+安装和配置CUDA # 前往nvidia的开发者网站，选择下载CUDA toolkit
+先检查一下本地环境显卡驱动支持的最高CUDA版本，查看的CUDA toolkit 版本不能高于显卡驱动支持的最高版本
+方式一：打开N卡的控制面板，在系统信息的组件里
+方式二：使用命令nvidia-smi查看CUDA版本
+其次建议要下载前先确认下准备使用的Pytorch版本，尽量CUDA toolkit的版本和Pytorch支持的保持一致，起码不能使用低版本
+最新版的CUDA：https://developer.nvidia.com/cuda-downloads 历史版本：https://developer.nvidia.com/cuda-toolkit-archive 跟着安装程序走即可，最后检查一下安装是否成功：
+nvcc --version 成功输出版本信息即为成功
+【可选】下载&amp;amp;安装CUDNN库 # cuDNN 是用于深度神经网络的 GPU 加速库
+继续回到之前的N卡开发者网站上，需要注册登录后才能下载
+最新版本：https://developer.nvidia.com/cudnn 历史版本：https://developer.nvidia.com/rdp/cudnn-archive 下载的版本也需要和CUDA的大版本一一对应
+下载下来的CUDNN库包括bin、include和lib目录，将目录下对应的所有文件复制到之前CUDA toolkit
+的安装目录下即可
+安装PyTorch # 官网：https://pytorch.org/get-started/locally/
+选择自己环境的配置项，复制pip或者conda的命令来安装即可
+pip3 install torch torchvision torchaudio --index-url https://download.</description>
+    </item>
+    
+  </channel>
+</rss>

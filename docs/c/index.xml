@@ -49,5 +49,26 @@ cgo: gcc errors for preamble:In file included from .\hikvision.go:6:0:error: e
       <description> 监听windows是否处于休眠唤醒状态 # #include &amp;lt;windows.h&amp;gt; #include &amp;lt;iostream&amp;gt; #include &amp;lt;powrprof.h&amp;gt; #pragma comment(lib, &amp;#34;Powrprof.lib&amp;#34;) using namespace std; ULONG CALLBACK DeviceCallback(PVOID Context, ULONG Type, PVOID Setting) { if (Type == PBT_APMSUSPEND) { cout &amp;lt;&amp;lt; &amp;#34;close&amp;#34; &amp;lt;&amp;lt; endl; } if (Type == PBT_APMRESUMESUSPEND) { cout &amp;lt;&amp;lt; &amp;#34;open&amp;#34; &amp;lt;&amp;lt; endl; } return ERROR_SUCCESS; } int main() { HPOWERNOTIFY g_power_notify_handle = NULL; DEVICE_NOTIFY_SUBSCRIBE_PARAMETERS params; params.Callback = DeviceCallback; params.Context = 0; PowerRegisterSuspendResumeNotification(DEVICE_NOTIFY_CALLBACK, &amp;amp;params, &amp;amp;g_power_notify_handle); MSG msg; while (GetMessage(&amp;amp;msg, NULL, 0, 0)) { TranslateMessage(&amp;amp;msg); DispatchMessage(&amp;amp;msg); } PowerUnregisterSuspendResumeNotification(g_power_notify_handle); return 0; } </description>
     </item>
     
+    <item>
+      <title>在CGO中集成和调用DLL文件</title>
+      <link>https://chain-code.github.io/docs/c/%E5%9C%A8cgo%E4%B8%AD%E9%9B%86%E6%88%90%E5%92%8C%E8%B0%83%E7%94%A8dll%E6%96%87%E4%BB%B6/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/c/%E5%9C%A8cgo%E4%B8%AD%E9%9B%86%E6%88%90%E5%92%8C%E8%B0%83%E7%94%A8dll%E6%96%87%E4%BB%B6/</guid>
+      <description>前言 # CGO是Go语言中的一种机制，用于调用C代码或集成C库，它可以让我们通过Go程序直接使用C语言写的库文件（如.dll文件）。这种功能在需要利用已有的C库时非常有用，尤其是在Windows环境下的DLL文件调用。
+本文将围绕如何在CGO中集成和调用DLL文件，介绍相关步骤和注意事项。
+本文不会涉及到C动态库的内部实现，重点是使用CGO调用动态库的方法介绍
+不同类型C库的分发方式 # 要使用C库，首先需要对不同类型库的相关文件有一个基本认识，c库通常有以下两种类型
+静态库 头文件（*.h） 库文件（.lib/.a） 动态库 头文件（*.h） 库文件（.lib/.a）（这里的lib库是导入库类型，包含函数所在的DLL文件和文件中函数位置的信息，并没有具体的实现） 动态库（.dll/.so） 区分静态库和动态库 # 因为正常链接过程都是使用.lib或者.a的文件，在没有明确告知库类型的情况下，可能会不知道自己使用的是静态库还是动态库，因此需要一个方法来区分，以MSVC环境的为例
+使用lib命令行工具
+lib /list *库文件* 如果输出都是.obj目标文件，那么就是静态库，相反如果是.dll动态库，那么这个.lib文件就是动态库的导入库
+lib /list avp.lib
+CGO调用DLL动态库函数的方法 # 要使用CGO，需要确保Go编译器开启了cgo，可以用go env来检查，确保环境变量CGO_ENABLED=1（现在默认都是开启的，后面编译阶段如果出现问题可以排查一下是否是这个原因导致的）；以及需要配置好MingW的环境，这步不再赘述
+编译时链接动态库 # 编译时链接动态库是指在编译时通过#cgo LDFLAGS指定动态库，生成的可执行文件在运行时会自动依赖这些库。Go程序启动时会自动加载这些动态库，无需手动管理动态库的加载和函数的绑定。
+和静态库的链接方法一样，在LDFLAGS中指定库目录以及链接的库即可
+/* #cgo LDFLAGS: -L${SRCDIR}/../lib -lavp */ import &amp;#34;C&amp;#34; 后续使用就引入头文件，直接调用库函数即可
+/* #include &amp;lt;stdlib.h&amp;gt; #include &amp;#34;c_avp.h&amp;#34; */ import &amp;#34;C&amp;#34; func (meTool *MediaTool) cGetVideoInfo(cInputVideoPath *C.char, needDecodeData C.bool) (result string) { // c_get_video_properties接口 在c_avp.h中声明 result = C.GoString(C.c_get_video_properties(cInputImagePath, needDecodeData)) return } 这种方案的优缺点：</description>
+    </item>
+    
   </channel>
 </rss>

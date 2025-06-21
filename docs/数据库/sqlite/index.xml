@@ -8,6 +8,26 @@
     <language>zh-cn</language>
     <lastBuildDate>Sun, 30 Apr 2023 16:16:50 +0800</lastBuildDate><atom:link href="https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>fts</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/fts/</link>
+      <pubDate>Sun, 30 Apr 2023 16:16:50 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/fts/</guid>
+      <description>Fts # fts是sqlite的一个支持全文检索的扩展模块，是个五脏俱全的全文搜索引擎
+拼音数据的来源是 https://github.com/mozillazg/pinyin-data
+项目地址：https://github.com/wangfenjin/simple
+以GO为例，其他语言的操作方式可能不一样，但理论是通用的。sqlite的fts5模块默认是不开启的，在编译时要加上fts5编译标签。
+假如原表名是 student_info 其中有 id name age addr 四个字段
+需要作为搜索目标的字段是 name addr
+需要搜索出的字段有 name age addr
+下载 # 从发布页面下载预编译的链接库或自己编译，用预编译的版本方便快速测试，实际发布时要测一下目标平台是否表现正常。 比如我们遇到的预编译版在win7上缺少依赖库，在debian10上glibc版本过低，需要自己编译。
+发布页地址：https://github.com/wangfenjin/simple/releases
+注册驱动 # sql.Register( &amp;#34;sqlite3_simple&amp;#34;, &amp;amp;sqlite3.SQLiteDriver{ Extensions: []string{ &amp;#34;simple.dll&amp;#34;, }, }, ) 在打开数据库时选择上面注册的驱动
+db, err := gorm.Open(sqlite.Dialector{ DriverName: &amp;#34;sqlite3_simple&amp;#34;, DSN: &amp;#34;test_fts5.db&amp;#34;, }) 创建fts5虚拟表 # 虚拟表是fts5需要的 具体如何操作自行查阅fts5文档，关键点是通过tokenize=&amp;quot;simple&amp;quot;指定分词器。 文档地址:https://www.sqlite.org/fts5.html
+CREATE VIRTUAL TABLE IF NOT EXISTS student_info_fts USING fts5( name, -- 需要分词搜索的字段 addr, -- 需要分词搜索的字段 age UNINDEXED, -- 无需分词的字段 避免回表 content=student_info, -- 原表名 content_rowid=id, -- 原表id tokenize=&amp;#34;simple&amp;#34; -- 使用simple分词器 ) 创建触发器 # 通过触发器来同步修改索引表是推荐的方案，如果表的更新频次比较高，应该使用定时同步刷新的机制，而不是触发器。</description>
+    </item>
+    
+    <item>
       <title>Sqlite</title>
       <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/</link>
       <pubDate>Sun, 30 Apr 2023 16:16:50 +0800</pubDate>

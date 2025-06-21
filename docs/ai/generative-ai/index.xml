@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Generative AI on Soulmate</title>
+    <link>https://chain-code.github.io/docs/ai/generative-ai/</link>
+    <description>Recent content in Generative AI on Soulmate</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language><atom:link href="https://chain-code.github.io/docs/ai/generative-ai/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Qwen2.5-vl源码部署</title>
+      <link>https://chain-code.github.io/docs/ai/generative-ai/qwen2.5-vl%E6%BA%90%E7%A0%81%E9%83%A8%E7%BD%B2/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/generative-ai/qwen2.5-vl%E6%BA%90%E7%A0%81%E9%83%A8%E7%BD%B2/</guid>
+      <description>Qwen2.5-vl源码部署 # 官方
+本地运行 Qwen2-VL
+使用vLLM部署Qwen2.5-VL-7B-Instruct模型的详细指南
+阿里最新开源模型Qwen2.5-VL本地部署教程：视觉理解超越GPT-4o！
+cudn加速库 # cudnn-windows-x86_64-8.9.7.29_cuda12-archive 仓库地址 # https://github.com/QwenLM/Qwen2.5-VL?tab=readme-ov-file
+模型地址 # https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct-AWQ
+环境对比 # (base) PS C:\Users\admin\python\qwen\Qwen2.5-VL&amp;gt; pip listPackage Version--------------------------------- ------------------aiobotocore 2.12.3aiohappyeyeballs 2.4.0aiohttp 3.10.5aioitertools 0.7.1aiosignal 1.2.0alabaster 0.7.16altair 5.0.1anaconda-anon-usage 0.4.4anaconda-catalogs 0.2.0anaconda-client 1.12.3anaconda-cloud-auth 0.5.1anaconda-navigator 2.6.3anaconda-project 0.11.1annotated-types 0.6.0anyio 4.2.0appdirs 1.4.4archspec 0.2.3argon2-cffi 21.3.0argon2-cffi-bindings 21.2.0arrow 1.2.3astroid 2.14.2astropy 6.</description>
+    </item>
+    
+    <item>
+      <title>Xinference基础</title>
+      <link>https://chain-code.github.io/docs/ai/generative-ai/xinference%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/generative-ai/xinference%E5%9F%BA%E7%A1%80/</guid>
+      <description>介绍 # Xinference 是一个开源的 AI 模型推理平台。你可以把它想象成一个用来部署和管理各种大型 AI 模型（特别是大语言模型 LLMs）的工具或框架。它的目标是让开发者和研究人员能够轻松地在自己的硬件（无论是个人电脑、服务器还是云实例）上运行和使用这些强大的模型。
+Xinference 的主要作用和特点：
+简化模型部署 (Simplified Deployment): 运行大型 AI 模型通常需要复杂的环境配置和依赖管理。Xinference 极大地简化了这个过程，让你可以用简单的命令或通过 Web UI 来下载、设置和启动模型。 统一的 API (Unified API): 它为不同类型的模型（如聊天模型、嵌入模型、重排序模型、图像模型、音频模型等）提供了一套统一的、简洁的 API 接口。这意味着你可以用类似的方式与各种不同的模型进行交互，降低了学习和使用的成本。 广泛的模型支持 (Broad Model Support): Xinference 支持非常多的开源模型，涵盖了： 大语言模型 (LLMs): 如 Llama, ChatGLM, Qwen, Baichuan, Mixtral, Yi 等。 嵌入模型 (Embedding Models): 用于将文本转换为向量表示。 重排序模型 (Rerank Models): 用于优化搜索结果排序。 多模态模型 (Multimodal Models): 如处理图像和文本的模型。 图像模型和音频模型 等。 灵活的部署选项 (Flexible Deployment Options): 本地运行: 可以在你的个人笔记本电脑或工作站上运行。 分布式集群: 可以将模型部署在多台机器组成的集群上，以获得更强的计算能力或服务更大的负载。 硬件兼容性 (Hardware Compatibility): 支持在多种硬件上运行，包括： CPU NVIDIA GPU AMD GPU Apple Silicon (M系列芯片) 类 OpenAI API 兼容性 (OpenAI-Compatible API): 对于很多流行的模型（特别是 LLMs），Xinference 提供了与 OpenAI API 兼容的接口。这意味着如果你之前使用过 OpenAI 的 API，可以很容易地将应用切换到使用通过 Xinference 部署的本地模型，只需修改 API 的基地址 (base URL) 和 API 密钥即可。 成本效益和数据隐私 (Cost-Effectiveness &amp;amp; Data Privacy): 通过在本地或私有云上部署模型，你可以更好地控制成本（相比于完全依赖商业 API），并且可以确保数据不离开你的控制范围，增强了数据隐私和安全性。 Web UI 管理界面: 提供了一个用户友好的 Web 界面，方便用户查看可用的模型、管理正在运行的模型实例以及进行简单的交互测试。 安装 # 安装 — Xinference</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://chain-code.github.io/docs/ai/generative-ai/%E5%88%A9%E7%94%A8dspy%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90prompt/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/generative-ai/%E5%88%A9%E7%94%A8dspy%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90prompt/</guid>
+      <description>title: &amp;#34;利用DSPy自动生成Prompt&amp;#34; weight: 1 # bookFlatSection: false # bookToc: true # bookHidden: false # bookCollapseSection: false # bookComments: false # bookSearchExclude: false 什么是DSPy # 这里直接引用文章 DSPy 入门： 再见提示，你好编程 中的介绍，详细内容请看原文
+DSPy（&amp;ldquo;Declarative Self-improving Language Programs (in Python)&amp;quot;，发音为 &amp;ldquo;dee-es-pie&amp;rdquo;）是斯坦福大学 NLP 研究人员开发的 &amp;ldquo;基础模型编程 &amp;ldquo;框架。它强调编程而非提示，并将构建基于 LM 的管道从操作提示转向编程。因此，它旨在解决构建基于 LM 应用程序时的脆弱性问题。
+DSPy Github
+可以参考官方Github先安装一下
+数据准备 # 我利用豆包生成了一部分数据
+[ { &amp;#34;query&amp;#34;: &amp;#34;腾讯2021年和2022年分别盈利多少？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;腾讯2021年盈利多少？&amp;#34;, &amp;#34;腾讯2022年盈利多少？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;苹果公司和微软公司哪个市值更高？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;苹果公司的市值是多少？&amp;#34;, &amp;#34;微软公司的市值是多少？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;为什么电动汽车越来越受欢迎？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;电动汽车的市场份额如何变化？&amp;#34;, &amp;#34;电动汽车有哪些优势？&amp;#34;, &amp;#34;政策和基础设施如何支持电动汽车发展？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;什么是机器学习？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;机器学习的定义是什么？&amp;#34;, &amp;#34;机器学习有哪些主要类型？&amp;#34;, &amp;#34;机器学习的应用领域有哪些？&amp;#34;, &amp;#34;机器学习与人工智能的关系是什么？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;如何制定一个有效的健身计划？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;制定健身计划前需要评估哪些身体指标？&amp;#34;, &amp;#34;健身目标有哪些类型？&amp;#34;, &amp;#34;如何根据目标选择适合的训练方式？&amp;#34;, &amp;#34;如何安排训练频率和强度？&amp;#34;, &amp;#34;如何制定合理的饮食计划？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;华为、苹果和三星在智能手机市场的份额分别是多少？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;华为在智能手机市场的份额是多少？&amp;#34;, &amp;#34;苹果在智能手机市场的份额是多少？&amp;#34;, &amp;#34;三星在智能手机市场的份额是多少？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;2023年全球票房最高的电影是哪部，它的导演是谁，票房收入是多少？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;2023年全球票房排名如何？&amp;#34;, &amp;#34;2023年全球票房最高的电影是哪部？&amp;#34;, &amp;#34;这部电影的导演是谁？&amp;#34;, &amp;#34;这部电影的全球票房收入是多少？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;世界上最高的三座山峰分别是什么，它们的海拔高度是多少，位于哪个国家或地区？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;世界上海拔最高的山峰有哪些？&amp;#34;, &amp;#34;世界上最高的三座山峰分别是什么？&amp;#34;, &amp;#34;这三座山峰的海拔高度分别是多少？&amp;#34;, &amp;#34;这三座山峰分别位于哪个国家或地区？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;如果一个正方形的边长增加20%，那么它的面积会增加多少百分比？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;正方形的面积公式是什么？&amp;#34;, &amp;#34;边长增加20%后新的边长是多少？&amp;#34;, &amp;#34;新的面积是多少？&amp;#34;, &amp;#34;面积增加的百分比如何计算？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;请列出所有位于北半球、人口超过1000万且属于发达国家的城市。&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;如何确定城市是否位于北半球？&amp;#34;, &amp;#34;哪些城市的人口超过1000万？&amp;#34;, &amp;#34;如何定义发达国家？&amp;#34;, &amp;#34;如何筛选同时满足这三个条件的城市？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;从经济学和环境科学的角度分析，推广电动汽车对减少碳排放和促进经济发展有哪些影响？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;电动汽车如何减少碳排放？&amp;#34;, &amp;#34;推广电动汽车的经济成本和效益是什么？&amp;#34;, &amp;#34;电动汽车产业对经济发展有哪些促进作用？&amp;#34;, &amp;#34;如何平衡环保目标和经济发展需求？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;企业在决定是否推出新产品时，应该考虑哪些因素？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;市场需求和竞争情况如何？&amp;#34;, &amp;#34;新产品的研发成本和生产难度如何？&amp;#34;, &amp;#34;新产品的营销策略和渠道有哪些？&amp;#34;, &amp;#34;新产品的潜在风险和回报如何？&amp;#34;, &amp;#34;企业的资源和能力是否支持新产品的推出？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;分析某城市过去十年的人口变化情况，并预测未来五年的人口趋势。&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;如何获取该城市过去十年的人口数据？&amp;#34;, &amp;#34;人口变化的主要原因是什么？&amp;#34;, &amp;#34;如何分析人口增长或减少的趋势？&amp;#34;, &amp;#34;有哪些因素可能影响未来人口趋势？&amp;#34;, &amp;#34;如何建立人口预测模型？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;解释为什么植物需要阳光进行光合作用。&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;什么是光合作用？&amp;#34;, &amp;#34;阳光在光合作用中的作用是什么？&amp;#34;, &amp;#34;光合作用的化学过程是什么？&amp;#34;, &amp;#34;植物如何捕获和利用光能？&amp;#34;, &amp;#34;光合作用对植物生长和生存的重要性是什么？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;为什么越来越多的年轻人选择独居生活？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;独居生活的定义是什么？&amp;#34;, &amp;#34;独居生活在年轻人中的流行趋势如何？&amp;#34;, &amp;#34;经济因素如何影响年轻人的居住选择？&amp;#34;, &amp;#34;社会观念和价值观的变化如何影响独居现象？&amp;#34;, &amp;#34;独居生活对个人和社会有哪些影响？&amp;#34; ] }, { &amp;#34;query&amp;#34;: &amp;#34;如何设计一个吸引人的用户界面？&amp;#34;, &amp;#34;answer&amp;#34;: [ &amp;#34;用户界面设计的基本原则有哪些？&amp;#34;, &amp;#34;如何了解目标用户的需求和偏好？&amp;#34;, &amp;#34;如何选择合适的颜色、字体和布局？&amp;#34;, &amp;#34;如何设计直观的导航和交互元素？&amp;#34;, &amp;#34;如何测试和优化用户界面设计？&amp;#34; ] } ] 数据读取 # import dspy with open(&amp;#34;test.</description>
+    </item>
+    
+  </channel>
+</rss>

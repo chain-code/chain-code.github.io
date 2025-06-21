@@ -7,6 +7,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language><atom:link href="https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>python内存泄漏排查方法</title>
+      <link>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/python%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E6%8E%92%E6%9F%A5%E6%96%B9%E6%B3%95/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/python%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E6%8E%92%E6%9F%A5%E6%96%B9%E6%B3%95/</guid>
+      <description>https://docs.python.org/zh-cn/3.13/library/tracemalloc.html
+https://blog.csdn.net/kuailebeihun_/article/details/140575926
+https://zhuanlan.zhihu.com/p/436577356</description>
+    </item>
+    
+    <item>
       <title>python基础</title>
       <link>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/python%E5%9F%BA%E7%A1%80/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -59,10 +70,10 @@ python -m venv /path/to/new/virtual/environment 运行此命令将创建目标�
     
     <item>
       <title>开发实例</title>
-      <link>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B/</link>
+      <link>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B-%E5%89%AF%E6%9C%AC/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B/</guid>
+      <guid>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B-%E5%89%AF%E6%9C%AC/</guid>
       <description>继续执行主线程 # from concurrent.futures import ThreadPoolExecutor # 使用 ThreadPoolExecutor 创建线程池 executor = ThreadPoolExecutor(max_workers=len(models) + 1) # 提交生产者任务到线程池 executor.submit( DetectionService._producer_frames, read_data, mode, interval_seconds, start_time, end_time, queue_manager ) # 提交消费者任务到线程池 for key, value in CV_MODEL.items(): with queue_manager.lock: q = queue_manager.queues.get(key) executor.submit( DetectionService._consumer_frames, q, mode, diff, name, key, value ) 主线程等待 # from concurrent.futures import ThreadPoolExecutor # 使用 ThreadPoolExecutor 创建线程池，并设置最大工作线程数为 4 with ThreadPoolExecutor(max_workers=4) as executor: # 提交生产者任务到线程池 executor.submit( DetectionService._producer_frames, read_data, mode, interval_seconds, start_time, end_time, queue_manager ) # 提交消费者任务到线程池 for key, value in CV_MODEL.</description>
     </item>
     

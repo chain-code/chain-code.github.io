@@ -70,11 +70,20 @@ python -m venv /path/to/new/virtual/environment 运行此命令将创建目标�
     
     <item>
       <title>开发实例</title>
-      <link>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B-%E5%89%AF%E6%9C%AC/</link>
+      <link>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B-%E5%89%AF%E6%9C%AC/</guid>
+      <guid>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B/</guid>
       <description>继续执行主线程 # from concurrent.futures import ThreadPoolExecutor # 使用 ThreadPoolExecutor 创建线程池 executor = ThreadPoolExecutor(max_workers=len(models) + 1) # 提交生产者任务到线程池 executor.submit( DetectionService._producer_frames, read_data, mode, interval_seconds, start_time, end_time, queue_manager ) # 提交消费者任务到线程池 for key, value in CV_MODEL.items(): with queue_manager.lock: q = queue_manager.queues.get(key) executor.submit( DetectionService._consumer_frames, q, mode, diff, name, key, value ) 主线程等待 # from concurrent.futures import ThreadPoolExecutor # 使用 ThreadPoolExecutor 创建线程池，并设置最大工作线程数为 4 with ThreadPoolExecutor(max_workers=4) as executor: # 提交生产者任务到线程池 executor.submit( DetectionService._producer_frames, read_data, mode, interval_seconds, start_time, end_time, queue_manager ) # 提交消费者任务到线程池 for key, value in CV_MODEL.</description>
+    </item>
+    
+    <item>
+      <title>日常小脚本</title>
+      <link>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/%E6%97%A5%E5%B8%B8%E5%B0%8F%E8%84%9A%E6%9C%AC/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/%E6%97%A5%E5%B8%B8%E5%B0%8F%E8%84%9A%E6%9C%AC/</guid>
+      <description>继续执行主线程 # 抖音下载小视频 # import requests import os from tqdm import tqdm # 用于显示下载进度条 def download_douyin_video(video_url, output_filename=&amp;#34;douyin_video.mp4&amp;#34;): &amp;#34;&amp;#34;&amp;#34; 下载抖音视频，通过模拟浏览器User-Agent和Referer头绕过检查。 Args: video_url (str): 抖音视频的CDN链接。 output_filename (str): 保存视频的文件名。 &amp;#34;&amp;#34;&amp;#34; # 模拟一个常见的浏览器User-Agent headers = { &amp;#39;User-Agent&amp;#39;: &amp;#39;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36&amp;#39;, # 这是关键！模拟请求来源，告诉服务器请求来自抖音的网站。 # 你可以尝试 https://www.douyin.com/ 或者包含该视频的具体的抖音页面URL &amp;#39;Referer&amp;#39;: &amp;#39;https://www.douyin.com/&amp;#39;, &amp;#39;Accept&amp;#39;: &amp;#39;video/webm,video/ogg,video/*;q=0.9,application/ogg;q=0.7,audio/*;q=0.6,*/*;q=0.5&amp;#39;, &amp;#39;Accept-Encoding&amp;#39;: &amp;#39;gzip, deflate, br&amp;#39;, &amp;#39;Accept-Language&amp;#39;: &amp;#39;en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7&amp;#39;, &amp;#39;Connection&amp;#39;: &amp;#39;keep-alive&amp;#39;, } print(f&amp;#34;尝试下载视频从: {video_url}&amp;#34;) print(f&amp;#34;保存到文件: {output_filename}&amp;#34;) print(&amp;#34;正在使用的请求头：&amp;#34;) for key, value in headers.</description>
     </item>
     
   </channel>

@@ -93,8 +93,6 @@
   </url><url>
     <loc>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/grpc%E6%8B%A6%E6%88%AA%E5%99%A8retry/</loc>
   </url><url>
-    <loc>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/</loc>
-  </url><url>
     <loc>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/libewf%E5%BA%93%E7%BC%96%E8%AF%91/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/localhost%E4%B8%8E127.0.0.1/</loc>
@@ -183,11 +181,13 @@
   </url><url>
     <loc>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</loc>
   </url><url>
-    <loc>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B-%E5%89%AF%E6%9C%AC/</loc>
+    <loc>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A7%84%E8%8C%83%E5%8C%96/</loc>
+  </url><url>
+    <loc>https://chain-code.github.io/docs/python/%E5%9F%BA%E7%A1%80/%E6%97%A5%E5%B8%B8%E5%B0%8F%E8%84%9A%E6%9C%AC/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/python/package/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</loc>
   </url><url>
@@ -564,6 +564,10 @@
     <loc>https://chain-code.github.io/docs/ai/generative-ai/%E5%88%A9%E7%94%A8dspy%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90prompt/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/go%E5%AE%89%E5%85%A8%E6%8C%87%E5%8D%97/</loc>
+  </url><url>
+    <loc>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/</loc>
+  </url><url>
+    <loc>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E4%BD%BF%E7%94%A8ollvm%E6%B7%B7%E6%B7%86hello-world/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB%E5%90%88%E9%9B%86/</loc>
   </url><url>

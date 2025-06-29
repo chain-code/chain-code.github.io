@@ -49,7 +49,7 @@ B&#43;树索引结构适用于绝大多数场景 如果数据离散型高、基�
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.cf7ead6acf709dea034f927a5a4366947f2c48867e22aab5413bd14836e7efed.js" integrity="sha256-z36tas9wneoDT5J6WkNmlH8sSIZ&#43;Iqq1QTvRSDbn7&#43;0=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.2042c1252d4fb3f5c39054bb88d5c386898b84d301c5b056af012e8abece95e8.js" integrity="sha256-IELBJS1Ps/XDkFS7iNXDhomLhNMBxbBWrwEuir7Oleg=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -131,6 +131,32 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80-%E7%89%9B%E5%AE%A2/" class="">数据库基础-牛客</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%89%9B%E5%AE%A2/" class="">计算机网络 牛客</a>
   
 
         </li>
@@ -433,6 +459,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/" class="">golang力扣刷题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98%E4%B8%80/" class="">每日一题（一）</a>
   
 
         </li>
@@ -3645,7 +3684,11 @@ https://github.com/alex-shpak/hugo-book
 <ul>
 <li><strong>READ-UNCOMMITTED(读取未提交)</strong> ：最低的隔离级别，允许读取尚未提交的数据变更，可能会导致脏读、幻读或不可重复读。</li>
 <li><strong>READ-COMMITTED(读取已提交)</strong> ：允许读取并发事务已经提交的数据，可以阻止脏读，但是幻读或不可重复读仍有可能发生。</li>
-<li><strong>REPEATABLE-READ(可重复读)</strong> ：<font color='red'>（默认级别）</font>对同一字段段多次读取结果都是一致的，除非数据是被本事事务自己所修改，可以阻止脏读和不可重复读，但幻读仍有可能发生。</li>
+<li><strong>REPEATABLE-READ(可重复读)</strong> ：<font color='red'>（默认级别）</font>对同一字段段多次读取结果都是一致的，除非数据是被本事事务自己所修改，可以阻止脏读和不可重复读，但幻读仍有可能发生。
+<ul>
+<li><u>MVCC通过创建数据快照保证事务内看到一致的数据视图，但只针对已存在的行。幻读新增了一行，所以仍可能发生。</u></li>
+</ul>
+</li>
 <li><strong>SERIALIZABLE(可串行化)</strong> ：最高的隔离级别，完全服从ACID的隔离级别。所有的事务依次逐个执行，这样事务之间就完全不可能产生干扰，也就是说，该级别可以防止脏读、不可重复读以及幻读。</li>
 </ul>
 <table>

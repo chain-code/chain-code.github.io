@@ -20,6 +20,17 @@
     </item>
     
     <item>
+      <title>每日一题（一）</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98%E4%B8%80/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98%E4%B8%80/</guid>
+      <description>简单 # 旅行终点站 # 给你一份旅游线路图，该线路图中的旅行线路用数组 paths 表示，其中 paths[i] = [cityAi, cityBi] 表示该线路将会从 cityAi 直接前往 cityBi 。请你找出这次旅行的终点站，即没有任何可以通往其他城市的线路的城市*。*
+题目数据保证线路图会形成一条不存在循环的线路，因此恰有一个旅行终点站。
+输入：paths = [[&amp;#34;B&amp;#34;,&amp;#34;C&amp;#34;],[&amp;#34;D&amp;#34;,&amp;#34;B&amp;#34;],[&amp;#34;C&amp;#34;,&amp;#34;A&amp;#34;]] 输出：&amp;#34;A&amp;#34; 解释：所有可能的线路是： &amp;#34;D&amp;#34; -&amp;gt; &amp;#34;B&amp;#34; -&amp;gt; &amp;#34;C&amp;#34; -&amp;gt; &amp;#34;A&amp;#34;. &amp;#34;B&amp;#34; -&amp;gt; &amp;#34;C&amp;#34; -&amp;gt; &amp;#34;A&amp;#34;. &amp;#34;C&amp;#34; -&amp;gt; &amp;#34;A&amp;#34;. &amp;#34;A&amp;#34;. 显然，旅行终点站是 &amp;#34;A&amp;#34; 。 func destCity(paths [][]string) string { //合并区间 for i, j := 0, 1; j &amp;lt; len(paths); { if len(paths) == 1 { break } if paths[i][1] == paths[j][0] { paths[i][1] = paths[j][1] paths = append(paths[:j], paths[j+1:].</description>
+    </item>
+    
+    <item>
       <title>golang力扣刷题（二）</title>
       <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/</link>
       <pubDate>Thu, 04 Nov 2021 10:06:27 +0000</pubDate>

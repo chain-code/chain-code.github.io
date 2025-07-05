@@ -42,12 +42,14 @@ InnoDB 特点：支持事物、行级锁、外键约束 优点：数据完整性
     </item>
     
     <item>
-      <title>计算机网络 牛客</title>
-      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%89%9B%E5%AE%A2/</link>
+      <title>牛客八股</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E7%89%9B%E5%AE%A2%E5%85%AB%E8%82%A1/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%89%9B%E5%AE%A2/</guid>
-      <description>https://www.nowcoder.com/exam/interview/88994849/test?paperId=61536916&amp;order=0</description>
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E7%89%9B%E5%AE%A2%E5%85%AB%E8%82%A1/</guid>
+      <description>操作系统
+计算机网络
+HTTP/HTTPS TCP/UDP 网络模型 系统设计</description>
     </item>
     
     <item>

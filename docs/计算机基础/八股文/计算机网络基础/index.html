@@ -81,7 +81,7 @@ HTTP的特性 # 1、简单，易于理解
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.fdb54c7a0f8855a980ebdbd8937b6b4b232b1175a7d7b4dab83822c6879e59cc.js" integrity="sha256-/bVMeg&#43;IVamA69vYk3trSyMrEXWn17TauDgixoeeWcw=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.f73941066d4e8606a435cb3f9b46d95200c617906e16c784dc97b19d0fe008a9.js" integrity="sha256-9zlBBm1OhgakNcs/m0bZUgDGF5BuFseE3JexnQ/gCKk=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -3743,6 +3743,12 @@ BS的主要特点是分布性强、维护方便、开发简单且共享性强、
 <ul>
 <li>确保最后一个确认报文能够到达。如果 B 没收到 A 发送来的确认报文，那么就会重新发送连接释放请求报文，A 等待一段时间就是为了处理这种情况的发生。</li>
 <li>等待一段时间是为了让本连接持续时间内所产生的所有报文都从网络中消失，使得下一个新的连接不会出现旧的连接请求报文。</li>
+</ul>
+<p>**MSL：**TCP 报文在网络中的最大存活时间，即一个报文从发出到被丢弃的最长时间。</p>
+<ul>
+<li><strong>RFC 793 建议值</strong>：2 分钟（实际实现可能不同）。</li>
+<li><strong>Linux 默认值</strong>：60 秒（可通过 <code>sysctl net.ipv4.tcp_fin_timeout</code> 查看）。</li>
+<li><strong>Windows 默认值</strong>：2 分钟（120 秒）。</li>
 </ul>
 <h2 id="tcp如何保证传输的可靠性">
   TCP如何保证传输的可靠性？

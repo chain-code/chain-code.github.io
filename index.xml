@@ -2394,8 +2394,8 @@ Processor 它包含了运行goroutine的资源，如果线程想运行goroutine,
 在Go中，线程是运行goroutine的实体，调度器的功能是把可运行的goroutine分配到工作线程上。
 全局队列：存放等待运行的G P的本地队列：同全局队列类似，存放的也是等待运行的G，存的数量有限，不超过256个。新建 G’时，G’优先加入到 P 的本地队列，如果队列满了，则会把本地队列中一半的 G 移动到全局队列。 P列表：所有的P都在程序启动时创建，并保存在数组中，最多有 GOMAXPROCS(可配置) 个。 M：线程想运行任务就得获取P，从P的本地队列获取G，P队列为空时，M 也会尝试从全局队列拿一批 G 放到 P 的本地队列，或从其他 P 的本地队列偷一半放到自己 P 的本地队列。M 运行 G，G 执行之后，M 会从 P 获取下一个 G，不断重复下去。 Goroutine 调度器和 OS 调度器是通过 M 结合起来的，每个 M 都代表了 1 个内核线程，OS 调度器负责把内核线程分配到 CPU 的核上执行。
 P 处理器的作用 # 负责调度G
-P和M的个数问题 # 1、P的数量：
-由启动时环境变量 $GOMAXPROCS 或者是由 runtime 的方法 GOMAXPROCS() 决定。这意味着在程序执行的任意时刻都只有 $GOMAXPROCS 个 goroutine 在同时运行。 2、M的数量：</description>
+P、M和G的个数问题 # 1、P的数量：
+由启动时环境变量 $GOMAXPROCS 或者是由 runtime 的方法 GOMAXPROCS() 决定。这意味着在程序执行的任意时刻都只有 $GOMAXPROCS 个 goroutine 在同时运行。 默认是cpu核心数 2、M的数量：</description>
     </item>
     
     <item>

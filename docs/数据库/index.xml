@@ -24,12 +24,13 @@ mongod --dbpath /usr/local/mongodb/data --logpath /usr/local/mongodb/log/mongod.
     </item>
     
     <item>
-      <title>数据库规范化</title>
-      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A7%84%E8%8C%83%E5%8C%96/</link>
+      <title>数据库设计</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A7%84%E8%8C%83%E5%8C%96/</guid>
-      <description>数据库规范化 # 数据库规范化是设计数据库的方式，注重最小化数据重复和确保数据完整性。
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1/</guid>
+      <description>数据库设计案例 # 案例实操
+数据库规范化 # 数据库规范化是设计数据库的方式，注重最小化数据重复和确保数据完整性。
 优点：
 最大限度地减少数据重复，从而最大限度地减少存储。 易于更新，确保数据完整性。 缺点：
 可能会降低查询性能，尤其是对于需要连接表的查询。 用例：

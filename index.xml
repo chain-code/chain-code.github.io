@@ -1186,12 +1186,13 @@ InnoDB 特点：支持事物、行级锁、外键约束 优点：数据完整性
     </item>
     
     <item>
-      <title>数据库规范化</title>
-      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A7%84%E8%8C%83%E5%8C%96/</link>
+      <title>数据库设计</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A7%84%E8%8C%83%E5%8C%96/</guid>
-      <description>数据库规范化 # 数据库规范化是设计数据库的方式，注重最小化数据重复和确保数据完整性。
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1/</guid>
+      <description>数据库设计案例 # 案例实操
+数据库规范化 # 数据库规范化是设计数据库的方式，注重最小化数据重复和确保数据完整性。
 优点：
 最大限度地减少数据重复，从而最大限度地减少存储。 易于更新，确保数据完整性。 缺点：
 可能会降低查询性能，尤其是对于需要连接表的查询。 用例：
@@ -1353,6 +1354,29 @@ A类IP段 0.0.0.0 到 127.255.255.255 即首位为‘0’的IP地址。 B类IP�
 greeter-session=ukui-greeteruser-session=ukuigreeter-setup-script=/usr/lib/ukui-greeter/ukui-greeter-nm-start.sh# ↓↓↓↓追加的内容↓↓↓↓allow-guest=falsegreeter-show-manual-login=true# ↑↑↑↑追加的内容↑↑↑↑ 开机自动登录到“root” # sudo vim /etc/lightdm/lightdm.conf lightdm.conf
 [SeatDefaults]autologin-guest=false# ↓↓↓↓修改的内容↓↓↓↓autologin-user=root# ↑↑↑↑修改的内容↑↑↑↑autologin-user-timeout=0 关闭“麒麟安全授权认证” # sudo vim /etc/default/grub grub
 # ...GRUB_DEFAULT=0GRUB_TIMEOUT=5GRUB_DISTRIBUTOR=`lsb_release -i -s 2&amp;gt; /dev/null || echo Debian`GRUB_DISTRIBUTOR_RELEASE=`lsb_release -d -s | awk -F&amp;#34; &amp;#34; &amp;#39;{print $2 &amp;#34; &amp;#34; $3}&amp;#39; 2&amp;gt; /dev/null || echo &amp;#34;&amp;#34;`GRUB_CMDLINE_LINUX_DEFAULT=&amp;#34;quiet splash&amp;#34;GRUB_CMDLINE_LINUX=&amp;#34;&amp;#34;# ↓↓↓↓修改的内容↓↓↓↓# GRUB_CMDLINE_LINUX_SECURITY=&amp;#34;audit=0 security=kysec&amp;#34;GRUB_CMDLINE_LINUX_SECURITY=&amp;#34;audit=0 security=&amp;#34;# ↑↑↑↑修改的内容↑↑↑↑# .</description>
+    </item>
+    
+    <item>
+      <title>面视题总结（一）</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E9%9D%A2%E8%A7%86%E9%A2%98%E6%80%BB%E7%BB%93%E4%B8%80/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E9%9D%A2%E8%A7%86%E9%A2%98%E6%80%BB%E7%BB%93%E4%B8%80/</guid>
+      <description>新⼿常犯的50个错误 # https://blog.csdn.net/gezhonglei2007/article/details/52237582
+nil切⽚和空切⽚ # nil切片和空切片指向的地址不一样。nil空切片引用数组指针地址为0（无指向任何实际地址） 空切片的引用数组指针地址是有的，且固定为一个值 //切片数据结构 type SliceHeader struct { Data uintptr //引用数组指针地址 Len int // 切片的目前使用长度 Cap int // 切片的容量 } 字符串转成byte数组，会发⽣内存拷⻉吗？ # 字符串转成切片，会产生拷贝。严格来说，只要是发生类型强转都会发生内存拷贝。
+有没有什么办法可以在字符串转成切片的时候不用发生拷贝呢？
+package main import ( &amp;#34;fmt&amp;#34; &amp;#34;reflect&amp;#34; &amp;#34;unsafe&amp;#34; ) func main() { a :=&amp;#34;aaa&amp;#34; ssh := *(*reflect.StringHeader)(unsafe.Pointer(&amp;amp;a)) b := *(*[]byte)(unsafe.Pointer(&amp;amp;ssh)) fmt.Printf(&amp;#34;%v&amp;#34;,b) } 解释：
+StringHeader 是字符串在go的底层结构。 type StringHeader struct { Data uintptr Len int } SliceHeader 是切片在go的底层结构。 type SliceHeader struct { Data uintptr Len int Cap int } 那么如果想要在底层转换二者，只需要把 StringHeader 的地址强转成 SliceHeader就行。那么go有个很强的包叫 unsafe 。 1.</description>
+    </item>
+    
+    <item>
+      <title>面视题总结（二）</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E9%9D%A2%E8%A7%86%E9%A2%98%E6%80%BB%E7%BB%93%E4%BA%8C/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E9%9D%A2%E8%A7%86%E9%A2%98%E6%80%BB%E7%BB%93%E4%BA%8C/</guid>
+      <description>uintptr和unsafe.Pointer的区别 # unsafe.Pointer只是单纯的通用指针类型，用于转换不同类型指针，它不可以参与指针运算； 而uintptr是用于指针运算的，GC 不把 uintptr 当指针，也就是说 uintptr 无法持有对象， uintptr 类型的目标会被回收； unsafe.Pointer 可以和 普通指针 进行相互转换； unsafe.Pointer 可以和 uintptr 进行相互转换。 举例
+通过一个例子加深理解，接下来尝试用指针的方式给结构体赋值。 package main import ( &amp;#34;fmt&amp;#34; &amp;#34;unsafe&amp;#34; ) type W struct { b int32 c int64 } func main() { var w *W = new(W) //这时w的变量打印出来都是默认值0，0 fmt.Println(w.b,w.c) //现在我们通过指针运算给b变量赋值为10 b := unsafe.Pointer(uintptr(unsafe.Pointer(w)) + unsafe.Offsetof(w.b)) *((*int)(b)) = 10 //此时结果就变成了10，0 fmt.Println(w.b,w.c) } uintptr(unsafe.Pointer(w)) 获取了 w 的指针起始值 unsafe.Offsetof(w.b) 获取 b 变量的偏移量 两个相加就得到了 b 的地址值，将通用指针 Pointer 转换成具体指针 ((*int)(b))，通过 * 符号取值，然后赋值。*((*int)(b)) 相当于把 (*int)(b) 转换成 int了，最后对变量重新赋值成 10，这样指针运算就完成了。 怎么避免内存逃逸？ # 内存逃逸（Escape Analysis） 是指编译器在编译阶段分析变量的生命周期，决定将其分配在栈（stack）还是堆（heap）上。如果变量逃逸到堆上，会增加 GC 压力，降低性能。</description>
     </item>
     
     <item>

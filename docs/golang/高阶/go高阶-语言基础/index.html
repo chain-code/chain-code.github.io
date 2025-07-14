@@ -61,7 +61,7 @@ func main(){ var whatever [3]struct{} for i:=range whatever{ defer func(){ fmt.P
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.3a24a2263ab6017e686fc8dae598dce91909b146f1b2bc698b87b396e5f07e5d.js" integrity="sha256-OiSiJjq2AX5ob8ja5Zjc6RkJsUbxsrxpi4ezluXwfl0=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.7df81998642ab5b2921249e958abe455eb210ede41389f4f048e138d92684411.js" integrity="sha256-ffgZmGQqtbKSEknpWKvkVeshDt5BOJ9PBI4TjZJoRBE=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -3979,7 +3979,7 @@ var m3 = make(map[int]string, 0)
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">nevacuate</span>  <span style="color:#66d9ef">uintptr</span>        <span style="color:#75715e">// 表示扩容进度，小于此地址的buckets代表已搬迁完成。
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">extra</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">mapextra</span> <span style="color:#75715e">// 存储溢出桶，这个字段是为了优化GC扫描而设计的，下面详细介绍
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
-</span></span></code></pre></div><p>B是buckets数组的长度的对数，即buckets数组的长度为2^B，bucket里面存储了key和value，buckets是一个指针，指向一个结构体。</p>
+</span></span></code></pre></div><p>B是buckets数组的长度的对数，即buckets数组的长度为2^B，bucket里面存储了key和value，buckets是一个指针，指向一个结构体。<strong>默认B==0，h:=make(map[int]int)</strong></p>
 <p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/Hexo_img/202208051617512.png" alt="" /></p>
 <p><code>bmap</code> 就是我们常说的“桶”，一个桶里面会<strong>最多装 8 个&lt; key,value&gt;对</strong>，这些 key 之所以会落入同一个桶，是因为它们经过哈希计算后，哈希结果的<strong>最后B个bit位是相同的</strong>（哈希值并不是完全相等，是后面几位相同）。在桶内，又会根据key计算出来的hash值的<strong>高8位</strong>来决定key到底落入桶内的那个槽位。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">bmap</span> <span style="color:#66d9ef">struct</span> { <span style="color:#75715e">// A bucket for a Go map.

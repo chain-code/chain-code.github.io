@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>基础 on Soulmate</title>
+    <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/</link>
+    <description>Recent content in 基础 on Soulmate</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 30 Apr 2023 16:16:50 +0800</lastBuildDate><atom:link href="https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Mongodb安装</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/mongodb%E5%AE%89%E8%A3%85/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/mongodb%E5%AE%89%E8%A3%85/</guid>
+      <description> Mac版 # 官网下载
+https://www.mongodb.com/try/download/community
+解压
+目录 重新命名为mongodb，并把挪到：/usr/local目录下
+添加环境变量
+vi ~/.bash_profile export PATH=$PATH:/usr/local/mongoDB/bin source ~/.bash_profile mongod -version#返回下面信息生效db version v7.0.4Build Info: {&amp;#34;version&amp;#34;: &amp;#34;7.0.4&amp;#34;,&amp;#34;gitVersion&amp;#34;: &amp;#34;38f3e37057a43d2e9f41a39142681a76062d582e&amp;#34;,&amp;#34;modules&amp;#34;: [],&amp;#34;allocator&amp;#34;: &amp;#34;system&amp;#34;,&amp;#34;environment&amp;#34;: {&amp;#34;distarch&amp;#34;: &amp;#34;x86_64&amp;#34;,&amp;#34;target_arch&amp;#34;: &amp;#34;x86_64&amp;#34;}} 在目录：/usr/local/mongoDB 创建两个文件夹: data 和 log
+chmod 777 /usr/local/mongodbmkdir /usr/local/mongodb/datamkdir /usr/local/mongodb/log 启动MongoDB
+mongod --dbpath /usr/local/mongodb/data --logpath /usr/local/mongodb/log/mongod.log --logappend </description>
+    </item>
+    
+    <item>
+      <title>数据库规范化</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A7%84%E8%8C%83%E5%8C%96/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A7%84%E8%8C%83%E5%8C%96/</guid>
+      <description>数据库规范化 # 数据库规范化是设计数据库的方式，注重最小化数据重复和确保数据完整性。
+优点：
+最大限度地减少数据重复，从而最大限度地减少存储。 易于更新，确保数据完整性。 缺点：
+可能会降低查询性能，尤其是对于需要连接表的查询。 用例：
+数据完整性非常重要的系统，例如银行系统。</description>
+    </item>
+    
+    <item>
+      <title>Xorm</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/xorm/</link>
+      <pubDate>Sun, 30 Apr 2023 16:16:50 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/xorm/</guid>
+      <description>https://lunny.gitbooks.io/xorm-manual-zh-cn/content/chapter-01/index.html
+https://xorm.io/docs/chapter-01/readme/
+创建Orm引擎 # 在xorm里面，可以同时存在多个Orm引擎，一个Orm引擎称为Engine，一个Engine一般只对应一个数据库。Engine通过调用xorm.NewEngine生成，如：
+import ( _ &amp;#34;github.com/go-sql-driver/mysql&amp;#34; &amp;#34;github.com/go-xorm/xorm&amp;#34; ) var engine *xorm.Engine func main() { var err error engine, err = xorm.NewEngine(&amp;#34;mysql&amp;#34;, &amp;#34;root:[email protected]/test?charset=utf8&amp;#34;) } or
+import ( _ &amp;#34;github.com/mattn/go-sqlite3&amp;#34; &amp;#34;github.com/go-xorm/xorm&amp;#34; ) var engine *xorm.Engine func main() { var err error engine, err = xorm.NewEngine(&amp;#34;sqlite3&amp;#34;, &amp;#34;./test.db&amp;#34;)//数据库文件路径 } 一般情况下如果只操作一个数据库，只需要创建一个engine即可。engine是GoRutine安全的。
+创建完成engine之后，并没有立即连接数据库，此时可以通过engine.Ping()来进行数据库的连接测试是否可以连接到数据库。另外对于某些数据库有连接超时设置的，可以通过起一个定期Ping的Go程来保持连接鲜活。
+对于有大量数据并且需要分区的应用，也可以根据规则来创建多个Engine，比如：
+var err error for i:=0;i&amp;lt;5;i++ { engines[i], err = xorm.NewEngine(&amp;#34;sqlite3&amp;#34;, fmt.Sprintf(&amp;#34;./test%d.db&amp;#34;, i)) } engine可以通过engine.Close来手动关闭，但是一般情况下可以不用关闭，在程序退出时会自动关闭。
+NewEngine传入的参数和sql.Open传入的参数完全相同，因此，在使用某个驱动前，请查看此驱动中关于传入参数的说明文档。以下为各个驱动的连接符对应的文档链接：
+sqlite3 mysql dsn mymysql postgres 在engine创建完成后可以进行一些设置，如：</description>
+    </item>
+    
+    <item>
+      <title>Gorm</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/gorm/</link>
+      <pubDate>Tue, 24 May 2022 15:47:27 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/gorm/</guid>
+      <description>GORM # 特性 # 全功能 ORM 关联 (Has One，Has Many，Belongs To，Many To Many，多态，单表继承) Create，Save，Update，Delete，Find 中钩子方法 支持 Preload、Joins 的预加载 事务，嵌套事务，Save Point，Rollback To Saved Point Context、预编译模式、DryRun 模式 批量插入，FindInBatches，Find/Create with Map，使用 SQL 表达式、Context Valuer 进行 CRUD SQL 构建器，Upsert，数据库锁，Optimizer/Index/Comment Hint，命名参数，子查询 复合主键，索引，约束 Auto Migration 自定义 Logger 灵活的可扩展插件 API：Database Resolver（多数据库，读写分离）、Prometheus… 每个特性都经过了测试的重重考验 开发者友好 安装 # go get -u gorm.io/gormgo get -u gorm.io/driver/sqlite 快速入门 # package main import ( &amp;#34;gorm.io/gorm&amp;#34; &amp;#34;gorm.io/driver/sqlite&amp;#34; ) type Product struct { gorm.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/</guid>
+      <description>title: 几种常见数据库的备份与恢复 date: 2022-05-24 15:47:27 MySQL的数据备份与恢复 # 1. 数据的备份类型 # 数据的备份类型根据其自身的特性主要分为以下几组：
+1.完全备份　完全备份指的是备份整个数据集( 即整个数据库 )
+2.部分备份 部分备份指的是备份部分数据集(例如: 只备份一个表) 而部分备份又分为：
+增量备份 增量备份指的是备份自上一次备份以来(增量或完全)以来变化的数据。特点: 节约空间、还原麻烦 差异备份 差异备份指的是备份自上一次完全备份以来变化的数据。特点: 浪费空间、还原比增量备份简单 2. MySQL备份数据的方式 # 在MySQl中备份数据一般有三种方式：
+热备份 热备份指的是当数据库进行备份时, 数据库的读写操作均不是受影响
+温备份 温备份指的是当数据库进行备份时, 数据库的读操作可以执行, 但是不能执行写操作
+冷备份 冷备份指的是当数据库进行备份时, 数据库不能进行读写操作, 即数据库要下线
+MySQL中进行不同方式的备份还要考虑存储引擎是否支持： 1）MyISAM 热备 × 温备 √ 冷备 √ 2）InnoDB 热备 √ 温备 √ 冷备 √
+我们考虑完数据备份, 数据库的运行状态之后还需要考虑对于MySQL数据库中数据的备份方式：
+（1）物理备份 物理备份一般就是通过tar,cp等命令直接打包复制数据库的数据文件达到备份的效果 （2）逻辑备份 逻辑备份一般就是通过特定工具从数据库中导出数据并另存备份(逻辑备份会丢失数据精度) 3.备份工具 # 常用的备份工具有：
+mysqldump： 逻辑备份工具, 适用于所有的存储引擎, 支持温备、完全备份、部分备份、对于InnoDB存储引擎支持热备 cp, tar 等归档复制工具： 物理备份工具, 适用于所有的存储引擎, 冷备、完全备份、部分备份 lvm2 snapshot： 几乎热备, 借助文件系统管理工具进行备份 mysqlhotcopy： 名不副实的的一个工具, 几乎冷备, 仅支持MyISAM存储引擎 xtrabackup： 一款非常强大的InnoDB/XtraDB热备工具, 支持完全备份、增量备份, 由percona提供 下面介绍一下mysqldump的使用</description>
+    </item>
+    
+  </channel>
+</rss>

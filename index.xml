@@ -527,17 +527,17 @@ localhost在IPv6中通常解析为::1，这是IPv6下的环回地址。直接使
     
     <item>
       <title>Mongodb安装</title>
-      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mongodb%E5%AE%89%E8%A3%85/</link>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/mongodb%E5%AE%89%E8%A3%85/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mongodb%E5%AE%89%E8%A3%85/</guid>
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/mongodb%E5%AE%89%E8%A3%85/</guid>
       <description> Mac版 # 官网下载
 https://www.mongodb.com/try/download/community
 解压
 目录 重新命名为mongodb，并把挪到：/usr/local目录下
 添加环境变量
-vi ~/.bash_profile export PATH=$PATH:/usr/local/mongoDB/bin source ~/.bash_profile mongod -version #返回下面信息生效 db version v7.0.4 Build Info: { &amp;#34;version&amp;#34;: &amp;#34;7.0.4&amp;#34;, &amp;#34;gitVersion&amp;#34;: &amp;#34;38f3e37057a43d2e9f41a39142681a76062d582e&amp;#34;, &amp;#34;modules&amp;#34;: [], &amp;#34;allocator&amp;#34;: &amp;#34;system&amp;#34;, &amp;#34;environment&amp;#34;: { &amp;#34;distarch&amp;#34;: &amp;#34;x86_64&amp;#34;, &amp;#34;target_arch&amp;#34;: &amp;#34;x86_64&amp;#34; } } 在目录：/usr/local/mongoDB 创建两个文件夹: data 和 log
-chmod 777 /usr/local/mongodb mkdir /usr/local/mongodb/data mkdir /usr/local/mongodb/log 启动MongoDB
+vi ~/.bash_profile export PATH=$PATH:/usr/local/mongoDB/bin source ~/.bash_profile mongod -version#返回下面信息生效db version v7.0.4Build Info: {&amp;#34;version&amp;#34;: &amp;#34;7.0.4&amp;#34;,&amp;#34;gitVersion&amp;#34;: &amp;#34;38f3e37057a43d2e9f41a39142681a76062d582e&amp;#34;,&amp;#34;modules&amp;#34;: [],&amp;#34;allocator&amp;#34;: &amp;#34;system&amp;#34;,&amp;#34;environment&amp;#34;: {&amp;#34;distarch&amp;#34;: &amp;#34;x86_64&amp;#34;,&amp;#34;target_arch&amp;#34;: &amp;#34;x86_64&amp;#34;}} 在目录：/usr/local/mongoDB 创建两个文件夹: data 和 log
+chmod 777 /usr/local/mongodbmkdir /usr/local/mongodb/datamkdir /usr/local/mongodb/log 启动MongoDB
 mongod --dbpath /usr/local/mongodb/data --logpath /usr/local/mongodb/log/mongod.log --logappend </description>
     </item>
     
@@ -1186,6 +1186,19 @@ InnoDB 特点：支持事物、行级锁、外键约束 优点：数据完整性
     </item>
     
     <item>
+      <title>数据库规范化</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A7%84%E8%8C%83%E5%8C%96/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A7%84%E8%8C%83%E5%8C%96/</guid>
+      <description>数据库规范化 # 数据库规范化是设计数据库的方式，注重最小化数据重复和确保数据完整性。
+优点：
+最大限度地减少数据重复，从而最大限度地减少存储。 易于更新，确保数据完整性。 缺点：
+可能会降低查询性能，尤其是对于需要连接表的查询。 用例：
+数据完整性非常重要的系统，例如银行系统。</description>
+    </item>
+    
+    <item>
       <title>数据库设计</title>
       <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -1385,7 +1398,8 @@ StringHeader 是字符串在go的底层结构。 type StringHeader struct { Data
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/ai/basic/%E9%A1%B9%E7%9B%AE%E6%94%B6%E8%97%8F/</guid>
-      <description>https://github.com/Yuliang-Liu/MonkeyOCR</description>
+      <description>https://github.com/Yuliang-Liu/MonkeyOCR
+系统性的 LLM 学习教程</description>
     </item>
     
     <item>
@@ -1980,10 +1994,10 @@ CREATE VIRTUAL TABLE IF NOT EXISTS student_info_fts USING fts5( name, -- 需要�
     
     <item>
       <title>Xorm</title>
-      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/</link>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/xorm/</link>
       <pubDate>Sun, 30 Apr 2023 16:16:50 +0800</pubDate>
       
-      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/xorm/</guid>
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/xorm/</guid>
       <description>https://lunny.gitbooks.io/xorm-manual-zh-cn/content/chapter-01/index.html
 https://xorm.io/docs/chapter-01/readme/
 创建Orm引擎 # 在xorm里面，可以同时存在多个Orm引擎，一个Orm引擎称为Engine，一个Engine一般只对应一个数据库。Engine通过调用xorm.NewEngine生成，如：
@@ -2424,10 +2438,10 @@ P、M和G的个数问题 # 1、P的数量：
     
     <item>
       <title>Gorm</title>
-      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/</link>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/gorm/</link>
       <pubDate>Tue, 24 May 2022 15:47:27 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/gorm/</guid>
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/gorm/</guid>
       <description>GORM # 特性 # 全功能 ORM 关联 (Has One，Has Many，Belongs To，Many To Many，多态，单表继承) Create，Save，Update，Delete，Find 中钩子方法 支持 Preload、Joins 的预加载 事务，嵌套事务，Save Point，Rollback To Saved Point Context、预编译模式、DryRun 模式 批量插入，FindInBatches，Find/Create with Map，使用 SQL 表达式、Context Valuer 进行 CRUD SQL 构建器，Upsert，数据库锁，Optimizer/Index/Comment Hint，命名参数，子查询 复合主键，索引，约束 Auto Migration 自定义 Logger 灵活的可扩展插件 API：Database Resolver（多数据库，读写分离）、Prometheus… 每个特性都经过了测试的重重考验 开发者友好 安装 # go get -u gorm.io/gormgo get -u gorm.io/driver/sqlite 快速入门 # package main import ( &amp;#34;gorm.io/gorm&amp;#34; &amp;#34;gorm.io/driver/sqlite&amp;#34; ) type Product struct { gorm.</description>
     </item>
     
@@ -3112,10 +3126,10 @@ Go部分 # xorm # 若使用纯 go 版本的 sqlite 驱动 github.com/glebarez/go
     
     <item>
       <title></title>
-      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/</link>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/</guid>
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/</guid>
       <description>title: 几种常见数据库的备份与恢复 date: 2022-05-24 15:47:27 MySQL的数据备份与恢复 # 1. 数据的备份类型 # 数据的备份类型根据其自身的特性主要分为以下几组：
 1.完全备份　完全备份指的是备份整个数据集( 即整个数据库 )
 2.部分备份 部分备份指的是备份部分数据集(例如: 只备份一个表) 而部分备份又分为：

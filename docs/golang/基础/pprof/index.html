@@ -45,7 +45,7 @@ cum%：CPU运行耗时总比例
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.f057020be292ad545abe80c4fa07eb1c1bdb9cfeb4d47bed332c55eb99cedf51.js" integrity="sha256-8FcCC&#43;KSrVRavoDE&#43;gfrHBvbnP601HvtMyxV65nO31E=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.7ef9d36d96e37df93cb424cd4684a36e04520df8f21f29fa2ff4f5270548882b.js" integrity="sha256-fvnTbZbjffk8tCTNRoSjbgRSDfjyHyn6L/T1JwVIiCs=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -3428,6 +3428,7 @@ https://github.com/alex-shpak/hugo-book
           </ul>
         </li>
         <li><a href="#三总结">三、总结</a></li>
+        <li><a href="#实操">实操</a></li>
       </ul>
     </li>
   </ul>
@@ -3587,6 +3588,24 @@ pprof 以<strong>profile.proto</strong>的格式保存数据，然后根据这�
   <a class="anchor" href="#%e4%b8%89%e6%80%bb%e7%bb%93">#</a>
 </h2>
 <p>以上就是本文对于net/http/pprof的简单使用介绍，更多详情可以参考<a href="https://golang.org/pkg/net/http/pprof/">pprof</a></p>
+<h2 id="实操">
+  实操
+  <a class="anchor" href="#%e5%ae%9e%e6%93%8d">#</a>
+</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#a6e22e">_</span><span style="color:#e6db74">&#34;net/http/pprof&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">StartGin</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Engine</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">router</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Engine</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">IsDebugMode</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">router</span> = <span style="color:#a6e22e">ReleaseRouter</span>()
+</span></span><span style="display:flex;"><span>	} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">router</span> = <span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//注册pprof路由
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">router</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/swagger/*any&#34;</span>, 		<span style="color:#a6e22e">ginSwagger</span>.<span style="color:#a6e22e">WrapHandler</span>(<span style="color:#a6e22e">swaggerFiles</span>.<span style="color:#a6e22e">Handler</span>))
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">router</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/debug/pprof/*any&#34;</span>, <span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">WrapH</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">DefaultServeMux</span>))
+</span></span><span style="display:flex;"><span>	}
+</span></span></code></pre></div><p>引入，路由里面注册就好，不要在生产环境中使用</p>
 </article>
  
       
@@ -3643,6 +3662,7 @@ pprof 以<strong>profile.proto</strong>的格式保存数据，然后根据这�
           </ul>
         </li>
         <li><a href="#三总结">三、总结</a></li>
+        <li><a href="#实操">实操</a></li>
       </ul>
     </li>
   </ul>

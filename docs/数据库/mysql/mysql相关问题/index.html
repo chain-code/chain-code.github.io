@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="联合索引 和 mysql 调优的关系 # mysql 调优 的一个核心动作，就是 通过 联合索引 实现 索引覆盖。
+<meta name="description" content="联合索引 和 mysql 调优的关系 # mysql 调优的一个核心动作，就是通过联合索引实现索引覆盖。
 在MySQL中，合理使用联合索引可以提高查询效率，通过 联合索引 实现 索引覆盖 ，常常需要注意一些技巧：
 选择合适的列：联合索引的列顺序非常重要。应该优先选择最频繁用于查询条件的列，以提高索引效率。其次考虑选择性高的列，这样可以过滤出更少的数据。 避免冗余列：联合索引的列应该尽量避免包含冗余列，即多个索引的前缀相同。这样会增加索引的维护成本，并占用更多的存储空间。 避免过度索引：不要为每个查询都创建一个新的联合索引。应该根据实际情况，分析那些查询是最频繁的，然后创建针对这些查询的索引。 覆盖索引：如果查询的列都包含在联合索引中，并且不需要访问表的其他列，那么MySql可以直接使用索引来执行查询，不必访问表，这种索引称为覆盖索引，可以提高查询性能。 使用EXPLAIN进行查询计划分析： 使用MySQL的EXPLAIN语句可以查看MySQL执行查询的执行计划，以便优化查询语句和索引的使用。 定期优化索引： 随着数据库的使用，索引的效率可能会下降，因此需要定期进行索引的优化和重建，以保持查询性能的稳定性。 分析查询日志： 监控数据库的查询日志，分析哪些查询是最频繁的，以及它们的查询模式，可以帮助确定需要创建的联合索引。 避免过度索引更新： 避免频繁地更新索引列，因为每次更新索引都会增加数据库的负载和IO操作。 综上所述，联合索引是mysql 调优的一个核心动作， 通过 联合索引进行mysql 调优时，需要综合考虑列的选择、索引的覆盖、查询的频率和模式等因素，以提高MySQL数据库的查询性能。
 MySQL索引机制 # 数据库索引，官方定义如下
@@ -11,11 +11,11 @@ MySQL索引机制 # 数据库索引，官方定义如下
 通俗的理解为
 在关系型数据库中，索引是一种用来帮助快速检索目标数据的存储结构。
 索引的创建 # MySQL可以通过CREATE、ALTER、DDL三种方式创建一个索引。
-使用CREATE语句创建 CREATE INDEX indexName ON tableName (columnName(length) [ASC|DESC]); 使用ALTER语句创建 ALTER TABLE tableName ADD INDEX indexName(columnName(length) [ASC|DESC]); 建表时DDL语句中创建 CREATE TABLE tableName( columnName1 INT(8) NOT NULL, columnName2 ....,.">
+使用CREATE语句创建 CREATE INDEX indexName ON tableName (columnName(length) [ASC|DESC]); 使用ALTER语句创建 ALTER TABLE tableName ADD INDEX indexName(columnName(length) [ASC|DESC]); 建表时DDL语句中创建 CREATE TABLE tableName( columnName1 INT(8) NOT NULL, columnName2 ....,.....,INDEX [indexName] (columnName(length)) ); 索引的查询 # SHOW INDEX from tableName; 索引的删除 # ALTER TABLE table_name DROP INDEX index_name;DROP INDEX index_name ON table_name; MySQL联合索引 # 什么是联合索引 # 联合索引（Composite Index）是一种索引类型，它由多个列组成。">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="MySql相关问题" />
-<meta property="og:description" content="联合索引 和 mysql 调优的关系 # mysql 调优 的一个核心动作，就是 通过 联合索引 实现 索引覆盖。
+<meta property="og:description" content="联合索引 和 mysql 调优的关系 # mysql 调优的一个核心动作，就是通过联合索引实现索引覆盖。
 在MySQL中，合理使用联合索引可以提高查询效率，通过 联合索引 实现 索引覆盖 ，常常需要注意一些技巧：
 选择合适的列：联合索引的列顺序非常重要。应该优先选择最频繁用于查询条件的列，以提高索引效率。其次考虑选择性高的列，这样可以过滤出更少的数据。 避免冗余列：联合索引的列应该尽量避免包含冗余列，即多个索引的前缀相同。这样会增加索引的维护成本，并占用更多的存储空间。 避免过度索引：不要为每个查询都创建一个新的联合索引。应该根据实际情况，分析那些查询是最频繁的，然后创建针对这些查询的索引。 覆盖索引：如果查询的列都包含在联合索引中，并且不需要访问表的其他列，那么MySql可以直接使用索引来执行查询，不必访问表，这种索引称为覆盖索引，可以提高查询性能。 使用EXPLAIN进行查询计划分析： 使用MySQL的EXPLAIN语句可以查看MySQL执行查询的执行计划，以便优化查询语句和索引的使用。 定期优化索引： 随着数据库的使用，索引的效率可能会下降，因此需要定期进行索引的优化和重建，以保持查询性能的稳定性。 分析查询日志： 监控数据库的查询日志，分析哪些查询是最频繁的，以及它们的查询模式，可以帮助确定需要创建的联合索引。 避免过度索引更新： 避免频繁地更新索引列，因为每次更新索引都会增加数据库的负载和IO操作。 综上所述，联合索引是mysql 调优的一个核心动作， 通过 联合索引进行mysql 调优时，需要综合考虑列的选择、索引的覆盖、查询的频率和模式等因素，以提高MySQL数据库的查询性能。
 MySQL索引机制 # 数据库索引，官方定义如下
@@ -23,7 +23,7 @@ MySQL索引机制 # 数据库索引，官方定义如下
 通俗的理解为
 在关系型数据库中，索引是一种用来帮助快速检索目标数据的存储结构。
 索引的创建 # MySQL可以通过CREATE、ALTER、DDL三种方式创建一个索引。
-使用CREATE语句创建 CREATE INDEX indexName ON tableName (columnName(length) [ASC|DESC]); 使用ALTER语句创建 ALTER TABLE tableName ADD INDEX indexName(columnName(length) [ASC|DESC]); 建表时DDL语句中创建 CREATE TABLE tableName( columnName1 INT(8) NOT NULL, columnName2 ....,." />
+使用CREATE语句创建 CREATE INDEX indexName ON tableName (columnName(length) [ASC|DESC]); 使用ALTER语句创建 ALTER TABLE tableName ADD INDEX indexName(columnName(length) [ASC|DESC]); 建表时DDL语句中创建 CREATE TABLE tableName( columnName1 INT(8) NOT NULL, columnName2 ....,.....,INDEX [indexName] (columnName(length)) ); 索引的查询 # SHOW INDEX from tableName; 索引的删除 # ALTER TABLE table_name DROP INDEX index_name;DROP INDEX index_name ON table_name; MySQL联合索引 # 什么是联合索引 # 联合索引（Composite Index）是一种索引类型，它由多个列组成。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/" /><meta property="article:section" content="docs" />
 <meta property="article:published_time" content="2024-04-30T16:16:50+08:00" />
@@ -33,7 +33,7 @@ MySQL索引机制 # 数据库索引，官方定义如下
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.7ef9d36d96e37df93cb424cd4684a36e04520df8f21f29fa2ff4f5270548882b.js" integrity="sha256-fvnTbZbjffk8tCTNRoSjbgRSDfjyHyn6L/T1JwVIiCs=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.c37f5c2f66ac6343184b0b893bb463499563e2287d62b83f214705d2f8123e8b.js" integrity="sha256-w39cL2asY0MYSwuJO7RjSZVj4ih9Yrg/IUcF0vgSPos=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -3439,7 +3439,7 @@ https://github.com/alex-shpak/hugo-book
   联合索引 和 mysql 调优的关系
   <a class="anchor" href="#%e8%81%94%e5%90%88%e7%b4%a2%e5%bc%95-%e5%92%8c-mysql-%e8%b0%83%e4%bc%98%e7%9a%84%e5%85%b3%e7%b3%bb">#</a>
 </h3>
-<p>mysql 调优 的一个核心动作，就是 通过 联合索引 实现 索引覆盖。</p>
+<p>mysql 调优的一个核心动作，就是通过联合索引实现索引覆盖。</p>
 <p>在MySQL中，合理使用联合索引可以提高查询效率，通过 联合索引 实现 索引覆盖 ，常常需要注意一些技巧：</p>
 <ul>
 <li>选择合适的列：联合索引的列顺序非常重要。应该优先选择最频繁用于查询条件的列，以提高索引效率。其次考虑选择性高的列，这样可以过滤出更少的数据。</li>

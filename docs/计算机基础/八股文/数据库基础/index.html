@@ -49,7 +49,7 @@ B&#43;树索引结构适用于绝大多数场景 如果数据离散型高、基�
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.c37f5c2f66ac6343184b0b893bb463499563e2287d62b83f214705d2f8123e8b.js" integrity="sha256-w39cL2asY0MYSwuJO7RjSZVj4ih9Yrg/IUcF0vgSPos=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.135c3790295bd9cfc2a902a51a36f973423e494e9f93da12af58a5d94701506d.js" integrity="sha256-E1w3kClb2c/CqQKlGjb5c0I&#43;SU6fk9oSr1il2UcBUG0=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -3424,6 +3424,9 @@ https://github.com/alex-shpak/hugo-book
             <li><a href="#索引">索引</a></li>
             <li><a href="#bloom-filter的特点">Bloom Filter的特点</a></li>
             <li><a href="#介绍mysql的事务">介绍MySql的事务</a></li>
+            <li><a href="#mvcc机制">MVCC机制</a></li>
+            <li><a href="#并发事务带来了哪些问题">并发事务带来了哪些问题?</a></li>
+            <li><a href="#sql标准定义了那些事务隔离级别">SQL标准定义了那些事务隔离级别？</a></li>
             <li><a href="#锁">锁</a></li>
           </ul>
         </li>
@@ -3693,10 +3696,10 @@ https://github.com/alex-shpak/hugo-book
 <p>因此对于事务的提交，即便是较大的事务，提交（commit）都是很快的，但是在开启了bin_log的情况下，对于较大事务的提交，可能会变得比较慢一些。这是因为 bin log 是在事务提交的时候一次性写入造成的。</p>
 <p><strong>释放</strong>：</p>
 <p>bin log 的默认是保持时间由参数expire_logs_days配置，也就是说对于非活动的日志文件，在生成时间超过expire_logs_days配置的天数之后，会被自动删除。</p>
-<h4 id="mvcc机制">
+<h3 id="mvcc机制">
   MVCC机制
   <a class="anchor" href="#mvcc%e6%9c%ba%e5%88%b6">#</a>
-</h4>
+</h3>
 <p><strong>MVCC机制&ndash;全称multi version concurrent control，多版本并发控制机制</strong></p>
 <p>读已提交和可重复读都用到了MVCC机制</p>
 <p>MVCC是处理读写冲突的手段，目的在于提高数据库高并发场景下的吞吐性能。</p>
@@ -3725,10 +3728,10 @@ https://github.com/alex-shpak/hugo-book
 <p>每次对记录进行修改时，都会记录一条undo log信息，每条undo log信息都包含一个roll_pointer属性，可以将这些undo日志都连起来，串成一个链表。</p>
 </li>
 </ul>
-<h4 id="并发事务带来了哪些问题">
+<h3 id="并发事务带来了哪些问题">
   并发事务带来了哪些问题?
   <a class="anchor" href="#%e5%b9%b6%e5%8f%91%e4%ba%8b%e5%8a%a1%e5%b8%a6%e6%9d%a5%e4%ba%86%e5%93%aa%e4%ba%9b%e9%97%ae%e9%a2%98">#</a>
-</h4>
+</h3>
 <p>在典型的应用程序中，多个事务并发运行，经常会操作相同的数据来完成各自的任务（多个用户对同一数据进行操作）。并发虽然是必须的，但可能会导致以下的问题。</p>
 <ul>
 <li><strong>脏读（Dirty read）:</strong> 当一个事务正在访问数据并且对数据进行了修改，而这种修改还没有提交到数据库中，这时另外一个事务也访问了这个数据，然后使用了这个数据。因为这个数据是还没有提交的数据，那么另外一个事务读到的这个数据是“脏数据”，依据“脏数据”所做的操作可能是不正确的。</li>
@@ -3743,10 +3746,10 @@ https://github.com/alex-shpak/hugo-book
 </ul>
 <p>幻读其实可以看作是不可重复读的一种特殊情况，单独把区分幻读的原因主要是解决幻读和不可重复读的方案不一样。</p>
 <p>举个例子：执行 <code>delete</code> 和 <code>update</code> 操作的时候，可以直接对记录加锁，保证事务安全。而执行 <code>insert</code> 操作的时候，由于记录锁（Record Lock）只能锁住已经存在的记录，为了避免插入新记录，需要依赖间隙锁（Gap Lock）。也就是说执行 <code>insert</code> 操作的时候需要依赖 Next-Key Lock（Record Lock+Gap Lock） 进行加锁来保证不出现幻读。</p>
-<h4 id="sql标准定义了那些事务隔离级别">
+<h3 id="sql标准定义了那些事务隔离级别">
   SQL标准定义了那些事务隔离级别？
   <a class="anchor" href="#sql%e6%a0%87%e5%87%86%e5%ae%9a%e4%b9%89%e4%ba%86%e9%82%a3%e4%ba%9b%e4%ba%8b%e5%8a%a1%e9%9a%94%e7%a6%bb%e7%ba%a7%e5%88%ab">#</a>
-</h4>
+</h3>
 <ul>
 <li><strong>READ-UNCOMMITTED(读取未提交)</strong> ：最低的隔离级别，允许读取尚未提交的数据变更，可能会导致脏读、幻读或不可重复读。</li>
 <li><strong>READ-COMMITTED(读取已提交)</strong> ：允许读取并发事务已经提交的数据，可以阻止脏读，但是幻读或不可重复读仍有可能发生。</li>
@@ -4198,6 +4201,9 @@ https://github.com/alex-shpak/hugo-book
             <li><a href="#索引">索引</a></li>
             <li><a href="#bloom-filter的特点">Bloom Filter的特点</a></li>
             <li><a href="#介绍mysql的事务">介绍MySql的事务</a></li>
+            <li><a href="#mvcc机制">MVCC机制</a></li>
+            <li><a href="#并发事务带来了哪些问题">并发事务带来了哪些问题?</a></li>
+            <li><a href="#sql标准定义了那些事务隔离级别">SQL标准定义了那些事务隔离级别？</a></li>
             <li><a href="#锁">锁</a></li>
           </ul>
         </li>

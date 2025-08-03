@@ -3,27 +3,59 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="联合索引 和 mysql 调优的关系 # mysql 调优的一个核心动作，就是通过联合索引实现索引覆盖。
+<meta name="description" content="有了关系型数据库，为什么还需要NOSQL? # nosql数据库无需提前设计表结构，数据可以根据需要自由存储和组织，相较于关系型数据库，nosql高效灵活，非常适合复杂化、高效化、高并发的场景中。
+关系型数据库
+数据以行和列的方式存储
+采用结构化查询语言来对数据进行查询
+强调ACID规则：原子性atomicity、一致性consistency、隔离性isolation、持久性durability
+强调数据一致性，因此牺牲了读写性能
+通常存储在硬盘中
+mysql也可以基于内存，即内存表技术。它运行将数据和索引存储在内存中，从而提高查询和修改效率。
+如何创建？
+与创建普通表一样，使用CREATE TABLE，需要将存储引擎设置为：ENGINE=MEMORY
+非关系型数据库
+以键值对来存储 没有固定的要求和限制 事务一般无法回滚（部分可以，MongoDB) 需要通过key来查询 基于内存存储（MongoDB基于磁盘） 不支持范围查询 数据库存储引擎 # 数据库引擎是用于存储、处理和保护数据的核心服务。利用数据库引擎可以控制访问权限并快速处理事物，从而满足业务需求。
+查看当前使用什么引擎
+show engines
+查看当前默认存储引擎
+show variables like %storage_engine%
+查看某表用什么引擎
+show create table 表名
+结果参数中有
+如何指定引擎
+创建表时：create语句后面加上engine=“” 修改表时：alter table 表名 engine=&quot;&quot; InnoDB和MyISM的区别 # InnoDB和MyISM的区别
+mysql存储引擎是基于表的吗 # 是，不是基于数据库
+联合索引 和 mysql 调优的关系 # mysql 调优的一个核心动作，就是通过联合索引实现索引覆盖。
 在MySQL中，合理使用联合索引可以提高查询效率，通过 联合索引 实现 索引覆盖 ，常常需要注意一些技巧：
-选择合适的列：联合索引的列顺序非常重要。应该优先选择最频繁用于查询条件的列，以提高索引效率。其次考虑选择性高的列，这样可以过滤出更少的数据。 避免冗余列：联合索引的列应该尽量避免包含冗余列，即多个索引的前缀相同。这样会增加索引的维护成本，并占用更多的存储空间。 避免过度索引：不要为每个查询都创建一个新的联合索引。应该根据实际情况，分析那些查询是最频繁的，然后创建针对这些查询的索引。 覆盖索引：如果查询的列都包含在联合索引中，并且不需要访问表的其他列，那么MySql可以直接使用索引来执行查询，不必访问表，这种索引称为覆盖索引，可以提高查询性能。 使用EXPLAIN进行查询计划分析： 使用MySQL的EXPLAIN语句可以查看MySQL执行查询的执行计划，以便优化查询语句和索引的使用。 定期优化索引： 随着数据库的使用，索引的效率可能会下降，因此需要定期进行索引的优化和重建，以保持查询性能的稳定性。 分析查询日志： 监控数据库的查询日志，分析哪些查询是最频繁的，以及它们的查询模式，可以帮助确定需要创建的联合索引。 避免过度索引更新： 避免频繁地更新索引列，因为每次更新索引都会增加数据库的负载和IO操作。 综上所述，联合索引是mysql 调优的一个核心动作， 通过 联合索引进行mysql 调优时，需要综合考虑列的选择、索引的覆盖、查询的频率和模式等因素，以提高MySQL数据库的查询性能。
-MySQL索引机制 # 数据库索引，官方定义如下
-在关系型数据库中，索引是一种单独的、物理的数据，对数据库表中一列或多列的值进行排序的一种存储结构，它是某个表中一列或若干列值的集合，以及相应的指向表中物理标识这些值的数据页的逻辑指针清单。
-通俗的理解为
-在关系型数据库中，索引是一种用来帮助快速检索目标数据的存储结构。
-索引的创建 # MySQL可以通过CREATE、ALTER、DDL三种方式创建一个索引。
-使用CREATE语句创建 CREATE INDEX indexName ON tableName (columnName(length) [ASC|DESC]); 使用ALTER语句创建 ALTER TABLE tableName ADD INDEX indexName(columnName(length) [ASC|DESC]); 建表时DDL语句中创建 CREATE TABLE tableName( columnName1 INT(8) NOT NULL, columnName2 ....,.....,INDEX [indexName] (columnName(length)) ); 索引的查询 # SHOW INDEX from tableName; 索引的删除 # ALTER TABLE table_name DROP INDEX index_name;DROP INDEX index_name ON table_name; MySQL联合索引 # 什么是联合索引 # 联合索引（Composite Index）是一种索引类型，它由多个列组成。">
+选择合适的列：联合索引的列顺序非常重要。应该优先选择最频繁用于查询条件的列，以提高索引效率。其次考虑选择性高的列，这样可以过滤出更少的数据。 避免冗余列：联合索引的列应该尽量避免包含冗余列，即多个索引的前缀相同。这样会增加索引的维护成本，并占用更多的存储空间。 避免过度索引：不要为每个查询都创建一个新的联合索引。应该根据实际情况，分析那些查询是最频繁的，然后创建针对这些查询的索引。 覆盖索引：如果查询的列都包含在联合索引中，并且不需要访问表的其他列，那么MySql可以直接使用索引来执行查询，不必访问表，这种索引称为覆盖索引，可以提高查询性能。 使用EXPLAIN进行查询计划分析： 使用MySQL的EXPLAIN语句可以查看MySQL执行查询的执行计划，以便优化查询语句和索引的使用。 定期优化索引： 随着数据库的使用，索引的效率可能会下降，因此需要定期进行索引的优化和重建，以保持查询性能的稳定性。 分析查询日志： 监控数据库的查询日志，分析哪些查询是最频繁的，以及它们的查询模式，可以帮助确定需要创建的联合索引。 避免过度索引更新： 避免频繁地更新索引列，因为每次更新索引都会增加数据库的负载和IO操作。 综上所述，联合索引是mysql 调优的一个核心动作， 通过 联合索引进行mysql 调优时，需要综合考虑列的选择、索引的覆盖、查询的频率和模式等因素，以提高MySQL数据库的查询性能。">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="MySql相关问题" />
-<meta property="og:description" content="联合索引 和 mysql 调优的关系 # mysql 调优的一个核心动作，就是通过联合索引实现索引覆盖。
+<meta property="og:description" content="有了关系型数据库，为什么还需要NOSQL? # nosql数据库无需提前设计表结构，数据可以根据需要自由存储和组织，相较于关系型数据库，nosql高效灵活，非常适合复杂化、高效化、高并发的场景中。
+关系型数据库
+数据以行和列的方式存储
+采用结构化查询语言来对数据进行查询
+强调ACID规则：原子性atomicity、一致性consistency、隔离性isolation、持久性durability
+强调数据一致性，因此牺牲了读写性能
+通常存储在硬盘中
+mysql也可以基于内存，即内存表技术。它运行将数据和索引存储在内存中，从而提高查询和修改效率。
+如何创建？
+与创建普通表一样，使用CREATE TABLE，需要将存储引擎设置为：ENGINE=MEMORY
+非关系型数据库
+以键值对来存储 没有固定的要求和限制 事务一般无法回滚（部分可以，MongoDB) 需要通过key来查询 基于内存存储（MongoDB基于磁盘） 不支持范围查询 数据库存储引擎 # 数据库引擎是用于存储、处理和保护数据的核心服务。利用数据库引擎可以控制访问权限并快速处理事物，从而满足业务需求。
+查看当前使用什么引擎
+show engines
+查看当前默认存储引擎
+show variables like %storage_engine%
+查看某表用什么引擎
+show create table 表名
+结果参数中有
+如何指定引擎
+创建表时：create语句后面加上engine=“” 修改表时：alter table 表名 engine=&quot;&quot; InnoDB和MyISM的区别 # InnoDB和MyISM的区别
+mysql存储引擎是基于表的吗 # 是，不是基于数据库
+联合索引 和 mysql 调优的关系 # mysql 调优的一个核心动作，就是通过联合索引实现索引覆盖。
 在MySQL中，合理使用联合索引可以提高查询效率，通过 联合索引 实现 索引覆盖 ，常常需要注意一些技巧：
-选择合适的列：联合索引的列顺序非常重要。应该优先选择最频繁用于查询条件的列，以提高索引效率。其次考虑选择性高的列，这样可以过滤出更少的数据。 避免冗余列：联合索引的列应该尽量避免包含冗余列，即多个索引的前缀相同。这样会增加索引的维护成本，并占用更多的存储空间。 避免过度索引：不要为每个查询都创建一个新的联合索引。应该根据实际情况，分析那些查询是最频繁的，然后创建针对这些查询的索引。 覆盖索引：如果查询的列都包含在联合索引中，并且不需要访问表的其他列，那么MySql可以直接使用索引来执行查询，不必访问表，这种索引称为覆盖索引，可以提高查询性能。 使用EXPLAIN进行查询计划分析： 使用MySQL的EXPLAIN语句可以查看MySQL执行查询的执行计划，以便优化查询语句和索引的使用。 定期优化索引： 随着数据库的使用，索引的效率可能会下降，因此需要定期进行索引的优化和重建，以保持查询性能的稳定性。 分析查询日志： 监控数据库的查询日志，分析哪些查询是最频繁的，以及它们的查询模式，可以帮助确定需要创建的联合索引。 避免过度索引更新： 避免频繁地更新索引列，因为每次更新索引都会增加数据库的负载和IO操作。 综上所述，联合索引是mysql 调优的一个核心动作， 通过 联合索引进行mysql 调优时，需要综合考虑列的选择、索引的覆盖、查询的频率和模式等因素，以提高MySQL数据库的查询性能。
-MySQL索引机制 # 数据库索引，官方定义如下
-在关系型数据库中，索引是一种单独的、物理的数据，对数据库表中一列或多列的值进行排序的一种存储结构，它是某个表中一列或若干列值的集合，以及相应的指向表中物理标识这些值的数据页的逻辑指针清单。
-通俗的理解为
-在关系型数据库中，索引是一种用来帮助快速检索目标数据的存储结构。
-索引的创建 # MySQL可以通过CREATE、ALTER、DDL三种方式创建一个索引。
-使用CREATE语句创建 CREATE INDEX indexName ON tableName (columnName(length) [ASC|DESC]); 使用ALTER语句创建 ALTER TABLE tableName ADD INDEX indexName(columnName(length) [ASC|DESC]); 建表时DDL语句中创建 CREATE TABLE tableName( columnName1 INT(8) NOT NULL, columnName2 ....,.....,INDEX [indexName] (columnName(length)) ); 索引的查询 # SHOW INDEX from tableName; 索引的删除 # ALTER TABLE table_name DROP INDEX index_name;DROP INDEX index_name ON table_name; MySQL联合索引 # 什么是联合索引 # 联合索引（Composite Index）是一种索引类型，它由多个列组成。" />
+选择合适的列：联合索引的列顺序非常重要。应该优先选择最频繁用于查询条件的列，以提高索引效率。其次考虑选择性高的列，这样可以过滤出更少的数据。 避免冗余列：联合索引的列应该尽量避免包含冗余列，即多个索引的前缀相同。这样会增加索引的维护成本，并占用更多的存储空间。 避免过度索引：不要为每个查询都创建一个新的联合索引。应该根据实际情况，分析那些查询是最频繁的，然后创建针对这些查询的索引。 覆盖索引：如果查询的列都包含在联合索引中，并且不需要访问表的其他列，那么MySql可以直接使用索引来执行查询，不必访问表，这种索引称为覆盖索引，可以提高查询性能。 使用EXPLAIN进行查询计划分析： 使用MySQL的EXPLAIN语句可以查看MySQL执行查询的执行计划，以便优化查询语句和索引的使用。 定期优化索引： 随着数据库的使用，索引的效率可能会下降，因此需要定期进行索引的优化和重建，以保持查询性能的稳定性。 分析查询日志： 监控数据库的查询日志，分析哪些查询是最频繁的，以及它们的查询模式，可以帮助确定需要创建的联合索引。 避免过度索引更新： 避免频繁地更新索引列，因为每次更新索引都会增加数据库的负载和IO操作。 综上所述，联合索引是mysql 调优的一个核心动作， 通过 联合索引进行mysql 调优时，需要综合考虑列的选择、索引的覆盖、查询的频率和模式等因素，以提高MySQL数据库的查询性能。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/" /><meta property="article:section" content="docs" />
 <meta property="article:published_time" content="2024-04-30T16:16:50+08:00" />
@@ -33,7 +65,7 @@ MySQL索引机制 # 数据库索引，官方定义如下
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.c37f5c2f66ac6343184b0b893bb463499563e2287d62b83f214705d2f8123e8b.js" integrity="sha256-w39cL2asY0MYSwuJO7RjSZVj4ih9Yrg/IUcF0vgSPos=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.135c3790295bd9cfc2a902a51a36f973423e494e9f93da12af58a5d94701506d.js" integrity="sha256-E1w3kClb2c/CqQKlGjb5c0I&#43;SU6fk9oSr1il2UcBUG0=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -3405,22 +3437,39 @@ https://github.com/alex-shpak/hugo-book
       <ul>
         <li>
           <ul>
+            <li><a href="#有了关系型数据库为什么还需要nosql">有了关系型数据库，为什么还需要NOSQL?</a></li>
+            <li><a href="#数据库存储引擎">数据库存储引擎</a></li>
+            <li><a href="#innodb和myism的区别">InnoDB和MyISM的区别</a></li>
+            <li><a href="#mysql存储引擎是基于表的吗">mysql存储引擎是基于表的吗</a></li>
             <li><a href="#联合索引-和-mysql-调优的关系">联合索引 和 mysql 调优的关系</a></li>
             <li><a href="#mysql索引机制">MySQL索引机制</a></li>
             <li><a href="#mysql联合索引">MySQL联合索引</a></li>
+            <li><a href="#最左前缀匹配原则">最左前缀匹配原则</a></li>
+            <li><a href="#为什么要遵循最左前缀匹配">为什么要遵循最左前缀匹配？</a></li>
+            <li><a href="#联合索引注意事项">联合索引注意事项</a></li>
+            <li><a href="#char和varchar的区别">char和varchar的区别</a></li>
+            <li><a href="#innodb页分裂页合并"><strong>InnoDB页分裂，页合并</strong></a></li>
+            <li><a href="#mysql为什么会有存储碎片有什么危害">MySQL为什么会有存储碎片？有什么危害？</a></li>
+            <li><a href="#什么是数据库范式为什么要反范式">什么是数据库范式，为什么要反范式？</a></li>
+            <li><a href="#为什么大厂不建议使用多表join">为什么大厂不建议使用多表join？</a></li>
+            <li><a href="#mysql一条sql语句的执行过程">MySQL一条SQL语句的执行过程</a></li>
+            <li><a href="#mysql-5x和80有什么区别">MySQl 5.x和8.0有什么区别</a></li>
+            <li><a href="#innodb支持哪几种行格式">InnoDB支持哪几种行格式？</a></li>
+            <li><a href="#数据库事务">数据库事务</a></li>
+            <li><a href="#innodb的一次更新事务过程是怎样的">InnoDB的一次更新事务过程是怎样的？</a></li>
+            <li><a href="#什么是事务的2阶段提交">什么是事务的2阶段提交</a></li>
+            <li><a href="#mysql能保证数据100不丢失吗">MySQL能保证数据100%不丢失吗？</a></li>
+            <li><a href="#什么是脏读幻读不可重复读丢失修改">什么是脏读、幻读、不可重复读、丢失修改？</a></li>
+            <li><a href="#mysql中的事务隔离级别">MySql中的事务隔离级别？</a></li>
+            <li><a href="#innodb如何解决脏读不可重复读幻读的">InnoDB如何解决脏读、不可重复读、幻读的？</a></li>
+            <li><a href="#如何理解mvcc">如何理解MVCC？</a></li>
+            <li><a href="#mysql的select--会用到事务吗">mysql的select * 会用到事务吗？</a></li>
+            <li><a href="#为什么mysql默认使用rr隔离级别">为什么MySQl默认使用RR隔离级别？</a></li>
+            <li><a href="#mysql的binlog有几种格式">MySql的binlog有几种格式？</a></li>
+            <li><a href="#mysql的limitorder-by什么会数据重复">MySQL的limit+order by什么会数据重复？</a></li>
+            <li><a href="#为什么默认rr大厂要改成rc">为什么默认RR，大厂要改成RC？</a></li>
           </ul>
         </li>
-        <li><a href="#最左前缀匹配原则">最左前缀匹配原则</a>
-          <ul>
-            <li></li>
-          </ul>
-        </li>
-        <li><a href="#为什么要遵循最左前缀匹配">为什么要遵循最左前缀匹配？</a>
-          <ul>
-            <li></li>
-          </ul>
-        </li>
-        <li><a href="#联合索引注意事项">联合索引注意事项</a></li>
       </ul>
     </li>
   </ul>
@@ -3435,7 +3484,87 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown"><h3 id="联合索引-和-mysql-调优的关系">
+  <article class="markdown"><h3 id="有了关系型数据库为什么还需要nosql">
+  有了关系型数据库，为什么还需要NOSQL?
+  <a class="anchor" href="#%e6%9c%89%e4%ba%86%e5%85%b3%e7%b3%bb%e5%9e%8b%e6%95%b0%e6%8d%ae%e5%ba%93%e4%b8%ba%e4%bb%80%e4%b9%88%e8%bf%98%e9%9c%80%e8%a6%81nosql">#</a>
+</h3>
+<p>nosql数据库无需提前设计表结构，数据可以根据需要自由存储和组织，相较于关系型数据库，nosql高效灵活，非常适合复杂化、高效化、高并发的场景中。</p>
+<ul>
+<li>
+<p>关系型数据库</p>
+<ul>
+<li>
+<p>数据以行和列的方式存储</p>
+</li>
+<li>
+<p>采用结构化查询语言来对数据进行查询</p>
+</li>
+<li>
+<p>强调ACID规则：原子性atomicity、一致性consistency、隔离性isolation、持久性durability</p>
+</li>
+<li>
+<p>强调数据一致性，因此牺牲了读写性能</p>
+</li>
+<li>
+<p>通常存储在硬盘中</p>
+<blockquote>
+<p>mysql也可以基于内存，即内存表技术。它运行将数据和索引存储在内存中，从而提高查询和修改效率。</p>
+<p>如何创建？</p>
+<p>与创建普通表一样，使用CREATE TABLE，需要将存储引擎设置为：ENGINE=MEMORY</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>
+<p>非关系型数据库</p>
+<ul>
+<li>以键值对来存储</li>
+<li>没有固定的要求和限制</li>
+<li>事务一般无法回滚（部分可以，MongoDB)</li>
+<li>需要通过key来查询</li>
+<li>基于内存存储（MongoDB基于磁盘）</li>
+<li>不支持范围查询</li>
+</ul>
+</li>
+</ul>
+<h3 id="数据库存储引擎">
+  数据库存储引擎
+  <a class="anchor" href="#%e6%95%b0%e6%8d%ae%e5%ba%93%e5%ad%98%e5%82%a8%e5%bc%95%e6%93%8e">#</a>
+</h3>
+<p>数据库引擎是用于存储、处理和保护数据的核心服务。利用数据库引擎可以控制访问权限并快速处理事物，从而满足业务需求。</p>
+<ul>
+<li>
+<p>查看当前使用什么引擎</p>
+<p>show engines</p>
+</li>
+<li>
+<p>查看当前默认存储引擎</p>
+<p>show variables like <code>%storage_engine%</code></p>
+</li>
+<li>
+<p>查看某表用什么引擎</p>
+<p>show create table 表名</p>
+<p>结果参数中有</p>
+</li>
+<li>
+<p>如何指定引擎</p>
+<ul>
+<li>创建表时：create语句后面加上engine=“”</li>
+<li>修改表时：alter table 表名 engine=&quot;&quot;</li>
+</ul>
+</li>
+</ul>
+<h3 id="innodb和myism的区别">
+  InnoDB和MyISM的区别
+  <a class="anchor" href="#innodb%e5%92%8cmyism%e7%9a%84%e5%8c%ba%e5%88%ab">#</a>
+</h3>
+<p><a href="https://chain-code.github.io/docs/%e8%ae%a1%e7%ae%97%e6%9c%ba%e5%9f%ba%e7%a1%80/%e5%85%ab%e8%82%a1%e6%96%87/%e6%95%b0%e6%8d%ae%e5%ba%93%e5%9f%ba%e7%a1%80-%e7%89%9b%e5%ae%a2/">InnoDB和MyISM的区别</a></p>
+<h3 id="mysql存储引擎是基于表的吗">
+  mysql存储引擎是基于表的吗
+  <a class="anchor" href="#mysql%e5%ad%98%e5%82%a8%e5%bc%95%e6%93%8e%e6%98%af%e5%9f%ba%e4%ba%8e%e8%a1%a8%e7%9a%84%e5%90%97">#</a>
+</h3>
+<p>是，不是基于数据库</p>
+<h3 id="联合索引-和-mysql-调优的关系">
   联合索引 和 mysql 调优的关系
   <a class="anchor" href="#%e8%81%94%e5%90%88%e7%b4%a2%e5%bc%95-%e5%92%8c-mysql-%e8%b0%83%e4%bc%98%e7%9a%84%e5%85%b3%e7%b3%bb">#</a>
 </h3>
@@ -3520,10 +3649,10 @@ https://github.com/alex-shpak/hugo-book
 <p>当创建联合索引时，需要注意列的顺序，因为这将影响到索引的使用方式。</p>
 <p>如下图所示，表的数据如右图，ID 为主键，创建的联合索引为 (a，b)，注意联合索引顺序，下图是模拟的联合索引的 B+ Tree 存储结构</p>
 <p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202406241752081.webp" alt="" /></p>
-<h2 id="最左前缀匹配原则">
+<h3 id="最左前缀匹配原则">
   最左前缀匹配原则
   <a class="anchor" href="#%e6%9c%80%e5%b7%a6%e5%89%8d%e7%bc%80%e5%8c%b9%e9%85%8d%e5%8e%9f%e5%88%99">#</a>
-</h2>
+</h3>
 <p>联合索引还是一颗B+树，只不过联合索引的健 数量不是一个，而是多个。</p>
 <p>构建一颗B+树只能根据一个值来构建，因此数据库依据联合索引最左的字段来构建B+树。</p>
 <p>假如创建一个（a,b)的联合索引，联合索引B+ Tree结构如下：</p>
@@ -3613,10 +3742,10 @@ select * from table_name order by a,b limit 10;
 <p>以下SQL中会用到部分索引，联合索引左边列为常量，后边的列排序可以用到索引</p>
 </blockquote>
 <pre tabindex="0"><code>select * from table_name where a =1 order by b,c limit 10;
-</code></pre><h2 id="为什么要遵循最左前缀匹配">
+</code></pre><h3 id="为什么要遵循最左前缀匹配">
   为什么要遵循最左前缀匹配？
   <a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e8%a6%81%e9%81%b5%e5%be%aa%e6%9c%80%e5%b7%a6%e5%89%8d%e7%bc%80%e5%8c%b9%e9%85%8d">#</a>
-</h2>
+</h3>
 <p><strong>最左前缀匹配原则</strong>：在MySQL建立联合索引时会遵守最左前缀匹配原则，即最左优先，在检索数据时从联合索引的最左边开始匹配。</p>
 <p>如下，我们以age，name两个字段建立一个联合索引，非叶子节点中记录age，name两个字段的值，而叶子节点中记录的是age，name两个字段值及主键Id的值，在MySQL中B+ Tree 索引结构如下：</p>
 <p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202406241753091.webp" alt="" /></p>
@@ -3648,10 +3777,10 @@ SELECT * FROM `table_name ` WHERE B = `xxx` AND C = `xxx` AND A = &#34;zzz&#34;;
 </blockquote>
 <p>最后，可以通过通过如下命令来选择开启或关闭跳跃式扫描机制。</p>
 <pre tabindex="0"><code>set @@optimizer_switch = &#39;skip_scan=off|on&#39;;
-</code></pre><h2 id="联合索引注意事项">
+</code></pre><h3 id="联合索引注意事项">
   联合索引注意事项
   <a class="anchor" href="#%e8%81%94%e5%90%88%e7%b4%a2%e5%bc%95%e6%b3%a8%e6%84%8f%e4%ba%8b%e9%a1%b9">#</a>
-</h2>
+</h3>
 <ol>
 <li>
 <p><strong>选择合适的列</strong>：应选择那些经常用于查询条件的列来创建联合索引。</p>
@@ -3670,6 +3799,951 @@ SELECT * FROM `table_name ` WHERE B = `xxx` AND C = `xxx` AND A = &#34;zzz&#34;;
 <p>联合索引作为数据库中的一种索引类型，它由多个列组成，在使用时，一般遵循最左匹配原则，以加速数据库查询操作。</p>
 </li>
 </ol>
+<h3 id="char和varchar的区别">
+  char和varchar的区别
+  <a class="anchor" href="#char%e5%92%8cvarchar%e7%9a%84%e5%8c%ba%e5%88%ab">#</a>
+</h3>
+<p>char是一种定长的数据类型，它的长度固定且在存储时会自动在结尾添加空格来将字符串填满指定长度。char的范围是0-255</p>
+<ul>
+<li>优点：定长字符串类型，减少内存碎片，并且无需额外的磁盘空间去存储长度信息。</li>
+<li>缺点：丢失末尾空格信息。&ldquo;abc &ldquo;,&ldquo;abc    &ldquo;,默认补空格</li>
+</ul>
+<p>varchar是一种可变长度的数据类型，它只会存储实际字符串内容，不会填充空格。varchar的长度范围是0-2^16</p>
+<ul>
+<li>优点：变长字符串，兼容性好。</li>
+<li>缺点：可能会产生内存碎片，还需要额外1到2字节存储长度信息；update语句可能会导致页分裂。</li>
+<li>存储身份证、长度固定的订单号等</li>
+</ul>
+<h3 id="innodb页分裂页合并">
+  <strong>InnoDB页分裂，页合并</strong>
+  <a class="anchor" href="#innodb%e9%a1%b5%e5%88%86%e8%a3%82%e9%a1%b5%e5%90%88%e5%b9%b6">#</a>
+</h3>
+<p>数据页是InnoDB存储引擎中用于存储数据的基本单位，通常为16KB。B+树的每个节点都对应着一个数据页，包括根节点、非叶子节点和叶子节点。B+树通过节点之间的指针连接了不同层级的数据页，从而构建了一个有序的索引结构。</p>
+<p><strong>页分裂是指将该页面中的一部分索引记录移动到一个新页面中，从而为新记录腾出空间。这样可以保持B+树的平衡和性能</strong>。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202507282053476.png" alt="" /></p>
+<p>那么，当我们向Innodb中添加数据的时候，如果索引是随机无序的，那么就导致页分裂。而且分裂这个动作还可能会引起连锁反应，从叶子节点沿着树结构一路分裂到根节点。</p>
+<p>当索引页面中的索引记录删除后，页面可能会变得稀疏。为了节省空间和提升性能，可能会发生页合并操作。</p>
+<p><strong>页合并是指将两个相邻索引页面合并成一个大的页面，减少B+树层级，提高查询性能。</strong></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202507282058753.png" alt="" /></p>
+<h4 id="页合并危害">
+  页合并危害
+  <a class="anchor" href="#%e9%a1%b5%e5%90%88%e5%b9%b6%e5%8d%b1%e5%ae%b3">#</a>
+</h4>
+<p>页分裂和页合并涉及大量的数据移动和重组操作。频繁进行这些操作会增加数据库的I/O负担和CPU消耗，影响数据库整体性能。</p>
+<p>分裂和合并可能导致B+树索引结构频繁调整，这个过程也会影响插入及删除操作的性能。</p>
+<p>页分裂和合并可能会导致磁盘上存在较多的空间碎片，新分出的一个页一般会有很多空闲空间，使得数据库表占用更多的磁盘空间，而导致浪费。</p>
+<h4 id="如何避免页分裂">
+  如何避免页分裂
+  <a class="anchor" href="#%e5%a6%82%e4%bd%95%e9%81%bf%e5%85%8d%e9%a1%b5%e5%88%86%e8%a3%82">#</a>
+</h4>
+<p>使用varchar或uuid作为主键，都会导致页分裂</p>
+<p>尽量使用自增id作为索引，尤其是主键索引</p>
+<p>如果要大量插入数据，尽量选择批量插入，而不是逐条插入。</p>
+<p>频繁删除操作可能导致页合并，一般建议使用逻辑删除，而不是物理删除。</p>
+<blockquote>
+<p>逻辑删除：即在记录中添加一个标记，来代表此记录被删除，而不是真的从数据库删除。</p>
+</blockquote>
+<p>还可以根据实际情况，适当调整InnoDB的配置参数，如页大小、填充因子、叶子页合并阈值等，优化数据库性能。</p>
+<blockquote>
+<p>填充因子：用于控制索引页（B+树节点）物理存储密度的参数，它决定了每个数据页在初始插入数据时的填充比例。</p>
+<p>填充因子越低，页中预留空间越多，减少后续插入导致的页分裂。</p>
+<p>填充因子越高，页中数据越紧密，存储效率更高，索引更紧凑，可能提升缓存命中率。</p>
+</blockquote>
+<h3 id="mysql为什么会有存储碎片有什么危害">
+  MySQL为什么会有存储碎片？有什么危害？
+  <a class="anchor" href="#mysql%e4%b8%ba%e4%bb%80%e4%b9%88%e4%bc%9a%e6%9c%89%e5%ad%98%e5%82%a8%e7%a2%8e%e7%89%87%e6%9c%89%e4%bb%80%e4%b9%88%e5%8d%b1%e5%ae%b3">#</a>
+</h3>
+<p>这种情况通常发生在频繁执行插入、删除和更新操作的数据库中。这些操作会导致表中的数据页部分空间未被有效利用或数据在物理存储上的排列不连续，从而形成碎片。</p>
+<ul>
+<li>
+<p>insert</p>
+<p>如果使用uuid，会导致页分裂现象，页分裂导致数据分散在磁盘多个不同的位置。新创建的页可能在物理存储上与原始页相距甚远，这些数据在物理上是不连续的，就会存在碎片。</p>
+</li>
+<li>
+<p>update</p>
+<p>如果更新操作导致数据行大小增加，而原始位置没有足够的空间容纳更多的行，这些行数据会被移动到数据文件的其他部分，留下空闲位置，导致碎片</p>
+</li>
+<li>
+<p>delete</p>
+<p>innoDB，只给数据做了删除标记，但空间不会立即释放。这导致数据页中可能存在大量未使用空间，增加了数据的分散程度，这就是碎片</p>
+</li>
+<li>
+<p>varchar、text这种可变长度字段存储的时候</p>
+</li>
+</ul>
+<h4 id="碎片的危害">
+  碎片的危害
+  <a class="anchor" href="#%e7%a2%8e%e7%89%87%e7%9a%84%e5%8d%b1%e5%ae%b3">#</a>
+</h4>
+<p>当表的碎片增多时，数据在物理磁盘上的存储变得不连续，将导致数据库在查询时需要更多的磁盘I/O操作，从而降低查询效率。</p>
+<p>碎片导致数据库实际占用的存储空间比数据实际需要的空间大，这会大大浪费磁盘空间，还可能影响缓存效率。</p>
+<p>碎片会增加备份文件的大小，同时也会使得备份和恢复过程变得更慢。</p>
+<h4 id="如何避免碎片">
+  如何避免碎片
+  <a class="anchor" href="#%e5%a6%82%e4%bd%95%e9%81%bf%e5%85%8d%e7%a2%8e%e7%89%87">#</a>
+</h4>
+<ul>
+<li>使用自增ID，而不是uuid</li>
+<li>对固定长度的字符串，用char代替varchar</li>
+<li>避免在高度易变的列上创建索引，这样会频繁触发页分裂</li>
+<li>使用OPTIMIZE TABLE命令可以重新组织表和索引的物理存储，可以有效减少碎片，优化表的存储和访问速度。</li>
+</ul>
+<blockquote>
+<p>OPTIMIZE TABLE是MySQL中的一个维护命令，用于重建表数据、整理碎片、回收空间，从而提升表性能和存储效率。</p>
+</blockquote>
+<h4 id="如何清理碎片">
+  如何清理碎片
+  <a class="anchor" href="#%e5%a6%82%e4%bd%95%e6%b8%85%e7%90%86%e7%a2%8e%e7%89%87">#</a>
+</h4>
+<ul>
+<li>
+<p>OPTIMIZE TABLE</p>
+<ul>
+<li>MyISAM会锁表</li>
+<li>InnoDB，会对表进行共享锁定，只能读，不能写</li>
+</ul>
+<p>索引多、数据量大、系统资源（CPU、磁盘I/O）不足会增加操作时间</p>
+</li>
+</ul>
+<h4 id="如何查看碎片">
+  如何查看碎片
+  <a class="anchor" href="#%e5%a6%82%e4%bd%95%e6%9f%a5%e7%9c%8b%e7%a2%8e%e7%89%87">#</a>
+</h4>
+<ul>
+<li>
+<p>show table status   或者  INFORAMTION_SCHEMA</p>
+<p>Data_free字段，表示未使用空间，通常表示表中的碎片空间。</p>
+</li>
+</ul>
+<h3 id="什么是数据库范式为什么要反范式">
+  什么是数据库范式，为什么要反范式？
+  <a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%af%e6%95%b0%e6%8d%ae%e5%ba%93%e8%8c%83%e5%bc%8f%e4%b8%ba%e4%bb%80%e4%b9%88%e8%a6%81%e5%8f%8d%e8%8c%83%e5%bc%8f">#</a>
+</h3>
+<h4 id="1nf属性不可再分">
+  1NF：属性不可再分
+  <a class="anchor" href="#1nf%e5%b1%9e%e6%80%a7%e4%b8%8d%e5%8f%af%e5%86%8d%e5%88%86">#</a>
+</h4>
+<h4 id="2nf要有主键其他字段都依赖主键">
+  2NF：要有主键，其他字段都依赖主键
+  <a class="anchor" href="#2nf%e8%a6%81%e6%9c%89%e4%b8%bb%e9%94%ae%e5%85%b6%e4%bb%96%e5%ad%97%e6%ae%b5%e9%83%bd%e4%be%9d%e8%b5%96%e4%b8%bb%e9%94%ae">#</a>
+</h4>
+<p>在一个成绩表中，我们使用“学号”和“课程号”作为联合主键来唯一确定一条成绩记录。</p>
+<table>
+<thead>
+<tr>
+<th>学号</th>
+<th>课程号</th>
+<th>姓名</th>
+<th>课程名称</th>
+<th>成绩</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1001</td>
+<td>C001</td>
+<td>张三</td>
+<td>数据库原理</td>
+<td>90</td>
+</tr>
+<tr>
+<td>1001</td>
+<td>C002</td>
+<td>张三</td>
+<td>计算机网络</td>
+<td>85</td>
+</tr>
+<tr>
+<td>1002</td>
+<td>C001</td>
+<td>李四</td>
+<td>数据库原理</td>
+<td>92</td>
+</tr>
+</tbody>
+</table>
+<p>在这个表中，“姓名”只依赖于“学号”，而“课程名称”只依赖于“课程号”。它们都只依赖于联合主键的一部分，这就产生了部分依赖。这种设计会导致数据冗余（“张三”和“数据库原理”被多次存储）和更新异常（如果课程名称变更，需要修改多条记录）。</p>
+<p><strong>修改如下：</strong></p>
+<p><strong>学生表 (Student):</strong></p>
+<table>
+<thead>
+<tr>
+<th>学号 (主键)</th>
+<th>姓名</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1001</td>
+<td>张三</td>
+</tr>
+<tr>
+<td>1002</td>
+<td>李四</td>
+</tr>
+</tbody>
+</table>
+<p><strong>课程表 (Course):</strong></p>
+<table>
+<thead>
+<tr>
+<th>课程号 (主键)</th>
+<th>课程名称</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C001</td>
+<td>数据库原理</td>
+</tr>
+<tr>
+<td>C002</td>
+<td>计算机网络</td>
+</tr>
+</tbody>
+</table>
+<p><strong>成绩表 (Score):</strong></p>
+<table>
+<thead>
+<tr>
+<th>学号 (外键)</th>
+<th>课程号 (外键)</th>
+<th>成绩</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1001</td>
+<td>C001</td>
+<td>90</td>
+</tr>
+<tr>
+<td>1001</td>
+<td>C002</td>
+<td>85</td>
+</tr>
+<tr>
+<td>1002</td>
+<td>C001</td>
+<td>92</td>
+</tr>
+</tbody>
+</table>
+<p>通过拆分，成绩表中的非主键字段“成绩”完全依赖于联合主键（“学号”和“课程号”）。学生姓名和课程名称不再冗余存储，数据一致性也得到了更好的保证。</p>
+<h4 id="3nf非主键外的所有字段都互不依赖">
+  3NF：非主键外的所有字段都互不依赖
+  <a class="anchor" href="#3nf%e9%9d%9e%e4%b8%bb%e9%94%ae%e5%a4%96%e7%9a%84%e6%89%80%e6%9c%89%e5%ad%97%e6%ae%b5%e9%83%bd%e4%ba%92%e4%b8%8d%e4%be%9d%e8%b5%96">#</a>
+</h4>
+<p>让我们在学生表中加入“院系”和“院系主任”两个字段：</p>
+<table>
+<thead>
+<tr>
+<th>学号 (主键)</th>
+<th>姓名</th>
+<th>院系</th>
+<th>院系主任</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1001</td>
+<td>张三</td>
+<td>计算机科学与技术</td>
+<td>王老师</td>
+</tr>
+<tr>
+<td>1002</td>
+<td>李四</td>
+<td>计算机科学与技术</td>
+<td>王老师</td>
+</tr>
+<tr>
+<td>1003</td>
+<td>王五</td>
+<td>软件工程</td>
+<td>赵老师</td>
+</tr>
+</tbody>
+</table>
+<p>在这个表中，“院系主任”依赖于“院系”，而“院系”依赖于“学号”。这样就形成了传递依赖（学号 -&gt; 院系 -&gt; 院系主任）。这种设计同样会带来数据冗余和更新异常。如果某院系的系主任发生变动，就需要更新该院系所有学生的记录。</p>
+<p><strong>修改如下：</strong></p>
+<p><strong>学生表 (Student):</strong></p>
+<table>
+<thead>
+<tr>
+<th>学号 (主键)</th>
+<th>姓名</th>
+<th>院系ID (外键)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1001</td>
+<td>张三</td>
+<td>D01</td>
+</tr>
+<tr>
+<td>1002</td>
+<td>李四</td>
+<td>D01</td>
+</tr>
+<tr>
+<td>1003</td>
+<td>王五</td>
+<td>D02</td>
+</tr>
+</tbody>
+</table>
+<p><strong>院系表 (Department):</strong></p>
+<table>
+<thead>
+<tr>
+<th>院系ID (主键)</th>
+<th>院系名称</th>
+<th>院系主任</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D01</td>
+<td>计算机科学与技术</td>
+<td>王老师</td>
+</tr>
+<tr>
+<td>D02</td>
+<td>软件工程</td>
+<td>赵老师</td>
+</tr>
+</tbody>
+</table>
+<p>通过这样的拆分，学生表中的非主键字段只直接依赖于主键“学号”。院系信息被独立存储，消除了传递依赖，进一步减少了数据冗余，提高了数据的维护性。</p>
+<blockquote>
+<p>我们在做表结构设计的时候，完全遵守数据库三范式，确实可以避免一些写时异常，提升写入性能，但是同时也会丢失一些读取性能。</p>
+<p>因为在遵守范式的数据库设计中，表中不能有任何冗余字段，这就使得查询的时候会经常有多表关联查询，这无疑是比较耗时的。</p>
+</blockquote>
+<h4 id="反范式">
+  反范式
+  <a class="anchor" href="#%e5%8f%8d%e8%8c%83%e5%bc%8f">#</a>
+</h4>
+<p>是一种针对遵从设计范式的数据库的性能优化策略；反范式不等于非范式化，反范式化一定发生在满足范式设计的基础上。先遵守所有规定，再进行局部调整。</p>
+<p>比如在表中增加一些冗余字段，方便数据查询，不需要做表join，本质上就是用空间换时间的概念。需要保证数据一致性。</p>
+<h3 id="为什么大厂不建议使用多表join">
+  为什么大厂不建议使用多表join？
+  <a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e5%a4%a7%e5%8e%82%e4%b8%8d%e5%bb%ba%e8%ae%ae%e4%bd%bf%e7%94%a8%e5%a4%9a%e8%a1%a8join">#</a>
+</h3>
+<p>主要原因是join效率比较低</p>
+<p>MySQL是使用了嵌套循环的方式实现关联查询的，简单来说通过两层循环，用第一张表做外循环，第二张表做内循环，外循环的每条记录跟内循环的记录做比较，符合条件就输出。</p>
+<p>两张表的话，复杂度O(n^2),O(n^3),。。。</p>
+<h4 id="join">
+  join
+  <a class="anchor" href="#join">#</a>
+</h4>
+<p>join有三种</p>
+<ul>
+<li>
+<p>inner join（内连接，或等值连接）：获取两个表中字段匹配关系的记录</p>
+<p>取两个表的交集部分</p>
+</li>
+<li>
+<p>left join（左连接）：获取左表中的所有记录，即使右表中没有对应匹配的记录</p>
+<p>取两个表的交集部分+左表中的数据</p>
+</li>
+<li>
+<p>right join（右连接）：获取右表中的所有记录，即使左表没有对应匹配的记录。</p>
+<p>取两个表的交集部分+右表中的数据</p>
+</li>
+</ul>
+<p>在配合join一起使用的还有on关键字，用来指明关联查询的一些条件。</p>
+<h4 id="嵌套循环算法">
+  嵌套循环算法
+  <a class="anchor" href="#%e5%b5%8c%e5%a5%97%e5%be%aa%e7%8e%af%e7%ae%97%e6%b3%95">#</a>
+</h4>
+<p>MySQL使用了嵌套循环（Nested-Loop join)的方式来实现关联查询的</p>
+<p>具体算法：</p>
+<ul>
+<li>
+<p>simple nested loop join</p>
+<p>做法简单粗暴，就是全量扫描连接两张表进行数据的两两对比，所以复杂度可认为为：N*M</p>
+<blockquote>
+<p>N是驱动表的数量，M是被驱动表的数量</p>
+</blockquote>
+</li>
+<li>
+<p>index nested loop</p>
+<p>当inner loop的表用到的字段有索引的话，可以用索引进行查询数据，因为索引是B+树的，复杂度可以近似认为是N*logM</p>
+</li>
+<li>
+<p>block nested loop</p>
+<p>引入一个buffer，会提前把外循环的一部分数据提前放到buffer中，然后内循环的每一行都和整个buffer的数据比较。虽然比较次数还是N*M，但是因为buffer是基于内存的，所以效率高很多。</p>
+</li>
+</ul>
+<h4 id="不做join如何关联查询">
+  不做join如何关联查询
+  <a class="anchor" href="#%e4%b8%8d%e5%81%9ajoin%e5%a6%82%e4%bd%95%e5%85%b3%e8%81%94%e6%9f%a5%e8%af%a2">#</a>
+</h4>
+<ul>
+<li>
+<p>在内存中自己作关联，即先从数据库中把数据查出来之后，我们在代码中再进行二次查询，然后再进行关联。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">categoryMap</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">uint</span>]<span style="color:#66d9ef">string</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">categories</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">categoryMap</span>[<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">ID</span>] = <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Name</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 为每本书添加分类名称
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">books</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">books</span>[<span style="color:#a6e22e">i</span>].<span style="color:#a6e22e">CategoryName</span> = <span style="color:#a6e22e">categoryMap</span>[<span style="color:#a6e22e">books</span>[<span style="color:#a6e22e">i</span>].<span style="color:#a6e22e">CategoryID</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+<li>
+<p>数据冗余，就是把一些重要数据在表中作冗余</p>
+</li>
+<li>
+<p>宽表，就是基于一定的join关系，把数据库中多张表的数据打平做一张大宽表，可以同步到ES或干脆直接在数据库中直接查询</p>
+<ul>
+<li>可在应用层自己构建宽表</li>
+<li>数据库也可直接创建宽表</li>
+</ul>
+<blockquote>
+<p><strong>Elasticsearch（简称 ES）</strong> 是一个开源的 <strong>分布式搜索和分析引擎</strong>，基于 <strong>Apache Lucene</strong> 构建，专为处理大规模数据而设计。它提供 <strong>近实时（NRT, Near Real-Time）</strong> 的全文搜索能力，支持结构化、非结构化数据的快速检索和分析。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="mysql一条sql语句的执行过程">
+  MySQL一条SQL语句的执行过程
+  <a class="anchor" href="#mysql%e4%b8%80%e6%9d%a1sql%e8%af%ad%e5%8f%a5%e7%9a%84%e6%89%a7%e8%a1%8c%e8%bf%87%e7%a8%8b">#</a>
+</h3>
+<pre tabindex="0"><code>select * form users where age=&#39;18&#39; and name=&#39;hool&#39;
+</code></pre><p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202508021445596.png" alt="" /></p>
+<ul>
+<li>使用连接器，通过客户端/服务器通信协议与MySQL建立连接，并查询是否有权限。</li>
+<li>MySQL8.0之前检查是否开启缓存，开启Query Cache且命中完全相同的SQL语句，则将查询结果直接返回给客户端。</li>
+<li>由解析器（分析器）进行语法和语义分析，并生成解析数。如查询是select、表名users、条件是age=&lsquo;18&rsquo; and name=&lsquo;hool&rsquo;,预处理器则会根据MySQL规则进一步检查<strong>解析树是否合法</strong>。比如检查要<strong>查询的数据表或数据列是否存在</strong>等。</li>
+<li>由优化器生成执行计划。根据索引看看是否可以优化</li>
+<li>执行器来执行sql语句，这里具体执行操作MySQL的存储引擎来执行SQL语句，根据存储引擎类型，得到查询结果。若开启了 Query Cache，则缓存，否则直接返回。</li>
+</ul>
+<h3 id="mysql-5x和80有什么区别">
+  MySQl 5.x和8.0有什么区别
+  <a class="anchor" href="#mysql-5x%e5%92%8c80%e6%9c%89%e4%bb%80%e4%b9%88%e5%8c%ba%e5%88%ab">#</a>
+</h3>
+<ul>
+<li>
+<p>性能：8.0比5.x快约2倍</p>
+</li>
+<li>
+<p>NoSQL：5.7版本开始提供NoSQL存储功能，8.0在其上面做了进一步改进。</p>
+</li>
+<li>
+<p>窗口函数：8.0开始，新增一个窗口函数的概念，它可以用来实现若干新的查询方式。窗口函数与SUM()、COUNT()这种集合函数类似，但它不会将多行查询结果合并为一行，而是将结果放回多行中。即窗口函数不需要group by(分组）。</p>
+<p><strong>统计每个部门的员工数量</strong></p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> 
+</span></span><span style="display:flex;"><span>    department, 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">COUNT</span>(<span style="color:#f92672">*</span>) <span style="color:#66d9ef">AS</span> employee_count
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> 
+</span></span><span style="display:flex;"><span>    employees
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> 
+</span></span><span style="display:flex;"><span>    department;
+</span></span></code></pre></div></blockquote>
+</li>
+<li>
+<p>隐藏索引：8.0中，索引可以被隐藏和显示。隐藏时，它不会被优化器所使用。可以用来进行性能调试。索引隐藏后， 若性能没变化，证明索引多余。</p>
+</li>
+<li>
+<p>取消查询缓存：8.0出于性能和可维护方面取消了查询缓存，通过使用索引、更好的查询计划优化、以及缓存结果集而不是整个查询。</p>
+</li>
+<li>
+<p>select for update支持no wait：如果另一个事物已经锁定了一些行，当前事物将等待直到哪些锁被释放。加上NOWAIT关键字后，如果尝试锁定的行被其他事物锁定，立即抛出错误，不再等待。</p>
+</li>
+<li>
+<p>降序索引：8.0为索引提供按降序方式进行排序的支持，在这种索引中的值也会按降序的方式进行排序</p>
+</li>
+<li>
+<p>UTF-8编码：从8.0开始，utf8mb4作为mysql默认字符集</p>
+</li>
+<li>
+<p>json:8.0大幅改进了对json的支持</p>
+</li>
+<li>
+<p>可靠性增加</p>
+</li>
+<li>
+<p>高可用性：innoDB集群集成了原生高可用性解决方案</p>
+</li>
+<li>
+<p>安全性增强</p>
+</li>
+</ul>
+<h3 id="innodb支持哪几种行格式">
+  InnoDB支持哪几种行格式？
+  <a class="anchor" href="#innodb%e6%94%af%e6%8c%81%e5%93%aa%e5%87%a0%e7%a7%8d%e8%a1%8c%e6%a0%bc%e5%bc%8f">#</a>
+</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">行格式</th>
+<th style="text-align:center">版本支持</th>
+<th style="text-align:center">特点描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>COMPACT</strong>    compact(小型的、袖珍的)</td>
+<td style="text-align:center">所有版本</td>
+<td style="text-align:center">默认格式，紧凑存储，减少空间占用</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>DYNAMIC</strong>   dynamic（动态的、动力的）</td>
+<td style="text-align:center">5.7+ (默认)</td>
+<td style="text-align:center">处理大对象(BLOB/TEXT)更高效，支持大索引键</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>COMPRESSED</strong>  compressed(压缩的)</td>
+<td style="text-align:center">所有版本</td>
+<td style="text-align:center">提供表和索引数据压缩</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>REDUNDANT</strong>  redundant(多余的，不需要的)</td>
+<td style="text-align:center">兼容保留</td>
+<td style="text-align:center">旧格式，兼容性保留</td>
+</tr>
+</tbody>
+</table>
+<h3 id="数据库事务">
+  数据库事务
+  <a class="anchor" href="#%e6%95%b0%e6%8d%ae%e5%ba%93%e4%ba%8b%e5%8a%a1">#</a>
+</h3>
+<p><a href="https://chain-code.github.io/docs/%e8%ae%a1%e7%ae%97%e6%9c%ba%e5%9f%ba%e7%a1%80/%e5%85%ab%e8%82%a1%e6%96%87/%e6%95%b0%e6%8d%ae%e5%ba%93%e5%9f%ba%e7%a1%80/#%e4%bb%8b%e7%bb%8dmysql%e7%9a%84%e4%ba%8b%e5%8a%a1">事务</a></p>
+<h3 id="innodb的一次更新事务过程是怎样的">
+  InnoDB的一次更新事务过程是怎样的？
+  <a class="anchor" href="#innodb%e7%9a%84%e4%b8%80%e6%ac%a1%e6%9b%b4%e6%96%b0%e4%ba%8b%e5%8a%a1%e8%bf%87%e7%a8%8b%e6%98%af%e6%80%8e%e6%a0%b7%e7%9a%84">#</a>
+</h3>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202508021544442.png" alt="" /></p>
+<ul>
+<li>
+<p>在buffer pool中读取数据：当InnoDB需要更新一条记录时，首先会在buffer pool中查询该记录是否在内存中。如果没有在内存中，则从磁盘读取该页到buffer pool中。</p>
+<blockquote>
+<p>Buffer Pool 是 InnoDB 存储引擎的 <strong>核心内存组件</strong>，主要用于缓存表数据和索引数据，是 MySQL 性能优化的关键所在。</p>
+<p><strong>Buffer Pool（缓冲池）</strong> 是 InnoDB 在内存中开辟的 <strong>数据缓存区域</strong>，用于：</p>
+<ul>
+<li><strong>缓存磁盘上的数据页</strong>（减少磁盘 I/O）</li>
+<li><strong>加速读写操作</strong>（内存访问比磁盘快几个数量级）</li>
+<li><strong>管理脏页（Dirty Page）</strong>（待写入磁盘的修改数据）</li>
+</ul>
+</blockquote>
+</li>
+<li>
+<p>记录Undo log 回滚日志:在修改操作前，InnoDB会在Undo log中记录修改前的数据。Undo log的写入最开始写入到内存中，然后由一个后台线程定时刷新到磁盘中。</p>
+<blockquote>
+<p>若未刷盘，会回滚事务，超时重试、强制刷盘等机制</p>
+</blockquote>
+</li>
+<li>
+<p>在Buffer Pool中更新：当执行update语句时，InnoDB会先更新已经读取到Buffer Pool中的数据，而不是直接写入磁盘。同时，InnoDB会将修改后的数据页状态设置为脏页状态，表示该页已经被修改但尚未写入磁盘。</p>
+</li>
+<li>
+<p>记录RedoLog buffer 重做日志：InnoDB在Buffer Pool中记录<strong>修改操作的同时</strong>，InnoDB会先将修改操作写入到redo log buffer中</p>
+</li>
+<li>
+<p>提交事务：在执行完所有修改操作后，事务被提交。在提交事务时，InnoDB会将Redo log写入磁盘，以保证事务持久性。</p>
+</li>
+<li>
+<p>写入磁盘：在提交过程中，InnoDB会将Buffer Pool的脏页写入磁盘，以保证数据的持久性。但这个写入过程并不是立即执行的，是后台线程异步执行的，所以会延迟写入。</p>
+</li>
+<li>
+<p>记录bin log :在提交过程中，InnoDB会将事务提交的信息记录到Binlog中。binlog是mysql用来实现主从复制的一种机制，用于将主库上的事务同步到从库上。在bin log中记录的信息包括：事务开始时间、数据库名、表名、事务ID、sql语句等。</p>
+</li>
+</ul>
+<p>需要注意的是，在binlog和redo log的写入过程中，其实是分了两阶段的，通过两阶段提交的方式保证一致性。</p>
+<h3 id="什么是事务的2阶段提交">
+  什么是事务的2阶段提交
+  <a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%af%e4%ba%8b%e5%8a%a1%e7%9a%842%e9%98%b6%e6%ae%b5%e6%8f%90%e4%ba%a4">#</a>
+</h3>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202508021619012.png" alt="" /></p>
+<p>过程是：</p>
+<ul>
+<li>
+<p>Prepare (准备）阶段</p>
+<p>这个阶段SQL已经成功执行并生成redolog写入磁盘，出于Prepare阶段</p>
+</li>
+<li>
+<p>Binlog持久化</p>
+<p>binlog提交，将binlog写入磁盘</p>
+</li>
+<li>
+<p>commit</p>
+<p>在执行引擎内部执行事务操作，写入redolog，处于commit阶段。</p>
+</li>
+</ul>
+<blockquote>
+<p>write和fsync是与文件系统和磁盘I/O相关的两个不同操作</p>
+<p>write操作将数据写入文件的缓冲区，这意味着write操作完成后，并不一定立即将数据持久化到磁盘上，而是将数据暂时存储在内存中。</p>
+<p>fsync用于强制将文件的修改持久化到磁盘上。它通常与write配合使用，以确保文件的修改在fsync操作完成后被写入磁盘。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202508021708812.png" alt="" /></p>
+<p>除了这两个之外，还有一个fdatasync，它将指定文件等数据部分从操作it缓存同步到磁盘中，但可能不会刷新元数据（如文件修改时间、权限等）</p>
+</blockquote>
+<p><strong>二阶段提交主要为了保证bin log和redo log的提交一致性</strong></p>
+<p>若先写redo log，系统崩了，bin log没写，重启后，事务状态可恢复，但从数据库无法同步</p>
+<p>若先写bin log，系统崩了，redo log没写，重启后，事务不可恢复，从数据库多一条记录。</p>
+<ul>
+<li>
+<p>第一阶段提交后崩了，即写入redo log，处于prepare状态的时候</p>
+<p>此时已经写入了redolog，处于prepare状态，binlog还没写，崩了直接回滚事务</p>
+</li>
+<li>
+<p>第二阶段崩了</p>
+<p>此时redolog处于prepare状态，binlog写完了，这时候检测binlog事务是否存在并且完整，如果存在且完整，则直接提交事务，否则回滚事务</p>
+</li>
+<li>
+<p>第三阶段崩了</p>
+<p>同阶段二类似处理</p>
+</li>
+</ul>
+<h4 id="如何判断binlog和redolog达成一致了">
+  如何判断binlog和redolog达成一致了？
+  <a class="anchor" href="#%e5%a6%82%e4%bd%95%e5%88%a4%e6%96%adbinlog%e5%92%8credolog%e8%be%be%e6%88%90%e4%b8%80%e8%87%b4%e4%ba%86">#</a>
+</h4>
+<p>mysql写完redo log并将它改为prepare状态时，会在redo log中记录一个 XID，全局唯一标识这个事务。</p>
+<p>第二阶段binlog刷新磁盘后，binlog结束位置上也会有一个XID。</p>
+<p>对比XID确保一致性。</p>
+<h3 id="mysql能保证数据100不丢失吗">
+  MySQL能保证数据100%不丢失吗？
+  <a class="anchor" href="#mysql%e8%83%bd%e4%bf%9d%e8%af%81%e6%95%b0%e6%8d%ae100%e4%b8%8d%e4%b8%a2%e5%a4%b1%e5%90%97">#</a>
+</h3>
+<p>不能</p>
+<p>InnoDB有基于内存的，基于内存的如果断电，就会丢失</p>
+<p>InnoDB设置了二次提交防止数据丢失。InonDB会默认设置将日志数据立即刷入磁盘，有两个参数，值设置为1。但这样还可能会丢失：</p>
+<ul>
+<li>
+<p>fsync只请求刷盘，不一定会真的落到磁盘介质</p>
+<p>有些硬盘会欺骗fsync</p>
+</li>
+<li>
+<p>写缓存未关闭</p>
+<p>如果设备层还启用了缓存，操作系统或数据库会认为写入完成，但实际上数据还在硬件缓存中。</p>
+</li>
+<li>
+<p>断电或非正常宕机</p>
+<p>如果没用使用UPS（不间断电源）或BBU（电池保护），哪怕你调用了fsync，掉电依旧可能导致数据丢失</p>
+</li>
+<li>
+<p>磁盘损坏等</p>
+</li>
+</ul>
+<h3 id="什么是脏读幻读不可重复读丢失修改">
+  什么是脏读、幻读、不可重复读、丢失修改？
+  <a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%af%e8%84%8f%e8%af%bb%e5%b9%bb%e8%af%bb%e4%b8%8d%e5%8f%af%e9%87%8d%e5%a4%8d%e8%af%bb%e4%b8%a2%e5%a4%b1%e4%bf%ae%e6%94%b9">#</a>
+</h3>
+<p><a href="https://chain-code.github.io/docs/%e8%ae%a1%e7%ae%97%e6%9c%ba%e5%9f%ba%e7%a1%80/%e5%85%ab%e8%82%a1%e6%96%87/%e6%95%b0%e6%8d%ae%e5%ba%93%e5%9f%ba%e7%a1%80/#%e4%bb%8b%e7%bb%8dmysql%e7%9a%84%e4%ba%8b%e5%8a%a1">脏读、丢失修改、不可重复读、丢失修改</a></p>
+<p>不可重复读是读到的不一样，幻读是多了几行数据</p>
+<h3 id="mysql中的事务隔离级别">
+  MySql中的事务隔离级别？
+  <a class="anchor" href="#mysql%e4%b8%ad%e7%9a%84%e4%ba%8b%e5%8a%a1%e9%9a%94%e7%a6%bb%e7%ba%a7%e5%88%ab">#</a>
+</h3>
+<p><a href="https://chain-code.github.io/docs/%e8%ae%a1%e7%ae%97%e6%9c%ba%e5%9f%ba%e7%a1%80/%e5%85%ab%e8%82%a1%e6%96%87/%e6%95%b0%e6%8d%ae%e5%ba%93%e5%9f%ba%e7%a1%80/#%e4%bb%8b%e7%bb%8dmysql%e7%9a%84%e4%ba%8b%e5%8a%a1">隔离级别</a></p>
+<p>可串行化解决了丢失修改</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"><strong>隔离级别</strong></th>
+<th style="text-align:center"><strong>是否解决丢失修改</strong></th>
+<th style="text-align:center"><strong>实现机制</strong></th>
+<th style="text-align:center"><strong>性能影响</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>读未提交（Read Uncommitted）</strong></td>
+<td style="text-align:center">❌ 不解决</td>
+<td style="text-align:center">无任何锁</td>
+<td style="text-align:center">最高</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>读已提交（Read Committed）</strong></td>
+<td style="text-align:center">❌ 不解决</td>
+<td style="text-align:center">仅防止脏读</td>
+<td style="text-align:center">高</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>可重复读（Repeatable Read）</strong></td>
+<td style="text-align:center">✅ 在InnoDB中解决（通过MVCC+间隙锁）</td>
+<td style="text-align:center">快照读 + 写冲突检测</td>
+<td style="text-align:center">中</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>可串行化（Serializable）</strong></td>
+<td style="text-align:center">✅ 完全解决</td>
+<td style="text-align:center">全表锁</td>
+<td style="text-align:center">最低</td>
+</tr>
+</tbody>
+</table>
+<h3 id="innodb如何解决脏读不可重复读幻读的">
+  InnoDB如何解决脏读、不可重复读、幻读的？
+  <a class="anchor" href="#innodb%e5%a6%82%e4%bd%95%e8%a7%a3%e5%86%b3%e8%84%8f%e8%af%bb%e4%b8%8d%e5%8f%af%e9%87%8d%e5%a4%8d%e8%af%bb%e5%b9%bb%e8%af%bb%e7%9a%84">#</a>
+</h3>
+<p><strong>通过mvcc机制解决脏读和不可重复读，通过mvcc+间隙锁解决幻读</strong></p>
+<ul>
+<li>
+<p>脏读</p>
+<p>脏读读解决依赖了Read View,Read View会告诉我们本次事务应该看到那个快照，不应该看到那个快照。</p>
+<p>简单来说：当事务在“读已提交”隔离级别下执行读取操作时，InnoDB获取当前最新的全局事务ID，这个ID表示在当前时刻所有已提交事务的最新状态。InnoDB会检查每个数据行的版本，如果该版本是由一个小于或等于当前事务ID的事务修改的，并且该事务已提交，则这个版本是可见的。这保证了事务只能看到在它开始之前已经提交的数据版本。</p>
+</li>
+<li>
+<p>不可重复读</p>
+<p>InnoDB使用mvcc来解决不可重复读问题。在RR可重读读隔离级别下，当我们使用快照进行数据读取的时候，只会在第一次读取的时候生成一个Read VIew，后续的所有快照读都使用同一个快照。</p>
+</li>
+<li>
+<p>幻读</p>
+<p>基于MVCC+间隙锁，在某种程度可以避免幻读发生，但没有办法完全避免。</p>
+<blockquote>
+<p>事务1先进行快照读，事务2插入数据并提交，事务1再进行update新插入的这条记录是可以成功的。</p>
+<p>事务1先进行快照读，事务2插入数据并提交，事务1再进行当前读，会发生幻读。</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="mvcc解决幻读">
+  MVCC解决幻读
+  <a class="anchor" href="#mvcc%e8%a7%a3%e5%86%b3%e5%b9%bb%e8%af%bb">#</a>
+</h4>
+<p>mvcc有两种读，一种是快照读，一种是当前读</p>
+<ul>
+<li>
+<p>快照读</p>
+<p>读取的是快照生成的那一刻的数据，像普通select 语句在不加锁的情况下就是快照读。</p>
+<p>在RC（读已提交）中，每次读取都会重新生成一个快照，总是读取行的最新版本。</p>
+<p>在RR（可重复读）中，快照会在事务中第一次select语句执行时生成，只有在本事务中对数据进行更改才会更新快照。</p>
+<p>也就是说在快照读情况下，mvcc可以解决幻读问题。</p>
+</li>
+<li>
+<p>当前读</p>
+<p>读取的是最新数据，所以加锁的select，或者对数据进行增删改都会进行当前读。</p>
+<p>在RR级别下，使用select  &hellip; for update的时候，会进行加锁，不仅仅对行记录加锁，还会对记录之间的间隙进行加锁，这就叫间隙锁。</p>
+<p>因为记录之间的间隙被锁住了，所以事务2无法插入数据，一直到事务1把锁释放掉它才能执行成功。</p>
+<p>所以在RR级别中，通过加入间隙锁的方式，就避免了幻读的发生。</p>
+</li>
+</ul>
+<h4 id="解决不了的幻读">
+  解决不了的幻读
+  <a class="anchor" href="#%e8%a7%a3%e5%86%b3%e4%b8%8d%e4%ba%86%e7%9a%84%e5%b9%bb%e8%af%bb">#</a>
+</h4>
+<ul>
+<li>
+<p><strong>未来得及加间隙锁</strong></p>
+</li>
+<li>
+<p>事务1第一次查询不加锁，用快照读，然后事务2插入数据并提交；事务1再加锁查询第二次，发生了当前读。</p>
+</li>
+</ul>
+<p><strong>根据快照读的定义，如果本事务中发生了数据修改，就会更新快照。</strong></p>
+<h4 id="如何避免幻读">
+  如何避免幻读
+  <a class="anchor" href="#%e5%a6%82%e4%bd%95%e9%81%bf%e5%85%8d%e5%b9%bb%e8%af%bb">#</a>
+</h4>
+<p>最高隔离级别，可串行化</p>
+<p>如果一定要加锁，一定要在事务一开始就加锁，这样就会有间隙锁，有效避免幻读发生。</p>
+<h3 id="如何理解mvcc">
+  如何理解MVCC？
+  <a class="anchor" href="#%e5%a6%82%e4%bd%95%e7%90%86%e8%a7%a3mvcc">#</a>
+</h3>
+<p>多版本并发控制系统，和数据库锁一样，它是一种解决方案。</p>
+<p><strong>快照读是MVCC实现的基础，而当前读是悲观锁实现的基础。</strong></p>
+<h4 id="undolog">
+  UndoLog
+  <a class="anchor" href="#undolog">#</a>
+</h4>
+<h3 id="mysql的select--会用到事务吗">
+  mysql的select * 会用到事务吗？
+  <a class="anchor" href="#mysql%e7%9a%84select--%e4%bc%9a%e7%94%a8%e5%88%b0%e4%ba%8b%e5%8a%a1%e5%90%97">#</a>
+</h3>
+<p>会，在innoDB中，所有的修改操作都必须在事务中进行</p>
+<p>即使没有明确的开启事务的语句，InnoDB存储引擎也会为查询自动开启一个隐式事务</p>
+<p>查询语句事务不会持有任何锁，在查询结束后立即提交。这种隐式事务通常被称为自动事务。</p>
+<h3 id="为什么mysql默认使用rr隔离级别">
+  为什么MySQl默认使用RR隔离级别？
+  <a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88mysql%e9%bb%98%e8%ae%a4%e4%bd%bf%e7%94%a8rr%e9%9a%94%e7%a6%bb%e7%ba%a7%e5%88%ab">#</a>
+</h3>
+<p>Mysql定位是提供一个稳定的关系型数据库。为了解决单点故障问题，主要采用主从复制。就是搭建Mysql集群，整体对外提供服务，集群中的机器分为主服务器和从服务器，主服务器提供写服务，从服务器提供读服务。</p>
+<p><strong>MySql在主从复制的过程中，数据的同步是通过bin log进行的。</strong></p>
+<p><strong>早期bin log只有statement这一种格式，里面记录的就是SQL语句原文。</strong></p>
+<h4 id="如果使用读未提交和读已提交这两种隔离级别会出现以下问题">
+  如果使用读未提交和读已提交这两种隔离级别会出现以下问题：
+  <a class="anchor" href="#%e5%a6%82%e6%9e%9c%e4%bd%bf%e7%94%a8%e8%af%bb%e6%9c%aa%e6%8f%90%e4%ba%a4%e5%92%8c%e8%af%bb%e5%b7%b2%e6%8f%90%e4%ba%a4%e8%bf%99%e4%b8%a4%e7%a7%8d%e9%9a%94%e7%a6%bb%e7%ba%a7%e5%88%ab%e4%bc%9a%e5%87%ba%e7%8e%b0%e4%bb%a5%e4%b8%8b%e9%97%ae%e9%a2%98">#</a>
+</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">事务1开始</th>
+<th style="text-align:center">事务2开始</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">删除小于10的数据</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">插入一条数据5</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">提交事务</td>
+</tr>
+<tr>
+<td style="text-align:center">提交事务</td>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>在主数据库中，如果是RC隔离级别，事务2插入操作看不到事务1删除操作，所以数据库中后面仍然会留下5</p>
+<p>但由于事务提交顺序不同，在bin log中会留下   插入数据5    删除小于10的数据 的SQL语句。这样bin log被同步到从数据库中，会导致数据不一致。</p>
+</blockquote>
+<p>为了避免上述情况，才讲数据库默认隔离级别设置成了RR。</p>
+<p>在RR隔离级别下，事务1在更新数据的时候，不仅对更新的行加行级锁，还会增加GAP锁和临键锁。所以事务2执行时会被卡住，等事务1结束后才能继续执行。</p>
+<p>因此Mysql还禁止在使用statement格式的bin log情况下，使用RC 事务隔离级别。<strong>会报错</strong>。</p>
+<h3 id="mysql的binlog有几种格式">
+  MySql的binlog有几种格式？
+  <a class="anchor" href="#mysql%e7%9a%84binlog%e6%9c%89%e5%87%a0%e7%a7%8d%e6%a0%bc%e5%bc%8f">#</a>
+</h3>
+<ul>
+<li>
+<p>statement</p>
+<p>用的很少，binlog记录的SQL原文，会导致主从数据库数据不同步情况</p>
+<blockquote>
+<ul>
+<li>一种是RC隔离级别下的不同步</li>
+<li>一种是delete或update时，指定了limit，但并没有使用order by。</li>
+</ul>
+</blockquote>
+</li>
+<li>
+<p>row</p>
+<p>binlog会记录每个数据更改的具体细节。意味着二进制日志中的每个条目都会详细列出发生变更的行的内容和修改。</p>
+<ul>
+<li>优点：不会发生主从不一致情况</li>
+<li>缺点：会记录更多的数据，在数据恢复的时候比较慢，也会导致磁盘IO和网络IO比较高。</li>
+</ul>
+</li>
+<li>
+<p>mixed</p>
+<p>结合row 和 statement 的优点，MySQL 会根据情况自动选择切换。</p>
+</li>
+</ul>
+<h3 id="mysql的limitorder-by什么会数据重复">
+  MySQL的limit+order by什么会数据重复？
+  <a class="anchor" href="#mysql%e7%9a%84limitorder-by%e4%bb%80%e4%b9%88%e4%bc%9a%e6%95%b0%e6%8d%ae%e9%87%8d%e5%a4%8d">#</a>
+</h3>
+<p>如果order by的列中，多行具有相同的值，服务器可以自由地以任何顺序返回这些行，并且根据整体执行计划的不同可能会以不同的方式返回它们。</p>
+<p><strong>可能结果1</strong>：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">id</th>
+<th style="text-align:center">name</th>
+<th style="text-align:center">score</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">Alice</td>
+<td style="text-align:center">85</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">85</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">Charlie</td>
+<td style="text-align:center">85</td>
+</tr>
+</tbody>
+</table>
+<p><strong>可能结果2</strong>（相同查询，不同执行计划）：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">id</th>
+<th style="text-align:center">name</th>
+<th style="text-align:center">score</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">Eve</td>
+<td style="text-align:center">85</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">Charlie</td>
+<td style="text-align:center">85</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">85</td>
+</tr>
+</tbody>
+</table>
+<p>因此进行limit+order by时，一定要避免使用可能重复的字段，如时间、名称、分数等。应该选择唯一性的字段，如主键ID。</p>
+<h3 id="为什么默认rr大厂要改成rc">
+  为什么默认RR，大厂要改成RC？
+  <a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e9%bb%98%e8%ae%a4rr%e5%a4%a7%e5%8e%82%e8%a6%81%e6%94%b9%e6%88%90rc">#</a>
+</h3>
+<p>主要是为了提高并发度，降低死锁发生概率。</p>
+<ul>
+<li>
+<p>一致性读</p>
+<p>又称快照读。</p>
+<p>在mysql中，只有RR和RC两种隔离级别才会使用快照读。</p>
+<p>在RR中，快照会在事务第一次select语句执行时生成，只有在本事务中对数据进行更改才会更新快照。</p>
+<p>在RC中，每次读取都会重新生成快照，总是读取行的最新版本。</p>
+<p>在RC这种隔离级别中，还支持**“半一致读”**，一条update语句，如果where条件匹配到的记录已经加锁，那么InnoDB会返回记录最近提交的版本，由MySQL上层判断是否需要真的加锁。</p>
+</li>
+<li>
+<p>锁机制</p>
+<p>在MySQL中，有三种类型锁</p>
+<ul>
+<li>
+<p>Record Lock：记录锁，锁的是索引记录</p>
+</li>
+<li>
+<p>Gap Lock:间隙锁，锁的是索引记录之间的间隙</p>
+</li>
+<li>
+<p>Next-key Lock:是记录锁和间隙锁的组合，同时锁索引记录和间隙。它的范围是左开右闭的。</p>
+<blockquote>
+<p>为什么左开右闭？</p>
+</blockquote>
+</li>
+</ul>
+<p>在RC中，只会对索引加记录锁，不会添加间隙锁和Next-key Lock</p>
+<p>在RR中，为了解决幻读问题，都支持</p>
+</li>
+<li>
+<p>主从同步</p>
+<p>在RC隔离级别下，可以支持row格式日志</p>
+</li>
+</ul>
+<h4 id="为什么使用">
+  为什么使用？
+  <a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e4%bd%bf%e7%94%a8">#</a>
+</h4>
+<ul>
+<li>
+<p>提升并发</p>
+<p>RC只会对索引加记录锁，使得并发比RR高，RC还支持**“半一致读”**，可以大大减少更新语句时行锁的冲突；对于不满足更新条件的记录，可以提前释放锁，提升并发度。</p>
+</li>
+<li>
+<p>减少死锁</p>
+<p>在RR中，为了解决幻读问题，支持三种锁，使得锁粒度变大，死锁概率变大</p>
+</li>
+</ul>
+<p>通过其他方式解决不可重复读问题，或者不可重复读问题并不严重。商品大促时，突然修改了商品价格，部分用户按原价格下单，又能怎？</p>
 </article>
  
       
@@ -3715,22 +4789,39 @@ SELECT * FROM `table_name ` WHERE B = `xxx` AND C = `xxx` AND A = &#34;zzz&#34;;
       <ul>
         <li>
           <ul>
+            <li><a href="#有了关系型数据库为什么还需要nosql">有了关系型数据库，为什么还需要NOSQL?</a></li>
+            <li><a href="#数据库存储引擎">数据库存储引擎</a></li>
+            <li><a href="#innodb和myism的区别">InnoDB和MyISM的区别</a></li>
+            <li><a href="#mysql存储引擎是基于表的吗">mysql存储引擎是基于表的吗</a></li>
             <li><a href="#联合索引-和-mysql-调优的关系">联合索引 和 mysql 调优的关系</a></li>
             <li><a href="#mysql索引机制">MySQL索引机制</a></li>
             <li><a href="#mysql联合索引">MySQL联合索引</a></li>
+            <li><a href="#最左前缀匹配原则">最左前缀匹配原则</a></li>
+            <li><a href="#为什么要遵循最左前缀匹配">为什么要遵循最左前缀匹配？</a></li>
+            <li><a href="#联合索引注意事项">联合索引注意事项</a></li>
+            <li><a href="#char和varchar的区别">char和varchar的区别</a></li>
+            <li><a href="#innodb页分裂页合并"><strong>InnoDB页分裂，页合并</strong></a></li>
+            <li><a href="#mysql为什么会有存储碎片有什么危害">MySQL为什么会有存储碎片？有什么危害？</a></li>
+            <li><a href="#什么是数据库范式为什么要反范式">什么是数据库范式，为什么要反范式？</a></li>
+            <li><a href="#为什么大厂不建议使用多表join">为什么大厂不建议使用多表join？</a></li>
+            <li><a href="#mysql一条sql语句的执行过程">MySQL一条SQL语句的执行过程</a></li>
+            <li><a href="#mysql-5x和80有什么区别">MySQl 5.x和8.0有什么区别</a></li>
+            <li><a href="#innodb支持哪几种行格式">InnoDB支持哪几种行格式？</a></li>
+            <li><a href="#数据库事务">数据库事务</a></li>
+            <li><a href="#innodb的一次更新事务过程是怎样的">InnoDB的一次更新事务过程是怎样的？</a></li>
+            <li><a href="#什么是事务的2阶段提交">什么是事务的2阶段提交</a></li>
+            <li><a href="#mysql能保证数据100不丢失吗">MySQL能保证数据100%不丢失吗？</a></li>
+            <li><a href="#什么是脏读幻读不可重复读丢失修改">什么是脏读、幻读、不可重复读、丢失修改？</a></li>
+            <li><a href="#mysql中的事务隔离级别">MySql中的事务隔离级别？</a></li>
+            <li><a href="#innodb如何解决脏读不可重复读幻读的">InnoDB如何解决脏读、不可重复读、幻读的？</a></li>
+            <li><a href="#如何理解mvcc">如何理解MVCC？</a></li>
+            <li><a href="#mysql的select--会用到事务吗">mysql的select * 会用到事务吗？</a></li>
+            <li><a href="#为什么mysql默认使用rr隔离级别">为什么MySQl默认使用RR隔离级别？</a></li>
+            <li><a href="#mysql的binlog有几种格式">MySql的binlog有几种格式？</a></li>
+            <li><a href="#mysql的limitorder-by什么会数据重复">MySQL的limit+order by什么会数据重复？</a></li>
+            <li><a href="#为什么默认rr大厂要改成rc">为什么默认RR，大厂要改成RC？</a></li>
           </ul>
         </li>
-        <li><a href="#最左前缀匹配原则">最左前缀匹配原则</a>
-          <ul>
-            <li></li>
-          </ul>
-        </li>
-        <li><a href="#为什么要遵循最左前缀匹配">为什么要遵循最左前缀匹配？</a>
-          <ul>
-            <li></li>
-          </ul>
-        </li>
-        <li><a href="#联合索引注意事项">联合索引注意事项</a></li>
       </ul>
     </li>
   </ul>

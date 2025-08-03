@@ -31,6 +31,15 @@
     </item>
     
     <item>
+      <title>编程题</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/%E7%BC%96%E7%A8%8B%E9%A2%98/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/%E7%BC%96%E7%A8%8B%E9%A2%98/</guid>
+      <description> 用队列实现一个栈 # 用栈实现一个队列 # 有一个包含N个整数的数组，请编写算法，找到其中的两个元素，使他们之差最小。时间复杂度必须为O(n) # 实现一个LRU缓存淘汰策略，支持get,和put操作 # 判断101-200之间有多少个质数，并输出所有的质数 # 给定一个二叉搜索树，请找出其中第K小的元素 # 并发调用三个方法，实现只要有一个成功就立即成功，否则等都失败才失败 # 两个线程，一个打印奇数，一个打印偶数，然后顺序打印出1-100 # ABC 三个协程，A输出a，B输出b，C输出c，怎么让他们按abc这样循环往复按顺序出现？ # AB两个长度为N的有序数组,寻找第N和N+1的数 # 实现一个停车场的类，满足入场停车、出场收费的需求，车位有三种大中小分别对应不同停车费/小时，不足一小时按一小时算。 # 10个线程模拟赛马，所有马都就绪后才能开始，所有马到达终点后裁判宣布赛马成绩 # 5个线程abide,想先执行a，再执行bcd，bcd执行完后执行e如何做？ # </description>
+    </item>
+    
+    <item>
       <title>golang力扣刷题（二）</title>
       <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/</link>
       <pubDate>Thu, 04 Nov 2021 10:06:27 +0000</pubDate>

@@ -65,7 +65,7 @@ mysql存储引擎是基于表的吗 # 是，不是基于数据库
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.afbc00237d42ae11022c5a0e58a9545219c092e5253b33b5451e8bc4ee6c01b4.js" integrity="sha256-r7wAI31CrhECLFoOWKlUUhnAkuUlOzO1RR6LxO5sAbQ=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.619a3de71e2e8dd55647b15434f58cd2a54c7a9a9aa180c00f59c43962015b2b.js" integrity="sha256-YZo95x4ujdVWR7FUNPWM0qVMepqaoYDAD1nEOWIBWys=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -147,6 +147,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/linux%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/" class="">Linux问题总结</a>
   
 
         </li>
@@ -514,6 +527,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98%E4%B8%80/" class="">每日一题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/%E7%BC%96%E7%A8%8B%E9%A2%98/" class="">编程题</a>
   
 
         </li>
@@ -3463,6 +3489,7 @@ https://github.com/alex-shpak/hugo-book
             <li><a href="#mysql中的事务隔离级别">MySql中的事务隔离级别？</a></li>
             <li><a href="#innodb如何解决脏读不可重复读幻读的">InnoDB如何解决脏读、不可重复读、幻读的？</a></li>
             <li><a href="#如何理解mvcc">如何理解MVCC？</a></li>
+            <li><a href="#什么是read-view什么样的readview可见">什么是Read View，什么样的ReadView可见？</a></li>
             <li><a href="#mysql的select--会用到事务吗">mysql的select * 会用到事务吗？</a></li>
             <li><a href="#为什么mysql默认使用rr隔离级别">为什么MySQl默认使用RR隔离级别？</a></li>
             <li><a href="#mysql的binlog有几种格式">MySql的binlog有几种格式？</a></li>
@@ -4551,6 +4578,80 @@ SELECT * FROM `table_name ` WHERE B = `xxx` AND C = `xxx` AND A = &#34;zzz&#34;;
   UndoLog
   <a class="anchor" href="#undolog">#</a>
 </h4>
+<p>undo log是回滚日志，在事务未提交之前，MySQl会先提交undo log，当事务崩溃时，利用undo log进行回退。</p>
+<blockquote>
+<p>一条记录在同一时刻可能有多个事务在执行，那么，undo log会有一条记录的多个快照，那么在这一时刻发生select要进行快照读的时候，要读那个快照呢？</p>
+</blockquote>
+<h4 id="行记录的隐式字段">
+  行记录的隐式字段
+  <a class="anchor" href="#%e8%a1%8c%e8%ae%b0%e5%bd%95%e7%9a%84%e9%9a%90%e5%bc%8f%e5%ad%97%e6%ae%b5">#</a>
+</h4>
+<p>数据库中的每行记录中，除了保存我们自定义的一些字段外，还有一些重要的隐式字段：</p>
+<ul>
+<li>db_row_id:隐藏主键，如果我们没有给这个表创建主键，那么会以这个字段创建聚簇索引。</li>
+<li>db_trx_id：对这条数据做出修改的最新事务ID</li>
+<li>db_roll_ptr:回滚指针，指向这条记录的上一个版本，就是undo log的上一个版本的快照地址</li>
+</ul>
+<blockquote>
+<p>**注意：**以上字段，只有在聚簇 索引的行记录中才有，而在普通二级索引中是没有这些值的。</p>
+<p><a href="">二级索引的MVCC支持</a></p>
+</blockquote>
+<p>因为每一次记录变更前都会先存储一份快照到undo log中，那么这几个隐式字段也会跟着记录一起保存在undo log中。因此，就形成了一个快照链表。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202508031558055.png" alt="" /></p>
+<blockquote>
+<p>要读那个快照呢？</p>
+</blockquote>
+<h4 id="read-view">
+  Read View
+  <a class="anchor" href="#read-view">#</a>
+</h4>
+<p>见下方什么是Read View，什么样的ReadView可见？</p>
+<blockquote>
+<p>一个事务，能看到的是在他开始之前就已经提交的事务结果，而未提交的事务结果都是不可见的。</p>
+<p>如果不可见怎么办？使用undo log</p>
+</blockquote>
+<p>当事务ID不符合Read View规则的时候，那就需要从undo log里面获取数据的历史快照，然后数据快照的事务ID再和Read view进行可见性比较，如果能找到一条快照则返回，否则返回空。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202508031652303.png" alt="" /></p>
+<blockquote>
+<p>总结：在InnoDB中，MVCC就是通过Read View+Undo log来实现的，undo log中保存了历史快照，而Read View用来判断具体哪一个快照是可见的。</p>
+</blockquote>
+<h3 id="什么是read-view什么样的readview可见">
+  什么是Read View，什么样的ReadView可见？
+  <a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%afread-view%e4%bb%80%e4%b9%88%e6%a0%b7%e7%9a%84readview%e5%8f%af%e8%a7%81">#</a>
+</h3>
+<p>Read View主要来帮我们解决可见性的问题，<strong>即他会来告诉我们本次事务应该看到那个快照，不应该看到那个快照。</strong></p>
+<blockquote>
+<p>RR要求在一个事务中，多次读取的结果是保持一致的，RC要求在一个事务中，每次读取最新的结果。</p>
+</blockquote>
+<blockquote>
+<p>在可重复读级别下，快照在事务开始后第一次查询时创建，并在整个事务期间保持不变。</p>
+<p>在读已提交级别下，快照会在每次查询时重新创建，以反映数据库中的最新提交更改。</p>
+</blockquote>
+<p>在Read View中有个几重要的属性：</p>
+<ul>
+<li>trx_ids:表示在生成Read View时当前系统中活跃的读写事务的事务id列表</li>
+<li>low_limit_id：应该分配给下一个事务的id值</li>
+<li>up_limit_id：未提交事务中最小的事务ID</li>
+<li>creator_trx_id：创建这个Read View的事务ID</li>
+</ul>
+<p>假如一个ReadView的内容为：</p>
+<pre tabindex="0"><code>trx_ids = [5,6,8)
+low_limit_id = 8
+up_limit_id = 5
+creator_trx_id = 7
+</code></pre><p>假设当前事务要读取某一个记录行，该记录行的 db_trx_id（即最新修改该行的事务ID）为 trx_id，那么，就有以下几种情况了：</p>
+<ul>
+<li>trx_id&lt;up_limit_id，即小于5的事务，说明这些事务在生成ReadView之前就已经提交了，那么该事务的结果就是可见的。</li>
+<li>trx_id&gt;=low_limit_id，即大于8的事务，说明该事务在生成 ReadView 后才生成，所以该事务的结果就是不可见的。</li>
+<li>up_limit_id&lt;trx_id&lt;low_limit_id，即大于等于5，小于8，这种情况下，会再拿事务ID和Read View中的trx_ids进行逐一比较。
+<ul>
+<li>如果，事务ID在trx_ids列表中，如6，那么表示在当前事务开启时，这个事务还是活跃的，那么这个记录对于当前事务来说应该是不可见的。</li>
+<li>如果，事务id不在trx_ids列表中，如7，那么表示的是在当前事务开启之前，其他事务对数据进行修改并提交了，所以，这条记录对当前事务就应该是可见的。</li>
+<li>当然这里有个例外情况，那就是这个trx_id=creator_trx_id，那么就肯定是可见的</li>
+</ul>
+</li>
+</ul>
+<p>总之，一个事务，能看到的是在他开始之前就已经提交的事务结果，而未提交的事务结果都是不可见的。</p>
 <h3 id="mysql的select--会用到事务吗">
   mysql的select * 会用到事务吗？
   <a class="anchor" href="#mysql%e7%9a%84select--%e4%bc%9a%e7%94%a8%e5%88%b0%e4%ba%8b%e5%8a%a1%e5%90%97">#</a>
@@ -4723,6 +4824,9 @@ SELECT * FROM `table_name ` WHERE B = `xxx` AND C = `xxx` AND A = &#34;zzz&#34;;
 </ul>
 <p>在RC中，只会对索引加记录锁，不会添加间隙锁和Next-key Lock</p>
 <p>在RR中，为了解决幻读问题，都支持</p>
+<blockquote>
+<p>在RR中，什么时候加Record lock，什么时候加Gap lock，什么时候加Next-key lock?</p>
+</blockquote>
 </li>
 <li>
 <p>主从同步</p>
@@ -4815,6 +4919,7 @@ SELECT * FROM `table_name ` WHERE B = `xxx` AND C = `xxx` AND A = &#34;zzz&#34;;
             <li><a href="#mysql中的事务隔离级别">MySql中的事务隔离级别？</a></li>
             <li><a href="#innodb如何解决脏读不可重复读幻读的">InnoDB如何解决脏读、不可重复读、幻读的？</a></li>
             <li><a href="#如何理解mvcc">如何理解MVCC？</a></li>
+            <li><a href="#什么是read-view什么样的readview可见">什么是Read View，什么样的ReadView可见？</a></li>
             <li><a href="#mysql的select--会用到事务吗">mysql的select * 会用到事务吗？</a></li>
             <li><a href="#为什么mysql默认使用rr隔离级别">为什么MySQl默认使用RR隔离级别？</a></li>
             <li><a href="#mysql的binlog有几种格式">MySql的binlog有几种格式？</a></li>

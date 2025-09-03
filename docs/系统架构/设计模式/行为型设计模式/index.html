@@ -23,7 +23,7 @@
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.619a3de71e2e8dd55647b15434f58cd2a54c7a9a9aa180c00f59c43962015b2b.js" integrity="sha256-YZo95x4ujdVWR7FUNPWM0qVMepqaoYDAD1nEOWIBWys=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.6afb70210ee6d316d0c3f1b285dd52598071699979c6a9b9d5f9a33153362168.js" integrity="sha256-avtwIQ7m0xbQw/Gyhd1SWYBxaZl5xqm51fmjMVM2IWg=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -2065,6 +2065,8 @@ https://github.com/alex-shpak/hugo-book
   <ul>
     
       
+    
+      
         <li>
           
   
@@ -2192,6 +2194,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/mongodb%E5%AE%89%E8%A3%85/" class="">Mongodb安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" class="">分库分表</a>
   
 
         </li>
@@ -2348,6 +2363,81 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%89%A9%E5%B1%95/" class="">设计模式扩展</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a36f740001772a844eb3087eeb17eb6d" class="toggle"  />
+    <label for="section-a36f740001772a844eb3087eeb17eb6d" class="flex justify-between">
+      <a role="button" class="">分布式</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%88%86%E5%B8%83%E5%BC%8F/elasticsearch%E9%9D%A2%E8%AF%95%E9%A2%98/" class="">Elastic Search面试题</a>
+  
+
+        </li>
+      
+    
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%88%86%E5%B8%83%E5%BC%8F%E9%9D%A2%E8%AF%95%E9%A2%98/" class="">分布式面试题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%9C%BA%E6%99%AF%E9%A2%98/" class="">场景题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%88%86%E5%B8%83%E5%BC%8F/%E9%AB%98%E5%B9%B6%E5%8F%91%E9%AB%98%E5%8F%AF%E7%94%A8/" class="">高并发高可用</a>
   
 
         </li>
@@ -3176,6 +3266,19 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E9%97%AE%E9%A2%98/" class="">Docker问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/" class="">Dockerfile</a>
   
 
@@ -3807,19 +3910,207 @@ https://github.com/alex-shpak/hugo-book
   介绍
   <a class="anchor" href="#%e4%bb%8b%e7%bb%8d-5">#</a>
 </h4>
-<h4 id="优点-5">
+<p>备忘录模式允许生成对象状态的快照并在以后将其还原。备忘录模式不会影响它所出处理的对象的内部结构，也不会影响快照中存储的数据。</p>
+<ul>
+<li>备忘录模式可以应用于对象状态不断变化的任何应用程序中，应用程序的用户可以随时回滚或撤销命令。</li>
+<li>如果直接访问对象的成员变量、获取器或设置器会导致封装被突破，则可以使用备忘录模式。</li>
+<li>在从上一个已知工作中重新启动的应用程序中，可以使用备忘录模式。</li>
+</ul>
+<p>（1）确定原发器类</p>
+<p>（2）定义备忘录类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 备忘录 Memento 存储原发器 Originator 的状态
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Memento</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">state</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 将数字的值乘以10倍
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">m</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Memento</span>) <span style="color:#a6e22e">getState</span>() <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">state</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 创建一个新的备忘录*Memento
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewMemento</span>(<span style="color:#a6e22e">value</span> <span style="color:#66d9ef">int</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">Memento</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Memento</span>{<span style="color:#a6e22e">value</span>}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（3）定义原发器类及其方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// Originator 代表一个可以被操作的整数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Originator</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">value</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// NewOriginator 创建一个新的原发器 Originator
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewOriginator</span>(<span style="color:#a6e22e">value</span> <span style="color:#66d9ef">int</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">Originator</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Originator</span>{<span style="color:#a6e22e">value</span>}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 将数字的值乘以10倍
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">n</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Originator</span>) <span style="color:#a6e22e">TenTimes</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">value</span> = <span style="color:#ae81ff">10</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">value</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 获取数字值的一半
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">n</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Originator</span>) <span style="color:#a6e22e">HalfTimes</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">value</span> <span style="color:#f92672">/=</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 返回数字的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">n</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Originator</span>) <span style="color:#a6e22e">Value</span>() <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">value</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 使用原发器创建一个备忘录 Memento
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">n</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Originator</span>) <span style="color:#a6e22e">CreateMemento</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">Memento</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">NewMemento</span>(<span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">value</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 将原发器 Originator 的值恢复为指定版本的备忘录的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">n</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Originator</span>) <span style="color:#a6e22e">RestoreMemento</span>(<span style="color:#a6e22e">memento</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Memento</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">value</span> = <span style="color:#a6e22e">memento</span>.<span style="color:#a6e22e">getState</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（4）定义负责人类及其方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 负责人类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Caretaker</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Originator</span> <span style="color:#a6e22e">Originator</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">History</span>    []<span style="color:#f92672">*</span><span style="color:#a6e22e">Memento</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 添加备忘录
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Caretaker</span>) <span style="color:#a6e22e">AddMemento</span>(<span style="color:#a6e22e">m</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Memento</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">History</span> = append(<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">History</span>, <span style="color:#a6e22e">m</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 获取备忘录
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Caretaker</span>) <span style="color:#a6e22e">GetMemento</span>(<span style="color:#a6e22e">index</span> <span style="color:#66d9ef">int</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">Memento</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">History</span>[<span style="color:#a6e22e">index</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//声明负责人对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Caretaker</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Caretaker</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">History</span>: make([]<span style="color:#f92672">*</span><span style="color:#a6e22e">Memento</span>, <span style="color:#ae81ff">0</span>),
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//声明原发器对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">n</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewOriginator</span>(<span style="color:#ae81ff">100</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//添加备忘录
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Caretaker</span>.<span style="color:#a6e22e">AddMemento</span>(<span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">CreateMemento</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">TenTimes</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Originator 当前的值: %d\n&#34;</span>, <span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">Value</span>())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//添加备忘录
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Caretaker</span>.<span style="color:#a6e22e">AddMemento</span>(<span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">CreateMemento</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">TenTimes</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Originator 当前的值: %d\n&#34;</span>, <span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">Value</span>())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//恢复原发器对象的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">RestoreMemento</span>(<span style="color:#a6e22e">Caretaker</span>.<span style="color:#a6e22e">GetMemento</span>(<span style="color:#ae81ff">0</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;恢复备忘录后 Originator 当前的值: %d\n&#34;</span>, <span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">Value</span>())
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="优点-5">
   优点
   <a class="anchor" href="#%e4%bc%98%e7%82%b9-5">#</a>
 </h4>
+<ul>
+<li>开发者可以使用序列化实现更通用的备忘录模式实现</li>
+<li>开发者可以在不破坏对象封装情况的前提下创建对象状态快照</li>
+<li>开发者可以让负责人维护原发器对象状态的历史记录，从而简化原发器类的代码</li>
+</ul>
 <h4 id="缺点-5">
   缺点
   <a class="anchor" href="#%e7%bc%ba%e7%82%b9-5">#</a>
 </h4>
+<ul>
+<li>频繁创建备忘录对象，会消耗大量资源</li>
+<li>负责人必须完整地跟踪原发器对象的生命周期，才能销毁弃用的备忘录对象</li>
+<li>大部分编程语言，无法保证备忘录中的状态不被修改</li>
+</ul>
 <h4 id="示例-5">
   示例
   <a class="anchor" href="#%e7%a4%ba%e4%be%8b-5">#</a>
 </h4>
-<h3 id="观察者模式">
+<p>（1）定义原发器类Originator及其方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//原发器类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Originator</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">State</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//创建备忘录
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">e</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Originator</span>) <span style="color:#a6e22e">CreateMemento</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">Memento</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Memento</span>{<span style="color:#a6e22e">State</span>: <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">State</span>}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//恢复原发器对象的状态
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">e</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Originator</span>) <span style="color:#a6e22e">RestoreMemento</span>(<span style="color:#a6e22e">m</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Memento</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">State</span> = <span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">GetSavedState</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//设置状态
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">e</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Originator</span>) <span style="color:#a6e22e">SetState</span>(<span style="color:#a6e22e">State</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">State</span> = <span style="color:#a6e22e">State</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//获取状态
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">e</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Originator</span>) <span style="color:#a6e22e">GetState</span>() <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">State</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（2）定义备忘录类及其方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//备忘录类状态
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Memento</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">State</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//获取设置好的状态
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">m</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Memento</span>) <span style="color:#a6e22e">GetSavedState</span>() <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">State</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（3）定义负责人类及其方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//负责人类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Caretaker</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">MementoArray</span> []<span style="color:#f92672">*</span><span style="color:#a6e22e">Memento</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//添加备忘录
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Caretaker</span>) <span style="color:#a6e22e">AddMemento</span>(<span style="color:#a6e22e">m</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Memento</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">MementoArray</span> = append(<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">MementoArray</span>, <span style="color:#a6e22e">m</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//获取备忘录
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Caretaker</span>) <span style="color:#a6e22e">GetMemento</span>(<span style="color:#a6e22e">index</span> <span style="color:#66d9ef">int</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">Memento</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">MementoArray</span>[<span style="color:#a6e22e">index</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//声明负责人对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Caretaker</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Caretaker</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">MementoArray</span>: make([]<span style="color:#f92672">*</span><span style="color:#a6e22e">Memento</span>, <span style="color:#ae81ff">0</span>),
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//声明原发器对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Originator</span> <span style="color:#f92672">:=</span> new(<span style="color:#a6e22e">Originator</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Originator</span>.<span style="color:#a6e22e">State</span> = <span style="color:#e6db74">&#34;One&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Originator 当前状态: %s\n&#34;</span>, <span style="color:#a6e22e">Originator</span>.<span style="color:#a6e22e">GetState</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//添加备忘录
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Caretaker</span>.<span style="color:#a6e22e">AddMemento</span>(<span style="color:#a6e22e">Originator</span>.<span style="color:#a6e22e">CreateMemento</span>())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Originator</span>.<span style="color:#a6e22e">SetState</span>(<span style="color:#e6db74">&#34;Two&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Originator 当前状态: %s\n&#34;</span>, <span style="color:#a6e22e">Originator</span>.<span style="color:#a6e22e">GetState</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//添加备忘录
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Caretaker</span>.<span style="color:#a6e22e">AddMemento</span>(<span style="color:#a6e22e">Originator</span>.<span style="color:#a6e22e">CreateMemento</span>())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Originator</span>.<span style="color:#a6e22e">SetState</span>(<span style="color:#e6db74">&#34;Three&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Originator 当前状态: %s\n&#34;</span>, <span style="color:#a6e22e">Originator</span>.<span style="color:#a6e22e">GetState</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//添加备忘录
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Caretaker</span>.<span style="color:#a6e22e">AddMemento</span>(<span style="color:#a6e22e">Originator</span>.<span style="color:#a6e22e">CreateMemento</span>())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//恢复原发器对象的状态
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Originator</span>.<span style="color:#a6e22e">RestoreMemento</span>(<span style="color:#a6e22e">Caretaker</span>.<span style="color:#a6e22e">GetMemento</span>(<span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;恢复到状态: %s\n&#34;</span>, <span style="color:#a6e22e">Originator</span>.<span style="color:#a6e22e">GetState</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//恢复原发器对象的状态
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Originator</span>.<span style="color:#a6e22e">RestoreMemento</span>(<span style="color:#a6e22e">Caretaker</span>.<span style="color:#a6e22e">GetMemento</span>(<span style="color:#ae81ff">0</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;恢复到状态: %s\n&#34;</span>, <span style="color:#a6e22e">Originator</span>.<span style="color:#a6e22e">GetState</span>())
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="观察者模式">
   观察者模式
   <a class="anchor" href="#%e8%a7%82%e5%af%9f%e8%80%85%e6%a8%a1%e5%bc%8f">#</a>
 </h3>

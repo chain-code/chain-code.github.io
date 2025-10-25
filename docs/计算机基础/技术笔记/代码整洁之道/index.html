@@ -1,0 +1,4151 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="整洁代码 # 简单代码，根据重要顺序应该是：
+能通过所有测试 没有重复代码 体现系统中的全部设计理念 包括尽量少的实体，比如方法、函数等 光写好代码是不够的，必须时时刻刻保持整洁。
+有意义的命名 # 1、命名要名副其实，直接体现要做的事情。
+openFile--&gt;openVideo 2、选择一个好名字要花时间，但省下来的时间比花掉的多。一旦发现有更好的名称，就换掉旧的。
+3、避免使用会引起误解的名称，尤其是遇到一些缩写，要防止其存在歧义。
+//反面例子 type Std struct { Name string Age int Cls string } std 可能被误解为 Standard，而实际上它应该表示 Student（学生）。
+4、不要去做无意义的区分，例如：taskData和taskInfo，名称虽然不同但意义没有差别。
+variable一词不应当出现在变量名中，table一词不应该出现在表名中。例如：NameString不可取，名称后面建议不要加类型。
+//反面例子 var recordMap map[int64]*RecordDbManager 总之在读者能区分的情况下、不产生歧义的情况下，越简单的命名就是好命名。
+5、使用可以读出来的命名。
+generationTimestamp要比genymdhms要好的多，即使前一个比较长一点，但是无所谓，表达准确意思。 6、使用可以搜索的名字
+长名称胜于短名称，搜得到的名称比自编代码写就的名称要好。
+//反面例子 for i：=0；i&lt;30;i&#43;&#43;{ s&#43;=t[i]*4/5 } //4 和 5代表什么意思要用常量说明，否则维护人员很难注意 const WorkDays int =5 const realDays int =4 7、命名不要有无意义的前缀，人们只会看到名称中有意义的部分。
+//反面例子 var m_student string 8、避免思维映射。例如：循环计数通常使用i，j，k，千万别用l 。专业的程序员编写其他人能理解的代码。
+//反面例子 for l：=0；l&lt;30;l&#43;&#43;{ s&#43;=t[l]*4/5 } 9、结构体命名不应该用动词，方法命名应该用动词，可加上get, is ,set 前缀。">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="代码整洁之道" />
+<meta property="og:description" content="整洁代码 # 简单代码，根据重要顺序应该是：
+能通过所有测试 没有重复代码 体现系统中的全部设计理念 包括尽量少的实体，比如方法、函数等 光写好代码是不够的，必须时时刻刻保持整洁。
+有意义的命名 # 1、命名要名副其实，直接体现要做的事情。
+openFile--&gt;openVideo 2、选择一个好名字要花时间，但省下来的时间比花掉的多。一旦发现有更好的名称，就换掉旧的。
+3、避免使用会引起误解的名称，尤其是遇到一些缩写，要防止其存在歧义。
+//反面例子 type Std struct { Name string Age int Cls string } std 可能被误解为 Standard，而实际上它应该表示 Student（学生）。
+4、不要去做无意义的区分，例如：taskData和taskInfo，名称虽然不同但意义没有差别。
+variable一词不应当出现在变量名中，table一词不应该出现在表名中。例如：NameString不可取，名称后面建议不要加类型。
+//反面例子 var recordMap map[int64]*RecordDbManager 总之在读者能区分的情况下、不产生歧义的情况下，越简单的命名就是好命名。
+5、使用可以读出来的命名。
+generationTimestamp要比genymdhms要好的多，即使前一个比较长一点，但是无所谓，表达准确意思。 6、使用可以搜索的名字
+长名称胜于短名称，搜得到的名称比自编代码写就的名称要好。
+//反面例子 for i：=0；i&lt;30;i&#43;&#43;{ s&#43;=t[i]*4/5 } //4 和 5代表什么意思要用常量说明，否则维护人员很难注意 const WorkDays int =5 const realDays int =4 7、命名不要有无意义的前缀，人们只会看到名称中有意义的部分。
+//反面例子 var m_student string 8、避免思维映射。例如：循环计数通常使用i，j，k，千万别用l 。专业的程序员编写其他人能理解的代码。
+//反面例子 for l：=0；l&lt;30;l&#43;&#43;{ s&#43;=t[l]*4/5 } 9、结构体命名不应该用动词，方法命名应该用动词，可加上get, is ,set 前缀。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E4%BB%A3%E7%A0%81%E6%95%B4%E6%B4%81%E4%B9%8B%E9%81%93/" /><meta property="article:section" content="docs" />
+
+
+<title>代码整洁之道 | Soulmate</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" >
+<link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.fd85a068c2254997edb38db579e81b23b40227532d68bd80a2b86f067c365678.js" integrity="sha256-/YWgaMIlSZfts421eegbI7QCJ1MtaL2AorhvBnw2Vng=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo.png" alt="Logo" /><span>Soulmate</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>计算机基础</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e99d92668627838818961f696faae00" class="toggle"  />
+    <label for="section-1e99d92668627838818961f696faae00" class="flex justify-between">
+      <a role="button" class="">八股文</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/linux%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/" class="">Linux问题总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80-%E7%89%9B%E5%AE%A2/" class="">数据库基础-牛客</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E7%89%9B%E5%AE%A2%E5%85%AB%E8%82%A1/" class="">牛客八股</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E9%9D%A2%E8%A7%86%E9%A2%98%E6%80%BB%E7%BB%93%E4%B8%80/" class="">面视题总结（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E9%9D%A2%E8%A7%86%E9%A2%98%E6%80%BB%E7%BB%93%E4%BA%8C/" class="">面视题总结（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="">计算机网络基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" class="">布隆过滤器</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/linux%E5%9F%BA%E7%A1%80/" class="">Linux基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/git%E5%9F%BA%E7%A1%80/" class="">Git基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-7fa249d52759877ce54cc95e18294cc0" class="toggle" checked />
+    <label for="section-7fa249d52759877ce54cc95e18294cc0" class="flex justify-between">
+      <a role="button" class="">技术笔记</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/crontab%E4%BD%BF%E7%94%A8/" class="">crontab使用</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/libewf%E5%BA%93%E7%BC%96%E8%AF%91/" class="">libewf库编译</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/localhost%E4%B8%8E127.0.0.1/" class="">localhost与127.0.0.1</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/schtasks%E4%BD%BF%E7%94%A8/" class="">schtask使用</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/swagger/" class="">Swagger</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="">Vim编程常用快捷键</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E4%BB%A3%E7%A0%81%E6%95%B4%E6%B4%81%E4%B9%8B%E9%81%93/" class="active">代码整洁之道</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8github%E5%92%8Cgitlab/" class="">同时使用github和gitlab</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E8%8E%B7%E5%8F%96%E5%86%85%E7%BD%91%E6%B4%BB%E8%B7%83ip/" class="">获取内网活跃IP</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E9%80%9A%E8%BF%87%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81%E8%AE%A1%E7%AE%97ip%E5%9C%B0%E5%9D%80%E8%8C%83%E5%9B%B4/" class="">通过子网掩码计算IP地址范围</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E9%85%8D%E7%BD%AEkylinv10/" class="">配置 Kylin V10</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/mp4%E6%A0%BC%E5%BC%8F%E5%88%86%E6%9E%90/" class="">MP4格式分析</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E8%99%9A%E6%8B%9F%E7%BB%84%E7%BD%91/" class="">虚拟组网</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3dcacc5e7a7c646c608757dc5f042d92" class="toggle"  />
+    <label for="section-3dcacc5e7a7c646c608757dc5f042d92" class="flex justify-between">
+      <a role="button" class="">LeetCode</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/" class="">golang力扣刷题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98%E4%B8%80/" class="">每日一题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/%E7%BC%96%E7%A8%8B%E9%A2%98/" class="">编程题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/" class="">golang力扣刷题（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/%E5%BF%85%E5%88%B7top101/" class="">必刷top101</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" class="">LeetCode算法总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Golang</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-670eda717a06f31447c52422ec93a159" class="toggle"  />
+    <label for="section-670eda717a06f31447c52422ec93a159" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/" class="">go语言基础（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go-%E4%B8%AD%E4%BD%BF%E7%94%A8-sync.pool-%E6%97%B6%E5%8F%AF%E8%83%BD%E9%81%87%E5%88%B0%E7%9A%84%E9%99%B7%E9%98%B1/" class="">Go 中使用 sync.Pool 时可能遇到的陷阱</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/golangci-lint/" class="">golangci-lint</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/golang%E6%8E%A7%E6%B5%81/" class="">Golang控流</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/golang%E9%99%90%E6%B5%81%E5%AE%9E%E8%B7%B5/" class="">golang限流实践</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E6%B3%9B%E5%9E%8B%E4%BB%8B%E7%BB%8D/" class="">go泛型介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/panic/" class="">panic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/pprof/" class="">pprof</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/" class="">ProtoBuf</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8C%85%E7%AE%A1%E7%90%86/" class="">包管理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="">单元测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/io.copy/" class="">奇怪的io.copy</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">常用业务代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/" class="">go语言基础（三）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/" class="">go语言底层基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/" class="">benchmark测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E5%AE%89%E5%85%A8%E6%8C%87%E5%8D%97/" class="">Go安全指南</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E4%BD%BF%E7%94%A8ollvm%E6%B7%B7%E6%B7%86hello-world/" class="">使用 Ollvm混淆 Hello World</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB%E5%90%88%E9%9B%86/" class="">经验分享合集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/" class="">Goland常用技巧</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle"  />
+    <label for="section-c453881a62c640f6a4cceec99c02477e" class="flex justify-between">
+      <a role="button" class="">高阶</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" class="">Go高阶-语言基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90/" class="">Go内存对齐</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" class="">并发编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%81%BF%E5%9D%91%E6%8C%87%E5%8D%97/" class="">Go避坑指南</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" class="">go性能优化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/%E6%98%93%E9%94%99%E7%BB%86%E8%8A%82/" class="">易错细节</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f235e88e751d2cb18d527c1784763605" class="toggle"  />
+    <label for="section-f235e88e751d2cb18d527c1784763605" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/flag/" class="">Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/atomic/" class="">Atomic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/os/" class="">Os</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strconv/" class="">Strconv</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sort/" class="">Sort</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strings/" class="">Strings</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/reflect/" class="">Reflect</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/context/" class="">context</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/filepath/" class="">filepath</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/math/" class="">math</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/time/" class="">Time</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sync/" class="">Sync</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-98f45c00d30ea45270982f872bd1c0bb" class="toggle"  />
+    <label for="section-98f45c00d30ea45270982f872bd1c0bb" class="flex justify-between">
+      <a role="button" class="">第三方库</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/resty/" class="">resty</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/diskqueue/" class="">diskqueue</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/gofpdf/" class="">gofpdf</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>AI</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-9b671b3ce1ddd28af1b4312866c8b524" class="toggle"  />
+    <label for="section-9b671b3ce1ddd28af1b4312866c8b524" class="flex justify-between">
+      <a role="button" class="">Basic</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/cursor%E7%BB%AD%E6%9D%AF/" class="">cursor续杯</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/mcp%E6%9C%8D%E5%8A%A1/" class="">MCP服务</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/opencv_cuda%E7%BC%96%E8%AF%91/" class="">Opencv Cuda编译</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/pytorch%E9%A3%9F%E8%B0%B1/" class="">pytorch食谱</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/trae%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97%E5%88%86%E4%BA%AB/" class="">Trae使用心得分享</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="">基础知识</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/%E7%9B%B8%E5%85%B3%E5%B7%A5%E5%85%B7%E5%BA%93/" class="">相关工具库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/%E9%A1%B9%E7%9B%AE%E6%94%B6%E8%97%8F/" class="">项目收藏</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/ai%E7%9F%A5%E8%AF%86%E6%99%AE%E5%8F%8A/" class="">Ai知识普及</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-12d52a883bb94360d36ad3bbf0cb5fd3" class="toggle"  />
+    <label for="section-12d52a883bb94360d36ad3bbf0cb5fd3" class="flex justify-between">
+      <a role="button" class="">Computer Vision</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/ocr%E8%AF%86%E5%88%AB/" class="">Ocr识别</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/reid%E6%95%B0%E6%8D%AE%E9%9B%86/" class="">Reid数据集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/reid%E8%A1%8C%E4%BA%BA%E9%87%8D%E8%AF%86%E5%88%AB/" class="">Reid行人重识别</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/yolo-world/" class="">yolo-world</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/yolo%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" class="">yolo底层原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/yolo%E6%95%B0%E6%8D%AE%E9%9B%86/" class="">yolo数据集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/%E5%9B%BE%E5%83%8F%E5%A2%9E%E5%BC%BA%E4%BB%8B%E7%BB%8D/" class="">图像增强介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/%E5%9B%BE%E5%83%8F%E8%B6%85%E5%88%86%E5%8E%9F%E7%90%86/" class="">图像超分原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/%E8%A7%86%E9%A2%91%E8%B6%85%E5%88%86/" class="">视频超分</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/" class="">Yolov8快速上手 实践</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-948cfe1684759289af9e39747f026a40" class="toggle"  />
+    <label for="section-948cfe1684759289af9e39747f026a40" class="flex justify-between">
+      <a role="button" class="">Generative AI</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/generative-ai/qwen2.5-vl%E6%BA%90%E7%A0%81%E9%83%A8%E7%BD%B2/" class="">Qwen2.5-vl源码部署</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/generative-ai/xinference%E5%9F%BA%E7%A1%80/" class="">Xinference基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/generative-ai/%E5%88%A9%E7%94%A8dspy%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90prompt/" class="">利用 Dspy自动生成 Prompt</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ac8e4e2fda641053d78fc10cbbde236e" class="toggle"  />
+    <label for="section-ac8e4e2fda641053d78fc10cbbde236e" class="flex justify-between">
+      <a role="button" class="">C</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/c&#43;&#43;%E9%83%A8%E7%BD%B2paddleocr/" class="">C&#43;&#43;部署PaddleOCR</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/cgo/" class="">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/cgo%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/" class="">CGO遇到的问题解决</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/%E5%9C%A8cgo%E4%B8%AD%E9%9B%86%E6%88%90%E5%92%8C%E8%B0%83%E7%94%A8dll%E6%96%87%E4%BB%B6/" class="">在CGO中集成和调用DLL文件</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Python</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-9fa9875ee3af29ba8922d532968a7155" class="toggle"  />
+    <label for="section-9fa9875ee3af29ba8922d532968a7155" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/%E5%9F%BA%E7%A1%80/python%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E6%8E%92%E6%9F%A5%E6%96%B9%E6%B3%95/" class="">python内存泄漏排查方法</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/%E5%9F%BA%E7%A1%80/python%E5%9F%BA%E7%A1%80/" class="">python基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/%E5%9F%BA%E7%A1%80/python%E5%AE%89%E8%A3%85/" class="">python安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/%E5%9F%BA%E7%A1%80/venv%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/" class="">venv虚拟环境</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/%E5%9F%BA%E7%A1%80/%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B/" class="">开发实例</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/%E5%9F%BA%E7%A1%80/%E6%97%A5%E5%B8%B8%E5%B0%8F%E8%84%9A%E6%9C%AC/" class="">日常小脚本</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76d10924673a9347dff74c68c3ea9d86" class="toggle"  />
+    <label for="section-76d10924673a9347dff74c68c3ea9d86" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/argparse/" class="">argparse</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/collections/" class="">collections</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/detetime/" class="">datetime</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/decord/" class="">Decord</a>
+  
+
+        </li>
+      
+    
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/uvicorn/" class="">uvicorn</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="">正则表达式</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>数据库</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle"  />
+    <label for="section-94f26238d1ca3b5bcd40eadc7a88d726" class="flex justify-between">
+      <a role="button" class="">MySql</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%982/" class="">My Sql相关问题2</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%981/" class="">MySql相关问题1</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E9%94%81%E7%9B%B8%E5%85%B3%E6%80%BB%E7%BB%93/" class="">MySql锁相关总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" class="">MySql基础总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="">Mac连接数据库所遇到的问题</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1/" class="">数据库设计</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="toggle"  />
+    <label for="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="flex justify-between">
+      <a role="button" class="">Redis</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="">Redis集群搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/" class="">Redis基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="">redis面试总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8be9c2251abd1fe110e3c1520cac6177" class="toggle"  />
+    <label for="section-8be9c2251abd1fe110e3c1520cac6177" class="flex justify-between">
+      <a role="button" class="">SQLite</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/fts/" class="">fts</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/" class="">Sqlite</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8F%92%E5%85%A5%E4%BC%98%E5%8C%96/" class="">Sqlite数据库插入优化</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f65a9544b5a0dd9c3cbedb29b743305e" class="toggle"  />
+    <label for="section-f65a9544b5a0dd9c3cbedb29b743305e" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/mongodb%E5%AE%89%E8%A3%85/" class="">Mongodb安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" class="">分库分表</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A7%84%E8%8C%83%E5%8C%96/" class="">数据库规范化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/xorm/" class="">Xorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/" class="">常见数据库的备份与恢复</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>系统架构</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%9F%BA%E7%A1%80/" class="">系统架构基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-083ca86fd1b56cca1f76a6d6b34dc093" class="toggle"  />
+    <label for="section-083ca86fd1b56cca1f76a6d6b34dc093" class="flex justify-between">
+      <a role="button" class="">设计模式</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E5%88%9B%E5%BB%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">创建型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%BB%93%E6%9E%84%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">结构型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">行为型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%89%A9%E5%B1%95/" class="">设计模式扩展</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a36f740001772a844eb3087eeb17eb6d" class="toggle"  />
+    <label for="section-a36f740001772a844eb3087eeb17eb6d" class="flex justify-between">
+      <a role="button" class="">分布式</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%88%86%E5%B8%83%E5%BC%8F/elasticsearch%E9%9D%A2%E8%AF%95%E9%A2%98/" class="">Elastic Search面试题</a>
+  
+
+        </li>
+      
+    
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%88%86%E5%B8%83%E5%BC%8F%E9%9D%A2%E8%AF%95%E9%A2%98/" class="">分布式面试题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%9C%BA%E6%99%AF%E9%A2%98/" class="">场景题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%88%86%E5%B8%83%E5%BC%8F/%E9%AB%98%E5%B9%B6%E5%8F%91%E9%AB%98%E5%8F%AF%E7%94%A8/" class="">高并发高可用</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-266e66094f86ce336245af3b8aaf0e2e" class="toggle"  />
+    <label for="section-266e66094f86ce336245af3b8aaf0e2e" class="flex justify-between">
+      <a role="button" class="">微服务</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/grpc/" class="">Grpc</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/grpc%E6%8B%A6%E6%88%AA%E5%99%A8retry/" class="">grpc拦截器retry</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3d14fec58473cc9c35cafaca50699647" class="toggle"  />
+    <label for="section-3d14fec58473cc9c35cafaca50699647" class="flex justify-between">
+      <a role="button" class="">web框架</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/gin%E5%8F%82%E6%95%B0%E7%BB%91%E5%AE%9A/" class="">Gin参数绑定</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1/" class="">动态路由与静态路由</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/%E6%B5%81%E5%BC%8F%E6%95%B0%E6%8D%AE/" class="">流式数据</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a4047feef6f367d46b68d1e8995f5851" class="toggle"  />
+    <label for="section-a4047feef6f367d46b68d1e8995f5851" class="flex justify-between">
+      <a role="button" class="">前端</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/restfulapi/" class="">Restful API</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/vite&#43;vue%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE/" class="">Vite&#43;Vue快速搭建项目</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/vue3/" class="">Vue3</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/vue%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">Vue环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/webstorm-debug/" class="">WebStorm-debug</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5ee6dbeeb93d5d07b824c3368271f046" class="toggle"  />
+    <label for="section-5ee6dbeeb93d5d07b824c3368271f046" class="flex justify-between">
+      <a role="button" class="">区块链</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle"  />
+    <label for="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="flex justify-between">
+      <a role="button" class="">Fabric</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">fabric相关机制与原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/" class="">智能合约</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/" class="">fabric-sdk-go详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/" class="">fabric-ca详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle"  />
+    <label for="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="flex justify-between">
+      <a role="button" class="">环境测试</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/" class="">fabric网络中的报错（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/" class="">fabric网络中的报错（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">fabric环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/" class="">solo节点测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/" class="">fabric多机搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/" class="">部署tape测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/" class="">手动生成ca证书搭建fabric网络</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/" class="">centos安装fabric1.2</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-25aef1d59a561fcefcaecb043ef8afd2" class="toggle"  />
+    <label for="section-25aef1d59a561fcefcaecb043ef8afd2" class="flex justify-between">
+      <a role="button" class="">配置文件</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/" class="">cryptogen生成的证书详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">docker-compose.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">configtx.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">crypto-config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/" class="">升级链码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/" class="">区块链网络添加组织</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/" class="">fabric浏览器搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/" class="">如何在已有组织中增加节点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/" class="">Fabric1.4多通道实验</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b07621083aa30b12de4c0333941e479f" class="toggle"  />
+    <label for="section-b07621083aa30b12de4c0333941e479f" class="flex justify-between">
+      <a role="button" class="">比特币</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">比特币相关机制与原理</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle"  />
+    <label for="section-ff5477999ef29208270c84e8b56b2758" class="flex justify-between">
+      <a role="button" class="">IPFS</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/" class="">go-ipfs-api</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" class="">ipfs-webui可视化工具搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/" class="">IPFS基本原理（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/" class="">IPFS私有网络搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-77a0a17b06e8d04cfb0fba9952941706" class="toggle"  />
+    <label for="section-77a0a17b06e8d04cfb0fba9952941706" class="flex justify-between">
+      <a role="button" class="">密码学</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" class="">区块链安全基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/" class="">椭圆曲线加密</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/" class="">密码学基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2e4d10b323fd668021dbd532575d8790" class="toggle"  />
+    <label for="section-2e4d10b323fd668021dbd532575d8790" class="flex justify-between">
+      <a role="button" class="">Docker</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/" class="">Docker基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E9%97%AE%E9%A2%98/" class="">Docker问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/" class="">Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" class="">docker常用知识总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-70383d7f28a7ae4bf840a844eb61aa16" class="toggle"  />
+    <label for="section-70383d7f28a7ae4bf840a844eb61aa16" class="flex justify-between">
+      <a role="button" class="">共识算法</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">共识算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" class="">Raft共识算法</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E6%94%B6%E8%97%8F/" class="">开源项目收藏</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>代码整洁之道</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#整洁代码">整洁代码</a></li>
+            <li><a href="#有意义的命名">有意义的命名</a></li>
+            <li><a href="#函数">函数</a></li>
+            <li><a href="#注释">注释</a></li>
+            <li><a href="#格式">格式</a></li>
+            <li><a href="#对象和数据结构">对象和数据结构</a></li>
+            <li><a href="#错误处理">错误处理</a></li>
+            <li><a href="#边界">边界</a></li>
+            <li><a href="#单元测试">单元测试</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h3 id="整洁代码">
+  整洁代码
+  <a class="anchor" href="#%e6%95%b4%e6%b4%81%e4%bb%a3%e7%a0%81">#</a>
+</h3>
+<p>简单代码，根据重要顺序应该是：</p>
+<ul>
+<li>能通过所有测试</li>
+<li>没有重复代码</li>
+<li>体现系统中的全部设计理念</li>
+<li>包括尽量少的实体，比如方法、函数等</li>
+</ul>
+<p><strong>光写好代码是不够的，必须时时刻刻保持整洁。</strong></p>
+<h3 id="有意义的命名">
+  有意义的命名
+  <a class="anchor" href="#%e6%9c%89%e6%84%8f%e4%b9%89%e7%9a%84%e5%91%bd%e5%90%8d">#</a>
+</h3>
+<p>1、命名要<u>名副其实</u>，直接体现要做的事情。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">openFile</span><span style="color:#f92672">--</span>&gt;<span style="color:#a6e22e">openVideo</span>
+</span></span></code></pre></div><p>2、选择一个好名字要花时间，但省下来的时间比花掉的多。<u>一旦发现有更好的名称，就换掉旧的。</u></p>
+<p>3、避免使用会引起误解的名称，尤其是遇到一些缩写，要防止其存在歧义。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//反面例子
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Std</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Age</span>  <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Cls</span>  <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p><code>std</code> 可能被误解为 <code>Standard</code>，而实际上它应该表示 <code>Student</code>（学生）。</p>
+</blockquote>
+<p>4、不要去做无意义的区分，例如：<code>taskData</code>和<code>taskInfo</code>，名称虽然不同但意义没有差别。</p>
+<ul>
+<li>
+<p>variable一词不应当出现在变量名中，table一词不应该出现在表名中。例如：<code>NameString</code>不可取，名称后面建议不要加类型。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//反面例子
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">recordMap</span> <span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">int64</span>]<span style="color:#f92672">*</span><span style="color:#a6e22e">RecordDbManager</span>
+</span></span></code></pre></div></li>
+<li>
+<p>总之在读者能区分的情况下、不产生歧义的情况下，越简单的命名就是好命名。</p>
+</li>
+</ul>
+<p>5、使用可以读出来的命名。</p>
+<ul>
+<li><code>generationTimestamp</code>要比<code>genymdhms</code>要好的多，即使前一个比较长一点，但是无所谓，表达准确意思。</li>
+</ul>
+<p>6、使用可以搜索的名字</p>
+<ul>
+<li>
+<p>长名称胜于短名称，搜得到的名称比自编代码写就的名称要好。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//反面例子
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#960050;background-color:#1e0010">：</span>=<span style="color:#ae81ff">0</span><span style="color:#960050;background-color:#1e0010">；</span><span style="color:#a6e22e">i</span>&lt;<span style="color:#ae81ff">30</span>;<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">s</span><span style="color:#f92672">+=</span><span style="color:#a6e22e">t</span>[<span style="color:#a6e22e">i</span>]<span style="color:#f92672">*</span><span style="color:#ae81ff">4</span><span style="color:#f92672">/</span><span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//4 和 5代表什么意思要用常量说明，否则维护人员很难注意
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">WorkDays</span> <span style="color:#66d9ef">int</span> =<span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">realDays</span> <span style="color:#66d9ef">int</span> =<span style="color:#ae81ff">4</span>
+</span></span></code></pre></div></li>
+</ul>
+<p>7、命名不要有无意义的前缀，人们只会看到名称中有意义的部分。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//反面例子
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">m_student</span> <span style="color:#66d9ef">string</span>
+</span></span></code></pre></div><p>8、避免思维映射。例如：循环计数通常使用i，j，k，千万别用l 。<strong>专业的程序员编写其他人能理解的代码</strong>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//反面例子
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">for</span> <span style="color:#a6e22e">l</span><span style="color:#960050;background-color:#1e0010">：</span>=<span style="color:#ae81ff">0</span><span style="color:#960050;background-color:#1e0010">；</span><span style="color:#a6e22e">l</span>&lt;<span style="color:#ae81ff">30</span>;<span style="color:#a6e22e">l</span><span style="color:#f92672">++</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">s</span><span style="color:#f92672">+=</span><span style="color:#a6e22e">t</span>[<span style="color:#a6e22e">l</span>]<span style="color:#f92672">*</span><span style="color:#ae81ff">4</span><span style="color:#f92672">/</span><span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>9、结构体命名不应该用动词，方法命名应该用动词，可加上get, is ,set 前缀。</p>
+<p>10、别做一些没有意义的聪明举动，<u>宁可明确，毋为好玩</u>。<u><strong>言到意到，意到言到</strong></u>。</p>
+<p>11、每个概念对应一个词，在项目中若出现自定义方法命名，必须贯穿整个项目。例如<code>getTask</code>,<code>getEvidence</code>&hellip;.不能后面出现<code>fetchEvidence</code>。函数名称应该独一无二，并且保持一致。  &mdash;&mdash;&mdash;<strong>统一</strong> 。</p>
+<p>12、别用同一个词表达不同的概念，做到”一词一义“。</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 这个函数名称不明确，可能会引起混淆
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">open</span>(<span style="color:#a6e22e">file</span> <span style="color:#66d9ef">string</span>) (<span style="color:#f92672">*</span><span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">File</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#a6e22e">file</span>) <span style="color:#75715e">// 这里的打开操作实际是读取文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 另一个函数也使用了“open”这个词，但实际是创建新文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">open</span>(<span style="color:#a6e22e">file</span> <span style="color:#66d9ef">string</span>) (<span style="color:#f92672">*</span><span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">File</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Create</span>(<span style="color:#a6e22e">file</span>) <span style="color:#75715e">// 这里的打开操作实际是创建文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div></li>
+</ul>
+<p>13、不要用专业领域中的名字，比如项目是基因学相关，不要用里面的专业名词去命名。</p>
+<p>14、如果不能用程序员熟悉的术语来给手头的工作命名，就采用所涉及问题领域而来的名称。</p>
+<p>15、大多名称无法自我说明，你需要用良好的结构体、函数来放置名称，给作者提供语境，或者给名字加前缀。<u>不要怕代码变多，意思明确是最主要的。</u></p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//例如：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">process</span>(<span style="color:#a6e22e">data</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 处理订单数据的逻辑
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Info</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">a</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">b</span> <span style="color:#66d9ef">float64</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 函数处理订单数据，提供了明确的语境信息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">processOrderData</span>(<span style="color:#a6e22e">orderData</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 处理订单数据的逻辑
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 结构体用于表示订单信息，提供了明确的语境信息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">OrderInfo</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">customerName</span>  <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">orderTotal</span>    <span style="color:#66d9ef">float64</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">orderDate</span>     <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+</ul>
+<p>16、不要添加没用的语境，<u>只要短名称足够清楚，就比长名称好</u>。</p>
+<p>17、<u>经常试着去更改命名，让它更贴切</u>。</p>
+<h3 id="函数">
+  函数
+  <a class="anchor" href="#%e5%87%bd%e6%95%b0">#</a>
+</h3>
+<p>1、函数就应该短小，每个函数都<u>一目了然</u>，每个函数都<u>只做一件事情</u>，每个函数都依次把你带到下一个函数，这就是函数应该达到的最短小程度。<u>代码变多了无所谓</u>。</p>
+<p>2、**函数应该做一件事，做好这件事，只做这一件事。**要判断函数是否只做一件事，就看它是否还能拆分。</p>
+<p>3、每一个函数一个抽象层</p>
+<ul>
+<li>比如我们需要从一个整数数组中找到最大的数，并计算它的平方。我们可以将这个需求分解为两个抽象层次：找到数组中的最大数，然后计算它的平方。每一个函数都只关注一个抽象层次的工作，使代码更加清晰易于理解。</li>
+</ul>
+<p>4、使用具有描述性的名称</p>
+<ul>
+<li>不要怕函数名称太长，要贴切</li>
+<li>不要怕取名时间太久，要贴切</li>
+<li>命名方式要一致，使用一脉相承的短语、名词、动词给函数命名。</li>
+</ul>
+<p>5、函数参数</p>
+<ul>
+<li>
+<p>最理想的函数参数数量是0，其次是1，再次是2，尽量避免出现3参数，除非你有足够的理由。</p>
+</li>
+<li>
+<p>尽量不向函数传入布尔值，因为会让函数功能变得不单一，违背函数只做一件事原则。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//反面例子
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">fp</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">FileProxy</span>) <span style="color:#a6e22e">Info</span>(<span style="color:#a6e22e">cid</span> <span style="color:#66d9ef">int64</span>, <span style="color:#a6e22e">eid</span> <span style="color:#66d9ef">int64</span>, <span style="color:#a6e22e">fullPath</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">isCaseSensitive</span> <span style="color:#66d9ef">bool</span>) (<span style="color:#a6e22e">resultData</span> []<span style="color:#f92672">*</span><span style="color:#a6e22e">file</span>.<span style="color:#a6e22e">File</span>, <span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>) {}
+</span></span></code></pre></div></li>
+<li>
+<p>能用单参数，就不用双参数，否则就拆分函数。三参数也一样，当参数过多时，建议用结构体。</p>
+</li>
+<li>
+<p>对于单参数函数，函数和参数应该形成一种非常良好的动词/名词对形式。</p>
+<pre tabindex="0"><code>//例如
+write(name)
+writeField(name)//更好
+</code></pre></li>
+</ul>
+<p>6、函数要么做什么事，要么回答什么事，二者不可兼得。两样都干，常会显得混乱。</p>
+<p>7、<strong>函数只做一件事</strong>，要避免重复。</p>
+<p>8、函数中尽量避免使用如下操作 <code>break outerLoop</code>。</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//反面典型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">outerLoop</span>:
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ticker</span>.<span style="color:#a6e22e">C</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ok</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">tasks</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">api</span>.<span style="color:#a6e22e">GetTasks</span>(<span style="color:#a6e22e">api</span>.<span style="color:#a6e22e">GetCaseId</span>(), <span style="color:#a6e22e">api</span>.<span style="color:#a6e22e">GetEvidenceId</span>(), <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>)
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">common</span>.<span style="color:#a6e22e">Log</span>.<span style="color:#a6e22e">Error</span>(<span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>())
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">task</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">tasks</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">task</span>.<span style="color:#a6e22e">Type</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;scan&#34;</span> {
+</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">exit</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">executed</span>[<span style="color:#a6e22e">task</span>.<span style="color:#a6e22e">Name</span>]; !<span style="color:#a6e22e">exit</span> { 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>						<span style="color:#f92672">......</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>						<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">task</span>.<span style="color:#a6e22e">Name</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;deepscan&#34;</span> { 
+</span></span><span style="display:flex;"><span>							<span style="color:#66d9ef">break</span> <span style="color:#a6e22e">outerLoop</span>
+</span></span><span style="display:flex;"><span>						}
+</span></span><span style="display:flex;"><span>						<span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>					}
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span></code></pre></div></li>
+</ul>
+<p>9、如何写出功能单一的函数————<strong>先写长函数，不断拆分</strong>。</p>
+<p><strong>大师级的程序员把系统当作故事来讲，而不是当作程序来写。</strong></p>
+<h3 id="注释">
+  注释
+  <a class="anchor" href="#%e6%b3%a8%e9%87%8a">#</a>
+</h3>
+<p>1、<strong>如果你需要给这段代码加注释，那么你需要重写这段代码</strong>。与其花时间去注释那段糟糕的代码，不如花时间去清理那段代码。</p>
+<p>2、注意力放到代码上，能不用注释就不用注释，用代码去表达。</p>
+<p>3、尽管有时也需要注释，但我们应该多花心思去减少注释。不准确的注释，比不注释要好得多。</p>
+<p>4、什么是好注释</p>
+<ul>
+<li>
+<p>好的注释应当解释代码的意图、背景信息或复杂逻辑。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">ImTreeNode 该结构应用于即时通讯类插件解析
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">该结构的特性有：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">1.节点名称自动拼接，例：张三（123456）；
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">2.根节点自动统计账号详情；
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">3.账号节点自动整理详情页；
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">4.聊天消息节点默认按最后聊天时间排序；
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">5.聊天数据自动统计，自动生成聊天消息分类节点；
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">6.自动格式化数据，校验提交数据，修正或提醒部分不必要的错误；
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">ImTreeNode</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">*</span><span style="color:#a6e22e">TreeNode</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">accId</span>          <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">statisticsFunc</span> <span style="color:#a6e22e">StatisticsFunc</span> <span style="color:#75715e">// 数据统计方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">setAccIdFunc</span>   <span style="color:#a6e22e">SetAccIdFunc</span>   <span style="color:#75715e">// 设置数据统计账号id
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div></li>
+<li>
+<p><u>有些注释是必须的，也是有利的。但要记住，唯一正真的好做法是想办法不写注释</u>。</p>
+</li>
+<li>
+<p>规范要求编写的注释</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// © 2024 Acme Corp. All rights reserved.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// Licensed under the Apache License, Version 2.0 (the &#34;License&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// you may not use this file except in compliance with the License.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// You may obtain a copy of the License at
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//     http://www.apache.org/licenses/LICENSE-2.0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// Unless required by applicable law or agreed to in writing, software
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// distributed under the License is distributed on an &#34;AS IS&#34; BASIS,
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// See the License for the specific language governing permissions and
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// limitations under the License.
+</span></span></span></code></pre></div></li>
+<li>
+<p>提供信息的注释</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">IsFileExist 判断文件或路径是否存在
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">path: 文件路径,不区分挂载点路径和磁盘路径
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">IsFileExist</span>(<span style="color:#a6e22e">filePath</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">bool</span> {}
+</span></span></code></pre></div></li>
+<li>
+<p>解释意图的注释</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// findMax 查找整数数组中的最大值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 使用了手动循环而不是内置的 max 函数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 目的是为了练习循环和条件判断
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">findMax</span>(<span style="color:#a6e22e">numbers</span> []<span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">max</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">numbers</span>[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">num</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">numbers</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">num</span> &gt; <span style="color:#a6e22e">max</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">max</span> = <span style="color:#a6e22e">num</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">max</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+<li>
+<p>注释把某些晦涩难懂的参数或返回值的意义翻译为某种可读的形式，也是有用的。<u>更好的方法是尽量让参数或返回值本身就足够清楚</u>。</p>
+</li>
+<li>
+<p>警示作用的注释</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewExample</span>(<span style="color:#a6e22e">accountNode</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">task</span>.<span style="color:#a6e22e">ImTreeNode</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">example</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 初始化各类数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// 使用map的时候需要注意并发安全问题
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">example</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">accountNode</span>:  <span style="color:#a6e22e">accountNode</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">friends</span>:      make(<span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#f92672">*</span><span style="color:#a6e22e">im</span>.<span style="color:#a6e22e">ImUserInfo</span>),
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">groups</span>:       make(<span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#f92672">*</span><span style="color:#a6e22e">im</span>.<span style="color:#a6e22e">TroopGroupInfo</span>),
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">groupMembers</span>: make(<span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#f92672">*</span><span style="color:#a6e22e">im</span>.<span style="color:#a6e22e">ImUserInfo</span>),
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">randMath</span>: <span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">New</span>(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">NewSource</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">UnixNano</span>())),
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+<li>
+<p><code>TODO</code>注释</p>
+<ul>
+<li><code>TODO</code>是一种程序员认为应该做，但由于某些原因还没有做的工作。</li>
+<li><u>但一定要定期查看，删除不再需要的</u>。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">case</span> <span style="color:#a6e22e">im</span>.<span style="color:#a6e22e">ACCOUNT_INFO</span>:
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">AccountInfo</span>.<span style="color:#a6e22e">UserInfo</span>.<span style="color:#a6e22e">ImUserInfo</span> = <span style="color:#f92672">*</span><span style="color:#a6e22e">val</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 不提交头像信息，改字段过大可能会溢出
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// TODO：优化头像字段，改为编码base64会有一定改善
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">AccountInfo</span>.<span style="color:#a6e22e">UserInfo</span>.<span style="color:#a6e22e">ImUserInfo</span>.<span style="color:#a6e22e">Avatar</span> = <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 账号使用情况统计
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">accountSummary</span>.<span style="color:#a6e22e">AccountId</span> = <span style="color:#a6e22e">val</span>.<span style="color:#a6e22e">GetId</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">accountSummary</span>.<span style="color:#a6e22e">NickName</span> = <span style="color:#a6e22e">val</span>.<span style="color:#a6e22e">NickName</span>
+</span></span></code></pre></div></li>
+<li>
+<p>放大某种看起来不合理之物的重要性的注释。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// cache 结构体用于缓存数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">cache</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">data</span> <span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// lastUpdated 用于跟踪缓存最后更新时间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">lastUpdated</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+</ul>
+<p>5、什么是坏注释</p>
+<ul>
+<li>
+<p><strong>坏的注释都是糟糕代码的支撑或借口，或者是对错误决策的修正，基本上等于程序员自说自话。</strong></p>
+</li>
+<li>
+<p>如果你决定要写注释，就要花必要的时间确保写出最好的注释。常问自己写注释的目的是什么？是否可以通过代码避免写这些注释？</p>
+</li>
+<li>
+<p>避免注释多余。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 计算矩形的面积
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">getRectangleArea</span>(<span style="color:#a6e22e">width</span>, <span style="color:#a6e22e">height</span> <span style="color:#66d9ef">float64</span>) <span style="color:#66d9ef">float64</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 计算面积并返回
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">width</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">height</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+<li>
+<p>不要出现误导性的注释。</p>
+</li>
+<li>
+<p>日志性注释，我们常常在开发过程中写一些理思路的注释，完成代码后请删除它们。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//1、获取任务状态
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//2、修改任务..
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//3、...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//4、更新检材
+</span></span></span></code></pre></div></li>
+<li>
+<p>废话注释，用整理代码的决心替代创造废话的冲动吧，这样你就会发现自己将成为更优秀、更快乐的程序员。</p>
+</li>
+<li>
+<p>标记位置的注释。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//反面典型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//火眼适配----------------------------
+</span></span></span></code></pre></div></li>
+<li>
+<p>写注释不要写你的名字。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">IsFileExist 判断文件或路径是否存在
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">author: 张三
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span></code></pre></div></li>
+<li>
+<p>注释掉的代码，请在迭代测试后删除它们。</p>
+</li>
+<li>
+<p>非本地信息的注释，写注释要写对地方，确保距离代码最近。</p>
+</li>
+<li>
+<p>信息过多的注释，别在注释中添加有趣的历史性话题或者无关的细节描述。</p>
+</li>
+</ul>
+<h3 id="格式">
+  格式
+  <a class="anchor" href="#%e6%a0%bc%e5%bc%8f">#</a>
+</h3>
+<p>格式化不仅仅是美观问题，它直接影响代码的可读性。良好的格式可以帮助开发者更快理解代码的意图和逻辑。</p>
+<h4 id="垂直格式">
+  垂直格式
+  <a class="anchor" href="#%e5%9e%82%e7%9b%b4%e6%a0%bc%e5%bc%8f">#</a>
+</h4>
+<p>1、文件应该短，一般以500行代码为最大标准。</p>
+<p>2、源文件要像报纸文章那样。名称应当简单一目了然，名称本身应该足以告诉我们是否在正确的模块中。细节应该往下逐次展开，直到找到源文件中最底层的函数和细节。</p>
+<p>3、建议代码每行展现一个表达式或者子句，每行代码展示一条完整的思路。<strong>这些思路用空白行隔开。</strong>（这个编辑器不会帮你）</p>
+<p>4、在变量、接口、结构体等之间，都空一行。</p>
+<p>5、把存在相互关系的函数、变量、结构图等放在一块。存在紧密关系的代码应该相互靠近。&ndash;易于阅读。</p>
+<blockquote>
+<p>常习惯将变量、结构体放到文件开头，这是不对的。</p>
+<p>注意：多个函数、文件使用的变量、结构体等放到文件最上方。</p>
+</blockquote>
+<p>6、函数也一样，当你从一个函数A跳转到一个函数B；那么这个函数B应该在函数A的下面最靠近的位置。</p>
+<p>7、循环中用到的控制变量应该总是在循环语句中声明。</p>
+<h4 id="横向格式">
+  横向格式
+  <a class="anchor" href="#%e6%a8%aa%e5%90%91%e6%a0%bc%e5%bc%8f">#</a>
+</h4>
+<p>1、一行代码应该有多宽？（书作者个人上限是120字符）</p>
+<p>2、水平方向上的区隔与靠近、水平对齐、缩进等不用多说。</p>
+<h4 id="一个团队应该保持同一种代码风格">
+  一个团队应该保持同一种代码风格。
+  <a class="anchor" href="#%e4%b8%80%e4%b8%aa%e5%9b%a2%e9%98%9f%e5%ba%94%e8%af%a5%e4%bf%9d%e6%8c%81%e5%90%8c%e4%b8%80%e7%a7%8d%e4%bb%a3%e7%a0%81%e9%a3%8e%e6%a0%bc">#</a>
+</h4>
+<h3 id="对象和数据结构">
+  对象和数据结构
+  <a class="anchor" href="#%e5%af%b9%e8%b1%a1%e5%92%8c%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84">#</a>
+</h3>
+<h4 id="数据抽象">
+  数据抽象
+  <a class="anchor" href="#%e6%95%b0%e6%8d%ae%e6%8a%bd%e8%b1%a1">#</a>
+</h4>
+<p>1、代码要隐藏数据的具体实现，只暴露必要的操作接口。这样可以减少代码的耦合性，提高代码的可维护性。</p>
+<p>2、我们不愿意暴露数据细节，而更愿意以抽象形态表述数据。这并不意味着只是用接口或赋值器、取值器就万事大吉。要以最好的方式呈现某个对象包含的数据，需要进行严肃的思考。</p>
+<blockquote>
+<p>在go语言中，不要乱用开头大写的变量、数据结构在整个系统中乱窜，要封装成函数或方法。</p>
+</blockquote>
+<h4 id="得墨忒耳律">
+  得墨忒耳律
+  <a class="anchor" href="#%e5%be%97%e5%a2%a8%e5%bf%92%e8%80%b3%e5%be%8b">#</a>
+</h4>
+<p>1、得墨忒耳律的主要规则是：</p>
+<ul>
+<li>类C的方法f只应该调用以下对象的方法：
+<ol>
+<li>C。</li>
+<li>由f创建的对象。</li>
+<li>作为参数传递给f的对象。</li>
+<li>由C的尸体变量持有的对象。</li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<p>在go语言中，一个结构体的方法不应该过多的访问其他结构体的内部属性，而应该通过接口或者方法进行交互。</p>
+<p>得墨忒耳律的主要规则是：</p>
+<ul>
+<li>结构体（C）的方法只应调用以下对象的方法：
+<ol>
+<li>当前结构体（C）。</li>
+<li>当前方法（f）创建的结构体。</li>
+<li>作为参数传递给当前方法（f）的结构体。</li>
+<li>当前结构体的字段（成员变量）持有的结构体（嵌套）。</li>
+</ol>
+</li>
+</ul>
+</blockquote>
+<p>2、代码应避免造成火车失事，就是一连串的去调用。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Engine</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Horsepower</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Car</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Engine</span> <span style="color:#a6e22e">Engine</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Driver</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Car</span> <span style="color:#a6e22e">Car</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Horsepower:&#34;</span>, <span style="color:#a6e22e">driver</span>.<span style="color:#a6e22e">Car</span>.<span style="color:#a6e22e">Engine</span>.<span style="color:#a6e22e">Horsepower</span>)<span style="color:#75715e">//要通过方法去封装
+</span></span></span></code></pre></div><h3 id="错误处理">
+  错误处理
+  <a class="anchor" href="#%e9%94%99%e8%af%af%e5%a4%84%e7%90%86">#</a>
+</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 内置的error接口，是一个常规的用于处理错误的接口。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 其中 nil 表示没有错误。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#66d9ef">error</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Error</span>() <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>实现一个错误处理，所需要的只是给 Error () 方法返回一个简单的字符串。</p>
+<h4 id="不要重复进行错误处理">
+  不要重复进行错误处理
+  <a class="anchor" href="#%e4%b8%8d%e8%a6%81%e9%87%8d%e5%a4%8d%e8%bf%9b%e8%a1%8c%e9%94%99%e8%af%af%e5%a4%84%e7%90%86">#</a>
+</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">//反面例子
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">service</span>.<span style="color:#a6e22e">Task</span>.<span style="color:#a6e22e">CreateTask</span>(<span style="color:#a6e22e">task</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">common</span>.<span style="color:#a6e22e">Log</span>.<span style="color:#a6e22e">Error</span>(<span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>())
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">ts</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">TaskService</span>) <span style="color:#a6e22e">CreateTask</span>(<span style="color:#a6e22e">task</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">vmodel</span>.<span style="color:#a6e22e">Task</span>) (<span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">tasks</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">proxy</span>.<span style="color:#a6e22e">Task</span>.<span style="color:#a6e22e">GetTasks</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">vmodel</span>.<span style="color:#a6e22e">Task</span>{<span style="color:#a6e22e">CaseId</span>: <span style="color:#a6e22e">task</span>.<span style="color:#a6e22e">CaseId</span>, <span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;videothumbnail&#34;</span>}) <span style="color:#75715e">//获取任务
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">common</span>.<span style="color:#a6e22e">Log</span>.<span style="color:#a6e22e">Error</span>(<span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>())
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">......</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>当错误返回时，再次记录错误，然后在系统日志中会发生噩梦般的错误记录。可以这样处理：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">ta</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">TaskApi</span>) <span style="color:#a6e22e">CreateTask</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">task</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">vmodel</span>.<span style="color:#a6e22e">Task</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">service</span>.<span style="color:#a6e22e">Task</span>.<span style="color:#a6e22e">CreateTask</span>(<span style="color:#a6e22e">task</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">common</span>.<span style="color:#a6e22e">Log</span>.<span style="color:#a6e22e">Error</span>(<span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>())
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">response</span>.<span style="color:#a6e22e">Fail</span>(<span style="color:#a6e22e">c</span>, <span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">CurdCreatTaskMsg</span>, <span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>())
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">......</span>.
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">response</span>.<span style="color:#a6e22e">Success</span>(<span style="color:#a6e22e">c</span>, <span style="color:#a6e22e">global</span>.<span style="color:#a6e22e">CurdStatusOkMsg</span>, <span style="color:#a6e22e">task</span>)
+</span></span><span style="display:flex;"><span>}	
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">ts</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">TaskService</span>) <span style="color:#a6e22e">CreateTask</span>(<span style="color:#a6e22e">task</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">vmodel</span>.<span style="color:#a6e22e">Task</span>) (<span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">tasks</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">proxy</span>.<span style="color:#a6e22e">Task</span>.<span style="color:#a6e22e">GetTasks</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">vmodel</span>.<span style="color:#a6e22e">Task</span>{<span style="color:#a6e22e">CaseId</span>: <span style="color:#a6e22e">task</span>.<span style="color:#a6e22e">CaseId</span>, <span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;videothumbnail&#34;</span>}) <span style="color:#75715e">//获取任务
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">Wrapf</span>(<span style="color:#a6e22e">err</span>, <span style="color:#e6db74">&#34;获取任务失败：CaseId:%d,Name:%s&#34;</span>,<span style="color:#a6e22e">task</span>.<span style="color:#a6e22e">CaseId</span>,<span style="color:#e6db74">&#34;videothumbnail&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">......</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="边界">
+  边界
+  <a class="anchor" href="#%e8%be%b9%e7%95%8c">#</a>
+</h3>
+<p>边界是指我们的代码与第三方代码库或模块之间的接口。管理这些边界是为了确保第三方代码的变化不会直接影响我们的代码，保持我们的代码的稳定性和可维护性。</p>
+<p>1、对于第三方库，应该对其进行封装，提供稳定的接口，使得第三方库的变化不会直接影响我们的代码。</p>
+<p>2、限制第三方库的使用范围，尽量在少量的地方使用第三方库，以减少其对整体系统的影响。</p>
+<h4 id="学习性测试">
+  学习性测试
+  <a class="anchor" href="#%e5%ad%a6%e4%b9%a0%e6%80%a7%e6%b5%8b%e8%af%95">#</a>
+</h4>
+<p>设想我们对第三方库的使用方法并不清楚，我们可能会花一两天的时间去阅读文档，决定如何使用。然后，我们会编写使用第三方库的代码，看看是否如我们所愿，我们会陷入很长时间的调试，找出我们或他们代码中的缺陷&hellip;&hellip;</p>
+<blockquote>
+<p>编写单元测试以验证我们对第三方库的使用是否正确，同时确保我们的代码不会受到第三方库变化的影响。这种学习性测试毫无成本，可以帮助我们对第三方库的理解。当第三方库发布了新版本，我们可以运行学习性测试看，看看第三方库的行为有没有发生改变。</p>
+</blockquote>
+<h4 id="整洁边界">
+  整洁边界
+  <a class="anchor" href="#%e6%95%b4%e6%b4%81%e8%be%b9%e7%95%8c">#</a>
+</h4>
+<p><strong>如果有良好的软件设计，则无需巨大投入和重写即可进行修改。在使用我们控制不了的代码时，必须加倍小心保护投资，确保未来的修改不至于太大代价。</strong></p>
+<p>边界上的代码需要清晰的分割和定义了期望的测试。应该避免我们的代码过多地了解第三方代码中的特定信息。<strong>依靠你能控制得东西，好过依靠你控制不了的东西，免得日后受他控制</strong>。</p>
+<h3 id="单元测试">
+  单元测试
+  <a class="anchor" href="#%e5%8d%95%e5%85%83%e6%b5%8b%e8%af%95">#</a>
+</h3>
+<h4 id="tdd三定律">
+  TDD三定律
+  <a class="anchor" href="#tdd%e4%b8%89%e5%ae%9a%e5%be%8b">#</a>
+</h4>
+<p>TDD要求我们在编写生产代码之前先编写单元测试。</p>
+<ul>
+<li>在编写不能通过的单元测试之前，不可编写生产代码。</li>
+<li>只可编写刚好无法通过的单元测试，不能编译也不能算通过。</li>
+<li>只可编写刚好足以通过当前失败测试的生产代码。</li>
+</ul>
+<h4 id="保持测试整洁">
+  保持测试整洁
+  <a class="anchor" href="#%e4%bf%9d%e6%8c%81%e6%b5%8b%e8%af%95%e6%95%b4%e6%b4%81">#</a>
+</h4>
+<p><strong>测试代码和生产代码一样重要</strong>。他需要被思考、被设计和被照料，他应该像生产代码一样保持整洁。</p>
+<p>单元测试可以让你的代码可扩展、可维护、可复用。</p>
+<p>**整洁测试的三个要素：**可读性，可读性，可读性。重要的话强调三遍，如何做到可读性？和其他代码一样：明确，简洁，有足够的表达力。</p>
+<h4 id="first">
+  FIRST
+  <a class="anchor" href="#first">#</a>
+</h4>
+<p>整洁的测试需遵循以下规则</p>
+<ul>
+<li>快速，测试应该足够快。</li>
+<li>独立，测试应该相互独立。</li>
+<li>可重复，测试应该可以在任何环境中重复使用。</li>
+<li>自足验证，测试应该有布尔值输出。</li>
+<li>及时，测试应该及时编写。</li>
+</ul>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#整洁代码">整洁代码</a></li>
+            <li><a href="#有意义的命名">有意义的命名</a></li>
+            <li><a href="#函数">函数</a></li>
+            <li><a href="#注释">注释</a></li>
+            <li><a href="#格式">格式</a></li>
+            <li><a href="#对象和数据结构">对象和数据结构</a></li>
+            <li><a href="#错误处理">错误处理</a></li>
+            <li><a href="#边界">边界</a></li>
+            <li><a href="#单元测试">单元测试</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

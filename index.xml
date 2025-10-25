@@ -598,6 +598,32 @@ mongod --dbpath /usr/local/mongodb/data --logpath /usr/local/mongodb/log/mongod.
     </item>
     
     <item>
+      <title>My Sql相关问题2</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%982/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%982/</guid>
+      <description>什么是OnlineDDL # DDL,即Data Defination（定义、注释） Language，是用于定义数据库结构的操作。DDL操作用于创建、修改和删除数据库中的表、索引、视图、约束等数据库对象，而不涉及实际数据的操作。
+以下是一些常见的DDL操作：
+CREATE
+ALTER
+DROP
+用于永久删除数据库对象
+TRUNCATE
+用于快速清空表中的所有数据，但保留表结构
+与DDL相对的是DML，及Data Manipulation（操作） Language，用于操作数据。即包括我们常用的INSERT、DELETE和UPDATE等。
+在MySQL 5.6之前，所有的ALTER操作其实是会阻塞DML操作的，如：添加/删除字段、添加/删除索引等，都是会锁表的。
+但是在MySQL 5.6中引入了Online DDL，OnLineDDL是MySQL5.6提出的加速DDL方案，尽最大可能保证DDL期间不阻塞DML动作。但是需要注意，这里说的尽最大可能意味着不是所有DDL语句都会使用OnlineDDL加锁。
+Online DDL的优点就是可以减少阻塞，是MySQL的一种内置优化手段，但是需要注意的是，DDL在刚开始和快结束的时候，都需要获取MDL锁，而在获取锁的时候如果有事务未提交，那么DDL就会因为加锁失败而进入阻塞状态，也会造成性能影响。
+还有就是，如果Online DDL操作失败，其回滚操作可能成本较高。以及长时间运行的Online DDL操作可能导致主从同步滞后。
+但是需要注意的是，即使有了Online DDL，也不意味着就可以随意在业务高峰期进行DDL变更了
+在SQL后增加ALGORITHM=INPLACE, LOCK=NONE;或者 ALGORITHM=INSTANT、ALGORITHM=COPY 要根据不同的业务场景，选择不同的算法
+ALGORITHM算法选择 算法 原理 适用场景 缺点 COPY 创建临时表复制数据，原表被替换 所有ALTER操作（最通用） 锁表时间长，空间占用翻倍 INPLACE 直接在原表上修改（不复制数据） 添加索引、修改列类型（有限支持） 可能仍有短暂锁 INSTANT 仅修改元数据（最快） MySQL 8.0+ 的列添加/删除等操作 支持的操作有限 LOCK锁定策略 锁定级别 行为 适用场景 NONE 允许并发读写 高并发业务时段 SHARED 允许读但阻塞写 需要数据一致性但可接受读 EXCLUSIVE 完全锁表（默认） 维护时段或低峰期 具体算法内容待补充
+为什么不推荐使用外键 # MySQL 外键最大的作用就是有助于维护数据的一致性和完整性。
+但是，其实在很多大型互联网公司中，很少用外键的，甚至阿里巴巴Java开发手册中明确规定了：</description>
+    </item>
+    
+    <item>
       <title>Ocr识别</title>
       <link>https://chain-code.github.io/docs/ai/computer-vision/ocr%E8%AF%86%E5%88%AB/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -2085,11 +2111,11 @@ Load 操作 读取 # atomic.LoadInt32(&amp;amp;addr int32) int32 原子性地读
     </item>
     
     <item>
-      <title>MySql相关问题</title>
-      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/</link>
+      <title>MySql相关问题1</title>
+      <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%981/</link>
       <pubDate>Tue, 30 Apr 2024 16:16:50 +0800</pubDate>
       
-      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/</guid>
+      <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%981/</guid>
       <description>有了关系型数据库，为什么还需要NOSQL? # nosql数据库无需提前设计表结构，数据可以根据需要自由存储和组织，相较于关系型数据库，nosql高效灵活，非常适合复杂化、高效化、高并发的场景中。
 关系型数据库
 数据以行和列的方式存储
@@ -2431,6 +2457,32 @@ for t := range time.Tick(2 * time.Second) { fmt.</description>
 并发工具类 说明 Mutex 互斥锁 RWMutex 读写锁 WaitGroup 并发等待组 Map 并发安全字典 Cond 同步等待条件 Once 只执行一次 Pool 临时对象池 临界区 # 有时候在Go代码中可能会存在多个goroutine同时操作一个资源区（临界区），这种情况会发生竟态问题（数据竟态）。
 临界区：当程序并发地运行时，多个 [Go 协程]不应该同时访问那些修改共享资源的代码。这些修改共享资源的代码称为临界区。
 package main import ( &amp;#34;fmt&amp;#34; &amp;#34;sync&amp;#34; ) var x = 10 var wg sync.WaitGroup func add() { for i := 0; i &amp;lt; 5000; i++ { x = x + 1 } wg.Done() } func main() { wg.Add(2) go add() go add() wg.Wait() fmt.Println(x) } 代码中我们开启了两个goroutine去累加变量x的值，这两个goroutine在访问和修改x变量的时候就会存在数据竞争，导致最后的结果与期待的不符。</description>
+    </item>
+    
+    <item>
+      <title>MP4格式分析</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/mp4%E6%A0%BC%E5%BC%8F%E5%88%86%E6%9E%90/</link>
+      <pubDate>Wed, 02 Nov 2022 20:37:13 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/mp4%E6%A0%BC%E5%BC%8F%E5%88%86%E6%9E%90/</guid>
+      <description>MP4格式分析 # MP4(MPEG-4 Part 14)是一种常见的多媒体容器格式，它是在“ISO/IEC 14496-14”标准文件中定义的，属于MPEG-4的一部分，是“ISO/IEC 14496-12(MPEG-4 Part 12 ISO base media file format)”标准中所定义的媒体格式的一种实现，后者定义了一种通用的媒体文件结构标准。MP4是一种描述较为全面的容器格式，被认为可以在其中嵌入任何形式的数据，各种编码的视频、音频等都不在话下，不过我们常见的大部分的MP4文件存放的AVC(H.264)或MPEG-4(Part 2)编码的视频和AAC编码的音频。MP4格式的官方文件后缀名是“.mp4”，还有其他的以mp4为基础进行的扩展或者是缩水版本的格式，包括：M4V, 3GP, F4V等。
+mp4是由一个个“box”组成的，大box中存放小box，一级嵌套一级来存放媒体信息。box的基本结构是：
+size指明了整个box所占用的大小，包括header部分。如果box很大(例如存放具体视频数据的mdat box)，超过了uint32的最大数值，size就被设置为1，并用接下来的8位uint64来存放大小。
+大部分mp4文件没有那么多的box类型，下图就是一个简化了的，常见的mp4文件结构：
+在部分box中，还存在version、flags字段，这样的box叫做Full Box。当box body中嵌套其他box时，这样的box叫做container box。
+ftyp
+在文件的开始位置，描述的文件的版本、兼容协议等
+16进制：66 74 79 70
+moov
+这个box中不包含具体媒体数据，但包含本文件中所有媒体数据的宏观描述信息，moov box下有mvhd和trak box。
+​ &amp;gt;&amp;gt;mvhd中记录了创建时间、修改时间、时间度量标尺、可播放时长等信息。
+​ &amp;gt;&amp;gt;trak中的一系列子box描述了每个媒体轨道的具体信息。
+16进制：6D 6F 6F 76
+mdat
+实际媒体数据
+16进制：6D 64 61 74
+5分钟入门MP4文件格式
+一般来说，解析媒体文件，最关心的部分是视频文件的宽高、时长、码率、编码格式、帧列表、关键帧列表，以及所对应的时戳和在文件中的位置，这些信息，在mp4中，是以特定的算法分开存放在stbl box下属的几个box中的，需要解析stbl下面所有的box，来还原媒体信息。下表是对于以上几个重要的box存放信息的说明：</description>
     </item>
     
     <item>

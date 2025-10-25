@@ -194,6 +194,32 @@ greeter-session=ukui-greeteruser-session=ukuigreeter-setup-script=/usr/lib/uku
     </item>
     
     <item>
+      <title>MP4格式分析</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/mp4%E6%A0%BC%E5%BC%8F%E5%88%86%E6%9E%90/</link>
+      <pubDate>Wed, 02 Nov 2022 20:37:13 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/mp4%E6%A0%BC%E5%BC%8F%E5%88%86%E6%9E%90/</guid>
+      <description>MP4格式分析 # MP4(MPEG-4 Part 14)是一种常见的多媒体容器格式，它是在“ISO/IEC 14496-14”标准文件中定义的，属于MPEG-4的一部分，是“ISO/IEC 14496-12(MPEG-4 Part 12 ISO base media file format)”标准中所定义的媒体格式的一种实现，后者定义了一种通用的媒体文件结构标准。MP4是一种描述较为全面的容器格式，被认为可以在其中嵌入任何形式的数据，各种编码的视频、音频等都不在话下，不过我们常见的大部分的MP4文件存放的AVC(H.264)或MPEG-4(Part 2)编码的视频和AAC编码的音频。MP4格式的官方文件后缀名是“.mp4”，还有其他的以mp4为基础进行的扩展或者是缩水版本的格式，包括：M4V, 3GP, F4V等。
+mp4是由一个个“box”组成的，大box中存放小box，一级嵌套一级来存放媒体信息。box的基本结构是：
+size指明了整个box所占用的大小，包括header部分。如果box很大(例如存放具体视频数据的mdat box)，超过了uint32的最大数值，size就被设置为1，并用接下来的8位uint64来存放大小。
+大部分mp4文件没有那么多的box类型，下图就是一个简化了的，常见的mp4文件结构：
+在部分box中，还存在version、flags字段，这样的box叫做Full Box。当box body中嵌套其他box时，这样的box叫做container box。
+ftyp
+在文件的开始位置，描述的文件的版本、兼容协议等
+16进制：66 74 79 70
+moov
+这个box中不包含具体媒体数据，但包含本文件中所有媒体数据的宏观描述信息，moov box下有mvhd和trak box。
+​ &amp;gt;&amp;gt;mvhd中记录了创建时间、修改时间、时间度量标尺、可播放时长等信息。
+​ &amp;gt;&amp;gt;trak中的一系列子box描述了每个媒体轨道的具体信息。
+16进制：6D 6F 6F 76
+mdat
+实际媒体数据
+16进制：6D 64 61 74
+5分钟入门MP4文件格式
+一般来说，解析媒体文件，最关心的部分是视频文件的宽高、时长、码率、编码格式、帧列表、关键帧列表，以及所对应的时戳和在文件中的位置，这些信息，在mp4中，是以特定的算法分开存放在stbl box下属的几个box中的，需要解析stbl下面所有的box，来还原媒体信息。下表是对于以上几个重要的box存放信息的说明：</description>
+    </item>
+    
+    <item>
       <title>虚拟组网</title>
       <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%B6%E4%BB%96/%E8%99%9A%E6%8B%9F%E7%BB%84%E7%BD%91/</link>
       <pubDate>Wed, 02 Nov 2022 20:37:13 +0800</pubDate>

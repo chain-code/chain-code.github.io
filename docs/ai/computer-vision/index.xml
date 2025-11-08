@@ -47,6 +47,15 @@ class ReidModel: def __init__(self, model_name, model_dir): &amp;#34;&amp;#34;&a
     </item>
     
     <item>
+      <title>tracker目标追踪</title>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/tracker%E7%9B%AE%E6%A0%87%E8%BF%BD%E8%B8%AA/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/tracker%E7%9B%AE%E6%A0%87%E8%BF%BD%E8%B8%AA/</guid>
+      <description> Ultralytics包下两个配置文件的区别 # bytetrack.yaml # 作用：配置 ByteTrack 跟踪器，纯几何/分数驱动，强调简洁与速度。 关键字段 tracker_type : 设为 bytetrack 。 track_high_thresh/track_low_thresh/new_track_thresh : 与上同，决定高/低分样本如何参与匹配。 track_buffer : 控制丢失后保活时长。 match_thresh : 候选几何匹配阈值。 fuse_score : 是否融合检测分数进行排序/匹配。 优点 极简高效，实时性强；对高召回检测器表现优异。 部署依赖少，维护成本低。 参数调优相对直接。 缺点 在遮挡、相似目标密集、移动相机场景更易发生 ID 切换。 不包含 GMC 与 ReID，复杂场景下稳定性不如 BoT-SORT。 对检测质量和稳定帧率更依赖。 botsort.yaml # 作用：配置 BoT-SORT 跟踪器，强调几何匹配+相机运动补偿（GMC），可选外观特征（ReID）。 关键字段 tracker_type : 设为 botsort ，启用 BoT-SORT 管线。 track_high_thresh/track_low_thresh/new_track_thresh : 控制进入/维持/新建轨迹的检测置信度阈值。 track_buffer : 轨迹丢失后保活的帧数，影响断联重连能力。 match_thresh : 匹配候选的几何相似度阈值（如 IoU/距离），越高越严格。 fuse_score : 是否在匹配时融合检测分数，提升鲁棒性。 gmc_method : 相机运动补偿方法（如 sparseOptFlow ），减少移动车机/抖动造成的错配。 with_reid : 是否启用外观特征辅助（若集成了 ReID 模型）。 优点 在移动相机、拥挤/遮挡场景显著提升 ID 一致性。 GMC 对剧烈运动或背景变化更稳，错配更少。 可与外观特征融合，跨遮挡/长时空隔更可靠。 缺点 速度较慢、算力占用更高（GMC、可选 ReID）。 参数更敏感，需按场景细调。 如启用 ReID，还需额外模型与预处理集成。 </description>
+    </item>
+    
+    <item>
       <title>yolo-world</title>
       <link>https://chain-code.github.io/docs/ai/computer-vision/yolo-world/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

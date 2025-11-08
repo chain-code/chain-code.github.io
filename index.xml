@@ -924,6 +924,15 @@ swag init -g http/api.go (可选) 使用fmt格式化 SWAG 注释。(请先升级
     </item>
     
     <item>
+      <title>tracker目标追踪</title>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/tracker%E7%9B%AE%E6%A0%87%E8%BF%BD%E8%B8%AA/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/tracker%E7%9B%AE%E6%A0%87%E8%BF%BD%E8%B8%AA/</guid>
+      <description> Ultralytics包下两个配置文件的区别 # bytetrack.yaml # 作用：配置 ByteTrack 跟踪器，纯几何/分数驱动，强调简洁与速度。 关键字段 tracker_type : 设为 bytetrack 。 track_high_thresh/track_low_thresh/new_track_thresh : 与上同，决定高/低分样本如何参与匹配。 track_buffer : 控制丢失后保活时长。 match_thresh : 候选几何匹配阈值。 fuse_score : 是否融合检测分数进行排序/匹配。 优点 极简高效，实时性强；对高召回检测器表现优异。 部署依赖少，维护成本低。 参数调优相对直接。 缺点 在遮挡、相似目标密集、移动相机场景更易发生 ID 切换。 不包含 GMC 与 ReID，复杂场景下稳定性不如 BoT-SORT。 对检测质量和稳定帧率更依赖。 botsort.yaml # 作用：配置 BoT-SORT 跟踪器，强调几何匹配+相机运动补偿（GMC），可选外观特征（ReID）。 关键字段 tracker_type : 设为 botsort ，启用 BoT-SORT 管线。 track_high_thresh/track_low_thresh/new_track_thresh : 控制进入/维持/新建轨迹的检测置信度阈值。 track_buffer : 轨迹丢失后保活的帧数，影响断联重连能力。 match_thresh : 匹配候选的几何相似度阈值（如 IoU/距离），越高越严格。 fuse_score : 是否在匹配时融合检测分数，提升鲁棒性。 gmc_method : 相机运动补偿方法（如 sparseOptFlow ），减少移动车机/抖动造成的错配。 with_reid : 是否启用外观特征辅助（若集成了 ReID 模型）。 优点 在移动相机、拥挤/遮挡场景显著提升 ID 一致性。 GMC 对剧烈运动或背景变化更稳，错配更少。 可与外观特征融合，跨遮挡/长时空隔更可靠。 缺点 速度较慢、算力占用更高（GMC、可选 ReID）。 参数更敏感，需按场景细调。 如启用 ReID，还需额外模型与预处理集成。 </description>
+    </item>
+    
+    <item>
       <title>Trae使用心得分享</title>
       <link>https://chain-code.github.io/docs/ai/basic/trae%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97%E5%88%86%E4%BA%AB/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -1077,6 +1086,36 @@ generationTimestamp要比genymdhms要好的多，即使前一个比较长一点�
       
       <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/</guid>
       <description>/***　*　瓦瓦　十　*　十齱龠己　亅瓦車己　*　乙龍龠毋日丶　丶乙己毋毋丶　*　十龠馬鬼車瓦　己十瓦毋毋　*　鬼馬龠馬龠十　己己毋車毋瓦　*　毋龠龠龍龠鬼乙丶丶乙車乙毋鬼車己　*　乙龠龍龍鬼龍瓦　十瓦毋乙瓦龠瓦亅　*　馬齱龍馬鬼十丶日己己己毋車乙丶　*　己齱馬鬼車十十毋日乙己己乙乙　*　車馬齱齱日乙毋瓦己乙瓦日亅　*　亅車齺龖瓦乙車龖龍乙乙十　*　日龠龠十亅車龍毋十十　*　日毋己亅　己己十亅亅　*　丶己十十乙　丶丶丶丶丶　*　亅己十龍龖瓦　丶　丶　乙十　*　亅己十龠龖毋　丶丶　丶己鬼鬼瓦亅　*　十日十十日亅丶亅丶　丶十日毋鬼馬馬車乙　*　十日乙十亅亅亅丶　十乙己毋鬼鬼鬼龍齺馬乙　*　丶瓦己乙十十亅丶亅乙乙乙己毋鬼鬼鬼龍齱齺齺鬼十　*　乙乙十十十亅乙瓦瓦己日瓦毋鬼鬼龠齱齱龍龍齱齱毋丶　*　亅十十十十乙瓦車毋瓦瓦日車馬龠龍龍龍龍龍龠龠龠馬亅*　十十十十己毋車瓦瓦瓦瓦鬼馬龠龍龠龠龍龠龠龠馬龠車*　亅十十日毋瓦日日瓦鬼鬼鬼龠龠馬馬龠龍龍龠馬馬車*　亅亅亅乙瓦瓦毋車車車馬龍龠鬼鬼馬龠龍龍龠馬馬鬼*　丶丶乙亅亅乙車鬼鬼鬼毋車龍龍龠鬼馬馬龠龍齱齱龍馬鬼*　亅己十十己十日鬼鬼車瓦毋龠龍龠馬馬龠龠龠齱齺齺齱龠鬼*　亅乙乙乙十車馬車毋馬齱齱龍龠龠龠馬龠龍齱龍龠龠鬼瓦*　丶毋龠鬼車瓦車馬龠龍龠龠龍齱齱龠馬馬鬼毋日*　十乙己日十　丶己鬼龍齱齺齱龍馬馬馬車毋己*　丶十己乙亅丶　亅瓦馬龠龍龠龠馬毋瓦乙*　丶十十乙亅十　亅己瓦車馬龠鬼車瓦乙*　丶十乙十十丶　丶丶亅十瓦鬼車瓦己*　丶亅亅丶　亅日瓦日*　丶*/ /*** * .</description>
+    </item>
+    
+    <item>
+      <title>借助AI编程工具从零构建数据可视化平台复盘</title>
+      <link>https://chain-code.github.io/docs/ai/basic/%E5%80%9F%E5%8A%A9ai%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B9%B3%E5%8F%B0%E5%A4%8D%E7%9B%98-/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/basic/%E5%80%9F%E5%8A%A9ai%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B9%B3%E5%8F%B0%E5%A4%8D%E7%9B%98-/</guid>
+      <description>上次看到晖哥使用Trae从零搭建了一个雷电云的埋点数据分析平台，感觉很有意思。正好迭代最后几天进入覆盖测试阶段，手上任务都做完了，也想搭建一个视频取证的数据统计分析平台；一来多学习学习前端知识，二来埋点数据可视化页面有助于团队基于数据做出更精准的决策和迭代优化。
+项目说明 # 项目采用 Vite + Vue 3 + TypeScript 技术栈构建，并搭配了 Element Plus UI 组件库。通过 vue-router 管理页面导航，并使用 Axios 与公司部署的 Elastic APM 数据库进行交互。属于纯前端项目，没有任何后端代码。
+项目使用Trae工具从零开始搭建，除了一些参数翻译字典手敲之外，全程由AI生成；项目所有功能都是基于视频取证产品埋点数据结构体设计，后续会根据产品需求在空闲之余继续添加功能；我是一个后端程序员，前端只是可以稍微看得懂代码。
+效果展示 # 完整地址：http://172.16.60.141:3000 三楼同事可自行查看
+概览 # 概览功能支持任务状态分布、版本分布、任务成功率等等。
+数据展示 # 数据展示界面可删选所有记录、任务等，支持搜索等功能，详细界面还翻译了任务参数
+任务使用排行榜 # 任务使用排行榜，分记录和任务两个维度，按使用次数排行。
+点击具体任务，可查看此任务相关参数统计图，及每个任务的详细信息
+像高级识别任务物体描述是加密上传到elastic平台的，这里还做了解密处理。
+IP地址排行榜 # IP地址排行榜对不同IP的数据进行了分类统计排序，可直观看到我们的用户分布。
+心得体会 # 最热门编程语言 # 这张图内大多数情形我们或多或少都经历过，虽说是网上的段子，但它真实记录了我们驾驭AI过程中走过的路。
+转变角色 # 随着AI技术的发展，特别是像Trae这样的编程助手，正在如何重塑我们的开发工作流。我们基本上不再编码，是否可以逐渐向“架构师”的方向转变，从执行者到定义者再到决策者。技术知识仍然重要，但更重要的是理解业务需求、系统设计和用户体验等更广泛的技能。
+整体规划 # 开发项目之前，先想清楚要做什么？它的框架是什么样的？想清楚之后，将它写入一个文档，可以让AI进行润色。我们在后面开发的过程中可以根据实际情况不断的修改这个文档，每当AI开始不受控制胡说八道的时候，先让它阅读一下这个文档，再跟上你的功能需求描述。
+不仅仅是框架，当遇到一些重复且复杂的任务，也可以写成文档，让AI根据文档的流程去处理，避免AI自行发挥。
+一次只办一件事 # 一次只办一件事情，不要让它同时做多个任务，贪多必失
+你必须看得懂代码 # 如果你不知道它生成的代码是什么意思，或许刚开始没有什么问题；但随着你问的问题越来越多，功能越来越复杂，你埋下的“坑”就会像雪球一样越滚越大。一个微小的改动都可能引发连锁反应，AI还自行解决不了。由于你从未真正理解底层逻辑，排查和解决问题的困难很大，只能不断地将报错复制给AI，继续生成更多不可控的代码，形成恶性循环。
+不要随意接受任何代码 # 当我们发现功能没有问题的时候，很容易接受所有代码。但这样会有隐患，你不知道它在什么时候改了一行会影响到其他功能的代码，与其后面排查半天，不如每次仔细审查每一行代码。
+先问自己在问什么？ # 这是我在某个文章中看到的一句话，很受触动。
+比如你在开发一个项目前，你问别人，你用什么开发工具？
+很正常的提问，却是一个非常差的问题，因为它需要多步的沟通来确认真正的问题，跟晖哥之前说的“报联商”有相似的地方。比如，你指的是那类开发工具？（IDE、文本编辑器、版本控制、API测试？），或者针对什么技术栈？（前端、Java、Go、Python？），由或者你的使用场景是什么？
+正确的提问方式是什么？ 以“开发工具”这个问题为例，先想清楚我要问什么。
+你为什么想问这个？ 是你正在用的工具遇到了问题（例如：“VS Code在打开大型项目时卡顿，有何优化方案？”），还是你要开始学习一门新语言（例如：“刚开始学Go，有哪些轻量级的IDE推荐？”）？如果是前者，这完全是另一个“解决问题”而非“寻求推荐”的问题。问题解决了，你根本不用换工具。 如果你想找一个新工具，最基本的，你要定义什么是“合适”，罗列完整自己的需求。哪些是必须项，哪些是加分项，哪些可有可无。必须项： 免费、对Python支持好、调试方便。加分项： 界面美观、插件市场丰富、Git集成流畅。可有可无： 内置数据库管理工具。于是你的问题变成了：“我需要一个免费的、对Python和Django框架支持良好的IDE，调试功能要强大，有什么推荐？” 。 更进一步，你应该先搜索一下，了解主流的选择（比如PyCharm， VS Code， Vim等），看看相关的测评，试试它们的官方基础功能。把这些工具和你的需求进行匹配。现在，你的问题是：“我想学Python Web开发，需要免费且调试功能强的IDE。了解到VS Code很轻量且免费，PyCharm专业版收费但社区版免费。我的需求是免费 、Django支持好、 调试方便。请问社区版PyCharm和配置了Python插件的VS Code相比，在调试和Django支持上差距大吗？或者有更优解？” 对AI下达指令也是一样的道理，先问问自己在问什么？</description>
     </item>
     
     <item>
@@ -2284,11 +2323,10 @@ sqlite3 mysql dsn mymysql postgres 在engine创建完成后可以进行一些设
       <pubDate>Wed, 19 Apr 2023 20:07:07 +0800</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/vite&#43;vue%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE/</guid>
-      <description>Vite+Vue快速搭建项目 # npm init vite@latest 输入项目名，选择Vue 选择TypeScript 回车 再运行
+      <description>Vite+Vue快速搭建项目 # npm init vite@latest 输入项目名，选择Vue 选择TypeScript 回车 &amp;gt; npx&amp;gt; create-vite│◇ Project name:│ ApmDataAnalytics│◇ Package name:│ apmdataanalytics│◇ Select a framework:│ Vue│◇ Select a variant:│ TypeScript│◇ Use rolldown-vite (Experimental)?:│ No│◇ Install with npm and start now?│ Yes 再运行
 npm install -y 快速创建一个默认的包信息
 npm init -y -D开发环境中的依赖，加载vite
-npm i vite -D 生成&amp;quot;devDependencies&amp;quot;，开发环境下的依赖
-从工作区index.html为入口</description>
+npm i vite -D 生成&amp;quot;devDependencies&amp;quot;，开发环境下的依赖</description>
     </item>
     
     <item>

@@ -51,7 +51,7 @@ ALGORITHM算法选择 算法 原理 适用场景 缺点 COPY 创建临时表复�
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.fd85a068c2254997edb38db579e81b23b40227532d68bd80a2b86f067c365678.js" integrity="sha256-/YWgaMIlSZfts421eegbI7QCJ1MtaL2AorhvBnw2Vng=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.d0ed752c44560859fc9e11d700de0253a4e4d42b3467bd605b93397edaaaa7c5.js" integrity="sha256-0O11LERWCFn8nhHXAN4CU6Tk1Cs0Z71gW5M5ftqqp8U=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -1446,6 +1446,19 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/ai/basic/%E5%80%9F%E5%8A%A9ai%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B9%B3%E5%8F%B0%E5%A4%8D%E7%9B%98-/" class="">借助AI编程工具从零构建数据可视化平台复盘</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/ai/basic/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="">基础知识</a>
   
 
@@ -1546,6 +1559,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/ai/computer-vision/reid%E8%A1%8C%E4%BA%BA%E9%87%8D%E8%AF%86%E5%88%AB/" class="">Reid行人重识别</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/tracker%E7%9B%AE%E6%A0%87%E8%BF%BD%E8%B8%AA/" class="">tracker目标追踪</a>
   
 
         </li>
@@ -3516,6 +3542,48 @@ https://github.com/alex-shpak/hugo-book
             <li><a href="#联合索引是越多越好吗">联合索引是越多越好吗？</a></li>
             <li><a href="#为什么不建议使用存储过程">为什么不建议使用存储过程？</a></li>
             <li><a href="#阿里数据库能抗秒杀的原理">阿里数据库能抗秒杀的原理</a></li>
+            <li><a href="#一个查询语句的执行顺序是什么样的">一个查询语句的执行顺序是什么样的？</a></li>
+            <li><a href="#on和where有什么区别">on和where有什么区别？</a></li>
+            <li><a href="#truncatedeletedrop的区别">truncate、delete、drop的区别？</a></li>
+            <li><a href="#什么时候索引失效反而提升效率">什么时候索引失效反而提升效率？</a></li>
+            <li><a href="#什么情况会导致自增主键不连续">什么情况会导致自增主键不连续？</a></li>
+            <li><a href="#using-file-sort能优化吗怎么优化">Using file sort能优化吗，怎么优化？</a></li>
+            <li><a href="#从innodb索引结构分析为什么索引的key长度不能太长">从InnoDB索引结构分析，为什么索引的key长度不能太长？</a></li>
+            <li><a href="#mysql用了函数一定会索引失效吗">MySQL用了函数一定会索引失效吗？</a></li>
+            <li><a href="#什么是索引合并原理是什么">什么是索引合并，原理是什么？</a></li>
+            <li><a href="#ab两个单独索引where-axx-and-bxx走那个索引为什么">a,b两个单独索引，where a=xx and b=xx走那个索引？为什么？</a></li>
+            <li><a href="#ab都有索引select--from-table-where-axx-order-by-b走那个索引">a,b都有索引，select * from table where a=xx order by b。走那个索引？</a></li>
+            <li><a href="#为啥like--xx不走索引-like-xxxx走索引吗为什么">为啥like % xx不走索引？ like xx%xx走索引吗？为什么？</a></li>
+            <li><a href="#mysql为什么会有存储内存碎片有什么危害">MySQl为什么会有存储（内存）碎片？有什么危害？</a></li>
+            <li><a href="#mysql中如何查看一个sql的执行耗时">MySQL中如何查看一个SQL的执行耗时</a></li>
+            <li><a href="#怎么比较两索引的好坏">怎么比较两索引的好坏？</a></li>
+            <li><a href="#mysql获取主键id的瓶颈在哪里如何优化">MySQL获取主键id的瓶颈在哪里？如何优化？</a></li>
+            <li><a href="#mysql为什么是小表驱动大表为什么能提高查询性能">MySQL为什么是小表驱动大表，为什么能提高查询性能？</a></li>
+            <li><a href="#什么是数据库的锁升级innodb支持吗">什么是数据库的锁升级，InnoDB支持吗？</a></li>
+            <li><a href="#数据库扫表任务如何避免出现死循环">数据库扫表任务如何避免出现死循环</a></li>
+            <li><a href="#abc的联合索引按照abacbc查询能走索引吗">A,B,C的联合索引，按照AB，AC，BC查询，能走索引吗？</a></li>
+            <li><a href="#什么是索引跳跃扫描">什么是索引跳跃扫描</a></li>
+            <li><a href="#mysql是ap的还是cp的系统">MySQL是AP的还是CP的系统？</a></li>
+            <li><a href="#mysql的优化器的索引成本是怎么算出来的">MySQL的优化器的索引成本是怎么算出来的？</a></li>
+            <li><a href="#什么是read-view什么样的readview可见">什么是Read View,什么样的ReadView可见？</a></li>
+            <li><a href="#undolog会一直存在吗什么时候删除">undolog会一直存在吗？什么时候删除？</a></li>
+            <li><a href="#二级索引在索引覆盖时如何使用mvcc">二级索引在索引覆盖时，如何使用MVCC？</a></li>
+            <li><a href="#mysql的blob和text有什么区别">MySQL的BLOB和TEXT有什么区别？</a></li>
+            <li><a href="#mysql做索引更新的时候会锁表吗">MySQL做索引更新的时候，会锁表吗？</a></li>
+            <li><a href="#mysql如何实现行转列列转行">MySQL如何实现行转列，列转行？</a></li>
+            <li><a href="#什么是前缀索引使用的时候要注意什么">什么是前缀索引？使用的时候要注意什么？</a></li>
+            <li><a href="#limit的原理是什么">limit的原理是什么？</a></li>
+            <li><a href="#mysql的update语句什么时候锁行什么时候锁表">MySQL的update语句什么时候锁行，什么时候锁表？</a></li>
+            <li><a href="#事务的acid是如何实现的">事务的ACID是如何实现的？</a></li>
+            <li><a href="#一次insert操作mysql的几种log的写入顺序">一次insert操作，MySQL的几种log的写入顺序？</a></li>
+            <li><a href="#为什么要避免使用select--">为什么要避免使用select * ？</a></li>
+            <li><a href="#mysql建立了abc的联合索引底层会建aababc这3个索引么">MySQL建立了abc的联合索引，底层会建a,ab,abc这3个索引么？</a></li>
+            <li><a href="#mysql如何实现不同隔离级别">MySQL如何实现不同隔离级别？</a></li>
+            <li><a href="#如果sql中一定要有join该如何优化">如果SQL中一定要有join，该如何优化？</a></li>
+            <li><a href="#表中只有abc三个字段比较select--与select-abc有什么区别">表中只有a,b,c三个字段，比较select * 与select a,b,c有什么区别？</a></li>
+            <li><a href="#exists和in有什么区别如何选择">exists和in有什么区别？如何选择？</a></li>
+            <li><a href="#varchar100和varchar10有什么区别">varchar(100)和varchar(10)有什么区别？</a></li>
+            <li><a href="#执行计划中的filtered的值有啥用">执行计划中的filtered的值有啥用？</a></li>
           </ul>
         </li>
       </ul>
@@ -3809,6 +3877,1347 @@ ANALYZE TABLE orders;
   <a class="anchor" href="#%e9%98%bf%e9%87%8c%e6%95%b0%e6%8d%ae%e5%ba%93%e8%83%bd%e6%8a%97%e7%a7%92%e6%9d%80%e7%9a%84%e5%8e%9f%e7%90%86">#</a>
 </h3>
 <p>在阿里电商的秒杀等（据我了解，淘宝、天猫、猫超、大麦等都是这么干的）场景中，主要还是基于MySQL数据库在做扣减的，主要是因为这样做最可靠了（避免了redis扣减方案中的数据不一致、少卖等问题）。</p>
+<p>但是我们都知道，数据库是抗不了热点行的并发更新的，于是阿里内部就对MySQL做了patch。</p>
+<p>这个技术叫做Inventory Hint，其实就是一个补丁。（官方介绍：<a href="https://help.aliyun.com/zh/rds/apsaradb-rds-for-mysql/inventory-hint?spm=a2c4g.11186623.0.0.4b224ac9RdTjAG">https://help.aliyun.com/zh/rds/apsaradb-rds-for-mysql/inventory-hint</a> ）</p>
+<h4 id="使用方法">
+  使用方法
+  <a class="anchor" href="#%e4%bd%bf%e7%94%a8%e6%96%b9%e6%b3%95">#</a>
+</h4>
+<pre tabindex="0"><code>UPDATE /*+ COMMIT_ON_SUCCESS ROLLBACK_ON_FAIL TARGET_AFFECT_ROW(1)*/ T
+SET c = c - 1
+WHERE id = 1;
+</code></pre><ol>
+<li><code>/*+ ... */</code>部分</li>
+</ol>
+<p>这是 Oracle 数据库的执行提示(hint)语法，用于指导优化器执行特定行为。本例中包含三个提示：</p>
+<p>(1) <code>COMMIT_ON_SUCCESS</code></p>
+<ul>
+<li><strong>作用</strong>：如果更新成功，自动提交事务</li>
+<li><strong>场景</strong>：用于简化短事务的提交操作</li>
+<li><strong>风险</strong>：会破坏事务的原子性，无法回滚</li>
+</ul>
+<p>(2) <code>ROLLBACK_ON_FAIL</code></p>
+<ul>
+<li><strong>作用</strong>：如果更新失败，自动回滚事务</li>
+<li><strong>场景</strong>：与 <code>COMMIT_ON_SUCCESS</code>配合使用，确保操作完全成功或完全失败</li>
+</ul>
+<p>(3) <code>TARGET_AFFECT_ROW(1)</code></p>
+<ul>
+<li><strong>作用</strong>：指定预期影响的行数为1行</li>
+<li><strong>验证机制</strong>：如果实际影响行数 ≠ 1，操作将失败防止意外更新多行数据</li>
+</ul>
+<ol start="2">
+<li>更新逻辑部分</li>
+</ol>
+<pre tabindex="0"><code>UPDATE T
+SET c = c - 1
+WHERE id = 1;
+</code></pre><p>这是一个标准的更新语句，将表 T 中 id=1 的记录的 c 字段值减1。</p>
+<blockquote>
+<p>hint：MySQL 中的 &ldquo;Hint&rdquo; 是一种特殊的语法，允许开发者向数据库引擎提供如何执行特定查询的额外信息或建议。这些提示不改变查询的结果，但可以影响查询的执行路径，比如如何选择索引、是否使用缓存等。使用 Hint 的目的是为了优化查询性能。</p>
+</blockquote>
+<p>很显然，前面我们提到的这几个hint是阿里自己支持的。所以只有内部的数据库， 或者阿里云的RDS才支持。</p>
+<h4 id="原理">
+  原理
+  <a class="anchor" href="#%e5%8e%9f%e7%90%86">#</a>
+</h4>
+<p>当我们是使用COMMIT_ON_SUCCESS等hint标记了一条SQL之后，就相当于告诉MySQL内核，这行可能是热点更新。</p>
+<p>于是，MySQL的内核层就会自动识别带此类标记的更新操作，在一定的时间间隔内，将收集到的更新操作按照主键或者唯一键进行分组，这样更新相同行的操作就会被分到同一组中。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202510251817064.png" alt="" /></p>
+<blockquote>
+<p>为了进一步提升性能，在实现上，使用两个执行单元。当第一个执行单元收集完毕准备提交时，第二个执行单元立即开始收集更新操作；当第二个执行单元收集完毕准备提交时，第一个执行单元已经提交完毕并开始收集新一批的更新操作，两个单元不断切换，并行执行。</p>
+<p>轮流执行</p>
+</blockquote>
+<p>根据热点行做了分组之后，就可以作进一步优化了，这个过程主要有3个关键的优化点：</p>
+<ul>
+<li>
+<p>减少行级锁的申请等待</p>
+<p>在同一组中，需要更新的都是同一条记录，那么根据SQL的提交顺序，就可以排队了。</p>
+<p>然后我们只需要在第一条更新SQL（Leader)执行的时候，尝试去获取目标行的锁，如果获取成功，则开始操作。</p>
+<p>然后这一组中后续的更新操作（Follower）也会尝试获取锁，但是会先判断是不是已经被第一条更新操作获取到了，如果是的话，那么就不需要等待，直接获取锁。</p>
+<p>这样就可以大大降低行级锁的申请的阻塞等待时长。</p>
+</li>
+<li>
+<p>减少B+树的索引遍历操作</p>
+<p>MySQL是以B+索引的方式管理数据的，每次执行查询时，都需要遍历索引才能定位到目标数据行，数据表越大，索引层级越多，遍历时间就越长。</p>
+<p>如果针对热点行更新操作做了分组之后，我们只需要在每组的第一条SQL执行过程中，通过遍历索引定位数据行，之后就可以把这些数据行缓存到Row Cache中，并且在Row Cache进行修改。</p>
+<p>在同组的后续操作时，也不再需要进行数据索引了，直接从Row Cache获取数据并修改就行了。</p>
+<p>这样就大大降低了B+树的索引遍历操作的耗时。</p>
+</li>
+<li>
+<p>减少事务提交次数</p>
+<p>如果是没有用这种方式，我们的多条update语句会是多条事务，那么每一个事务都要单独做一次提交。</p>
+<p>有了分组、排队、组提交之后，就只需要一组中的并发操作都执行完，然后做一次组提交即可，大大降低提交次数。</p>
+</li>
+</ul>
+<h3 id="一个查询语句的执行顺序是什么样的">
+  一个查询语句的执行顺序是什么样的？
+  <a class="anchor" href="#%e4%b8%80%e4%b8%aa%e6%9f%a5%e8%af%a2%e8%af%ad%e5%8f%a5%e7%9a%84%e6%89%a7%e8%a1%8c%e9%a1%ba%e5%ba%8f%e6%98%af%e4%bb%80%e4%b9%88%e6%a0%b7%e7%9a%84">#</a>
+</h3>
+<p>以下是一个比较典型的查询语句，其中包含了很多子句，其中有SELECT、FROM、JOIN、WHERE、GROUP BY、HAVING、ORDER BY和LIMIT。</p>
+<pre tabindex="0"><code>SELECT name, COUNT(*)
+FROM employees
+JOIN departments ON employees.department_id = departments.id
+WHERE employees.salary &gt; 50000
+GROUP BY departments.name
+HAVING COUNT(*) &gt; 10
+ORDER BY name
+LIMIT 5;
+</code></pre><p>下面是InnoDB处理SQL查询的大致执行顺序，为啥说大致呢，因为这个顺序是逻辑上的执行顺序，实际的物理执行可能会有所不同。数据库优化器可能会根据统计信息、索引、查询类型等因素以不同的方式执行查询。</p>
+<ul>
+<li>
+<p>FROM：</p>
+<p>确定涉及的表：employees和departments。</p>
+</li>
+<li>
+<p>join：</p>
+<p>根据employees.department_id = departments.id条件执行JOIN操作，将两个表的数据合并。</p>
+</li>
+<li>
+<p>where：</p>
+<p>应用WHERE过滤条件employees.salary &gt; 50000，只保留薪水超过50,000的员工记录。</p>
+</li>
+<li>
+<p>group by:</p>
+<p>根据departments.name对结果集进行分组。</p>
+</li>
+<li>
+<p>having: 核心作用是对分组（<code>GROUP BY</code>）后的结果进行筛选</p>
+<p>应用HAVING条件COUNT(*) &gt; 10，筛选出员工人数超过10人的部门。</p>
+</li>
+<li>
+<p>select:</p>
+<p>选择要显示的列：name（部门名称）和COUNT(*)（员工数量）</p>
+</li>
+<li>
+<p>distinct:去重</p>
+<p>此查询没有使用DISTINCT关键字，所以跳过</p>
+</li>
+<li>
+<p>order by:</p>
+<p>根据name（部门名称）对结果集进行排序</p>
+</li>
+<li>
+<p>limit:</p>
+<p>应用LIMIT，只返回前5条记录</p>
+</li>
+</ul>
+<h3 id="on和where有什么区别">
+  on和where有什么区别？
+  <a class="anchor" href="#on%e5%92%8cwhere%e6%9c%89%e4%bb%80%e4%b9%88%e5%8c%ba%e5%88%ab">#</a>
+</h3>
+<p>ON子句主要用在JOIN操作中，用于指定JOIN的条件。他仅影响JOIN操作的结果</p>
+<pre tabindex="0"><code>SELECT * FROM table1
+JOIN table2
+ON table1.id = table2.foreign_id;
+</code></pre><p>WHERE子句用于对结果集进行过滤，无论是简单的SELECT查询还是复杂的JOIN查询。WHERE子句在JOIN操作之后应用，即在所有的JOIN操作完成后，对这个已经组合起来的数据集进行过滤</p>
+<pre tabindex="0"><code>SELECT * FROM table1
+JOIN table2
+ON table1.id = table2.foreign_id
+WHERE table1.column &gt; 100;
+</code></pre><p><strong>ON定义了如何JOIN两个表，WHERE定义了如何筛选结果</strong></p>
+<h3 id="truncatedeletedrop的区别">
+  truncate、delete、drop的区别？
+  <a class="anchor" href="#truncatedeletedrop%e7%9a%84%e5%8c%ba%e5%88%ab">#</a>
+</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">命令</th>
+<th style="text-align:left">作用对象</th>
+<th style="text-align:left">是否可回滚</th>
+<th style="text-align:left">是否重置自增ID</th>
+<th style="text-align:left">是否删除表结构</th>
+<th style="text-align:left">执行速度</th>
+<th style="text-align:left">是否触发触发器</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>DELETE</code></td>
+<td style="text-align:left">数据行</td>
+<td style="text-align:left">✅ 可回滚</td>
+<td style="text-align:left">❌ 不重置</td>
+<td style="text-align:left">❌ 保留表结构</td>
+<td style="text-align:left">慢</td>
+<td style="text-align:left">✅ 触发</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>TRUNCATE</code></td>
+<td style="text-align:left">数据行</td>
+<td style="text-align:left">❌ 不可回滚</td>
+<td style="text-align:left">✅ 重置</td>
+<td style="text-align:left">❌ 保留表结构</td>
+<td style="text-align:left">快</td>
+<td style="text-align:left">❌ 不触发</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>DROP</code></td>
+<td style="text-align:left">表/数据库</td>
+<td style="text-align:left">❌ 不可回滚</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">✅ 删除表结构</td>
+<td style="text-align:left">最快</td>
+<td style="text-align:left">❌ 不触发</td>
+</tr>
+</tbody>
+</table>
+<p>DELETE操作删除表中记录后，自增ID不会重置，而TRUNCATE操作则会重新从1开始自增。</p>
+<h4 id="drop之后还能恢复吗">
+  drop之后还能恢复吗？
+  <a class="anchor" href="#drop%e4%b9%8b%e5%90%8e%e8%bf%98%e8%83%bd%e6%81%a2%e5%a4%8d%e5%90%97">#</a>
+</h4>
+<p>不能</p>
+<p>其他方式：</p>
+<ul>
+<li>
+<p>数据库备份</p>
+</li>
+<li>
+<p>binlog</p>
+<p>如果MySQL服务器的二进制日志被启用并且在删除表之前已经记录了所有更改，理论上可以通过这些日志恢复数据。这需要重放日志文件直到删除操作之前的点。</p>
+</li>
+<li>
+<p>数据库恢复工具</p>
+</li>
+<li>
+<p>文件系统备份</p>
+</li>
+</ul>
+<h3 id="什么时候索引失效反而提升效率">
+  什么时候索引失效反而提升效率？
+  <a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%97%b6%e5%80%99%e7%b4%a2%e5%bc%95%e5%a4%b1%e6%95%88%e5%8f%8d%e8%80%8c%e6%8f%90%e5%8d%87%e6%95%88%e7%8e%87">#</a>
+</h3>
+<p>比较常见的是，<strong>当表中的数据量非常小的时候</strong>，使用索引可能不会带来性能提升。数据库可能回选择全表扫描而非使用索引。</p>
+<blockquote>
+<p>有人疑惑了，为啥优化器这种情况下还会选择索引呢？直接扫全表不就行了么？</p>
+<p>确实，这种时候优化器基本就直接扫全表了。但是万一你用了force index，也可能用索引。那么去除force index，让索引失效，也能提升效率。</p>
+</blockquote>
+<p>类似，如果一个索引，他的过滤性不好，数据库优化器可能也会决定全表扫描比使用索引更高效。这是因为如果查询结果包含了表中大部分行，那么使用索引可能需要更多的I/O操作来遍历索引再获取数据，而全表扫描可以更连续地读取磁盘数据。(需要大量回表)</p>
+<p>还有一个就是如果区分度不高也是一样的，就是数据存在严重的不均匀导致倾斜的时候，在这种情况下，优化器可能认为全表扫描比通过索引过滤这些行更有效。</p>
+<pre tabindex="0"><code>SELECT
+  *
+FROM
+  `table_name`
+WHERE
+  `DELETED` = 0
+  AND `STATE`  = &#34;INIT&#34;
+  AND `ID` &gt;= 474968311
+  AND event_type = &#34;&#34;
+ORDER BY
+  id
+LIMIT
+  100
+</code></pre><p>因为有order by，优化器会倾向于选择ID索引，但是其实STATE的索引过滤性更高好。这个就是一个典型的因为优化器选错了索引导致效率低。那么如果我们能让ID的这个索引失效，那么也能提升效率。</p>
+<pre tabindex="0"><code>SELECT
+  *
+FROM
+  `table_name`
+WHERE
+  `DELETED` = 0
+  AND `STATE`  = &#34;INIT&#34;
+  AND `ID` &gt;= 474968311
+  AND event_type = &#34;&#34;
+ORDER BY
+  id + 0
+LIMIT
+  100
+</code></pre><p>通过这种用函数的方式来让ID索引失效。</p>
+<h3 id="什么情况会导致自增主键不连续">
+  什么情况会导致自增主键不连续？
+  <a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%83%85%e5%86%b5%e4%bc%9a%e5%af%bc%e8%87%b4%e8%87%aa%e5%a2%9e%e4%b8%bb%e9%94%ae%e4%b8%8d%e8%bf%9e%e7%bb%ad">#</a>
+</h3>
+<ul>
+<li>事务失败回滚</li>
+<li>删除操作</li>
+<li>手动指定自增值</li>
+<li>服务器重启：对于某些数据库引擎（尤其是早期版本的MySQL和InnoDB引擎），自增计数器可能不会持久化到磁盘。如果数据库服务器重启，自增计数器可能会重置为当前最大自增值加一，但未提交的事务占用的自增值会丢失，导致不连续。</li>
+<li>更改自增值设置</li>
+<li>数据导入：在导入数据时，如果导入的数据中包含自增主键列，并且导入数据的主键值与现有数据不连续，也会导致自增主键不连续。</li>
+<li><code>INSERT INTO ON DUPLICATE KEY UPDATE</code>:MySQL 在尝试插入新记录时，会先分配一个新的自增主键值，无论后续是插入成功还是执行更新操作，这个主键值都已经被分配并且会增加。当插入失败时会导致主键加1，但实际没记录。</li>
+</ul>
+<h3 id="using-file-sort能优化吗怎么优化">
+  Using file sort能优化吗，怎么优化？
+  <a class="anchor" href="#using-file-sort%e8%83%bd%e4%bc%98%e5%8c%96%e5%90%97%e6%80%8e%e4%b9%88%e4%bc%98%e5%8c%96">#</a>
+</h3>
+<p>在InnoDB存储引擎中，<strong>当执行计划中出现Using filesort时，意味着MySQL需要对结果集进行外部排序，以满足查询的ORDER BY条件</strong>。</p>
+<p><strong>Using filesort通常发生在无法直接利用索引完成排序的情况下，而是需要额外的排序步骤，可能会导致查询性能下降，尤其是在处理大量数据时</strong>。优化Using filesort的目的是减少排序所需的资源和时间，提高查询效率。</p>
+<p>所以，当执行计划中出现Using filesort的是时候，就是一个我们可以优化的方向。（但是，并不是说一定要优化！要看是否有必要以及收益是否够大）</p>
+<p>优化方向：</p>
+<ul>
+<li>
+<p>尽量使用索引排序：</p>
+<p>索引是天然有序的，所以当我们在使用order by的时候，如果能借助索引，那么效率一定是最高的。</p>
+<ul>
+<li>那么我们就可以确保ORDER BY子句中的字段是索引的一部分。</li>
+<li>并且如果可能，使ORDER BY中的列顺序与索引中的列顺序一致（order by a,b,c ， idx_a_b_c(a,b,c）)。</li>
+<li>并且考虑使用复合索引。如果ORDER BY子句涉及多个列，创建一个包含这些列的复合索引可能会有助于消除Using filesort。</li>
+</ul>
+</li>
+<li>
+<p>优化Mysql配置：</p>
+<p>我们还可以调整sort_buffer_size参数。这个参数决定了排序操作可以使用的内存量。增加其值可以提高处理大型排序操作的能力（但设置过大可能会消耗过多内存资源，影响系统性能）</p>
+<p>根据sort_buffer_size的大小不同，会在不同的地方进行排序操作：</p>
+<ul>
+<li>如果要排序的数据量小于 sort_buffer_size，那么排序就在内存中完成。</li>
+<li>如果排序数据量大于sort_buffer_size，则需要利用磁盘临时文件辅助排序。</li>
+</ul>
+<p>在内存中排序肯定会更快一点的。</p>
+</li>
+</ul>
+<h3 id="从innodb索引结构分析为什么索引的key长度不能太长">
+  从InnoDB索引结构分析，为什么索引的key长度不能太长？
+  <a class="anchor" href="#%e4%bb%8einnodb%e7%b4%a2%e5%bc%95%e7%bb%93%e6%9e%84%e5%88%86%e6%9e%90%e4%b8%ba%e4%bb%80%e4%b9%88%e7%b4%a2%e5%bc%95%e7%9a%84key%e9%95%bf%e5%ba%a6%e4%b8%8d%e8%83%bd%e5%a4%aa%e9%95%bf">#</a>
+</h3>
+<p>B+树的结构特性和磁盘I/O操作的特性就决定了索引的key如果太长会影响性能。</p>
+<p>InnoDB的数据页是InnoDB存储引擎中用于存储数据的基本单位。B+树的每个节点都对应着一个数据页，包括根节点、非叶子节点和叶子节点。一个数据页的大小是固定的，通常为16KB。</p>
+<blockquote>
+<p>数据页是磁盘上的一个<strong>连续区域</strong>，通常大小为16KB当然，也可以通过配置进行调整。16KB就意味着Innodb的每次读写都是以 16KB 为单位的，一次从磁盘到内存的读取的最小是16KB，一次从内存到磁盘的持久化也是最小16KB。</p>
+</blockquote>
+<p>首先，B+树是一种平衡多路查找树，其性能部分依赖于树的深度。<strong>key长度增加会导致每个数据页能存储的键值对数量减少（因为页大小固定，key长度更大，能存的数量就更少），这可能导致B+树的深度增加</strong>。 树的深度增加意味着查询、插入或删除操作需要更多的磁盘I/O操作来遍历这些额外的层级，从而降低性能。</p>
+<p>其次，磁盘I/O操作是数据库操作中成本最高的部分之一。因为每个B+树节点通常对应于磁盘上的一个页，其大小在InnoDB中默认为16KB。<strong>如果索引的key长度很长，每个页面能存放的节点数就会减少，这意味着处理查询时需要读取更多的页面，从而增加了磁盘I/O操作的次数，降低了查询效率。</strong></p>
+<p>还有就是，在B+树中进行键值查找时，<strong>如果key长度过长，比较操作的成本会增加，尤其是对于字符串这类可变长度的数据类型</strong>。这会导致每一次查找操作都消耗更多的CPU资源，进一步影响到查询性能。</p>
+<p>所以，索引的 key 长度不建议太长。但是也不要太短，太短可能会导致区分度不够高，比如身份证号，如果你只用前6位当做索引的话，因为重复度很高，那么索引效果就会很差。<strong>所以需要在区分度和长度时间做一个平衡。</strong></p>
+<h3 id="mysql用了函数一定会索引失效吗">
+  MySQL用了函数一定会索引失效吗？
+  <a class="anchor" href="#mysql%e7%94%a8%e4%ba%86%e5%87%bd%e6%95%b0%e4%b8%80%e5%ae%9a%e4%bc%9a%e7%b4%a2%e5%bc%95%e5%a4%b1%e6%95%88%e5%90%97">#</a>
+</h3>
+<p>一般认为会失效（一般）</p>
+<p>主要是因为索引是按照列值的原始顺序进行组织和存储的。当对列应用函数时如进行数学运算、字符串操作或日期函数等），函数操作的结果会改变原始数据的值或格式，这使得数据库无法直接在索引树中定位到这些经过函数转换后的值。因此，数据库不得不回退到全表扫描，以确保能够评估所有行上的函数操作，从而导致查询性能下降。</p>
+<p><strong>但在MySQL8.0之后就不一定了，因为有了函数索引，他就是用来优化函数的。</strong></p>
+<p>MySQL 8.0 引入“功能索引”（Functional Indexes）的新特性，也别叫做函数索引。功能索引允许在创建索引时包含列上的表达式，这意味着你可以对数据进行某种计算或转换，并对结果建立索引。这样，即使查询条件中使用了函数操作，仍然可以利用这些索引来优化查询性能。</p>
+<p><u>也仅需要在创建索引的时候加上表达式</u></p>
+<p>**函数索引不是直接在表的列上创建的，而是基于列的某个表达式创建的。**这个表达式可以是简单的数学运算，也可以是字符串函数、日期函数等。创建了函数索引后，MySQL 可以在执行涉及该表达式的查询时使用这个索引，从而提高查询效率。</p>
+<h4 id="使用方式">
+  使用方式
+  <a class="anchor" href="#%e4%bd%bf%e7%94%a8%e6%96%b9%e5%bc%8f">#</a>
+</h4>
+<p>假设我们有一个employees表，里面有first_name和last_name两个字段，我们希望能够快速查询基于这两个字段合并后的全名。在 MySQL 8.0 中，我们可以创建一个基于first_name和last_name合并后的表达式的函数索引，如下所示：</p>
+<pre tabindex="0"><code>CREATE TABLE employees (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50)
+);
+
+--创建函数索引
+CREATE INDEX idx_full_name ON employees ((CONCAT(first_name, &#39; &#39;, last_name)));
+
+--插入一条记录
+insert into employees(first_name,last_name) values (&#39;Hollis&#39;,&#39;Chuang&#39;);
+</code></pre><p>在上述示例中，idx_full_name就是一个函数索引，它基于first_name和last_name字段的组合（即全名）。</p>
+<p>这意味着如果你有一个查询是基于员工的全名进行的，这个查询就可以利用idx_full_name索引：</p>
+<pre tabindex="0"><code>SELECT * FROM employees WHERE CONCAT(first_name, &#39; &#39;, last_name) = &#39;Hollis Chuang&#39;;
+</code></pre><p>那么也就是说，在这个查询中，即使WHERE子句中使用了CONCAT函数，查询仍然能够利用到idx_full_name函数索引，从而提高查询效率。</p>
+<h4 id="注意">
+  注意
+  <a class="anchor" href="#%e6%b3%a8%e6%84%8f">#</a>
+</h4>
+<p>函数索引虽然可以提升查询消息量，但是他的创建可能会增加数据插入、更新和删除时的开销，因为数据库需要维护更多的索引数据。所以也不能无脑创建。</p>
+<p>函数索引可以显著提高涉及索引表达式的查询性能，但使用时需要仔细考虑和测试，以确保性能提升符合预期。</p>
+<p>另外，在创建函数索引时，需要确保表达式是确定的，即对于给定的输入值总是产生相同的输出值。例如 LENGTH()、UPPER()、LOWER() 等常用的字符串函数。此外，算术运算符、日期处理函数等大多数也是可以的。</p>
+<p>以下几类函数无法用于函数索引：</p>
+<ul>
+<li><strong>非确定性函数</strong>：如 <strong>NOW()、UUID()、RAND()</strong> 这些在每次调用时可能返回不同结果的函数。</li>
+<li><strong>存储函数（Stored Functions）</strong>：某些存储函数不能用于索引，因为其行为可能不稳定。</li>
+<li><strong>全文检索函数</strong>：如 MATCH()，这些用于全文检索的函数也无法用于函数索引。</li>
+</ul>
+<h4 id="常见函数索引用法">
+  常见函数索引用法
+  <a class="anchor" href="#%e5%b8%b8%e8%a7%81%e5%87%bd%e6%95%b0%e7%b4%a2%e5%bc%95%e7%94%a8%e6%b3%95">#</a>
+</h4>
+<ul>
+<li>
+<p>字符串处理</p>
+<p>当你经常需要根据某个字符串列的某部分进行查询时，可以使用函数索引。例如，<strong>如果你想根据邮箱的域名部分查询用户</strong>，可以创建如下的函数索引：</p>
+<pre tabindex="0"><code>CREATE INDEX idx_email_domain ON users ((SUBSTRING_INDEX(email, &#39;@&#39;, -1)));
+</code></pre><p>这样，当你查询特定域名的邮箱时（如qq邮箱），可以利用这个索引：</p>
+<pre tabindex="0"><code>SELECT * FROM users WHERE SUBSTRING_INDEX(email, &#39;@&#39;, -1) = &#39;qq.com&#39;;
+</code></pre></li>
+<li>
+<p>日期和时间处理</p>
+<p>对于涉及日期和时间处理的查询，函数索引也非常有用。假设你需要频繁查询基于订单日期的年份或月份，可以创建如下索引：</p>
+<pre tabindex="0"><code>CREATE INDEX idx_order_year ON orders ((YEAR(order_date)));
+CREATE INDEX idx_order_month ON orders ((MONTH(order_date)));
+</code></pre><p>这允许你高效地查询特定年份或月份的订单：</p>
+<pre tabindex="0"><code>SELECT * FROM orders WHERE YEAR(order_date) = 2022;
+SELECT * FROM orders WHERE MONTH(order_date) = 12;
+</code></pre></li>
+<li>
+<p>数学运算</p>
+<p>如果查询条件中经常包含对数值列的数学运算，可以针对这些运算创建函数索引。例如，如果你想根据价格的折扣价进行查询，可以创建一个索引：</p>
+<pre tabindex="0"><code>CREATE INDEX idx_discounted_price ON products ((price * (1 - discount_rate)));
+</code></pre><p>然后，你可以高效地查询特定范围的折扣价格：</p>
+<pre tabindex="0"><code>SELECT * FROM products WHERE price * (1 - discount_rate) BETWEEN 50 AND 100;
+</code></pre></li>
+<li>
+<p>使用json函数</p>
+<p>如果你在 MySQL 中使用 JSON 数据类型，并且需要基于 JSON 属性进行查询，可以创建基于 JSON 函数的索引。例如，如果你有一个存储 JSON 数据的列，你可以针对 JSON 文档中的某个键创建索引：</p>
+<pre tabindex="0"><code>CREATE INDEX idx_json_key ON orders ((JSON_UNQUOTE(JSON_EXTRACT(order_info, &#39;$.status&#39;))));
+</code></pre><p>这样，你可以高效地查询具有特定状态的订单：</p>
+<pre tabindex="0"><code>SELECT * FROM orders WHERE JSON_UNQUOTE(JSON_EXTRACT(order_info, &#39;$.status&#39;)) = &#39;shipped&#39;;
+</code></pre></li>
+<li>
+<p>大小写不敏感的搜索</p>
+<p>如果你需要执行大小写不敏感的字符串搜索，可以创建一个基于LOWER()或UPPER()函数的索引：</p>
+<pre tabindex="0"><code>CREATE INDEX idx_lower_case_name ON customers ((LOWER(name)));
+</code></pre><p>这允许你执行大小写不敏感的搜索，而不影响性能：</p>
+<pre tabindex="0"><code>SELECT * FROM customers WHERE LOWER(name) = LOWER(&#39;John Doe&#39;);
+</code></pre></li>
+</ul>
+<p>在使用函数索引时，需要考虑索引的维护成本和性能提升之间的权衡。虽然函数索引可以显著提高特定查询的性能，但它们也会增加插入、更新和删除操作的成本，因为数据库需要维护更多的索引数据。因此，在实际应用中，建议仅对那些经常作为查询条件的列和表达式创建函数索引。</p>
+<h3 id="什么是索引合并原理是什么">
+  什么是索引合并，原理是什么？
+  <a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%af%e7%b4%a2%e5%bc%95%e5%90%88%e5%b9%b6%e5%8e%9f%e7%90%86%e6%98%af%e4%bb%80%e4%b9%88">#</a>
+</h3>
+<p>索引合并是数据库查询优化的一种技术，它允许数据库管理系统在处理查询时，利用多个索引来改进数据检索效率。这种技术主要应用在哪些涉及多个条件的查询中，通过合并多个索引的结果集，来找出最终满足所有条件的数据行。</p>
+<p>如以下 SQL 就可能会用到索引合并：</p>
+<pre tabindex="0"><code>SELECT * FROM tbl_name WHERE key1 = 10 OR key2 = 20;
+
+SELECT * FROM tbl_name
+  WHERE (key1 = 10 OR key2 = 20) AND non_key = 30;
+
+SELECT * FROM t1, t2
+  WHERE (t1.key1 IN (1,2) OR t1.key2 LIKE &#39;value%&#39;)
+  AND t2.key1 = t1.some_col;
+
+SELECT * FROM t1, t2
+  WHERE t1.key1 = 1
+  AND (t2.key1 = t1.some_col OR t2.key2 = t1.some_col2);
+</code></pre><p>在MySQL中，如果进行了索引合并，执行计划中会明确显示type为index_merge,key中会列出用到的索引列表，并且在extra中会提示具体用了哪些索引合并策略：</p>
+<ul>
+<li>Using intersect：使用交集算法，当查询条件使用AND连接时，系统可能会使用多个索引分别检索每个条件，然后找出所有索引结果的交集。</li>
+<li>Using union：使用并集算法，当查询条件使用OR连接时，每个条件可能利用不同的索引。系统会分别查找每个索引，然后合并结果。</li>
+<li>Using sort_union:使用排序联合算法，在需要对结果进行排序的查询中，如果不同的排序条件各自有索引，系统可以先分别检索每个索引，然后合并排序这些结果。</li>
+</ul>
+<p>假设有一个用户数据库表Users，表中有两个列：age和city，分别有各自的索引。</p>
+<pre tabindex="0"><code>SELECT * FROM Users WHERE age = 30 AND city = &#39;Hang Zhou&#39;;
+</code></pre><p>使用交集（Intersection）索引合并：</p>
+<ul>
+<li>数据库系统会首先使用city索引找到所有在Hang Zhou的用户。</li>
+<li>然后使用age索引找到所有年龄等于30的用户。</li>
+<li>最后，系统将这两个索引的结果做交集运算，从而得到同时满足这两个条件的用户列表。</li>
+</ul>
+<pre tabindex="0"><code>SELECT * FROM Users WHERE age = 30 OR city = &#39;Hang Zhou&#39;;
+</code></pre><p>使用联合（Union）索引合并：</p>
+<ul>
+<li>数据库系统会分别使用age索引查找所有年龄等于30的用户，和使用city索引查找所有住在Hang Zhou的用户。</li>
+<li>然后，系统将这两个结果集合并，以得到最终的用户列表。</li>
+</ul>
+<h3 id="ab两个单独索引where-axx-and-bxx走那个索引为什么">
+  a,b两个单独索引，where a=xx and b=xx走那个索引？为什么？
+  <a class="anchor" href="#ab%e4%b8%a4%e4%b8%aa%e5%8d%95%e7%8b%ac%e7%b4%a2%e5%bc%95where-axx-and-bxx%e8%b5%b0%e9%82%a3%e4%b8%aa%e7%b4%a2%e5%bc%95%e4%b8%ba%e4%bb%80%e4%b9%88">#</a>
+</h3>
+<p>**正常情况下，如果没有a,b的联合索引的话，这条SQL应该会在a和b之间选择其中一个，**选择的时候由优化器根据区分度、选择性这样进行选择一个效率更高的。</p>
+<p>另外，<strong>还需要考虑索引失效的情况，如果发生索引失效，那么比如a失效了，那么就只会走b的索引</strong>，索引失效的情况有很多，比如函数、比如类型转换等等。</p>
+<p>另外，除了上面说的情况外，<strong>还有一种特殊情况是，可能会同时走a,b两个索引。</strong></p>
+<p>因为在 MySQL 5.1中推出了索引合并，这个功能可以通过使用同时使用两个单独索引来提升查询效率：</p>
+<h3 id="ab都有索引select--from-table-where-axx-order-by-b走那个索引">
+  a,b都有索引，select * from table where a=xx order by b。走那个索引？
+  <a class="anchor" href="#ab%e9%83%bd%e6%9c%89%e7%b4%a2%e5%bc%95select--from-table-where-axx-order-by-b%e8%b5%b0%e9%82%a3%e4%b8%aa%e7%b4%a2%e5%bc%95">#</a>
+</h3>
+<p>不一定。有可能走a的索引，有可能走b的索引。</p>
+<p>如果 WHERE a = xx 的过滤条件的选择性较高（即能过滤掉大量行），MySQL 可能优先使用 a 的索引来快速定位满足条件的记录。</p>
+<p>如果 WHERE a = xx 的过滤条件的选择性较低（即 a = xx 会匹配大量的记录），而 ORDER BY b 对结果的顺序要求较高，MySQL 可能使用 b 的索引来避免排序操作。</p>
+<h3 id="为啥like--xx不走索引-like-xxxx走索引吗为什么">
+  为啥like % xx不走索引？ like xx%xx走索引吗？为什么？
+  <a class="anchor" href="#%e4%b8%ba%e5%95%a5like--xx%e4%b8%8d%e8%b5%b0%e7%b4%a2%e5%bc%95-like-xxxx%e8%b5%b0%e7%b4%a2%e5%bc%95%e5%90%97%e4%b8%ba%e4%bb%80%e4%b9%88">#</a>
+</h3>
+<p>当使用 LIKE &lsquo;%xx&rsquo; 进行查询时，通配符 % 放在了字符串的前面。因为% 表示任意字符，因此查询必须从每一行的开头开始，逐个字符进行比较，以检查是否符合 xx 结尾的条件。所以这种不符合最左前缀匹配的查询模式无法利用常规的索引。</p>
+<p>而  LIKE &lsquo;xx%&lsquo;时，% 通配符放在了字符串的后面。那么数据库可以利用索引来优化查询，来查询所有以xx开头的索引，这是因为索引是基于排序的，能够根据前缀值快速定位到符合条件的数据范围。</p>
+<p>使用 LIKE &lsquo;xx%xxx&rsquo;时，和LIKE &lsquo;xx%&lsquo;是一样的，他都可以用到左边的xx来进行索引查询。</p>
+<h3 id="mysql为什么会有存储内存碎片有什么危害">
+  MySQl为什么会有存储（内存）碎片？有什么危害？
+  <a class="anchor" href="#mysql%e4%b8%ba%e4%bb%80%e4%b9%88%e4%bc%9a%e6%9c%89%e5%ad%98%e5%82%a8%e5%86%85%e5%ad%98%e7%a2%8e%e7%89%87%e6%9c%89%e4%bb%80%e4%b9%88%e5%8d%b1%e5%ae%b3">#</a>
+</h3>
+<p>Mysql中的数据库表会存在物理存储碎片，这种情况通常发生在频繁执行插入、删除和更新操作的数据库中。这些操作会导致表中的数据页部分空间未被有效利用或数据在物理存储上的排列不连续，从而形成碎片。</p>
+<p>碎片的主要来源是因为存在频繁的 DML 操作，如 insert、update以及 delete，除此之外，还有如果我们使用 varchar 或者 text 这种可变长度字段存储的时候，更新时如果长度发生变化，也会存在碎片。</p>
+<ul>
+<li>insert导致的碎片
+<ul>
+<li>uuid作为主键插入</li>
+<li>主键不是递增顺序插入</li>
+</ul>
+</li>
+<li>update导致的碎片
+<ul>
+<li>更新导致数据行大小增加</li>
+</ul>
+</li>
+<li>delete导致的碎片</li>
+</ul>
+<h4 id="碎片危害">
+  碎片危害
+  <a class="anchor" href="#%e7%a2%8e%e7%89%87%e5%8d%b1%e5%ae%b3">#</a>
+</h4>
+<p>当表的碎片增多时，数据在物理磁盘上的存储变得不连续，这将导致数据库在查询数据时需要更多的磁盘I/O操作，从而<strong>降低查询效率</strong>。</p>
+<p>碎片导致数据库实际占用的存储空间比数据实际需要的空间大，<strong>大大浪费磁盘空间，还可能会影响缓存效率。</strong></p>
+<p><strong>备份和恢复过程变得更慢。</strong></p>
+<h4 id="如何避免碎片">
+  如何避免碎片
+  <a class="anchor" href="#%e5%a6%82%e4%bd%95%e9%81%bf%e5%85%8d%e7%a2%8e%e7%89%87">#</a>
+</h4>
+<ul>
+<li>使用连续自增的 ID，而不是用 UUID，这样可以使新创建的对象在B+树的后面插入，可以减少页分裂。</li>
+<li>对于固定长度的字符串，用 char 代替 varchar</li>
+<li>避免在高度易变的列上创建索引，因为这会频繁触发页分裂。</li>
+<li>使用OPTIMIZE TABLE命令可以重新组织表和索引的物理存储。这个命令可以有效减少碎片，优化表的存储和访问速度。</li>
+</ul>
+<h3 id="mysql中如何查看一个sql的执行耗时">
+  MySQL中如何查看一个SQL的执行耗时
+  <a class="anchor" href="#mysql%e4%b8%ad%e5%a6%82%e4%bd%95%e6%9f%a5%e7%9c%8b%e4%b8%80%e4%b8%aasql%e7%9a%84%e6%89%a7%e8%a1%8c%e8%80%97%e6%97%b6">#</a>
+</h3>
+<p>gorm打开debug模式</p>
+<p>gorm慢SQL打印日志</p>
+<h3 id="怎么比较两索引的好坏">
+  怎么比较两索引的好坏？
+  <a class="anchor" href="#%e6%80%8e%e4%b9%88%e6%af%94%e8%be%83%e4%b8%a4%e7%b4%a2%e5%bc%95%e7%9a%84%e5%a5%bd%e5%9d%8f">#</a>
+</h3>
+<p>优化器评判一个索引的好坏的依据就是成本，成本低的索引就是好的，成本高的索引就是不好的。</p>
+<pre tabindex="0"><code>EXPLAIN SELECT * FROM orders WHERE customer_name = &#34;Hollis&#34; and age = 12;
+</code></pre><p>在不考虑索引合并的情况下，他可能会用到customer_name的索引，也可能会用到age的索引。那么，当我们分析两个索引的好坏的时候，有两种非常直观的方式：</p>
+<ul>
+<li>指定索引直接运行一下 SQL，看看他的执行时长</li>
+<li>通过执行计划分析</li>
+</ul>
+<h4 id="运行时长">
+  运行时长
+  <a class="anchor" href="#%e8%bf%90%e8%a1%8c%e6%97%b6%e9%95%bf">#</a>
+</h4>
+<pre tabindex="0"><code>SELECT * FROM orders FORCE INDEX (customer_name) WHERE customer_name = &#39;Hollis&#39; AND age = 12;
+</code></pre><pre tabindex="0"><code>SELECT * FROM orders FORCE INDEX (age) WHERE customer_name = &#39;Hollis&#39; AND age = 12;
+</code></pre><h4 id="执行计划">
+  执行计划
+  <a class="anchor" href="#%e6%89%a7%e8%a1%8c%e8%ae%a1%e5%88%92">#</a>
+</h4>
+<p>当我们分析两个索引的好坏的时候，一般对比他们的以下信息：</p>
+<ul>
+<li>
+<p>类型（type）</p>
+<p>type 字段表示查询的访问类型。理想情况下，类型应该是 const、eq_ref 或 ref，这些类型的查询效率较高。如果是 ALL 或 index，说明进行的是全表扫描或全索引扫描，这通常不是最优的选择。</p>
+</li>
+<li>
+<p>扫描行数（rows）</p>
+<p>rows字段表示查询过程中需要扫描的行数。通常来说，rows 数值越小，说明索引的效果越好，因为这意味着查询过程中需要处理的数据量更少，从而提高了查询的效率。</p>
+</li>
+<li>
+<p>额外信息（extra）</p>
+<p>Extra 字段提供了关于查询的额外信息。理想情况下，不应包含诸如 &ldquo;Using filesort&rdquo; 或 &ldquo;Using temporary&rdquo; 这样的信息，因为这些操作会降低查询效率。</p>
+</li>
+</ul>
+<h3 id="mysql获取主键id的瓶颈在哪里如何优化">
+  MySQL获取主键id的瓶颈在哪里？如何优化？
+  <a class="anchor" href="#mysql%e8%8e%b7%e5%8f%96%e4%b8%bb%e9%94%aeid%e7%9a%84%e7%93%b6%e9%a2%88%e5%9c%a8%e5%93%aa%e9%87%8c%e5%a6%82%e4%bd%95%e4%bc%98%e5%8c%96">#</a>
+</h3>
+<p>首先获取一个自增主键是有锁竞争的，InnoDB存储引擎有一个AUTO-INC锁，这种锁的主要目的是确保在向表中插入新纪录时，每个新纪录的自增列都能获得唯一的、连续的值，即在高并发插入操作中也能保持这一点。</p>
+<p>所以，<strong>如果并发量太大的去获取同一张表的主键的话，会存在锁竞争而影响性能。</strong></p>
+<p>其次，**就是当我们要获取主键 id 的时候，是需要链接数据库的，而数据库的连接数是有限的，并且总数量有限，并且给每个连接他的服务器也是有数量限制的。**所以，当并发量特别大的时候，可能会因为连接数不够而导致阻塞。</p>
+<p>想要优化这个过程，有几个办法：</p>
+<ul>
+<li>**用其他方式生成主键：**比如说我们借助 redis来实现获取自增 id，然后直接保存到数据库中。redis 的性能要比数据库好得多。</li>
+<li>**借助缓存：**借助缓存：我们可以参考有一些中间件的主键 id 的获取方式，比如 tddl，他就是基于分段的思想，一次从数据库中取出一段 id，然后缓存在服务器中，当使用的时候从本地缓存中读取即可。用完了再去数据库中申请新的一段即可。</li>
+</ul>
+<h3 id="mysql为什么是小表驱动大表为什么能提高查询性能">
+  MySQL为什么是小表驱动大表，为什么能提高查询性能？
+  <a class="anchor" href="#mysql%e4%b8%ba%e4%bb%80%e4%b9%88%e6%98%af%e5%b0%8f%e8%a1%a8%e9%a9%b1%e5%8a%a8%e5%a4%a7%e8%a1%a8%e4%b8%ba%e4%bb%80%e4%b9%88%e8%83%bd%e6%8f%90%e9%ab%98%e6%9f%a5%e8%af%a2%e6%80%a7%e8%83%bd">#</a>
+</h3>
+<p>假设我们有两个表：employees（1000 条记录）和 departments（10 条记录），并且要进行以下查询：</p>
+<pre tabindex="0"><code>SELECT e.name, d.department_name
+FROM employees e
+JOIN departments d ON e.department_id = d.id
+</code></pre><p>在不考虑hash join等其他链接方式，只考虑nested loop join的情况下，其实执行的次数是笛卡尔积，即：</p>
+<pre tabindex="0"><code>for(1000){
+    for(10)
+}
+
+和
+
+for(10){
+    for(1000)
+}
+</code></pre><p>但是，假设employees.department_id和departments.id 都有索引的情况下，就不一样了，因为索引的查询是比较快的，他的复杂度是log(n)。那么：</p>
+<p>大表驱动小表，复杂度为：O(1000) * O(log 10)</p>
+<p>小表驱动大表，复杂度为：O(10) * O(log 1000)</p>
+<p>这样一算的话，就非常清楚了，肯定是小表驱动大表的整体的复杂度更低！</p>
+<h3 id="什么是数据库的锁升级innodb支持吗">
+  什么是数据库的锁升级，InnoDB支持吗？
+  <a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%af%e6%95%b0%e6%8d%ae%e5%ba%93%e7%9a%84%e9%94%81%e5%8d%87%e7%ba%a7innodb%e6%94%af%e6%8c%81%e5%90%97">#</a>
+</h3>
+<p>锁升级是<strong>指数据库系统将多个较小的锁（如行锁）合并为一个较大的锁（如表锁）的过程，以减少锁的管理开销。</strong></p>
+<p>但InnoDB是不支持锁升级的，默认使用行级锁进行并发控制。</p>
+<p>InnoDB 设计的目标是高并发和高性能。自动锁升级虽然可以减少锁的管理开销，但会降低并发性能，因为较大的锁（如表锁）会导致更多的事务等待锁释放，从而增加锁冲突和事务延迟。</p>
+<h3 id="数据库扫表任务如何避免出现死循环">
+  数据库扫表任务如何避免出现死循环
+  <a class="anchor" href="#%e6%95%b0%e6%8d%ae%e5%ba%93%e6%89%ab%e8%a1%a8%e4%bb%bb%e5%8a%a1%e5%a6%82%e4%bd%95%e9%81%bf%e5%85%8d%e5%87%ba%e7%8e%b0%e6%ad%bb%e5%be%aa%e7%8e%af">#</a>
+</h3>
+<p>假如我们有一张表case_event，其中有一个字段state，它有三个值，分别是INIT、SUCCESS、以及 FAILED。</p>
+<p>那么在定时任务中，我们需要把 INIT 的数据扫描出来进行执行，一般来说是这么写的 SQL：</p>
+<pre tabindex="0"><code>SELECT * FROM case_event
+WHERE STATE = &#39;INIT&#39; 
+ORDER BY ID 
+LIMIT 200;
+</code></pre><p>这个 SQL 看上去没啥问题，其实就是每次扫描200条记录处理。</p>
+<p>但是这个SQL其实是一个典型的 bad case，因为他会出现一个致命的问题，那就是可能会导致扫描任务一直无法执行。</p>
+<p>因为上述的 SQL 相当于默认了每一条记录执行之后，都能把状态推进到 SUCCESS 或者 FAILED。但是事实上并不一定的，尤其是在一些有很复杂的业务逻辑，或者一些外部调用的时候，这个地方就变成了一个分布式事务，我们没办法保证最后的 INIT-&gt;SUCCESS 或者 INIT-&gt;FAILED 一定能成功。</p>
+<p>那如果不能成功，就会导致一部分失败的状态一直处于 INIT 状态，那么他就会每次都会被扫描起来（因为他还在前200条之内），然后还是不成功，下次还会被扫描出来。</p>
+<p>这样一方面会大大降低任务的效率，一直在重复执行这些不断失败的任务，另一方面，一旦失败的条数达到了200条，那么就意味着每次扫出来的数据都是这200条，导致后面的任务永远无法被执行到。</p>
+<p>而如果你的SQL 是这么写的，那么这个问题就更大了：</p>
+<pre tabindex="0"><code>SELECT * FROM case_event
+WHERE STATE in (&#39;INIT&#39; ,&#39;FAILED&#39;)
+ORDER BY ID 
+LIMIT 200;
+</code></pre><p>相当于你在不断的重复执行那些固定的任务，而后面的很多任务一直无法被执行。</p>
+<p>如何解决这个问题呢，有一个方式，那就是增加一个游标，让你的每次查询都往后移动，如：</p>
+<pre tabindex="0"><code>SELECT * FROM case_event
+WHERE STATE = &#39;INIT&#39;  and id &gt; #{maxId}
+ORDER BY ID 
+LIMIT 200;
+</code></pre><p>这里每次查询的时候，都把上一次的查询结果中的最大id 带过来，然后就可以避免再次扫描到重复的任务了，就可以让本次任务调度正常完成执行。</p>
+<h3 id="abc的联合索引按照abacbc查询能走索引吗">
+  A,B,C的联合索引，按照AB，AC，BC查询，能走索引吗？
+  <a class="anchor" href="#abc%e7%9a%84%e8%81%94%e5%90%88%e7%b4%a2%e5%bc%95%e6%8c%89%e7%85%a7abacbc%e6%9f%a5%e8%af%a2%e8%83%bd%e8%b5%b0%e7%b4%a2%e5%bc%95%e5%90%97">#</a>
+</h3>
+<p>在不考虑 MySQL 8.0中的索引跳跃扫描（先别管是啥，后文有介绍）的情况下，走索引情况如下：</p>
+<table>
+<thead>
+<tr>
+<th>查询条件</th>
+<th>是否走索引</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>能走</td>
+</tr>
+<tr>
+<td>B</td>
+<td>不走</td>
+</tr>
+<tr>
+<td>C</td>
+<td>不走</td>
+</tr>
+<tr>
+<td>AB</td>
+<td>能走</td>
+</tr>
+<tr>
+<td>AC</td>
+<td>能走</td>
+</tr>
+<tr>
+<td>BC</td>
+<td>不走</td>
+</tr>
+<tr>
+<td>ABC</td>
+<td>能走</td>
+</tr>
+<tr>
+<td>BA</td>
+<td>同 AB</td>
+</tr>
+<tr>
+<td>CA</td>
+<td>同 AC</td>
+</tr>
+<tr>
+<td>CB</td>
+<td>同 BC</td>
+</tr>
+<tr>
+<td>BAC</td>
+<td>同 ABC</td>
+</tr>
+<tr>
+<td>CBA</td>
+<td>同 ABC</td>
+</tr>
+</tbody>
+</table>
+<p>通过以上表格，你会发现，只有条件中包含 A 的才能走索引，不包含A 的都不能走索引。原因就是因为最左前缀匹配。</p>
+<p><strong>A,B,C 三个字段创建的联合索引，A 字段在最左边，其次是 B，在其次才是 C，所以，按照最左前缀匹配的原则，想要走索引，至少要先 match 上最左边的 A。</strong></p>
+<p>在命中了 A 的情况下，AB 相比于 AC 的性能要更好一些，因为他能用到 A 和 B两个字段的索引，而 AC 只能用上 A，而用不上 C，因为他跳过了 B。</p>
+<p>然后，还有就是 AB 和BA 是一样的，where 条件中的先后顺序，不影响索引的使用。</p>
+<h3 id="什么是索引跳跃扫描">
+  什么是索引跳跃扫描
+  <a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%af%e7%b4%a2%e5%bc%95%e8%b7%b3%e8%b7%83%e6%89%ab%e6%8f%8f">#</a>
+</h3>
+<p>同索引一定遵循最左前缀匹配吗？</p>
+<h3 id="mysql是ap的还是cp的系统">
+  MySQL是AP的还是CP的系统？
+  <a class="anchor" href="#mysql%e6%98%afap%e7%9a%84%e8%bf%98%e6%98%afcp%e7%9a%84%e7%b3%bb%e7%bb%9f">#</a>
+</h3>
+<p>CAP理论，是描述分布式系统的，即在一个分布式系统中，可用性、一致性和分区容错性不能同时满足。</p>
+<p>CAP 理论指出，在分布式系统中，<strong>最多只能同时满足以下三个特性中的两个</strong>：</p>
+<ul>
+<li><strong>C</strong>onsistency（一致性）</li>
+<li><strong>A</strong>vailability（可用性）</li>
+<li><strong>P</strong>artition tolerance（分区容错性）</li>
+</ul>
+<p>这被称为 <strong>&ldquo;CAP 不可能三角&rdquo;</strong>。</p>
+<p>但是，<strong>我们日常使用的MySQL，虽然也是有多个节点的，但是大多数情况下都是主备的，即只有一个主节点对外提供服务，当主节点挂了之后，备节点顶上来。</strong></p>
+<p>也就是说，同一个时刻，只有一个节点对外提供服务的，这就谈不上P了，没啥分区容错性可言。</p>
+<p>而在可用性（A)及一致性(C)方面，因为只有一个节点对外提供服务，所以自然可用性和一致性都是可以保障的。（即使发生了主从延迟，也不影响主节点的一致性或者可用性）</p>
+<p>因此，<strong>我们可以认为，MySQL 是一个 AC 的数据库。即从节点的延迟不会影响一致性或可用性。</strong></p>
+<p>但是，MySQL在使用的时候，还有一种做法，那就是<strong>读写分离</strong>，即在主库上操作写，在从读库上进行读，这时候主库和从库都是对外提供服务的。<strong>这时候的MySQL就从一个AC的系统，变成了一个AP的系统了。</strong></p>
+<p>所以，总结一下就是，<strong>MySQL在默认情况下，是一个AC的数据库系统，在读写分离的情况下，是一个AP的数据库系统。</strong></p>
+<h3 id="mysql的优化器的索引成本是怎么算出来的">
+  MySQL的优化器的索引成本是怎么算出来的？
+  <a class="anchor" href="#mysql%e7%9a%84%e4%bc%98%e5%8c%96%e5%99%a8%e7%9a%84%e7%b4%a2%e5%bc%95%e6%88%90%e6%9c%ac%e6%98%af%e6%80%8e%e4%b9%88%e7%ae%97%e5%87%ba%e6%9d%a5%e7%9a%84">#</a>
+</h3>
+<p>其实在 MySQL中，一条 SQL 的成本主要就是包含了 CPU 的成本和 IO的成本两部分</p>
+<h3 id="什么是read-view什么样的readview可见">
+  什么是Read View,什么样的ReadView可见？
+  <a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%afread-view%e4%bb%80%e4%b9%88%e6%a0%b7%e7%9a%84readview%e5%8f%af%e8%a7%81">#</a>
+</h3>
+<p>ReadView 是 InnoDB 中一个至关重要的概念，他是实现MVCC的基础，同时他也是支持不同的事务隔离级别的基础，同时提高系统的并发能力和性能。</p>
+<p><strong>Read View 主要来帮我们解决可见性的问题的, 即他会来告诉我们本次事务应该看到哪个快照，不应该看到哪个快照。</strong></p>
+<p>比如我们常见的RR和RC，<strong>RR（可重复读）要求在一个事务中，多次读取的结果是保持一致的，而RC（读已提交）则要求每次都要读取到最新的值。</strong></p>
+<p><strong><u>在可重复读（Repeatable Read）级别下，快照（ReadView）在事务开始后第一次查询时创建一次，并在整个事务期间保持不变。</u></strong></p>
+<p><strong><u>在读已提交（Read Committed）级别下，快照（ReadView）会在每次查询时重新创建，以反映数据库中的最新提交更改。</u></strong></p>
+<p>在 Read View 中有几个重要的属性：</p>
+<ul>
+<li>trx_ids，表示在生成Read View时当前系统中活跃的读写事务的事务Id列表</li>
+<li>low_limit_id，应该分配给下一个事务的ID值。</li>
+<li>up_limit_id，未提交事务中最小事务ID</li>
+<li>creator_trx_id,创建这个Read View的事务ID</li>
+</ul>
+<p>trx_ids中包含了low_limit_id和up_limit_id的信息，其实trx_ids = [up_limit_id,low_limit_id)（但是需要注意，他并不一定连续，只是会包含up_limit_id，并且小于low_limit_id，比如他可能是5,7,8,11） ，并且你没看错，up_limit_id就是表示最低水位，low_limit_id就是表示最高水位，至于为啥这么叫，我也不知道。。。</p>
+<p>也就是说，每一次读取数据的时候（RC情况下），都会生成一个ReadView，并且在其中记录上trx_ids（包含了[up_limit_id,low_limit_id)）和creator_trx_id。</p>
+<p>那么，一个事务应该看到哪些快照，不应该看到哪些快照该如何判断呢？</p>
+<p>假如一个ReadView的内容为：</p>
+<pre tabindex="0"><code>trx_ids = [5,6,8)
+low_limit_id = 8
+up_limit_id = 5
+creator_trx_id = 7
+</code></pre><p>假设当前事务要读取某一个记录行，该记录行的 db_trx_id（即最新修改该行的事务ID）为 trx_id，那么，就有以下几种情况了：</p>
+<ul>
+<li>trx_id&lt; up_limit_id，即小于5的事务，说明这些事务在生成ReadView之前就已经提交了，那么该事务的结果就是可见的。</li>
+<li>trx_id&gt;=low_limit_id，即大于8的事务，说明该事务在生成 ReadView 后才生成，所以该事务的结果就是不可见的。</li>
+<li>up_limit_id&lt;trx_id&lt;low_limit_id，即大于等于5，小于8，这种情况下，会再拿事务ID和Read View中的trx_ids进行逐一比较。
+<ul>
+<li>如果，事务ID在trx_ids列表中，如6，那么表示在当前事务开启时，这个事务还是活跃的，那么这个记录对于当前事务来说应该是不可见的。</li>
+<li>如果，事务id不在trx_ids列表中，如7，那么表示的是在当前事务开启之前，其他事务对数据进行修改并提交了，所以，这条记录对当前事务就应该是可见的。</li>
+<li>当然这里有个例外情况，那就是这个trx_id=creator_trx_id，那么就肯定是可见的</li>
+</ul>
+</li>
+</ul>
+<p>总结一下就是，一个事务，能看到的是在他开始之前就已经提交的事务的结果，而未提交的结果都是不可见的。</p>
+<p>那不可见的话，怎么办呢？这时候就需要用到undolog了。</p>
+<h3 id="undolog会一直存在吗什么时候删除">
+  undolog会一直存在吗？什么时候删除？
+  <a class="anchor" href="#undolog%e4%bc%9a%e4%b8%80%e7%9b%b4%e5%ad%98%e5%9c%a8%e5%90%97%e4%bb%80%e4%b9%88%e6%97%b6%e5%80%99%e5%88%a0%e9%99%a4">#</a>
+</h3>
+<p>他的主要作用有两个：</p>
+<ul>
+<li>事务回滚：当事务执行过程中需要执行ROLLBACK操作时，InnoDB可以使用undolog将数据恢复到事务开始前到状态。</li>
+<li>MVCC：InnoDB使用undolog为实现MVCC提供支持，使得不同事务可以看到数据在不同时间点到一致性快照，从而提高并发性。</li>
+</ul>
+<p>当事务对数据进行修改（插入、更新、删除）时，会生成相应的undolog。每条记录会包含操作前的旧值。所以，根据操作类型，undolog分成两种类型：</p>
+<ul>
+<li>
+<p>nsert undolog：用于记录insert操作，用于事务回滚</p>
+</li>
+<li>
+<p>update undolog：用于记录update和delete操作，不仅在事务回滚时需要，在快照读时也需要</p>
+</li>
+</ul>
+<p><u>对于insert undolog来说，它主要用于在事务回滚时。这种日志在事务提交就不再需要了。而update undolog还要用在MVCC场景用于做快照读，所以他是不能被立即清理的。</u></p>
+<blockquote>
+<p>当行被update或delete时，行和关联的undolog不会立即物理删除，甚至不会在事务提交后立即删除。旧数据会一直保留到较早开始或同时开始的事务完成，以便这些事务可以访问修改或删除行的先前状态。因此，长时间运行的事务可以防止InnoDB清除由不同事务更改的数据</p>
+</blockquote>
+<p>InnoDB会在合适的时间进行统一清理，释放空间。这个过程称为purge。其实背后就是一个purge线程，purge线程在调度进行清理时，会做判断，对于insert undolog就直接清理了，但是对于update undolog，必须确保没有活跃事务需要这些日志用于一致性读。也就是说，即使事务已经提交，但只要还有其他事务在进行一致性读操作并依赖这些日志，update undolog就不能被清理。</p>
+<p>那update undolog是如何判断有没有被其他事物依赖的呢？</p>
+<p>其实很简单，就一句话：<strong>如果一个事务在所有当前活跃的读事务开始之前就已经完成并提交，那么这个事务的Undo Log就可以清理，因为这些读事务不需要它来查看历史数据。</strong></p>
+<h3 id="二级索引在索引覆盖时如何使用mvcc">
+  二级索引在索引覆盖时，如何使用MVCC？
+  <a class="anchor" href="#%e4%ba%8c%e7%ba%a7%e7%b4%a2%e5%bc%95%e5%9c%a8%e7%b4%a2%e5%bc%95%e8%a6%86%e7%9b%96%e6%97%b6%e5%a6%82%e4%bd%95%e4%bd%bf%e7%94%a8mvcc">#</a>
+</h3>
+<h4 id="知识储备">
+  知识储备
+  <a class="anchor" href="#%e7%9f%a5%e8%af%86%e5%82%a8%e5%a4%87">#</a>
+</h4>
+<ul>
+<li>MySQL数据库中的每行记录中，除了保存了我们自己定义的一些字段以外，还有一些重要的隐式字段的：db_row_id（隐藏主键，如果我们没有给这个表创建主键，那么会以这个字段来创建聚簇索引。）、 db_trx_id（对这条记录做了最新一次修改的事务的ID）、以及 db_roll_ptr（回滚指针，指向这条记录的上一个版本，其实他指向的就是Undo Log中的上一个版本的快照的地址。 ）</li>
+<li>在MVCC中，隐藏字段中的db_roll_ptr用来构建版本链，db_trx_id也是一个重要的用来判断快照可见性的一个字段。</li>
+<li>在Innodb 的聚簇索引（主键索引）中，叶子节点上保存的是整行记录。而在非聚簇索引（二级索引）中，叶子节点上值保存了主键的信息。</li>
+<li>在一条查询语句中，如果能用到索引覆盖，则就会直接用二级索引进行检索，并不会回表。</li>
+</ul>
+<h4 id="问题">
+  问题
+  <a class="anchor" href="#%e9%97%ae%e9%a2%98">#</a>
+</h4>
+<p>如果某个查询语句的查询字段都包含在二级索引中，那么就会走索引覆盖，不用回表去读取聚簇索引的页记录。但是，版本链的头结点在聚簇索引中，不在二级索引中，通过二级索引的记录无法直接找到版本链。在这种情况下如何使用MVCC？</p>
+<p><strong>如果发现二级索引页有一个 PAGE_MAX_TRX_ID 太新的，或者如果二级索引中的记录被删除标记， InnoDB可能需要使用聚集索引来查找记录。</strong></p>
+<p>也就是说，**索引覆盖并不是用到了联合索引就一定会走的！**在以上这种情况下，会回表，通过覆盖索引进行查询。上面的这个解释不是很清楚，我把过程在展开说一下：</p>
+<p>如果当前查询得到的read_view的 up_limit_id &gt; page_max_trx_id，说明在创建read_view时，最后一次更新二级索引的事务已经提交了，那就意味着二级索引里的提交对于当前查询都应该是可见的。这时候如果这个二级索引的记录没有被删除，那么就可以直接走索引覆盖查询。</p>
+<p>否则，就意味着数据可能被修改了，不能直接查询，而需要回表，通过聚簇索引进行查询。使用聚簇索引的时候，叶子节点行记录中设计包含了版本链的，就可以用到MVCC了。</p>
+<h3 id="mysql的blob和text有什么区别">
+  MySQL的BLOB和TEXT有什么区别？
+  <a class="anchor" href="#mysql%e7%9a%84blob%e5%92%8ctext%e6%9c%89%e4%bb%80%e4%b9%88%e5%8c%ba%e5%88%ab">#</a>
+</h3>
+<p>在 MySQL 中，<strong>BLOB 和 TEXT 数据类型都用于存储大量数据。<strong>BLOB的全称是Binary Large Object，所以他主要被设计出来是</strong>存储二进制数据</strong>的，而TEXT主要是用于<strong>存储文本数据</strong>。</p>
+<p><strong>当我们要在数据库中存储二进制数据，比如图像、音频、视频等等，就可以把他们的二进制的对象存储到BLOB中</strong>。而我们如要存长文本，如文章、扩展信息等等，则通常使用TEXT。</p>
+<p>因为<strong>BLOB 数据</strong>类型按二进制方式处理数据，所以他<strong>不会对存储的数据进行字符集转换，并且不支持排序</strong>。而<strong>TEXT 数据类型</strong>则是以字符的方式存储文本数据，并且<strong>可以对数据进行字符集转换和排序等操作</strong>。</p>
+<p>BLOB 和 TEXT 类型都有不同的变种，分别支持不同的存储大小：</p>
+<ul>
+<li>TINYBLOB / TINYTEXT: 存储最大长度为 255 字节</li>
+<li>BLOB / TEXT: 存储最大长度为 65,535 字节（64 KB）</li>
+<li>MEDIUMBLOB / MEDIUMTEXT: 存储最大长度为 16,777,215 字节（16 MB）</li>
+<li>LONGBLOB / LONGTEXT: 存储最大长度为 4,294,967,295 字节（4 GB）</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>存储内容</th>
+<th>字符集转换</th>
+<th>排序</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BLOB</td>
+<td>二进制（如视频、音频）</td>
+<td>不支持</td>
+<td>不支持</td>
+<td>TINYBLOB、BLOB、MEDIUMBLOB、LONGBLOB</td>
+</tr>
+<tr>
+<td>TEXT</td>
+<td>文本（如文章内容）</td>
+<td>支持</td>
+<td>支持</td>
+<td>TINYTEXT、TEXT、MEDIUMTEXT、LONGTEXT</td>
+</tr>
+</tbody>
+</table>
+<h3 id="mysql做索引更新的时候会锁表吗">
+  MySQL做索引更新的时候，会锁表吗？
+  <a class="anchor" href="#mysql%e5%81%9a%e7%b4%a2%e5%bc%95%e6%9b%b4%e6%96%b0%e7%9a%84%e6%97%b6%e5%80%99%e4%bc%9a%e9%94%81%e8%a1%a8%e5%90%97">#</a>
+</h3>
+<p>在MySQL 5.6版本中，已经支持了Online DDL，一般来说是不会锁表了。</p>
+<p>但是，虽然支持了Online DDL也不建议在业务高峰期做变更。因为Online DDL是尽最大可能保证DDL期间不阻塞DML动作。但是需要注意，这里说的尽最大可能意味着不是所有DDL语句都会使用OnlineDDL加速。</p>
+<p><strong>资源争抢</strong>：而且，**Online DDL 在执行过程中会占用系统资源，如 CPU、内存和 I/O。**这可能会对数据库的性能产生一定影响，尤其是在数据量较大的情况下。在非高峰期执行 DDL 变更可以减少对业务操作的干扰，避免高峰期因为资源争用而影响系统性能。</p>
+<p><strong>也可能会锁表</strong>：虽然 Online DDL 尽可能得减少了锁表的时间，**但在某些复杂操作（如涉及索引重建、大量数据的表结构更改）中，可能仍会有短暂的锁表情况。**所以在非高峰期进行变更，可以降低长时间锁等待对用户请求的影响。</p>
+<p>**主从延迟：**在主从复制的数据库架构中，DDL 操作需要同步到从库。<strong>如果高峰期有大量写入操作，DDL 操作可能会增加主从同步延迟。</strong></p>
+<h3 id="mysql如何实现行转列列转行">
+  MySQL如何实现行转列，列转行？
+  <a class="anchor" href="#mysql%e5%a6%82%e4%bd%95%e5%ae%9e%e7%8e%b0%e8%a1%8c%e8%bd%ac%e5%88%97%e5%88%97%e8%bd%ac%e8%a1%8c">#</a>
+</h3>
+<h4 id="行转列">
+  行转列
+  <a class="anchor" href="#%e8%a1%8c%e8%bd%ac%e5%88%97">#</a>
+</h4>
+<p>所谓行转列，就是假设有如下数据表 sales：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">id</th>
+<th>year</th>
+<th>product</th>
+<th>sales</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">1</td>
+<td>2020</td>
+<td>A</td>
+<td>100</td>
+</tr>
+<tr>
+<td style="text-align:left">2</td>
+<td>2020</td>
+<td>B</td>
+<td>200</td>
+</tr>
+<tr>
+<td style="text-align:left">3</td>
+<td>2021</td>
+<td>A</td>
+<td>150</td>
+</tr>
+<tr>
+<td style="text-align:left">4</td>
+<td>2021</td>
+<td>B</td>
+<td>300</td>
+</tr>
+</tbody>
+</table>
+<p>要将 product 列的不同值（A 和 B）变为列标题，year 作为行标题，生成如下结果：</p>
+<table>
+<thead>
+<tr>
+<th>year</th>
+<th>A</th>
+<th>B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2020</td>
+<td>100</td>
+<td>200</td>
+</tr>
+<tr>
+<td>2021</td>
+<td>150</td>
+<td>300</td>
+</tr>
+</tbody>
+</table>
+<p>这里，可以使用CASE WHEN THEN 用来根据条件为每个 product 创建一列，并通过 SUM 聚合同一年份的销售数据，达到行转列的效果。</p>
+<pre tabindex="0"><code>SELECT
+    year,
+    SUM(CASE WHEN product = &#39;A&#39; THEN sales ELSE 0 END) AS A,
+    SUM(CASE WHEN product = &#39;B&#39; THEN sales ELSE 0 END) AS B
+FROM sales
+GROUP BY year;
+</code></pre><p>简答解释下：</p>
+<ul>
+<li>SUM(CASE WHEN product = &lsquo;A&rsquo; THEN sales ELSE 0 END) AS A：</li>
+<li>使用 CASE WHEN 判断 product 是否为 A：
+<ul>
+<li>如果是 A，则返回该行的 sales 值。</li>
+<li>如果不是 A，则返回 0。</li>
+</ul>
+</li>
+<li>然后，SUM 函数将每个 year 内所有 product = &lsquo;A&rsquo; 的 sales 值加总，最终得到该 year 对应的 A 产品总销售额。</li>
+</ul>
+<p>还可以使用IF实现类似CASE WHEN的功能：</p>
+<pre tabindex="0"><code>SELECT
+    year,
+    SUM(IF(product = &#39;A&#39;, sales, 0)) AS A,
+    SUM(IF(product = &#39;B&#39;, sales, 0)) AS B
+FROM sales
+GROUP BY year;
+</code></pre><h4 id="列转行">
+  列转行
+  <a class="anchor" href="#%e5%88%97%e8%bd%ac%e8%a1%8c">#</a>
+</h4>
+<p>所谓列转行，假设有如下数据表  sales_data  ：</p>
+<table>
+<thead>
+<tr>
+<th>year</th>
+<th>A</th>
+<th>B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2020</td>
+<td>100</td>
+<td>200</td>
+</tr>
+<tr>
+<td>2021</td>
+<td>150</td>
+<td>300</td>
+</tr>
+</tbody>
+</table>
+<p>转成如下格式结构：</p>
+<table>
+<thead>
+<tr>
+<th>year</th>
+<th>product</th>
+<th>sales</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2020</td>
+<td>A</td>
+<td>100</td>
+</tr>
+<tr>
+<td>2020</td>
+<td>B</td>
+<td>200</td>
+</tr>
+<tr>
+<td>2021</td>
+<td>A</td>
+<td>150</td>
+</tr>
+<tr>
+<td>2021</td>
+<td>B</td>
+<td>300</td>
+</tr>
+</tbody>
+</table>
+<p>通常是使用UNION  ALL   实现：</p>
+<pre tabindex="0"><code>SELECT 
+    year,
+    &#39;A&#39; AS product,
+    A AS sales
+FROM sales_data
+
+UNION ALL
+
+SELECT 
+    year,
+    &#39;B&#39; AS product,
+    B AS sales
+FROM sales_data;
+
+ORDER BY year, product;
+</code></pre><ul>
+<li>
+<p>第一个 SELECT 子查询提取了 A 列的数据，并将 A 作为 product 值：</p>
+</li>
+<li>
+<p>输出行：(2020, &lsquo;A&rsquo;, 100) 和 (2021, &lsquo;A&rsquo;, 150)。</p>
+</li>
+<li>
+<p>第二个 SELECT 子查询提取了 B 列的数据，并将 B 作为 product 值：</p>
+</li>
+<li>
+<p>输出行：(2020, &lsquo;B&rsquo;, 200) 和 (2021, &lsquo;B&rsquo;, 300)。</p>
+</li>
+<li>
+<p>UNION ALL 将两组查询结果合并。</p>
+</li>
+</ul>
+<h3 id="什么是前缀索引使用的时候要注意什么">
+  什么是前缀索引？使用的时候要注意什么？
+  <a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%af%e5%89%8d%e7%bc%80%e7%b4%a2%e5%bc%95%e4%bd%bf%e7%94%a8%e7%9a%84%e6%97%b6%e5%80%99%e8%a6%81%e6%b3%a8%e6%84%8f%e4%bb%80%e4%b9%88">#</a>
+</h3>
+<p>**前缀索引是一种对字符串类型字段进行索引优化的方式。**它通过只索引字符串的前若干字符串，而不是整个字段，从而减少索引大小并提高性能。前缀索引常用于处理长文本字段或变长字符串字段，如 VARCHAR 和 TEXT。</p>
+<p>而前缀索引就是说我不要把整个字段都放到索引中，而是保留前N个字符来生成索引。 比如说在一个 VARCHAR(255) 字段上，索引的默认存储会包含整个字符串内容，而通过前缀索引 INDEX (address(10))  ，就能为name字的前10个字符创建索引，从而减少索引存储空间。</p>
+<pre tabindex="0"><code>CREATE TABLE example (
+    id INT NOT NULL,
+    name VARCHAR(255),
+    INDEX (name(10)) -- 为 `name` 字段的前 10 个字符创建索引
+);
+</code></pre><p>这么做的好处非常明显，就是可以减少索引占用的磁盘空间，一个索引占用的空间小了，B+树中能存放的索引的数量就更多了，那么检索起来性能也就会更好了。而且后期的维护成本也会低很多。</p>
+<p>但是，这么做会带来一些问题的，一定要注意：</p>
+<ul>
+<li>**精确匹配能力下降：**由于只索引部分字段内容，前缀索引在字段值高度相似时可能导致索引失效。比如身份证号的前几位、</li>
+<li>**无法用于覆盖索引：**覆盖索引要求索引中存储完整字段，而前缀索引仅存储部分内容，无法满足需求。</li>
+<li><strong>选择性依赖于 N 的选择</strong>：如果前缀长度选得过短，可能导致索引重复率较高，降低查询性能。而太长的话有没有太大意义。</li>
+</ul>
+<p>所以，这个前缀索引的前缀的长度，需要选择一个合理的值，重复度不能太高，但是又不能太长。具体的设置方式就要根据具体的字段的数据的分布情况来设定了。<strong>但是有个基本原则就是一定不能用选择性不高的前缀长度。</strong></p>
+<p>简单的选择性公式：选择性=不重复前缀数量/总记录数，选择性越高，说明索引效果越好</p>
+<h3 id="limit的原理是什么">
+  limit的原理是什么？
+  <a class="anchor" href="#limit%e7%9a%84%e5%8e%9f%e7%90%86%e6%98%af%e4%bb%80%e4%b9%88">#</a>
+</h3>
+<p>在 MySQL 中，LIMIT 关键字用于限制查询结果返回的行数。它的原理主要是通过控制查询结果集的返回范围来提高查询效率。LIMIT 可以与 OFFSET 一起使用，指定从哪一行开始返回数据，并限制返回的最大行数。</p>
+<pre tabindex="0"><code>SELECT * FROM users LIMIT 10; -- 返回 users 表的前 10 行数据
+SELECT * FROM users LIMIT 10, 20; -- 第 11 行开始，返回 20 行数据
+</code></pre><h4 id="limit的执行顺序">
+  limit的执行顺序
+  <a class="anchor" href="#limit%e7%9a%84%e6%89%a7%e8%a1%8c%e9%a1%ba%e5%ba%8f">#</a>
+</h4>
+<p><strong>limit其实是在最后执行的</strong>，也就是说，在做完筛选、分组、排序等操作之后，最后进行的limit。因为它是对最终结果集的限制。所以在执行完其他所有操作后，才应用 LIMIT，从而确保查询返回的结果集已经是经过完整处理的。</p>
+<p>还有就是，limit的查询中，如果是像 LIMIT 10000, 100 这种形式 ，他会先查询出全部数据（10000+100），然后丢弃前面的结果，再返回需要的部分。  这也是为什么深分页很慢的原因：</p>
+<h4 id="limit的执行过程">
+  limit的执行过程
+  <a class="anchor" href="#limit%e7%9a%84%e6%89%a7%e8%a1%8c%e8%bf%87%e7%a8%8b">#</a>
+</h4>
+<p>对于 SQL 查询中 LIMIT 的使用，像 LIMIT 10000, 100 这种形式，MySQL 的执行顺序大致如下：</p>
+<ul>
+<li>从数据表中读取所有符合条件的数据（包括排序和过滤）。</li>
+<li>将数据按照ORDER BY排序</li>
+<li>根据LIMIT参数选择返回记录
+<ul>
+<li>跳过前 10000 行数据（这个过程是通过丢弃数据来实现的）。</li>
+<li>然后返回接下来的 100 行数据。</li>
+</ul>
+</li>
+</ul>
+<p>所以，LIMIT 是先检索所有符合条件的数据，然后丢弃掉前面的行，再返回指定的行数。这解释了为什么如果数据集很大，LIMIT 会带来性能上的一些问题，尤其是在有很大的偏移量（比如 LIMIT 10000, 100）时。</p>
+<h4 id="为什么不跳过前面的数据">
+  为什么不跳过前面的数据
+  <a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e4%b8%8d%e8%b7%b3%e8%bf%87%e5%89%8d%e9%9d%a2%e7%9a%84%e6%95%b0%e6%8d%ae">#</a>
+</h4>
+<p>例如你要跳过前 10000 行，但是没排序的情况下你不知道前10000行是哪些数据，是没办法跳过的。</p>
+<h4 id="limit优化">
+  limit优化
+  <a class="anchor" href="#limit%e4%bc%98%e5%8c%96">#</a>
+</h4>
+<ul>
+<li>
+<p>针对没有HAVING的limit语句，如果你只使用使用 LIMIT查询少量行，MySQL 会在优先考虑使用索引，而不是像通常那样进行全表扫描。 因为索引天然有序，这样就能在扫描时直接按照索引顺序进行，减少读取和排序的开销</p>
+<blockquote>
+<p><strong>HAVING 子句</strong>是 SQL 中用于对分组后的结果进行过滤的关键字。</p>
+</blockquote>
+</li>
+<li>
+<p>如果将 LIMIT row_count 与 ORDER BY 结合使用，MySQL 在找到排序结果中的前 row_count 行之后就停止排序，而不是对整个结果集进行排序。如果排序是通过使用索引完成的，会非常快。如果必须进行文件排序（filesort），则会先选择所有匹配查询条件且没有 LIMIT 子句的行，然后对它们进行排序，直到找到前 row_count 行为止。找到初始行之后，MySQL 不会再对剩余的结果集进行排序。</p>
+<p><strong>注意，很多人看到这里会觉得和上面的说法矛盾了，我第一次看的时候也有这个疑惑，到底是全部排序后抛弃，还是排序够了就停止呢？其实这里说的是两种情况：</strong></p>
+<ul>
+<li>LIMIT row_count如果和ORDER BY结合使使用，则在找到前row_count就停止。</li>
+<li>LIMIT offset,row_count如果和ORDER BY结合使使用，则对整个结果集完成排序后，再抛弃前offset行。</li>
+</ul>
+</li>
+<li>
+<p>如果将 LIMIT row_count 与 DISTINCT 结合使用，MySQL 会在找到 row_count 个唯一的行后停止。</p>
+</li>
+<li>
+<p>LIMIT 0 会快速返回一个空的结果集。这对于检查查询的有效性非常有用。</p>
+</li>
+<li>
+<p>如果 ORDER BY 不使用索引，但查询中有 LIMIT 子句，优化器可能会避免使用合并文件，而是使用内存中的文件排序操作来对行进行排序。</p>
+</li>
+</ul>
+<h3 id="mysql的update语句什么时候锁行什么时候锁表">
+  MySQL的update语句什么时候锁行，什么时候锁表？
+  <a class="anchor" href="#mysql%e7%9a%84update%e8%af%ad%e5%8f%a5%e4%bb%80%e4%b9%88%e6%97%b6%e5%80%99%e9%94%81%e8%a1%8c%e4%bb%80%e4%b9%88%e6%97%b6%e5%80%99%e9%94%81%e8%a1%a8">#</a>
+</h3>
+<p>首先，在我们常用的Innodb引擎上，默认的加锁是行级锁（当然还有gap lock 和 next key lock），虽然也有可能会进行表锁，但是Innodb会尽可能的避免锁表。只有在极特殊情况下，比如没有用到索引</p>
+<p>另外，在MyISAM 存储引擎上，update语句会默认使用表锁的。</p>
+<p>还有，如果我们显示的要进行表锁了，如 LOCK TABLES  那么也会进行表锁，包括Innodb。</p>
+<p><strong>如果查询条件没有明确指定索引，虽然InnoDB 可能会使用全表扫描，但也不意味着Innodb就会锁全表，它仍然会倾向于使用行锁，对查找到的每一行进行锁定。</strong></p>
+<h3 id="事务的acid是如何实现的">
+  事务的ACID是如何实现的？
+  <a class="anchor" href="#%e4%ba%8b%e5%8a%a1%e7%9a%84acid%e6%98%af%e5%a6%82%e4%bd%95%e5%ae%9e%e7%8e%b0%e7%9a%84">#</a>
+</h3>
+<p>所谓ACID，其实是原子性、一致性、隔离性、持久性，那么，MySQL的事务是如何实现原子性、一致性、隔离性和持久性的呢？</p>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>实现机制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>原子性</td>
+<td>Undo Log</td>
+</tr>
+<tr>
+<td>隔离性</td>
+<td>锁机制（共享锁、排他锁、间隙锁） + MVCC（版本链、ReadView）</td>
+</tr>
+<tr>
+<td>持久性</td>
+<td>Redo Log（崩溃恢复）</td>
+</tr>
+<tr>
+<td>一致性</td>
+<td>原子性、隔离性、持久性共同保障 + 数据库约束</td>
+</tr>
+</tbody>
+</table>
+<h3 id="一次insert操作mysql的几种log的写入顺序">
+  一次insert操作，MySQL的几种log的写入顺序？
+  <a class="anchor" href="#%e4%b8%80%e6%ac%a1insert%e6%93%8d%e4%bd%9cmysql%e7%9a%84%e5%87%a0%e7%a7%8dlog%e7%9a%84%e5%86%99%e5%85%a5%e9%a1%ba%e5%ba%8f">#</a>
+</h3>
+<h4 id="undolog">
+  undolog
+  <a class="anchor" href="#undolog">#</a>
+</h4>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/202511081837485.png" alt="" /></p>
+<p>当执行一次insert操作时，MySQL InnoDB引擎的日志写入顺序如下：</p>
+<ul>
+<li>写入undo log，现将事务修改前的数据记录到undolog中</li>
+<li>写入redo log,处于prepare阶段（表示事务以修改但未提交）</li>
+<li>写入binlog，将binlog内存日志数据写入文件缓冲区并刷新到磁盘中。</li>
+<li>写入redo log,处于commit阶段。</li>
+</ul>
+<p>首先，undolog要记录变更前的数据，所以一定要最先执行。</p>
+<p>redolog和binlog的写入需要保证原子性，先写 redo log，后写 binlog，中间MySQL 崩溃，会导致主从数据不一致（因为binlog用于主从同步）。  而先写 binlog，后写 redo log，中间MySQL 崩溃，数据页没有更新，事务无法恢复。  所以需要用2阶段提交的方式写入。</p>
+<h3 id="为什么要避免使用select--">
+  为什么要避免使用select * ？
+  <a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e8%a6%81%e9%81%bf%e5%85%8d%e4%bd%bf%e7%94%a8select--">#</a>
+</h3>
+<p>SELECT * 表示查询一张表中的所有的字段，但是一般线上都不允许直接用select *查询的，都是要求大家指明要查询的字段名，如select a,b,c 。</p>
+<p>之所以这么做，一方面是因为select * 会返回所有列的数据，而很多情况下，我们只需要其中一部分数据，全部查询会导致不必要的I/O开销。而且也会增加数据库和应用程序之间的数据传输的开销，而且对象查询过来之后放到内存中，也会占用更多的空间。</p>
+<p>而且，有些数据如果直接返回给前端，直接select *，可能也会把一些本来无关的数据给返回回去了，但是有些数据其实是不该返回的。就可能导致数据泄漏、其次，数据库通常会使用覆盖索引 来优化查询，这样可以减少回表，提升性能，但是SELECT * 可能导致查询无法使用覆盖索引，从而增加 I/O 和查询时间。</p>
+<h3 id="mysql建立了abc的联合索引底层会建aababc这3个索引么">
+  MySQL建立了abc的联合索引，底层会建a,ab,abc这3个索引么？
+  <a class="anchor" href="#mysql%e5%bb%ba%e7%ab%8b%e4%ba%86abc%e7%9a%84%e8%81%94%e5%90%88%e7%b4%a2%e5%bc%95%e5%ba%95%e5%b1%82%e4%bc%9a%e5%bb%baaababc%e8%bf%993%e4%b8%aa%e7%b4%a2%e5%bc%95%e4%b9%88">#</a>
+</h3>
+<p>不会，索引只有一个，也就是你指定的 (a, b, c) 这个复合索引。</p>
+<h3 id="mysql如何实现不同隔离级别">
+  MySQL如何实现不同隔离级别？
+  <a class="anchor" href="#mysql%e5%a6%82%e4%bd%95%e5%ae%9e%e7%8e%b0%e4%b8%8d%e5%90%8c%e9%9a%94%e7%a6%bb%e7%ba%a7%e5%88%ab">#</a>
+</h3>
+<p>MySQL 通过 多版本并发控制（MVCC） 和 锁机制 实现不同的事务隔离级别。以下是各隔离级别的实现原理及对应的并发控制手段：</p>
+<table>
+<thead>
+<tr>
+<th>隔离级别</th>
+<th>脏读</th>
+<th>不可重复读</th>
+<th>幻读</th>
+<th>实现机制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>READ UNCOMMITTED</td>
+<td>可能</td>
+<td>可能</td>
+<td>可能</td>
+<td>直接读取最新数据（无版本控制）</td>
+</tr>
+<tr>
+<td>READ COMMITTED</td>
+<td>不可能</td>
+<td>可能</td>
+<td>可能</td>
+<td>每次查询生成新 Read View</td>
+</tr>
+<tr>
+<td>REPEATABLE READ</td>
+<td>不可能</td>
+<td>不可能</td>
+<td>可能</td>
+<td>事务开始时生成 Read View + Next-Key 锁</td>
+</tr>
+<tr>
+<td>SERIALIZABLE</td>
+<td>不可能</td>
+<td>不可能</td>
+<td>不可能</td>
+<td>所有读操作加共享锁，写操作加排他锁</td>
+</tr>
+</tbody>
+</table>
+<h3 id="如果sql中一定要有join该如何优化">
+  如果SQL中一定要有join，该如何优化？
+  <a class="anchor" href="#%e5%a6%82%e6%9e%9csql%e4%b8%ad%e4%b8%80%e5%ae%9a%e8%a6%81%e6%9c%89join%e8%af%a5%e5%a6%82%e4%bd%95%e4%bc%98%e5%8c%96">#</a>
+</h3>
+<ul>
+<li>
+<p>使用索引做join</p>
+<p>MySQL是使用了嵌套循环（Nested-Loop Join）的方式来实现关联查询的，具体到算法上面主要有simple nested loop join，block nested loop join和index nested loop join这三种。</p>
+<p>其中index nested loop，当Inner Loop的表用到字段有索引的话，可以用到索引进行查询数据，因为索引是B+树的，复杂度可以近似认为是N*logM。</p>
+<p>比如：ON a.user_id = b.user_id，那么 a.user_id 和 b.user_id 都应该有索引会更好。</p>
+</li>
+<li>
+<p>小表驱动大表</p>
+</li>
+<li>
+<p>数据过滤后在join</p>
+<p>参考小表驱动大表的思路，我们可以先把表中的数据做一下where筛选过滤，把无关的数据过滤掉，这样就能尽量避免把大表和大表直接 JOIN，所以，一般是先使用子查询或临时表缩小数据量。</p>
+<pre tabindex="0"><code>SELECT o.id, o.order_date, c.name
+FROM (
+    SELECT id, order_date, customer_id
+    FROM orders
+    WHERE order_date &gt;= &#39;2024-01-01&#39;
+) AS o
+JOIN customers c ON o.customer_id = c.id;
+</code></pre><pre tabindex="0"><code>-- 第一步：创建临时表（或中间结果表）
+CREATE TEMPORARY TABLE recent_orders AS
+SELECT id, order_date, customer_id
+FROM orders
+WHERE order_date &gt;= &#39;2024-01-01&#39;;
+
+-- 第二步：再做 JOIN
+SELECT o.id, o.order_date, c.name
+FROM recent_orders o
+JOIN customers c ON o.customer_id = c.id;
+</code></pre></li>
+<li>
+<p>优先使用内连接</p>
+<p>如果不需要保留所有左表或右表数据，用 INNER JOIN 更高效。 因为INNER JOIN 的执行逻辑更加简单，他只需要保留 两个表中都存在匹配记录的行。而且INNER JOIN 在两侧字段上都容易使用到索引。LEFT JOIN 如果右表字段为 NULL，某些场景下索引会失效。</p>
+</li>
+<li>
+<p>使用MySQL8 的hash join</p>
+<p>hash join 是 MySQL 8.0.18版本中新推出的一种多表join的算法。Hash Join的出现就是要优化传统的Nested-Loop Join的。</p>
+<p>Hash Join 是一种针对 equal-join 场景的优化，他的基本思想是将驱动表数据加载到内存，并建立 hash 表，这样只要遍历一遍非驱动表，然后再去通过哈希查找在哈希表中寻找匹配的行 ，就可以完成 join 操作了</p>
+</li>
+</ul>
+<h3 id="表中只有abc三个字段比较select--与select-abc有什么区别">
+  表中只有a,b,c三个字段，比较select * 与select a,b,c有什么区别？
+  <a class="anchor" href="#%e8%a1%a8%e4%b8%ad%e5%8f%aa%e6%9c%89abc%e4%b8%89%e4%b8%aa%e5%ad%97%e6%ae%b5%e6%af%94%e8%be%83select--%e4%b8%8eselect-abc%e6%9c%89%e4%bb%80%e4%b9%88%e5%8c%ba%e5%88%ab">#</a>
+</h3>
+<p>查询结果是一致的</p>
+<p>性能也可忽略不计</p>
+<p>那么如果非要说区别的话，主要是明确性方面，SELECT a, b, c明确指定了字段，代码更加清晰，而且他不受后期的表结构（增删字段）变化的影响。而SELECT *不够明确， 对表结构的变化，更加敏感</p>
+<h3 id="exists和in有什么区别如何选择">
+  exists和in有什么区别？如何选择？
+  <a class="anchor" href="#exists%e5%92%8cin%e6%9c%89%e4%bb%80%e4%b9%88%e5%8c%ba%e5%88%ab%e5%a6%82%e4%bd%95%e9%80%89%e6%8b%a9">#</a>
+</h3>
+<p>exist和in都是SQL中用于子查询的，他们主要的区别就是实际执行中的执行逻辑的差别，之所以放在一起比较是因为他们通常可以实现同样的功能。</p>
+<p>比如说查询所有工作地在北京的员工，如果员工表中并没有具体的地址，而只有部门的id，而部门表中才有地址名称的时候，可以用以下方式实现这个功能：</p>
+<pre tabindex="0"><code>SELECT * 
+FROM employees e
+WHERE e.dept_id IN (
+    SELECT d.id FROM departments d WHERE d.location = &#39;Beijing&#39;
+);
+</code></pre><p><strong>in可以用来判断某个值是否在一个结果集里。</strong></p>
+<pre tabindex="0"><code>SELECT * 
+FROM employees e
+WHERE EXISTS (
+    SELECT 1 FROM departments d WHERE d.location = &#39;Beijing&#39; AND d.id = e.dept_id
+);
+</code></pre><p><strong>exists用来判断子查询是否返回至少一行数据。</strong></p>
+<h4 id="区别">
+  区别
+  <a class="anchor" href="#%e5%8c%ba%e5%88%ab">#</a>
+</h4>
+<ul>
+<li>
+<p>在使用in做子查询的时候，通常不需要关联条件，而使用exists的时候，需要有一个关联条件，如d.id = e.dept_id</p>
+<p>in之所以不需要关联条件，是因为在in的过程中其实就是在做关联条件的判断了，即用e.dept_id和子查询中返回的d.id的结果集做值匹配。</p>
+</li>
+<li>
+<p>in后面要跟的是一个结果集，in (xxx)，这里的xxx就要是一个结果集，如id的列表。而exists后面要跟的是一个布尔值（true or false），exist (xxx)，这里的xxx就是一个布尔判断，true 或者 false。</p>
+</li>
+<li>
+<p>in和exist的执行逻辑是不一样的</p>
+<ul>
+<li><strong>in的执行逻辑是，它先执行内部子查询，得到一个结果集。然后，它对外部查询中的每一行，检查该行的指定列值是否存在于这个结果集中。</strong></li>
+<li>exist的执行逻辑是，它对外部查询中的每一行，都通过关联条件（d.id = e.dept_id）执行一次关联子查询。只要子查询对于当前外部行返回至少一行记录，EXISTS 就立即返回 TRUE，则认为匹配成功。</li>
+</ul>
+</li>
+</ul>
+<p>如何选择：</p>
+<ul>
+<li>如果外部表（例子中的employees表）非常大，建议用IN。因为EXISTS 需要为外部表的每一行执行一次子查询。如果子查询本身不高效（比如缺少索引），这会非常慢。而IN 只执行一次子查询，其性能瓶颈主要在子查询结果集生成和后续的查找上。</li>
+<li>如果子查询返回的结果（例子中的departments在北京的查询结果）比较大，那么建议用EXISTS，因为IN的话会有部分结果集生成的成本。</li>
+</ul>
+<h3 id="varchar100和varchar10有什么区别">
+  varchar(100)和varchar(10)有什么区别？
+  <a class="anchor" href="#varchar100%e5%92%8cvarchar10%e6%9c%89%e4%bb%80%e4%b9%88%e5%8c%ba%e5%88%ab">#</a>
+</h3>
+<p>最简单的区别VARCHAR(10)最多只能存储 10 个字符。VARCHAR(100)最多可以存储 100 个字符。</p>
+<blockquote>
+<p>这里是字符，不是字节哦！字节和字符之间的转换公式：字符数 * 字符集最大字节/字符，例如，utf8mb4 最大 4 字节/字符，那么10个字符就占用10 * 4 = 40 字节</p>
+</blockquote>
+<p>varchar在实际存储时只用实际字符长度 + 长度信息字节，不像 CHAR 会固定长度填充。 所以，如果他们同时存储&quot;Hollis&quot;的话，那么占用的都是6个字符数据，加上一个长度开销（根据编码方式不同）。这一点上没有什么不同的。</p>
+<h4 id="排序差别">
+  排序差别
+  <a class="anchor" href="#%e6%8e%92%e5%ba%8f%e5%b7%ae%e5%88%ab">#</a>
+</h4>
+<blockquote>
+<p>较大的列会使用更多的内存，因为MySQL通常会在内部分配固定大小的内存来保存值。这对于使用内存临时表的排序或操作来说尤其糟糕。再利用磁盘临时表进行文件排序时也同样糟糕。</p>
+<p>最好的策略是只分配真正需要的空间。</p>
+</blockquote>
+<p>当 MySQL 执行排序（如 ORDER BY varchar_column）时，它通常需要在内存（sort_buffer）中存储待排序行的相关字段值。对于 VARCHAR 列，MySQL 在内存中为排序操作预留空间时，会考虑该列定义的最大长度 (N) 。</p>
+<ul>
+<li>VARCHAR(10)： 内存中可能为每个值预留 10 字符 的空间，则最多预留 10字符 + 长度字节。</li>
+<li>VARCHAR(100)： 内存中可能为每个值预留 100 字符 + 长度字节。</li>
+</ul>
+<p>而我们知道（不知道的看下面这篇文章），如果待排序的数据集太大，那么就会有两种结果：</p>
+<ul>
+<li>如果单行的长度超过max_length_for_sort_data的值，MySQL就认为单行太大，那么就会采用rowid 排序，否则就进行全字段排序。但是rowid排序会多一次回表，性能可能没那么好。</li>
+<li>如果要排序的数据量大于sort_buffer_size的值，MySQL 会将数据写入磁盘上的临时文件进行排序，这就要比基于内存排序要慢。</li>
+</ul>
+<p>所以，<strong>如果使用 VARCHAR(100) 作为排序字段更容易触发rowid排序和磁盘排序，且磁盘排序过程会更慢、I/O 开销更大。</strong></p>
+<p>和order by一样，group by也需要在临时表中处理和排序分组键。VARCHAR(100) 作为分组键会导致和 ORDER BY 一样的内存消耗大、易触发磁盘临时表的问题。</p>
+<h4 id="索引差别">
+  索引差别？
+  <a class="anchor" href="#%e7%b4%a2%e5%bc%95%e5%b7%ae%e5%88%ab">#</a>
+</h4>
+<p><strong>在 InnoDB 存储引擎中，索引并不是按照字段定义的最大长度（如 VARCHAR(100)）来分配固定空间的。InnoDB 采用了更高效的变长存储方式。也就是说在存储 VARCHAR、VARBINARY、TEXT、BLOB 等变长字段时，只存储实际数据的字节长度，而非按定义的最大长度预留空间。</strong></p>
+<h3 id="执行计划中的filtered的值有啥用">
+  执行计划中的filtered的值有啥用？
+  <a class="anchor" href="#%e6%89%a7%e8%a1%8c%e8%ae%a1%e5%88%92%e4%b8%ad%e7%9a%84filtered%e7%9a%84%e5%80%bc%e6%9c%89%e5%95%a5%e7%94%a8">#</a>
+</h3>
+<p>针对使用索引的查询来说，filtered 字段表示查询过程中通过索引扫描的行数中（其实就是执行计划中的rows字段），经过WHERE 条件过滤后，预计会保留下来的行的百分比（是个预估值）。这个值介于0.00-100.00之间。</p>
 </article>
  
       
@@ -3861,6 +5270,48 @@ ANALYZE TABLE orders;
             <li><a href="#联合索引是越多越好吗">联合索引是越多越好吗？</a></li>
             <li><a href="#为什么不建议使用存储过程">为什么不建议使用存储过程？</a></li>
             <li><a href="#阿里数据库能抗秒杀的原理">阿里数据库能抗秒杀的原理</a></li>
+            <li><a href="#一个查询语句的执行顺序是什么样的">一个查询语句的执行顺序是什么样的？</a></li>
+            <li><a href="#on和where有什么区别">on和where有什么区别？</a></li>
+            <li><a href="#truncatedeletedrop的区别">truncate、delete、drop的区别？</a></li>
+            <li><a href="#什么时候索引失效反而提升效率">什么时候索引失效反而提升效率？</a></li>
+            <li><a href="#什么情况会导致自增主键不连续">什么情况会导致自增主键不连续？</a></li>
+            <li><a href="#using-file-sort能优化吗怎么优化">Using file sort能优化吗，怎么优化？</a></li>
+            <li><a href="#从innodb索引结构分析为什么索引的key长度不能太长">从InnoDB索引结构分析，为什么索引的key长度不能太长？</a></li>
+            <li><a href="#mysql用了函数一定会索引失效吗">MySQL用了函数一定会索引失效吗？</a></li>
+            <li><a href="#什么是索引合并原理是什么">什么是索引合并，原理是什么？</a></li>
+            <li><a href="#ab两个单独索引where-axx-and-bxx走那个索引为什么">a,b两个单独索引，where a=xx and b=xx走那个索引？为什么？</a></li>
+            <li><a href="#ab都有索引select--from-table-where-axx-order-by-b走那个索引">a,b都有索引，select * from table where a=xx order by b。走那个索引？</a></li>
+            <li><a href="#为啥like--xx不走索引-like-xxxx走索引吗为什么">为啥like % xx不走索引？ like xx%xx走索引吗？为什么？</a></li>
+            <li><a href="#mysql为什么会有存储内存碎片有什么危害">MySQl为什么会有存储（内存）碎片？有什么危害？</a></li>
+            <li><a href="#mysql中如何查看一个sql的执行耗时">MySQL中如何查看一个SQL的执行耗时</a></li>
+            <li><a href="#怎么比较两索引的好坏">怎么比较两索引的好坏？</a></li>
+            <li><a href="#mysql获取主键id的瓶颈在哪里如何优化">MySQL获取主键id的瓶颈在哪里？如何优化？</a></li>
+            <li><a href="#mysql为什么是小表驱动大表为什么能提高查询性能">MySQL为什么是小表驱动大表，为什么能提高查询性能？</a></li>
+            <li><a href="#什么是数据库的锁升级innodb支持吗">什么是数据库的锁升级，InnoDB支持吗？</a></li>
+            <li><a href="#数据库扫表任务如何避免出现死循环">数据库扫表任务如何避免出现死循环</a></li>
+            <li><a href="#abc的联合索引按照abacbc查询能走索引吗">A,B,C的联合索引，按照AB，AC，BC查询，能走索引吗？</a></li>
+            <li><a href="#什么是索引跳跃扫描">什么是索引跳跃扫描</a></li>
+            <li><a href="#mysql是ap的还是cp的系统">MySQL是AP的还是CP的系统？</a></li>
+            <li><a href="#mysql的优化器的索引成本是怎么算出来的">MySQL的优化器的索引成本是怎么算出来的？</a></li>
+            <li><a href="#什么是read-view什么样的readview可见">什么是Read View,什么样的ReadView可见？</a></li>
+            <li><a href="#undolog会一直存在吗什么时候删除">undolog会一直存在吗？什么时候删除？</a></li>
+            <li><a href="#二级索引在索引覆盖时如何使用mvcc">二级索引在索引覆盖时，如何使用MVCC？</a></li>
+            <li><a href="#mysql的blob和text有什么区别">MySQL的BLOB和TEXT有什么区别？</a></li>
+            <li><a href="#mysql做索引更新的时候会锁表吗">MySQL做索引更新的时候，会锁表吗？</a></li>
+            <li><a href="#mysql如何实现行转列列转行">MySQL如何实现行转列，列转行？</a></li>
+            <li><a href="#什么是前缀索引使用的时候要注意什么">什么是前缀索引？使用的时候要注意什么？</a></li>
+            <li><a href="#limit的原理是什么">limit的原理是什么？</a></li>
+            <li><a href="#mysql的update语句什么时候锁行什么时候锁表">MySQL的update语句什么时候锁行，什么时候锁表？</a></li>
+            <li><a href="#事务的acid是如何实现的">事务的ACID是如何实现的？</a></li>
+            <li><a href="#一次insert操作mysql的几种log的写入顺序">一次insert操作，MySQL的几种log的写入顺序？</a></li>
+            <li><a href="#为什么要避免使用select--">为什么要避免使用select * ？</a></li>
+            <li><a href="#mysql建立了abc的联合索引底层会建aababc这3个索引么">MySQL建立了abc的联合索引，底层会建a,ab,abc这3个索引么？</a></li>
+            <li><a href="#mysql如何实现不同隔离级别">MySQL如何实现不同隔离级别？</a></li>
+            <li><a href="#如果sql中一定要有join该如何优化">如果SQL中一定要有join，该如何优化？</a></li>
+            <li><a href="#表中只有abc三个字段比较select--与select-abc有什么区别">表中只有a,b,c三个字段，比较select * 与select a,b,c有什么区别？</a></li>
+            <li><a href="#exists和in有什么区别如何选择">exists和in有什么区别？如何选择？</a></li>
+            <li><a href="#varchar100和varchar10有什么区别">varchar(100)和varchar(10)有什么区别？</a></li>
+            <li><a href="#执行计划中的filtered的值有啥用">执行计划中的filtered的值有啥用？</a></li>
           </ul>
         </li>
       </ul>

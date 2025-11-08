@@ -47,7 +47,7 @@ GET /zoos：列出所有动物园 POST /zoos：新建一个动物园 GET /zoos/I
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.fd85a068c2254997edb38db579e81b23b40227532d68bd80a2b86f067c365678.js" integrity="sha256-/YWgaMIlSZfts421eegbI7QCJ1MtaL2AorhvBnw2Vng=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.d0ed752c44560859fc9e11d700de0253a4e4d42b3467bd605b93397edaaaa7c5.js" integrity="sha256-0O11LERWCFn8nhHXAN4CU6Tk1Cs0Z71gW5M5ftqqp8U=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -1442,6 +1442,19 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/ai/basic/%E5%80%9F%E5%8A%A9ai%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B9%B3%E5%8F%B0%E5%A4%8D%E7%9B%98-/" class="">借助AI编程工具从零构建数据可视化平台复盘</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/ai/basic/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="">基础知识</a>
   
 
@@ -1542,6 +1555,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/ai/computer-vision/reid%E8%A1%8C%E4%BA%BA%E9%87%8D%E8%AF%86%E5%88%AB/" class="">Reid行人重识别</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/tracker%E7%9B%AE%E6%A0%87%E8%BF%BD%E8%B8%AA/" class="">tracker目标追踪</a>
   
 
         </li>
@@ -3514,6 +3540,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#九返回结果">九、返回结果</a></li>
         <li><a href="#十hypermedia-api">十、Hypermedia API</a></li>
         <li><a href="#十一其他">十一、其他</a></li>
+        <li><a href="#实践">实践</a></li>
       </ul>
     </li>
   </ul>
@@ -3703,6 +3730,64 @@ https://github.com/alex-shpak/hugo-book
 </h2>
 <p>（1）API的身份认证应该使用<a href="https://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html">OAuth 2.0</a>框架。</p>
 <p>（2）服务器返回的数据格式，应该尽量使用JSON，避免使用XML。</p>
+<h2 id="实践">
+  实践
+  <a class="anchor" href="#%e5%ae%9e%e8%b7%b5">#</a>
+</h2>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>路径参数 (Path Params)</th>
+<th>查询参数 (Query Params)</th>
+<th>表单数据 (Form-data / Body)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>位置</td>
+<td>URL路径中 ( /users/{id} )</td>
+<td>URL末尾 ( ?key=value )</td>
+<td>HTTP请求体 (Request Body)</td>
+</tr>
+<tr>
+<td>可见性</td>
+<td>可见</td>
+<td>可见</td>
+<td>不可见</td>
+</tr>
+<tr>
+<td>数据量</td>
+<td>有限 (受URL长度限制)</td>
+<td>有限 (受URL长度限制)</td>
+<td>非常大</td>
+</tr>
+<tr>
+<td>数据类型</td>
+<td>字符串</td>
+<td>字符串</td>
+<td>键值对、JSON、文件等</td>
+</tr>
+<tr>
+<td>主要动词</td>
+<td>GET , PUT , DELETE</td>
+<td>GET</td>
+<td>POST , PUT , PATCH</td>
+</tr>
+<tr>
+<td>核心用途</td>
+<td>定位唯一资源</td>
+<td>过滤、排序、分页</td>
+<td>创建或更新资源、上传文件</td>
+</tr>
+<tr>
+<td>Gin获取</td>
+<td>c.Param()</td>
+<td>c.Query()</td>
+<td>c.PostForm() , c.Bind()</td>
+</tr>
+</tbody>
+</table>
 </article>
  
       
@@ -3757,6 +3842,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#九返回结果">九、返回结果</a></li>
         <li><a href="#十hypermedia-api">十、Hypermedia API</a></li>
         <li><a href="#十一其他">十一、其他</a></li>
+        <li><a href="#实践">实践</a></li>
       </ul>
     </li>
   </ul>

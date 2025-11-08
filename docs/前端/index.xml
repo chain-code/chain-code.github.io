@@ -37,11 +37,10 @@ GET /zoos：列出所有动物园 POST /zoos：新建一个动物园 GET /zoos/I
       <pubDate>Wed, 19 Apr 2023 20:07:07 +0800</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E5%89%8D%E7%AB%AF/vite&#43;vue%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE/</guid>
-      <description>Vite+Vue快速搭建项目 # npm init vite@latest 输入项目名，选择Vue 选择TypeScript 回车 再运行
+      <description>Vite+Vue快速搭建项目 # npm init vite@latest 输入项目名，选择Vue 选择TypeScript 回车 &amp;gt; npx&amp;gt; create-vite│◇ Project name:│ ApmDataAnalytics│◇ Package name:│ apmdataanalytics│◇ Select a framework:│ Vue│◇ Select a variant:│ TypeScript│◇ Use rolldown-vite (Experimental)?:│ No│◇ Install with npm and start now?│ Yes 再运行
 npm install -y 快速创建一个默认的包信息
 npm init -y -D开发环境中的依赖，加载vite
-npm i vite -D 生成&amp;quot;devDependencies&amp;quot;，开发环境下的依赖
-从工作区index.html为入口</description>
+npm i vite -D 生成&amp;quot;devDependencies&amp;quot;，开发环境下的依赖</description>
     </item>
     
     <item>

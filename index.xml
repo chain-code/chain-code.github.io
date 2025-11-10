@@ -598,7 +598,7 @@ mongod --dbpath /usr/local/mongodb/data --logpath /usr/local/mongodb/log/mongod.
     </item>
     
     <item>
-      <title>My Sql相关问题2</title>
+      <title>MySql相关问题2</title>
       <link>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%982/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       

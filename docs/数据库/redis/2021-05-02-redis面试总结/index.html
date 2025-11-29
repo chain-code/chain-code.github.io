@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="1、什么是redis? 2、Reids的特点 3、使用redis有哪些好处？ 4、redis相比memcached有哪些优势？ 5、Memcache与Redis的区别都有哪些？ 6、redis适用于的场景? 7、redis的缓存失效策略和主键失效机制 8、为什么redis需要把所有数据放到内存中? 9、Redis是单进程单线程的 10、redis的并发竞争问题如何解决? 11、redis常见性能问题和解决方案 12、redis事物的了解CAS(check-and-set 操作实现乐观锁 )? 13、WATCH命令和基于CAS的乐观锁? 14、使用过Redis分布式锁么，它是什么回事？ 15、假如Redis里面有1亿个key，其中有10w个key是以某个固定的已知的前缀开头的，如果将它们全部找出来？ 16、使用过Redis做异步队列么，你是怎么用的？ 17、如果有大量的key需要设置同一时间过期，一般需要注意什么？ 18、Redis如何做持久化的？ 19、Pipeline有什么好处，为什么要用pipeline？ 20、Redis的同步机制了解么？ 21、是否使用过Redis集群，集群的原理是什么？ 1、什么是redis? # redis是一个高性能的key-value数据库，它是完全开源免费的，而且redis是一个NOSQL类型数据库，是为了解决高并发、高扩展，大数据存储等一系列的问题而产生的数据库解决方案，是一个非关系型的数据库
-2、Reids的特点 # Redis本质上是一个Key-Value类型的内存数据库，很像memcached，整个数据库统统加载在内存当中进行操作，定期通过异步操作把数据库数据flush到硬盘上进行保存。因为是纯内存操作，Redis的性能非常出色，每秒可以处理超过 10万次读写操作，是已知性能最快的Key-Value DB。
+<meta name="description" content="1、什么是redis? 2、Reids的特点 3、使用redis有哪些好处？ 4、redis相比memcached有哪些优势？ 5、Memcache与Redis的区别都有哪些？ 6、redis适用于的场景? 7、redis的缓存失效策略和主键失效机制 8、为什么redis需要把所有数据放到内存中? 9、Redis是单进程单线程的 10、redis的并发竞争问题如何解决? 11、redis常见性能问题和解决方案 12、redis事物的了解CAS(check-and-set 操作实现乐观锁 )? 13、WATCH命令和基于CAS的乐观锁? 14、使用过Redis分布式锁么，它是什么回事？ 15、假如Redis里面有1亿个key，其中有10w个key是以某个固定的已知的前缀开头的，如果将它们全部找出来？ 16、使用过Redis做异步队列么，你是怎么用的？ 17、如果有大量的key需要设置同一时间过期，一般需要注意什么？ 18、Redis如何做持久化的？ 19、Pipeline有什么好处，为什么要用pipeline？ 20、Redis的同步机制了解么？ 21、是否使用过Redis集群，集群的原理是什么？ 什么是redis? # redis是一个高性能的key-value数据库，它是完全开源免费的，而且redis是一个NOSQL类型数据库，是为了解决高并发、高扩展，大数据存储等一系列的问题而产生的数据库解决方案，是一个非关系型的数据库
+Reids的特点 # Redis本质上是一个Key-Value类型的内存数据库，很像memcached（一个高性能的分布式内存缓存系统），整个数据库统统加载在内存当中进行操作，定期通过异步操作把数据库数据flush到硬盘上进行保存。因为是纯内存操作，Redis的性能非常出色，每秒可以处理超过 10万次读写操作，是已知性能最快的Key-Value DB。
 Redis的出色之处不仅仅是性能，Redis最大的魅力是支持保存多种数据结构，此外单个value的最大限制是1GB，不像 memcached只能保存1MB的数据，因此Redis可以用来实现很多有用的功能，比方说用他的List来做FIFO双向链表，实现一个轻量级的高性 能消息队列服务，用他的Set可以做高性能的tag系统等等。另外Redis也可以对存入的Key-Value设置expire时间，因此也可以被当作一 个功能加强版的memcached来用。
 Redis的主要缺点是数据库容量受到物理内存的限制，不能用作海量数据的高性能读写，因此Redis适合的场景主要局限在较小数据量的高性能操作和运算上。
-3、使用redis有哪些好处？ # 3.1 速度快，因为数据存在内存中，类似于HashMap，HashMap的优势就是查找和操作的时间复杂度都是O(1)
+Redis是AP的还是CP的？ # 3、使用redis有哪些好处？ # 3.1 速度快，因为数据存在内存中，类似于HashMap，HashMap的优势就是查找和操作的时间复杂度都是O(1)
 3.2 支持丰富数据类型，支持string，list，set，sorted set，hash
 String # 常用命令 ：set/get/decr/incr/mget等；
 应用场景 ：String是最常用的一种数据类型，普通的key/value存储都可以归为此类；
@@ -20,11 +20,11 @@ List # 常用命令 ：lpush/rpush/lpop/rpop/lrange等；
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="redis面试总结" />
-<meta property="og:description" content="1、什么是redis? 2、Reids的特点 3、使用redis有哪些好处？ 4、redis相比memcached有哪些优势？ 5、Memcache与Redis的区别都有哪些？ 6、redis适用于的场景? 7、redis的缓存失效策略和主键失效机制 8、为什么redis需要把所有数据放到内存中? 9、Redis是单进程单线程的 10、redis的并发竞争问题如何解决? 11、redis常见性能问题和解决方案 12、redis事物的了解CAS(check-and-set 操作实现乐观锁 )? 13、WATCH命令和基于CAS的乐观锁? 14、使用过Redis分布式锁么，它是什么回事？ 15、假如Redis里面有1亿个key，其中有10w个key是以某个固定的已知的前缀开头的，如果将它们全部找出来？ 16、使用过Redis做异步队列么，你是怎么用的？ 17、如果有大量的key需要设置同一时间过期，一般需要注意什么？ 18、Redis如何做持久化的？ 19、Pipeline有什么好处，为什么要用pipeline？ 20、Redis的同步机制了解么？ 21、是否使用过Redis集群，集群的原理是什么？ 1、什么是redis? # redis是一个高性能的key-value数据库，它是完全开源免费的，而且redis是一个NOSQL类型数据库，是为了解决高并发、高扩展，大数据存储等一系列的问题而产生的数据库解决方案，是一个非关系型的数据库
-2、Reids的特点 # Redis本质上是一个Key-Value类型的内存数据库，很像memcached，整个数据库统统加载在内存当中进行操作，定期通过异步操作把数据库数据flush到硬盘上进行保存。因为是纯内存操作，Redis的性能非常出色，每秒可以处理超过 10万次读写操作，是已知性能最快的Key-Value DB。
+<meta property="og:description" content="1、什么是redis? 2、Reids的特点 3、使用redis有哪些好处？ 4、redis相比memcached有哪些优势？ 5、Memcache与Redis的区别都有哪些？ 6、redis适用于的场景? 7、redis的缓存失效策略和主键失效机制 8、为什么redis需要把所有数据放到内存中? 9、Redis是单进程单线程的 10、redis的并发竞争问题如何解决? 11、redis常见性能问题和解决方案 12、redis事物的了解CAS(check-and-set 操作实现乐观锁 )? 13、WATCH命令和基于CAS的乐观锁? 14、使用过Redis分布式锁么，它是什么回事？ 15、假如Redis里面有1亿个key，其中有10w个key是以某个固定的已知的前缀开头的，如果将它们全部找出来？ 16、使用过Redis做异步队列么，你是怎么用的？ 17、如果有大量的key需要设置同一时间过期，一般需要注意什么？ 18、Redis如何做持久化的？ 19、Pipeline有什么好处，为什么要用pipeline？ 20、Redis的同步机制了解么？ 21、是否使用过Redis集群，集群的原理是什么？ 什么是redis? # redis是一个高性能的key-value数据库，它是完全开源免费的，而且redis是一个NOSQL类型数据库，是为了解决高并发、高扩展，大数据存储等一系列的问题而产生的数据库解决方案，是一个非关系型的数据库
+Reids的特点 # Redis本质上是一个Key-Value类型的内存数据库，很像memcached（一个高性能的分布式内存缓存系统），整个数据库统统加载在内存当中进行操作，定期通过异步操作把数据库数据flush到硬盘上进行保存。因为是纯内存操作，Redis的性能非常出色，每秒可以处理超过 10万次读写操作，是已知性能最快的Key-Value DB。
 Redis的出色之处不仅仅是性能，Redis最大的魅力是支持保存多种数据结构，此外单个value的最大限制是1GB，不像 memcached只能保存1MB的数据，因此Redis可以用来实现很多有用的功能，比方说用他的List来做FIFO双向链表，实现一个轻量级的高性 能消息队列服务，用他的Set可以做高性能的tag系统等等。另外Redis也可以对存入的Key-Value设置expire时间，因此也可以被当作一 个功能加强版的memcached来用。
 Redis的主要缺点是数据库容量受到物理内存的限制，不能用作海量数据的高性能读写，因此Redis适合的场景主要局限在较小数据量的高性能操作和运算上。
-3、使用redis有哪些好处？ # 3.1 速度快，因为数据存在内存中，类似于HashMap，HashMap的优势就是查找和操作的时间复杂度都是O(1)
+Redis是AP的还是CP的？ # 3、使用redis有哪些好处？ # 3.1 速度快，因为数据存在内存中，类似于HashMap，HashMap的优势就是查找和操作的时间复杂度都是O(1)
 3.2 支持丰富数据类型，支持string，list，set，sorted set，hash
 String # 常用命令 ：set/get/decr/incr/mget等；
 应用场景 ：String是最常用的一种数据类型，普通的key/value存储都可以归为此类；
@@ -43,7 +43,7 @@ List # 常用命令 ：lpush/rpush/lpop/rpop/lrange等；
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.8776674880bde8860a04955a7e2aa5ac82fd95fa32a0ac04b039689c85e3a9e5.js" integrity="sha256-h3ZnSIC96IYKBJVafiqlrIL9lfoyoKwEsDlonIXjqeU=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.368f1a77091c6aea30616fff019b9c1ef0dfe52f297055d38ae614ab9dea18a7.js" integrity="sha256-No8adwkcauowYW//AZucHvDf5S8pcFXTiuYUq53qGKc=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -354,6 +354,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/swagger/" class="">Swagger</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/v2ray%E8%AE%B0%E5%BD%95/" class="">V2ray记录</a>
   
 
         </li>
@@ -2176,6 +2189,17 @@ https://github.com/alex-shpak/hugo-book
   <ul>
     
       
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/redis%E9%9D%A2%E8%AF%95%E9%A2%98%E6%80%BB%E7%BB%932/" class="">Redis面试题总结2</a>
+  
+
+        </li>
+      
     
       
         <li>
@@ -3538,8 +3562,13 @@ https://github.com/alex-shpak/hugo-book
   <ul>
     <li>
       <ul>
-        <li><a href="#1什么是redis">1、什么是redis?</a></li>
-        <li><a href="#2reids的特点">2、Reids的特点</a></li>
+        <li>
+          <ul>
+            <li><a href="#什么是redis">什么是redis?</a></li>
+            <li><a href="#reids的特点">Reids的特点</a></li>
+            <li><a href="#redis是ap的还是cp的">Redis是AP的还是CP的？</a></li>
+          </ul>
+        </li>
         <li><a href="#3使用redis有哪些好处">3、使用redis有哪些好处？</a>
           <ul>
             <li><a href="#string">String</a></li>
@@ -3605,18 +3634,22 @@ https://github.com/alex-shpak/hugo-book
 <li><strong>20、Redis的同步机制了解么？</strong></li>
 <li><strong>21、是否使用过Redis集群，集群的原理是什么？</strong></li>
 </ul>
-<h2 id="1什么是redis">
-  1、什么是redis?
-  <a class="anchor" href="#1%e4%bb%80%e4%b9%88%e6%98%afredis">#</a>
-</h2>
+<h3 id="什么是redis">
+  什么是redis?
+  <a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%afredis">#</a>
+</h3>
 <p>redis是一个高性能的key-value数据库，它是完全开源免费的，而且redis是一个NOSQL类型数据库，是为了解决高并发、高扩展，大数据存储等一系列的问题而产生的数据库解决方案，是一个非关系型的数据库</p>
-<h2 id="2reids的特点">
-  2、Reids的特点
-  <a class="anchor" href="#2reids%e7%9a%84%e7%89%b9%e7%82%b9">#</a>
-</h2>
-<p>Redis本质上是一个Key-Value类型的内存数据库，很像memcached，整个数据库统统加载在内存当中进行操作，定期通过异步操作把数据库数据flush到硬盘上进行保存。因为是纯内存操作，Redis的性能非常出色，每秒可以处理超过 10万次读写操作，是已知性能最快的Key-Value DB。</p>
-<p>Redis的出色之处不仅仅是性能，Redis最大的魅力是支持保存多种数据结构，此外单个value的最大限制是1GB，不像 memcached只能保存1MB的数据，因此Redis可以用来实现很多有用的功能，比方说用他的List来做FIFO双向链表，实现一个轻量级的高性 能消息队列服务，用他的Set可以做高性能的tag系统等等。另外Redis也可以对存入的Key-Value设置expire时间，因此也可以被当作一 个功能加强版的memcached来用。</p>
+<h3 id="reids的特点">
+  Reids的特点
+  <a class="anchor" href="#reids%e7%9a%84%e7%89%b9%e7%82%b9">#</a>
+</h3>
+<p>Redis本质上是一个Key-Value类型的内存数据库，很像memcached（一个<strong>高性能的分布式内存缓存系统</strong>），<u>整个数据库统统加载在内存当中进行操作</u>，<strong>定期通过异步操作把数据库数据flush到硬盘上进行保存</strong>。因为是纯内存操作，Redis的性能非常出色，<strong>每秒可以处理超过 10万次读写操作</strong>，是已知性能最快的Key-Value DB。</p>
+<p>Redis的出色之处不仅仅是性能，<strong>Redis最大的魅力是支持保存多种数据结构</strong>，此外<strong>单个value的最大限制是1GB</strong>，不像 memcached只能保存1MB的数据，因此Redis可以用来实现很多有用的功能，比方说用他的List来做FIFO双向链表，实现一个轻量级的高性 能消息队列服务，用他的Set可以做高性能的tag系统等等。另外Redis也可以对存入的Key-Value设置expire时间，因此也可以被当作一 个功能加强版的memcached来用。</p>
 <p>Redis的主要缺点是数据库容量受到物理内存的限制，不能用作海量数据的高性能读写，因此Redis适合的场景主要局限在较小数据量的高性能操作和运算上。</p>
+<h3 id="redis是ap的还是cp的">
+  Redis是AP的还是CP的？
+  <a class="anchor" href="#redis%e6%98%afap%e7%9a%84%e8%bf%98%e6%98%afcp%e7%9a%84">#</a>
+</h3>
 <h2 id="3使用redis有哪些好处">
   3、使用redis有哪些好处？
   <a class="anchor" href="#3%e4%bd%bf%e7%94%a8redis%e6%9c%89%e5%93%aa%e4%ba%9b%e5%a5%bd%e5%a4%84">#</a>
@@ -3859,8 +3892,13 @@ https://github.com/alex-shpak/hugo-book
   <ul>
     <li>
       <ul>
-        <li><a href="#1什么是redis">1、什么是redis?</a></li>
-        <li><a href="#2reids的特点">2、Reids的特点</a></li>
+        <li>
+          <ul>
+            <li><a href="#什么是redis">什么是redis?</a></li>
+            <li><a href="#reids的特点">Reids的特点</a></li>
+            <li><a href="#redis是ap的还是cp的">Redis是AP的还是CP的？</a></li>
+          </ul>
+        </li>
         <li><a href="#3使用redis有哪些好处">3、使用redis有哪些好处？</a>
           <ul>
             <li><a href="#string">String</a></li>

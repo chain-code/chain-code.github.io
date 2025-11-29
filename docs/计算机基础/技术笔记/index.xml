@@ -87,6 +87,23 @@ swag init -g http/api.go (可选) 使用fmt格式化 SWAG 注释。(请先升级
     </item>
     
     <item>
+      <title>V2ray记录</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/v2ray%E8%AE%B0%E5%BD%95/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/v2ray%E8%AE%B0%E5%BD%95/</guid>
+      <description>准备 # 参考 # https://github.com/233boy/v2ray/wiki/V2Ray%E6%90%AD%E5%BB%BA%E8%AF%A6%E7%BB%86%E5%9B%BE%E6%96%87%E6%95%99%E7%A8%8B
+https://whuwangyong.github.io/2023-03-18-v2ray-websocket-tls-web-cloudflare-guide/
+https://github.com/v2fly/v2ray-examples?tab=readme-ov-file
+域名 # 地址
+实名认证
+域名解析（不要购买DNS服务）
+点击 添加记录。 记录类型：A 主机记录：v2 如果是 @，你应该 ping cxxxx.top。(你的域名) 如果是 www，你应该 ping www.cxxxx.top。 如果你一定要用 v2.xxxxx.top，你必须点击“添加记录”，在主机记录里填入 v2，记录值填你的 IP。 记录值：xxxxxxx(ip地址) 点击确认。 申请SSL证书
+ssh root@x x x x x 连接到你的服务器
+//安装socat sudo apt update sudo apt install socat -y //安装 curl https://get.acme.sh | sh source ~/.bashrc //注册邮箱账号（换成你的邮箱） ~/.acme.sh/acme.sh --register-account -m myemail@example.com //注意域名填写 ~/.acme.sh/acme.sh --issue -d xx.xxxxx.xxx --standalone -k ec-256 //创建证书存放路径 mkdir -p /etc/v2ray_cert //将证书安装复制进去 ~/.</description>
+    </item>
+    
+    <item>
       <title>Vim编程常用快捷键</title>
       <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

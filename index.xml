@@ -1219,6 +1219,21 @@ package testUtil func Util_ADD(a, b int){ fmt.Println(a+b) } testModule/software
     </item>
     
     <item>
+      <title>华为昇腾910B适配记录</title>
+      <link>https://chain-code.github.io/docs/ai/basic/%E5%8D%8E%E4%B8%BA%E6%98%87%E8%85%BE910b%E9%80%82%E9%85%8D%E8%AE%B0%E5%BD%95/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/basic/%E5%8D%8E%E4%B8%BA%E6%98%87%E8%85%BE910b%E9%80%82%E9%85%8D%E8%AE%B0%E5%BD%95/</guid>
+      <description>华为昇腾910适配记录 # 昇腾配置信息 # npu-smi info lscpu free -h 查看cpu使用率 # top 或者htop
+sudo apt install htop //安装 htop 环境安装 # 驱动安装 # 参考文档：https://www.hiascend.com/document/detail/zh/canncommercial/80RC2/softwareinst/instg/instg_0003.html?Mode=PmIns&amp;amp;OS=Ubuntu&amp;amp;Software=cannToolKit
+下载地址：https://www.hiascend.com/hardware/firmware-drivers/community?product=2&amp;amp;model=15&amp;amp;cann=8.2.RC2&amp;amp;driver=Ascend+HDK+25.2.0
+下载驱动对应版本文件：Ascend-hdk-310p-npu-driver_25.2.0_linux-aarch64.run 下载固件版本文件：Ascend-hdk-310p-npu-firmware_7.7.0.6.236.run CANN安装 # 参考文档：https://www.hiascend.com/document/detail/zh/canncommercial/81RC1/softwareinst/instg/instg_0008.html?Mode=PmIns&amp;amp;InstallType=local&amp;amp;OS=openEuler&amp;amp;Software=cannToolKit
+下载地址：https://www.hiascend.com/developer/download/community/result?cann=8.2.RC2&amp;amp;product=2&amp;amp;model=15
+Toolkit开发套件包：Ascend-cann-toolkit_8.2.RC2_linux-aarch64.run Kernels算子包：Ascend-cann-kernels-310p_8.2.RC2_linux-aarch64.run NNAL神经网络加速库：Ascend-cann-nnal_8.2.RC2_linux-aarch64.run pytorch安装 # 参考文档：https://www.hiascend.com/document/detail/zh/Pytorch/710/configandinstg/instg/insg_0004.html
+其他用到的python环境 # (base) root@autodl-container-6ce943a632-c1481b25:~/python/service# pip list Package Version ------------------------------ ------------------ absl-py 2.3.0 albucore 0.0.24 albumentations 2.0.8 annotated-types 0.7.0 anyio 4.9.0 argon2-cffi 25.1.0 argon2-cffi-bindings 21.2.0 arrow 1.3.0 asttokens 3.0.0 async-lru 2.0.5 attrs 25.3.0 auto_tune 0.</description>
+    </item>
+    
+    <item>
       <title>单元测试</title>
       <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -2520,7 +2535,11 @@ mdat
 实际媒体数据
 16进制：6D 64 61 74
 5分钟入门MP4文件格式
-一般来说，解析媒体文件，最关心的部分是视频文件的宽高、时长、码率、编码格式、帧列表、关键帧列表，以及所对应的时戳和在文件中的位置，这些信息，在mp4中，是以特定的算法分开存放在stbl box下属的几个box中的，需要解析stbl下面所有的box，来还原媒体信息。下表是对于以上几个重要的box存放信息的说明：</description>
+一般来说，解析媒体文件，最关心的部分是视频文件的宽高、时长、码率、编码格式、帧列表、关键帧列表，以及所对应的时戳和在文件中的位置，这些信息，在mp4中，是以特定的算法分开存放在stbl box下属的几个box中的，需要解析stbl下面所有的box，来还原媒体信息。下表是对于以上几个重要的box存放信息的说明：
+音频数据的定位与读取流程 # MP4 InspectorMP4解析工具
+假设我们有一个包含 AAC 音频的 MP4 文件，读取音频数据的详细步骤如下：
+步骤 1：找到 moov盒子
+通常 moov在文件末尾（利于网络流媒体），也可能在文件开头。程序会先定位到它。 步骤 2：在 moov中定位音频轨道</description>
     </item>
     
     <item>

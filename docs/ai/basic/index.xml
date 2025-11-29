@@ -134,6 +134,21 @@ IP地址排行榜 # IP地址排行榜对不同IP的数据进行了分类统计�
     </item>
     
     <item>
+      <title>华为昇腾910B适配记录</title>
+      <link>https://chain-code.github.io/docs/ai/basic/%E5%8D%8E%E4%B8%BA%E6%98%87%E8%85%BE910b%E9%80%82%E9%85%8D%E8%AE%B0%E5%BD%95/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/basic/%E5%8D%8E%E4%B8%BA%E6%98%87%E8%85%BE910b%E9%80%82%E9%85%8D%E8%AE%B0%E5%BD%95/</guid>
+      <description>华为昇腾910适配记录 # 昇腾配置信息 # npu-smi info lscpu free -h 查看cpu使用率 # top 或者htop
+sudo apt install htop //安装 htop 环境安装 # 驱动安装 # 参考文档：https://www.hiascend.com/document/detail/zh/canncommercial/80RC2/softwareinst/instg/instg_0003.html?Mode=PmIns&amp;amp;OS=Ubuntu&amp;amp;Software=cannToolKit
+下载地址：https://www.hiascend.com/hardware/firmware-drivers/community?product=2&amp;amp;model=15&amp;amp;cann=8.2.RC2&amp;amp;driver=Ascend+HDK+25.2.0
+下载驱动对应版本文件：Ascend-hdk-310p-npu-driver_25.2.0_linux-aarch64.run 下载固件版本文件：Ascend-hdk-310p-npu-firmware_7.7.0.6.236.run CANN安装 # 参考文档：https://www.hiascend.com/document/detail/zh/canncommercial/81RC1/softwareinst/instg/instg_0008.html?Mode=PmIns&amp;amp;InstallType=local&amp;amp;OS=openEuler&amp;amp;Software=cannToolKit
+下载地址：https://www.hiascend.com/developer/download/community/result?cann=8.2.RC2&amp;amp;product=2&amp;amp;model=15
+Toolkit开发套件包：Ascend-cann-toolkit_8.2.RC2_linux-aarch64.run Kernels算子包：Ascend-cann-kernels-310p_8.2.RC2_linux-aarch64.run NNAL神经网络加速库：Ascend-cann-nnal_8.2.RC2_linux-aarch64.run pytorch安装 # 参考文档：https://www.hiascend.com/document/detail/zh/Pytorch/710/configandinstg/instg/insg_0004.html
+其他用到的python环境 # (base) root@autodl-container-6ce943a632-c1481b25:~/python/service# pip list Package Version ------------------------------ ------------------ absl-py 2.3.0 albucore 0.0.24 albumentations 2.0.8 annotated-types 0.7.0 anyio 4.9.0 argon2-cffi 25.1.0 argon2-cffi-bindings 21.2.0 arrow 1.3.0 asttokens 3.0.0 async-lru 2.0.5 attrs 25.3.0 auto_tune 0.</description>
+    </item>
+    
+    <item>
       <title>基础知识</title>
       <link>https://chain-code.github.io/docs/ai/basic/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

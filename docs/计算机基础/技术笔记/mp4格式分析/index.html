@@ -20,7 +20,11 @@ mdat
 实际媒体数据
 16进制：6D 64 61 74
 5分钟入门MP4文件格式
-一般来说，解析媒体文件，最关心的部分是视频文件的宽高、时长、码率、编码格式、帧列表、关键帧列表，以及所对应的时戳和在文件中的位置，这些信息，在mp4中，是以特定的算法分开存放在stbl box下属的几个box中的，需要解析stbl下面所有的box，来还原媒体信息。下表是对于以上几个重要的box存放信息的说明：">
+一般来说，解析媒体文件，最关心的部分是视频文件的宽高、时长、码率、编码格式、帧列表、关键帧列表，以及所对应的时戳和在文件中的位置，这些信息，在mp4中，是以特定的算法分开存放在stbl box下属的几个box中的，需要解析stbl下面所有的box，来还原媒体信息。下表是对于以上几个重要的box存放信息的说明：
+音频数据的定位与读取流程 # MP4 InspectorMP4解析工具
+假设我们有一个包含 AAC 音频的 MP4 文件，读取音频数据的详细步骤如下：
+步骤 1：找到 moov盒子
+通常 moov在文件末尾（利于网络流媒体），也可能在文件开头。程序会先定位到它。 步骤 2：在 moov中定位音频轨道">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="MP4格式分析" />
@@ -41,7 +45,11 @@ mdat
 实际媒体数据
 16进制：6D 64 61 74
 5分钟入门MP4文件格式
-一般来说，解析媒体文件，最关心的部分是视频文件的宽高、时长、码率、编码格式、帧列表、关键帧列表，以及所对应的时戳和在文件中的位置，这些信息，在mp4中，是以特定的算法分开存放在stbl box下属的几个box中的，需要解析stbl下面所有的box，来还原媒体信息。下表是对于以上几个重要的box存放信息的说明：" />
+一般来说，解析媒体文件，最关心的部分是视频文件的宽高、时长、码率、编码格式、帧列表、关键帧列表，以及所对应的时戳和在文件中的位置，这些信息，在mp4中，是以特定的算法分开存放在stbl box下属的几个box中的，需要解析stbl下面所有的box，来还原媒体信息。下表是对于以上几个重要的box存放信息的说明：
+音频数据的定位与读取流程 # MP4 InspectorMP4解析工具
+假设我们有一个包含 AAC 音频的 MP4 文件，读取音频数据的详细步骤如下：
+步骤 1：找到 moov盒子
+通常 moov在文件末尾（利于网络流媒体），也可能在文件开头。程序会先定位到它。 步骤 2：在 moov中定位音频轨道" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/mp4%E6%A0%BC%E5%BC%8F%E5%88%86%E6%9E%90/" /><meta property="article:section" content="docs" />
 <meta property="article:published_time" content="2022-11-02T20:37:13+08:00" />
@@ -51,7 +59,7 @@ mdat
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.515349416b72992cf1aa0dc75d682d204ca096dd6c3530541a71facf1b2dcfbd.js" integrity="sha256-UVNJQWtymSzxqg3HXWgtIEyglt1sNTBUGnH6zxstz70=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.8776674880bde8860a04955a7e2aa5ac82fd95fa32a0ac04b039689c85e3a9e5.js" integrity="sha256-h3ZnSIC96IYKBJVafiqlrIL9lfoyoKwEsDlonIXjqeU=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -1447,6 +1455,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/ai/basic/%E5%80%9F%E5%8A%A9ai%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B9%B3%E5%8F%B0%E5%A4%8D%E7%9B%98-/" class="">借助AI编程工具从零构建数据可视化平台复盘</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/%E5%8D%8E%E4%B8%BA%E6%98%87%E8%85%BE910b%E9%80%82%E9%85%8D%E8%AE%B0%E5%BD%95/" class="">华为昇腾910B适配记录</a>
   
 
         </li>
@@ -3536,6 +3557,7 @@ https://github.com/alex-shpak/hugo-book
         <li>
           <ul>
             <li><a href="#mp4格式分析">MP4格式分析</a></li>
+            <li><a href="#音频数据的定位与读取流程">音频数据的定位与读取流程</a></li>
           </ul>
         </li>
       </ul>
@@ -3595,6 +3617,135 @@ https://github.com/alex-shpak/hugo-book
 <p><a href="https://www.cnblogs.com/chyingp/p/mp4-file-format.html">5分钟入门MP4文件格式</a></p>
 <p>一般来说，解析媒体文件，最关心的部分是视频文件的宽高、时长、码率、编码格式、帧列表、关键帧列表，以及所对应的时戳和在文件中的位置，这些信息，在mp4中，是以特定的算法分开存放在stbl box下属的几个box中的，需要解析stbl下面所有的box，来还原媒体信息。下表是对于以上几个重要的box存放信息的说明：</p>
 <p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20250828151503740.jpg" alt="" /></p>
+<h3 id="音频数据的定位与读取流程">
+  音频数据的定位与读取流程
+  <a class="anchor" href="#%e9%9f%b3%e9%a2%91%e6%95%b0%e6%8d%ae%e7%9a%84%e5%ae%9a%e4%bd%8d%e4%b8%8e%e8%af%bb%e5%8f%96%e6%b5%81%e7%a8%8b">#</a>
+</h3>
+<p><a href="https://sourceforge.net/projects/mp4-inspector/">MP4 Inspector</a>MP4解析工具</p>
+<p>假设我们有一个包含 AAC 音频的 MP4 文件，读取音频数据的详细步骤如下：</p>
+<p>步骤 1：找到 <code>moov</code>盒子</p>
+<ul>
+<li>通常 <code>moov</code>在文件末尾（利于网络流媒体），也可能在文件开头。程序会先定位到它。</li>
+</ul>
+<p>步骤 2：在 <code>moov</code>中定位音频轨道</p>
+<ul>
+<li>在 <code>moov</code>盒子里，会有一个 <code>trak</code>盒子。通常第一个 <code>trak</code>是视频轨道，第二个就是音频轨道。</li>
+<li>通过检查 <code>trak</code>盒子里的 <code>mdia.hdlr</code>盒子中的 <code>HandlerType</code>，可以确认这是音频轨道（其值通常为 <code>soun</code>）。</li>
+</ul>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251124180914631.png" alt="" /></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251124180954113.png" alt="" /></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251124181018800.png" alt="" /></p>
+<p>步骤 3：获取音频格式信息</p>
+<ul>
+<li>
+<p>在音频的 <code>trak</code>盒子中，找到 <code>mdia.minf.stbl.stsd</code>盒子。这个盒子描述了音频的<strong>采样率、声道数、采样位深、编码类型</strong>等。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251125101100070.png" alt="" /></p>
+<pre tabindex="0"><code>00 00 00 6A - 盒子大小 (106 bytes)
+73 74 73 64 - 盒子类型 &#39;stsd&#39;
+00 00 00 00 - 版本和标志 (version=0, flags=0)
+00 00 00 01 - 条目数量 (1个条目)
+</code></pre></li>
+<li>
+<p>对于 AAC 音频，这里会有一个 <code>mp4a</code>盒子，里面包含 <code>esds</code>（Elementary Stream Descriptor）描述符，其中包含了 AAC 的详细配置信息（例如 Audio Object Type，采样率索引，声道配置索引），解码器需要这些信息来初始化。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251125101132417.png" alt="" /></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251125101337518.png" alt="" /></p>
+<pre tabindex="0"><code>00 00 00 5A - 条目大小 (90 bytes)
+6D 70 34 61 - 格式类型 &#39;mp4a&#39; (MPEG-4音频)
+00 00 00 00 - 保留 (6 bytes)
+00 00 00 00 
+00 00 00 01 - 数据引用索引 (data reference index)
+00 00 00 00 - 保留 (8 bytes)
+00 00 00 00 
+00 01 - 编码器版本 (version=1)
+00 10 - 编码器修订级别 (revision level=16)
+FF FE - 编码器厂商 (0xFFFE表示未注册)
+00 00 - 声道数 (placeholder, 实际在esds中)
+3E 80 00 00 - 音频采样率 (16000 Hz)
+</code></pre><p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251125101453083.png" alt="" /></p>
+<pre tabindex="0"><code>00 00 00 36 - 下一个盒子大小 (54 bytes)
+65 73 64 73 - 盒子类型 &#39;esds&#39; (Elementary Stream Descriptor)
+00 00 00 00 - 版本和标志 (version=0, flags=0)
+03 - 标签类型 (ES_DescrTag)
+80 80 80 25 - 长度 (37 bytes)
+00 02 - ES_ID (2)
+00 - 流优先级 (0)
+04 - 标签类型 (DecoderConfigDescrTag)
+80 80 80 17 - 长度 (23 bytes)
+40 - 对象类型 (Audio ISO/IEC 14496-3)
+15 - 流类型 (AudioStream)
+00 20 00 00 - 缓冲区大小 (8192 bytes)
+B8 19 00 00 - 最大比特率 (6600 bps)
+B8 19 00 00 - 平均比特率 (6600 bps)
+05 - 标签类型 (DecSpecificInfoTag)
+80 80 80 05 - 长度 (5 bytes)
+14 08 00 00 00 - 音频特定配置 (AAC LC, 16kHz, 单声道)
+06 - 标签类型 (SLConfigDescrTag)
+80 80 80 01 - 长度 (1 byte)
+02 - 预定义SL配置
+</code></pre></li>
+</ul>
+<p>步骤 4：找到音频数据在 <code>mdat</code>中的位置索引（最关键的一步）</p>
+<ul>
+<li>
+<p>这是通过 <strong>“时间戳 -&gt; 物理位置”的映射表</strong> 实现的。这些表在 <code>moov</code>盒子的 <code>trak.mdia.minf.stbl</code>下：<strong><code>stts</code></strong>：解码时间戳表。定义了每个样本（sample）的持续时间，用于计算显示时间。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251125101815213.png" alt="" /></p>
+<pre tabindex="0"><code>00 00 00 18 - 盒子大小 (24 bytes)
+73 74 74 73 - 盒子类型 &#39;stts&#39;
+00 00 00 00 - 版本和标志 (version=0, flags=0)
+00 00 00 01 - 条目数量 (1个条目)
+00 00 03 1D - 样本数量 (797个样本)
+00 00 04 00 - 样本时间增量 (1024时间单位)
+</code></pre><p>在MP4文件中，时间单位的具体含义由<code>mdhd</code>(Media Header)盒子中的<code>timescale</code>字段决定。要计算每个样本的实际持续时间(秒)，需要使用公式：</p>
+<pre tabindex="0"><code>样本持续时间(秒) = 样本时间增量 / timescale
+</code></pre></li>
+<li>
+<p><strong><code>stsc</code></strong>：样本-块映射表。定义了数据块（chunk）与样本（sample）的对应关系。一个块是 <code>mdat</code>中的一段连续数据。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251125102742788.png" alt="" /></p>
+<pre tabindex="0"><code>00 00 00 1C - 盒子大小 (28 bytes)
+73 74 73 63 - 盒子类型 &#39;stsc&#39;
+00 00 00 00 - 版本和标志 (version=0, flags=0)
+00 00 00 01 - 条目数量 (1个条目)
+00 00 00 01 - 第一个块 (first chunk): 1
+00 00 00 01 - 每个块的样本数 (samples per chunk): 1
+00 00 00 01 - 样本描述索引 (sample description index): 1
+</code></pre></li>
+<li>
+<p><strong><code>stsz</code></strong>：样本大小表。定义了每个样本（sample）占多少字节。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251125103141344.png" alt="" /></p>
+<pre tabindex="0"><code>00 00 0C 88 - 盒子大小 (3208 bytes)
+73 74 73 7A - 盒子类型 &#39;stsz&#39;
+00 00 00 00 - 版本和标志 (version=0, flags=0)
+00 00 00 00 - 样本统一大小 (0表示样本大小不统一)
+00 00 03 1D - 样本数量 (797个样本)
+</code></pre><p>接下来的数据是797个样本的大小值（每个4字节）：</p>
+<pre tabindex="0"><code>00 00 01 78 - 样本1大小: 376 bytes
+00 00 01 73 - 样本2大小: 371 bytes
+00 00 01 77 - 样本3大小: 375 bytes
+00 00 01 79 - 样本4大小: 377 bytes
+00 00 01 83 - 样本5大小: 387 bytes
+00 00 01 82 - 样本6大小: 386 bytes
+00 00 01 76 - 样本7大小: 374 bytes
+...
+</code></pre></li>
+<li>
+<p><strong><code>stco</code>或 <code>co64</code></strong>：块偏移量表。定义了每个数据块（chunk）在 <code>mdat</code>盒子（或整个文件）中的起始字节位置。</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251125103817883.png" alt="" /></p>
+<pre tabindex="0"><code>00 00 0C 84 - 盒子大小 (3204 bytes)
+73 74 63 6F - 盒子类型 &#39;stco&#39;
+00 00 00 00 - 版本和标志 (version=0, flags=0)
+00 00 03 1D - 条目数量 (797个条目)
+</code></pre><p>接下来的数据是797个块的偏移量（每个4字节）：</p>
+<pre tabindex="0"><code></code></pre></li>
+</ul>
+<p>步骤 5：根据索引读取 <code>mdat</code>中的音频数据</p>
+<p>现在，程序可以像查数据库一样，根据索引表读出音频数据：</p>
+<ol>
+<li><strong>定位块</strong>：假设要读取第 N 个音频样本。程序先查 <code>stsc</code>表，找到这个样本属于哪个数据块（比如第 M 个块）。</li>
+<li><strong>计算偏移</strong>：查 <code>stco</code>表，得到第 M 个块在文件中的起始偏移量（比如 <code>offset_M</code>）。</li>
+<li><strong>计算样本在块内的位置</strong>：查 <code>stsz</code>表，累加第 M 个块内、目标样本之前的所有样本的大小，得到块内偏移 <code>offset_in_chunk</code>。</li>
+<li><strong>读取数据</strong>：最终，这个音频样本的物理位置是 <code>offset_M + offset_in_chunk</code>，大小是 <code>stsz</code>表中记录的对应值。程序会从文件的这个位置读取相应字节的数据。</li>
+<li><strong>解码播放</strong>：将这些压缩的音频数据（例如一个 AAC 帧）送入 AAC 解码器，解码成 PCM 数据，然后交给声卡播放。</li>
+</ol>
 </article>
  
       
@@ -3641,6 +3792,7 @@ https://github.com/alex-shpak/hugo-book
         <li>
           <ul>
             <li><a href="#mp4格式分析">MP4格式分析</a></li>
+            <li><a href="#音频数据的定位与读取流程">音频数据的定位与读取流程</a></li>
           </ul>
         </li>
       </ul>

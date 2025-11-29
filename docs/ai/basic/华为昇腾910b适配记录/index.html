@@ -3,20 +3,33 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="">
+<meta name="description" content="华为昇腾910适配记录 # 昇腾配置信息 # npu-smi info lscpu free -h 查看cpu使用率 # top 或者htop
+sudo apt install htop //安装 htop 环境安装 # 驱动安装 # 参考文档：https://www.hiascend.com/document/detail/zh/canncommercial/80RC2/softwareinst/instg/instg_0003.html?Mode=PmIns&amp;OS=Ubuntu&amp;Software=cannToolKit
+下载地址：https://www.hiascend.com/hardware/firmware-drivers/community?product=2&amp;model=15&amp;cann=8.2.RC2&amp;driver=Ascend&#43;HDK&#43;25.2.0
+下载驱动对应版本文件：Ascend-hdk-310p-npu-driver_25.2.0_linux-aarch64.run 下载固件版本文件：Ascend-hdk-310p-npu-firmware_7.7.0.6.236.run CANN安装 # 参考文档：https://www.hiascend.com/document/detail/zh/canncommercial/81RC1/softwareinst/instg/instg_0008.html?Mode=PmIns&amp;InstallType=local&amp;OS=openEuler&amp;Software=cannToolKit
+下载地址：https://www.hiascend.com/developer/download/community/result?cann=8.2.RC2&amp;product=2&amp;model=15
+Toolkit开发套件包：Ascend-cann-toolkit_8.2.RC2_linux-aarch64.run Kernels算子包：Ascend-cann-kernels-310p_8.2.RC2_linux-aarch64.run NNAL神经网络加速库：Ascend-cann-nnal_8.2.RC2_linux-aarch64.run pytorch安装 # 参考文档：https://www.hiascend.com/document/detail/zh/Pytorch/710/configandinstg/instg/insg_0004.html
+其他用到的python环境 # (base) root@autodl-container-6ce943a632-c1481b25:~/python/service# pip list Package Version ------------------------------ ------------------ absl-py 2.3.0 albucore 0.0.24 albumentations 2.0.8 annotated-types 0.7.0 anyio 4.9.0 argon2-cffi 25.1.0 argon2-cffi-bindings 21.2.0 arrow 1.3.0 asttokens 3.0.0 async-lru 2.0.5 attrs 25.3.0 auto_tune 0.">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
-<meta name="color-scheme" content="light dark"><meta property="og:title" content="分布式" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%88%86%E5%B8%83%E5%BC%8F/" />
-<title>分布式 | Soulmate</title>
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="华为昇腾910B适配记录" />
+<meta property="og:description" content="华为昇腾910适配记录 # 昇腾配置信息 # npu-smi info lscpu free -h 查看cpu使用率 # top 或者htop
+sudo apt install htop //安装 htop 环境安装 # 驱动安装 # 参考文档：https://www.hiascend.com/document/detail/zh/canncommercial/80RC2/softwareinst/instg/instg_0003.html?Mode=PmIns&amp;OS=Ubuntu&amp;Software=cannToolKit
+下载地址：https://www.hiascend.com/hardware/firmware-drivers/community?product=2&amp;model=15&amp;cann=8.2.RC2&amp;driver=Ascend&#43;HDK&#43;25.2.0
+下载驱动对应版本文件：Ascend-hdk-310p-npu-driver_25.2.0_linux-aarch64.run 下载固件版本文件：Ascend-hdk-310p-npu-firmware_7.7.0.6.236.run CANN安装 # 参考文档：https://www.hiascend.com/document/detail/zh/canncommercial/81RC1/softwareinst/instg/instg_0008.html?Mode=PmIns&amp;InstallType=local&amp;OS=openEuler&amp;Software=cannToolKit
+下载地址：https://www.hiascend.com/developer/download/community/result?cann=8.2.RC2&amp;product=2&amp;model=15
+Toolkit开发套件包：Ascend-cann-toolkit_8.2.RC2_linux-aarch64.run Kernels算子包：Ascend-cann-kernels-310p_8.2.RC2_linux-aarch64.run NNAL神经网络加速库：Ascend-cann-nnal_8.2.RC2_linux-aarch64.run pytorch安装 # 参考文档：https://www.hiascend.com/document/detail/zh/Pytorch/710/configandinstg/instg/insg_0004.html
+其他用到的python环境 # (base) root@autodl-container-6ce943a632-c1481b25:~/python/service# pip list Package Version ------------------------------ ------------------ absl-py 2.3.0 albucore 0.0.24 albumentations 2.0.8 annotated-types 0.7.0 anyio 4.9.0 argon2-cffi 25.1.0 argon2-cffi-bindings 21.2.0 arrow 1.3.0 asttokens 3.0.0 async-lru 2.0.5 attrs 25.3.0 auto_tune 0." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/ai/basic/%E5%8D%8E%E4%B8%BA%E6%98%87%E8%85%BE910b%E9%80%82%E9%85%8D%E8%AE%B0%E5%BD%95/" /><meta property="article:section" content="docs" />
+
+
+<title>华为昇腾910B适配记录 | Soulmate</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
   <script defer src="/en.search.min.8776674880bde8860a04955a7e2aa5ac82fd95fa32a0ac04b039689c85e3a9e5.js" integrity="sha256-h3ZnSIC96IYKBJVafiqlrIL9lfoyoKwEsDlonIXjqeU=" crossorigin="anonymous"></script>
-<link rel="alternate" type="application/rss+xml" href="https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%88%86%E5%B8%83%E5%BC%8F/index.xml" title="Soulmate" />
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -1330,7 +1343,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <input type="checkbox" id="section-9b671b3ce1ddd28af1b4312866c8b524" class="toggle"  />
+    <input type="checkbox" id="section-9b671b3ce1ddd28af1b4312866c8b524" class="toggle" checked />
     <label for="section-9b671b3ce1ddd28af1b4312866c8b524" class="flex justify-between">
       <a role="button" class="">Basic</a>
     </label>
@@ -1424,7 +1437,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/ai/basic/%E5%8D%8E%E4%B8%BA%E6%98%87%E8%85%BE910b%E9%80%82%E9%85%8D%E8%AE%B0%E5%BD%95/" class="">华为昇腾910B适配记录</a>
+    <a href="/docs/ai/basic/%E5%8D%8E%E4%B8%BA%E6%98%87%E8%85%BE910b%E9%80%82%E9%85%8D%E8%AE%B0%E5%BD%95/" class="active">华为昇腾910B适配记录</a>
   
 
         </li>
@@ -2464,9 +2477,9 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <input type="checkbox" id="section-a36f740001772a844eb3087eeb17eb6d" class="toggle" checked />
+    <input type="checkbox" id="section-a36f740001772a844eb3087eeb17eb6d" class="toggle"  />
     <label for="section-a36f740001772a844eb3087eeb17eb6d" class="flex justify-between">
-      <a role="button" class="active">分布式</a>
+      <a role="button" class="">分布式</a>
     </label>
   
 
@@ -3493,7 +3506,7 @@ https://github.com/alex-shpak/hugo-book
     <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
   </label>
 
-  <strong>分布式</strong>
+  <strong>华为昇腾910B适配记录</strong>
 
   <label for="toc-control">
     
@@ -3507,7 +3520,25 @@ https://github.com/alex-shpak/hugo-book
   <aside class="hidden clearfix">
     
   
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#华为昇腾910适配记录">华为昇腾910适配记录</a>
+          <ul>
+            <li><a href="#昇腾配置信息">昇腾配置信息</a></li>
+            <li><a href="#环境安装">环境安装</a></li>
+            <li><a href="#图像增强">图像增强</a></li>
+            <li><a href="#pytorch推理">pytorch推理</a></li>
+            <li><a href="#ultralytics推理">ultralytics推理</a></li>
+            <li><a href="#yolo-pt模型">yolo pt模型</a></li>
+            <li><a href="#行为检测模型">行为检测模型</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
 
 
 
@@ -3518,7 +3549,557 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown"></article>
+  <article class="markdown"><h2 id="华为昇腾910适配记录">
+  华为昇腾910适配记录
+  <a class="anchor" href="#%e5%8d%8e%e4%b8%ba%e6%98%87%e8%85%be910%e9%80%82%e9%85%8d%e8%ae%b0%e5%bd%95">#</a>
+</h2>
+<h3 id="昇腾配置信息">
+  昇腾配置信息
+  <a class="anchor" href="#%e6%98%87%e8%85%be%e9%85%8d%e7%bd%ae%e4%bf%a1%e6%81%af">#</a>
+</h3>
+<pre tabindex="0"><code>npu-smi info
+</code></pre><p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251111163426704.png" alt="" /></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251111163542185.png" alt="" /></p>
+<pre tabindex="0"><code>lscpu
+</code></pre><p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251111163553105.png" alt="" /></p>
+<pre tabindex="0"><code>free -h
+</code></pre><p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251111163603771.png" alt="" /></p>
+<h4 id="查看cpu使用率">
+  查看cpu使用率
+  <a class="anchor" href="#%e6%9f%a5%e7%9c%8bcpu%e4%bd%bf%e7%94%a8%e7%8e%87">#</a>
+</h4>
+<pre tabindex="0"><code>top
+</code></pre><p>或者htop</p>
+<pre tabindex="0"><code>sudo apt install htop  //安装
+htop
+</code></pre><h3 id="环境安装">
+  环境安装
+  <a class="anchor" href="#%e7%8e%af%e5%a2%83%e5%ae%89%e8%a3%85">#</a>
+</h3>
+<h4 id="驱动安装">
+  驱动安装
+  <a class="anchor" href="#%e9%a9%b1%e5%8a%a8%e5%ae%89%e8%a3%85">#</a>
+</h4>
+<p>参考文档：https://www.hiascend.com/document/detail/zh/canncommercial/80RC2/softwareinst/instg/instg_0003.html?Mode=PmIns&amp;OS=Ubuntu&amp;Software=cannToolKit</p>
+<p>下载地址：https://www.hiascend.com/hardware/firmware-drivers/community?product=2&amp;model=15&amp;cann=8.2.RC2&amp;driver=Ascend+HDK+25.2.0</p>
+<ul>
+<li>下载驱动对应版本文件：Ascend-hdk-310p-npu-driver_25.2.0_linux-aarch64.run</li>
+<li>下载固件版本文件：Ascend-hdk-310p-npu-firmware_7.7.0.6.236.run</li>
+</ul>
+<h4 id="cann安装">
+  CANN安装
+  <a class="anchor" href="#cann%e5%ae%89%e8%a3%85">#</a>
+</h4>
+<p>参考文档：https://www.hiascend.com/document/detail/zh/canncommercial/81RC1/softwareinst/instg/instg_0008.html?Mode=PmIns&amp;InstallType=local&amp;OS=openEuler&amp;Software=cannToolKit</p>
+<p>下载地址：https://www.hiascend.com/developer/download/community/result?cann=8.2.RC2&amp;product=2&amp;model=15</p>
+<ul>
+<li>Toolkit开发套件包：Ascend-cann-toolkit_8.2.RC2_linux-aarch64.run</li>
+<li>Kernels算子包：Ascend-cann-kernels-310p_8.2.RC2_linux-aarch64.run</li>
+<li>NNAL神经网络加速库：Ascend-cann-nnal_8.2.RC2_linux-aarch64.run</li>
+</ul>
+<h4 id="pytorch安装">
+  pytorch安装
+  <a class="anchor" href="#pytorch%e5%ae%89%e8%a3%85">#</a>
+</h4>
+<p>参考文档：https://www.hiascend.com/document/detail/zh/Pytorch/710/configandinstg/instg/insg_0004.html</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251111163614149.png" alt="" /></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251111163623298.png" alt="" /></p>
+<h4 id="其他用到的python环境">
+  其他用到的python环境
+  <a class="anchor" href="#%e5%85%b6%e4%bb%96%e7%94%a8%e5%88%b0%e7%9a%84python%e7%8e%af%e5%a2%83">#</a>
+</h4>
+<pre tabindex="0"><code>(base) root@autodl-container-6ce943a632-c1481b25:~/python/service# pip list
+Package                        Version
+------------------------------ ------------------
+absl-py                        2.3.0
+albucore                       0.0.24
+albumentations                 2.0.8
+annotated-types                0.7.0
+anyio                          4.9.0
+argon2-cffi                    25.1.0
+argon2-cffi-bindings           21.2.0
+arrow                          1.3.0
+asttokens                      3.0.0
+async-lru                      2.0.5
+attrs                          25.3.0
+auto_tune                      0.1.0
+av                             16.0.1
+babel                          2.17.0
+beautifulsoup4                 4.13.4
+bleach                         6.2.0
+brotlipy                       0.7.0
+certifi                        2022.12.7
+cffi                           1.15.1
+charset-normalizer             2.0.4
+click                          8.3.0
+cn-clip                        1.5.1
+coloredlogs                    15.0.1
+comm                           0.2.2
+conda                          22.11.1
+conda-content-trust            0.1.3
+conda-package-handling         1.9.0
+contourpy                      1.3.2
+cryptography                   38.0.1
+cycler                         0.12.1
+Cython                         3.2.0
+dataflow                       0.0.1
+debugpy                        1.8.14
+decorator                      5.2.1
+defusedxml                     0.7.1
+easydict                       1.13
+exceptiongroup                 1.3.0
+executing                      2.2.0
+fastapi                        0.115.5
+fastjsonschema                 2.21.1
+filelock                       3.18.0
+flatbuffers                    25.9.23
+fonttools                      4.58.4
+fqdn                           1.5.1
+fsspec                         2025.5.1
+fvcore                         0.1.5.post20221221
+grpcio                         1.73.0
+h11                            0.16.0
+hccl                           0.1.0
+hccl_parser                    0.1
+hf-xet                         1.2.0
+httpcore                       1.0.9
+httpx                          0.28.1
+huggingface_hub                1.1.2
+humanfriendly                  10.0
+idna                           3.4
+ImageIO                        2.37.2
+insightface                    0.7.3
+iopath                         0.1.10
+ipykernel                      6.29.5
+ipython                        8.37.0
+ipywidgets                     8.1.7
+isoduration                    20.11.0
+jedi                           0.19.2
+Jinja2                         3.1.6
+joblib                         1.5.2
+json5                          0.12.0
+jsonpointer                    3.0.0
+jsonschema                     4.24.0
+jsonschema-specifications      2025.4.1
+jupyter_client                 8.6.3
+jupyter_core                   5.8.1
+jupyter-events                 0.12.0
+jupyter-lsp                    2.2.5
+jupyter_server                 2.16.0
+jupyter_server_terminals       0.5.3
+jupyterlab                     4.4.3
+jupyterlab-language-pack-zh-CN 4.4.post0
+jupyterlab_pygments            0.3.0
+jupyterlab_server              2.27.3
+jupyterlab_widgets             3.0.15
+kiwisolver                     1.4.8
+lapx                           0.9.2
+lazy_loader                    0.4
+llm_datadist                   0.0.1
+lmdb                           1.3.0
+Markdown                       3.8.2
+MarkupSafe                     3.0.2
+matplotlib                     3.10.3
+matplotlib-inline              0.1.7
+mistune                        3.1.3
+ml_dtypes                      0.5.3
+mpmath                         1.3.0
+msobjdump                      0.1.0
+nbclient                       0.10.2
+nbconvert                      7.16.6
+nbformat                       5.10.4
+nest-asyncio                   1.6.0
+networkx                       3.4.2
+notebook_shim                  0.2.4
+numpy                          1.26.4
+nvidia-ml-py                   12.575.51
+onnx                           1.19.1
+onnxruntime-cann               1.23.2
+op_compile_tool                0.1.0
+op_gen                         0.1
+op_test_frame                  0.1
+opc_tool                       0.1.0
+opencv-python                  4.10.0.84
+opencv-python-headless         4.12.0.88
+overrides                      7.7.0
+packaging                      25.0
+pandas                         2.3.3
+pandocfilters                  1.5.1
+parameterized                  0.9.0
+parso                          0.8.4
+pexpect                        4.9.0
+pillow                         11.2.1
+pip                            22.3.1
+platformdirs                   4.3.8
+pluggy                         1.0.0
+portalocker                    3.2.0
+prettytable                    3.16.0
+prometheus_client              0.22.1
+prompt_toolkit                 3.0.51
+protobuf                       6.31.1
+psutil                         7.0.0
+ptyprocess                     0.7.0
+pure_eval                      0.2.3
+py-cpuinfo                     9.0.0
+pycosat                        0.6.4
+pycparser                      2.21
+pydantic                       2.12.4
+pydantic_core                  2.41.5
+Pygments                       2.19.1
+pynvml                         12.0.0
+pyOpenSSL                      22.0.0
+pyparsing                      3.2.3
+PySocks                        1.7.1
+python-dateutil                2.9.0.post0
+python-json-logger             3.3.0
+python-multipart               0.0.12
+pytorchvideo                   0.1.5
+pytz                           2025.2
+PyYAML                         6.0.2
+pyzmq                          27.0.0
+referencing                    0.36.2
+requests                       2.32.4
+rfc3339-validator              0.1.4
+rfc3986-validator              0.1.1
+rpds-py                        0.25.1
+ruamel.yaml                    0.17.21
+ruamel.yaml.clib               0.2.6
+safetensors                    0.6.2
+schedule_search                0.0.1
+scikit-image                   0.25.2
+scikit-learn                   1.7.2
+scipy                          1.15.3
+seaborn                        0.13.2
+Send2Trash                     1.8.3
+setuptools                     65.5.0
+shellingham                    1.5.4
+show_kernel_debug_data         0.1.0
+simsimd                        6.5.3
+six                            1.16.0
+sniffio                        1.3.1
+soupsieve                      2.7
+stack-data                     0.6.3
+starlette                      0.41.3
+stringzilla                    4.2.3
+sympy                          1.13.1
+tabulate                       0.9.0
+te                             0.4.0
+tensorboard                    2.19.0
+tensorboard-data-server        0.7.2
+termcolor                      3.2.0
+terminado                      0.18.1
+threadpoolctl                  3.6.0
+tifffile                       2025.5.10
+timm                           1.0.22
+tinycss2                       1.4.0
+tomli                          2.2.1
+toolz                          0.12.0
+torch                          2.5.1
+torch-npu                      2.5.1
+torchvision                    0.20.1
+tornado                        6.5.1
+tqdm                           4.64.1
+traitlets                      5.14.3
+typer-slim                     0.20.0
+types-python-dateutil          2.9.0.20250516
+typing_extensions              4.15.0
+typing-inspection              0.4.2
+tzdata                         2025.2
+ultralytics                    8.2.93
+ultralytics-thop               2.0.18
+uri-template                   1.3.0
+urllib3                        1.26.13
+uvicorn                        0.38.0
+wcwidth                        0.2.13
+webcolors                      24.11.1
+webencodings                   0.5.1
+websocket-client               1.8.0
+Werkzeug                       3.1.3
+wheel                          0.37.1
+widgetsnbextension             4.0.14
+yacs                           0.1.8
+</code></pre><h4 id="heading">
+  
+  <a class="anchor" href="#heading">#</a>
+</h4>
+<h3 id="图像增强">
+  图像增强
+  <a class="anchor" href="#%e5%9b%be%e5%83%8f%e5%a2%9e%e5%bc%ba">#</a>
+</h3>
+<p>三个模型均有效利用了NPU</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251111163640704.png" alt="" /></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251111163650767.png" alt="" /></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251111163700277.png" alt="" /></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251111163708303.png" alt="" /></p>
+<p>运行状态</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251111163716666.png" alt="" /></p>
+<p>正常状态</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251111163724956.png" alt="" /></p>
+<p>swinir.py</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251111163732830.png" alt="" /></p>
+<p>base_model.py</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251111163740979.png" alt="" /></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251111163748368.png" alt="" /></p>
+<h3 id="pytorch推理">
+  pytorch推理
+  <a class="anchor" href="#pytorch%e6%8e%a8%e7%90%86">#</a>
+</h3>
+<pre tabindex="0"><code>self.device = torch.device(&#39;cuda&#39; if torch.cuda.is_available() else &#39;cpu&#39;)
+</code></pre><p>换成</p>
+<pre tabindex="0"><code>import torch_npu
+from torch_npu.contrib import transfer_to_npu
+
+
+self.device = torch.device(&#39;npu&#39;)
+</code></pre><h3 id="ultralytics推理">
+  ultralytics推理
+  <a class="anchor" href="#ultralytics%e6%8e%a8%e7%90%86">#</a>
+</h3>
+<pre tabindex="0"><code>      self.img_session = onnxruntime.InferenceSession(img_onnx_model_path,
+                                                        sess_options=img_sess_options,
+                                                        providers=[&#34;CUDAExecutionProvider&#34;])
+</code></pre><p>换成</p>
+<pre tabindex="0"><code> self.session = onnxruntime.InferenceSession(decrypted_model,
+                                                    sess_options=img_sess_options,
+                                                    providers=[&#34;CANNExecutionProvider&#34;])
+</code></pre><h3 id="yolo-pt模型">
+  yolo pt模型
+  <a class="anchor" href="#yolo-pt%e6%a8%a1%e5%9e%8b">#</a>
+</h3>
+<pre tabindex="0"><code>import torch_npu
+from torch_npu.contrib import transfer_to_npu
+
+detections =model.track(img, conf=conf, verbose=False, device=&#39;npu&#39;)
+</code></pre><p>有效利用NPU</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251111163756975.png" alt="" /></p>
+<h3 id="行为检测模型">
+  行为检测模型
+  <a class="anchor" href="#%e8%a1%8c%e4%b8%ba%e6%a3%80%e6%b5%8b%e6%a8%a1%e5%9e%8b">#</a>
+</h3>
+<pre tabindex="0"><code>slowfast-r50-detection
+</code></pre><p>报错：</p>
+<pre tabindex="0"><code>/root/miniconda3/lib/python3.10/site-packages/torch_npu/contrib/transfer_to_npu.py:247: RuntimeWarning: torch.jit.script and torch.jit.script_method will be disabled by transfer_to_npu, which currently does not support them, if you need to enable them, please do not use transfer_to_npu.
+  warnings.warn(msg, RuntimeWarning)
+2025-11-10 16:07:34,905 - INFO - 使用GPU进行推理
+2025-11-10 16:07:54,481 - INFO - 模型初始化完成,当前正在加载的模型为：slowfast-r50-detection
+server start http://127.0.0.1:8003
+Using device: npu
+2025-11-10 16:10:12,908 - INFO - 200 - POST - http://127.0.0.1:8003/api/v1/detection/behavior/video - 123.92ms
+Loading /root/python/slowfast-r50-detection/slowfast-r50-detection/weights.onnx for ONNX Runtime inference...
+/root/miniconda3/lib/python3.10/site-packages/onnxruntime/capi/onnxruntime_inference_collection.py:123: UserWarning: Specified provider &#39;CUDAExecutionProvider&#39; is not in available provider names.Available providers: &#39;CANNExecutionProvider, CPUExecutionProvider&#39;
+  warnings.warn(
+[W1110 16:10:30.071207358 compiler_depend.ts:250] Warning: CAUTION: The operator &#39;torchvision::nms&#39; is not currently supported on the NPU backend and will fall back to run on the CPU. This may have performance implications. (function npu_cpu_fallback)
+[W1110 16:15:34.549100635 compiler_depend.ts:137] Warning: Warning: Device do not support double dtype now, dtype cast repalce with float. (function operator())
+[W1110 16:15:36.966333832 compiler_depend.ts:250] Warning: CAUTION: The operator &#39;torchvision::roi_align&#39; is not currently supported on the NPU backend and will fall back to run on the CPU. This may have performance implications. (function npu_cpu_fallback)
+ERROR:    Exception in ASGI application
+  + Exception Group Traceback (most recent call last):
+  |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/_utils.py&#34;, line 76, in collapse_excgroups
+  |     yield
+  |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/middleware/base.py&#34;, line 186, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |   File &#34;/root/miniconda3/lib/python3.10/site-packages/anyio/_backends/_asyncio.py&#34;, line 772, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Exception Group Traceback (most recent call last):
+    |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/middleware/base.py&#34;, line 188, in __call__
+    |     await response(scope, wrapped_receive, send)
+    |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/middleware/base.py&#34;, line 222, in __call__
+    |     async for chunk in self.body_iterator:
+    |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/middleware/base.py&#34;, line 179, in body_stream
+    |     raise app_exc
+    |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/middleware/base.py&#34;, line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/middleware/exceptions.py&#34;, line 62, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/_exception_handler.py&#34;, line 53, in wrapped_app
+    |     raise exc
+    |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/_exception_handler.py&#34;, line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/routing.py&#34;, line 715, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/routing.py&#34;, line 735, in app
+    |     await route.handle(scope, receive, send)
+    |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/routing.py&#34;, line 288, in handle
+    |     await self.app(scope, receive, send)
+    |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/routing.py&#34;, line 76, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/_exception_handler.py&#34;, line 53, in wrapped_app
+    |     raise exc
+    |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/_exception_handler.py&#34;, line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/routing.py&#34;, line 74, in app
+    |     await response(scope, receive, send)
+    |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/responses.py&#34;, line 252, in __call__
+    |     async with anyio.create_task_group() as task_group:
+    |   File &#34;/root/miniconda3/lib/python3.10/site-packages/anyio/_backends/_asyncio.py&#34;, line 772, in __aexit__
+    |     raise BaseExceptionGroup(
+    | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+    +-+---------------- 1 ----------------
+      | Traceback (most recent call last):
+      |   File &#34;/root/miniconda3/lib/python3.10/site-packages/uvicorn/protocols/http/h11_impl.py&#34;, line 403, in run_asgi
+      |     result = await app(  # type: ignore[func-returns-value]
+      |   File &#34;/root/miniconda3/lib/python3.10/site-packages/uvicorn/middleware/proxy_headers.py&#34;, line 60, in __call__
+      |     return await self.app(scope, receive, send)
+      |   File &#34;/root/miniconda3/lib/python3.10/site-packages/fastapi/applications.py&#34;, line 1054, in __call__
+      |     await super().__call__(scope, receive, send)
+      |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/applications.py&#34;, line 113, in __call__
+      |     await self.middleware_stack(scope, receive, send)
+      |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/middleware/errors.py&#34;, line 187, in __call__
+      |     raise exc
+      |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/middleware/errors.py&#34;, line 165, in __call__
+      |     await self.app(scope, receive, _send)
+      |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/middleware/base.py&#34;, line 185, in __call__
+      |     with collapse_excgroups():
+      |   File &#34;/root/miniconda3/lib/python3.10/contextlib.py&#34;, line 153, in __exit__
+      |     self.gen.throw(typ, value, traceback)
+      |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/_utils.py&#34;, line 82, in collapse_excgroups
+      |     raise exc
+      |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/responses.py&#34;, line 255, in wrap
+      |     await func()
+      |   File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/responses.py&#34;, line 244, in stream_response
+      |     async for chunk in self.body_iterator:
+      |   File &#34;/root/python/service/object-detection/app/services/behavior.py&#34;, line 221, in video
+      |     async for result in self._process_frame_stack(name, cap, yolo_results):
+      |   File &#34;/root/python/service/object-detection/app/services/behavior.py&#34;, line 113, in _process_frame_stack
+      |     res =  CV_MODEL.inference(inputs, inp_boxes.to(self.device))
+      |   File &#34;/root/python/service/object-detection/app/cv/slowfast.py&#34;, line 169, in inference
+      |     preds = self.model(inputs, boxes)
+      |   File &#34;/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py&#34;, line 1736, in _wrapped_call_impl
+      |     return self._call_impl(*args, **kwargs)
+      |   File &#34;/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py&#34;, line 1747, in _call_impl
+      |     return forward_call(*args, **kwargs)
+      |   File &#34;/root/miniconda3/lib/python3.10/site-packages/pytorchvideo/models/net.py&#34;, line 73, in forward
+      |     out = self.detection_head(features, bboxes)
+      |   File &#34;/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py&#34;, line 1736, in _wrapped_call_impl
+      |     return self._call_impl(*args, **kwargs)
+      |   File &#34;/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py&#34;, line 1747, in _call_impl
+      |     return forward_call(*args, **kwargs)
+      |   File &#34;/root/miniconda3/lib/python3.10/site-packages/pytorchvideo/models/head.py&#34;, line 461, in forward
+      |     x = self.roi_layer(x, bboxes)
+      |   File &#34;/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py&#34;, line 1736, in _wrapped_call_impl
+      |     return self._call_impl(*args, **kwargs)
+      |   File &#34;/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py&#34;, line 1747, in _call_impl
+      |     return forward_call(*args, **kwargs)
+      |   File &#34;/root/miniconda3/lib/python3.10/site-packages/torchvision/ops/roi_align.py&#34;, line 282, in forward
+      |     return roi_align(input, rois, self.output_size, self.spatial_scale, self.sampling_ratio, self.aligned)
+      |   File &#34;/root/miniconda3/lib/python3.10/site-packages/torchvision/ops/roi_align.py&#34;, line 257, in roi_align
+      |     return torch.ops.torchvision.roi_align(
+      |   File &#34;/root/miniconda3/lib/python3.10/site-packages/torch/_ops.py&#34;, line 1116, in __call__
+      |     return self._op(*args, **(kwargs or {}))
+      | RuntimeError: The Inner error is reported as above. The process exits for this inner error, and the current working operator name is Conv3D.
+      | Since the operator is called asynchronously, the stacktrace may be inaccurate. If you want to get the accurate stacktrace, pleace set the environment variable ASCEND_LAUNCH_BLOCKING=1.
+      | Note: ASCEND_LAUNCH_BLOCKING=1 will force ops to run in synchronous mode, resulting in performance degradation. Please unset ASCEND_LAUNCH_BLOCKING in time after debugging.
+      | [ERROR] 2025-11-10-16:15:37 (PID:286260, Device:0, RankID:-1) ERR00100 PTA call acl api failed.
+      | E20007: [PID: 286260] 2025-11-10-16:15:37.616.319 Failed to run graph fusion pass [Conv3dToConv3dV2FusionPass]. The pass type is [second-round-graph-pass]
+      |         Solution: 1. If the pass code is custom, check the error log and the verification logic.  2. If the pass code is not custom, perform a complete or partial dump by using npucollect.sh and then send the dump to Huawei technical support for fault locating.
+      |         TraceBack (most recent call last):
+      |         Conv3dv2 only support static shape.[FUNC:Fusion][FILE:conv3d_to_conv3dv2_fusion_pass.cc][LINE:323]
+      |         Failed to run graph fusion pass [Conv3dToConv3dV2FusionPass]. The pass type is [second-round-graph-pass]
+      |         [GraphOptJdgInst][RunGraphFusion][RunBuiltInFusion] Fail to run graph fusion pass[Conv3dToConv3dV2FusionPass, second-round-graph-pass].[FUNC:RunBuiltInFusionByType][FILE:graph_fusion.cc][LINE:1252]
+      |         [[GraphOpt][JdgInst]][RunGraphFusion] MainGraph[online]: Run graph fusion pass by type second-round-graph-pass unsuccessfully.[FUNC:RunGraphFusionPassByType][FILE:graph_fusion.cc][LINE:817]
+      |         [GraphOptJdgInst][Run] Failed to run second round fusion for graph[online].[FUNC:OptimizeOriginalGraphJudgeInsert][FILE:fe_graph_optimizer.cc][LINE:607]
+      |         Call OptimizeOriginalGraphJudgeInsert failed, ret:4294967295, engine_name:AIcoreEngine, graph_name:online[FUNC:OptimizeOriginalGraphJudgeInsert][FILE:graph_optimize.cc][LINE:242]
+      |         build graph failed, graph id:0, ret:4294967295[FUNC:BuildModelWithGraphId][FILE:ge_generator.cc][LINE:1623]
+      |         [Build][SingleOpModel]call ge interface generator.BuildSingleOpModel failed. ge result = 4294967295[FUNC:ReportCallError][FILE:log_inner.cpp][LINE:161]
+      |         [Build][Op]Fail to build op model[FUNC:ReportInnerError][FILE:log_inner.cpp][LINE:145]
+      |         build op model failed, result = 500002[FUNC:ReportInnerError][FILE:log_inner.cpp][LINE:145]
+      | 
+      +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File &#34;/root/miniconda3/lib/python3.10/site-packages/uvicorn/protocols/http/h11_impl.py&#34;, line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File &#34;/root/miniconda3/lib/python3.10/site-packages/uvicorn/middleware/proxy_headers.py&#34;, line 60, in __call__
+    return await self.app(scope, receive, send)
+  File &#34;/root/miniconda3/lib/python3.10/site-packages/fastapi/applications.py&#34;, line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/applications.py&#34;, line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/middleware/errors.py&#34;, line 187, in __call__
+    raise exc
+  File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/middleware/errors.py&#34;, line 165, in __call__
+    await self.app(scope, receive, _send)
+  File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/middleware/base.py&#34;, line 185, in __call__
+    with collapse_excgroups():
+  File &#34;/root/miniconda3/lib/python3.10/contextlib.py&#34;, line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/_utils.py&#34;, line 82, in collapse_excgroups
+    raise exc
+  File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/responses.py&#34;, line 255, in wrap
+    await func()
+  File &#34;/root/miniconda3/lib/python3.10/site-packages/starlette/responses.py&#34;, line 244, in stream_response
+    async for chunk in self.body_iterator:
+  File &#34;/root/python/service/object-detection/app/services/behavior.py&#34;, line 221, in video
+    async for result in self._process_frame_stack(name, cap, yolo_results):
+  File &#34;/root/python/service/object-detection/app/services/behavior.py&#34;, line 113, in _process_frame_stack
+    res =  CV_MODEL.inference(inputs, inp_boxes.to(self.device))
+  File &#34;/root/python/service/object-detection/app/cv/slowfast.py&#34;, line 169, in inference
+    preds = self.model(inputs, boxes)
+  File &#34;/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py&#34;, line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File &#34;/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py&#34;, line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File &#34;/root/miniconda3/lib/python3.10/site-packages/pytorchvideo/models/net.py&#34;, line 73, in forward
+    out = self.detection_head(features, bboxes)
+  File &#34;/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py&#34;, line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File &#34;/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py&#34;, line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File &#34;/root/miniconda3/lib/python3.10/site-packages/pytorchvideo/models/head.py&#34;, line 461, in forward
+    x = self.roi_layer(x, bboxes)
+  File &#34;/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py&#34;, line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File &#34;/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py&#34;, line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File &#34;/root/miniconda3/lib/python3.10/site-packages/torchvision/ops/roi_align.py&#34;, line 282, in forward
+    return roi_align(input, rois, self.output_size, self.spatial_scale, self.sampling_ratio, self.aligned)
+  File &#34;/root/miniconda3/lib/python3.10/site-packages/torchvision/ops/roi_align.py&#34;, line 257, in roi_align
+    return torch.ops.torchvision.roi_align(
+  File &#34;/root/miniconda3/lib/python3.10/site-packages/torch/_ops.py&#34;, line 1116, in __call__
+    return self._op(*args, **(kwargs or {}))
+RuntimeError: The Inner error is reported as above. The process exits for this inner error, and the current working operator name is Conv3D.
+Since the operator is called asynchronously, the stacktrace may be inaccurate. If you want to get the accurate stacktrace, pleace set the environment variable ASCEND_LAUNCH_BLOCKING=1.
+Note: ASCEND_LAUNCH_BLOCKING=1 will force ops to run in synchronous mode, resulting in performance degradation. Please unset ASCEND_LAUNCH_BLOCKING in time after debugging.
+[ERROR] 2025-11-10-16:15:37 (PID:286260, Device:0, RankID:-1) ERR00100 PTA call acl api failed.
+E20007: [PID: 286260] 2025-11-10-16:15:37.616.319 Failed to run graph fusion pass [Conv3dToConv3dV2FusionPass]. The pass type is [second-round-graph-pass]
+        Solution: 1. If the pass code is custom, check the error log and the verification logic.  2. If the pass code is not custom, perform a complete or partial dump by using npucollect.sh and then send the dump to Huawei technical support for fault locating.
+        TraceBack (most recent call last):
+        Conv3dv2 only support static shape.[FUNC:Fusion][FILE:conv3d_to_conv3dv2_fusion_pass.cc][LINE:323]
+        Failed to run graph fusion pass [Conv3dToConv3dV2FusionPass]. The pass type is [second-round-graph-pass]
+        [GraphOptJdgInst][RunGraphFusion][RunBuiltInFusion] Fail to run graph fusion pass[Conv3dToConv3dV2FusionPass, second-round-graph-pass].[FUNC:RunBuiltInFusionByType][FILE:graph_fusion.cc][LINE:1252]
+        [[GraphOpt][JdgInst]][RunGraphFusion] MainGraph[online]: Run graph fusion pass by type second-round-graph-pass unsuccessfully.[FUNC:RunGraphFusionPassByType][FILE:graph_fusion.cc][LINE:817]
+        [GraphOptJdgInst][Run] Failed to run second round fusion for graph[online].[FUNC:OptimizeOriginalGraphJudgeInsert][FILE:fe_graph_optimizer.cc][LINE:607]
+        Call OptimizeOriginalGraphJudgeInsert failed, ret:4294967295, engine_name:AIcoreEngine, graph_name:online[FUNC:OptimizeOriginalGraphJudgeInsert][FILE:graph_optimize.cc][LINE:242]
+        build graph failed, graph id:0, ret:4294967295[FUNC:BuildModelWithGraphId][FILE:ge_generator.cc][LINE:1623]
+        [Build][SingleOpModel]call ge interface generator.BuildSingleOpModel failed. ge result = 4294967295[FUNC:ReportCallError][FILE:log_inner.cpp][LINE:161]
+        [Build][Op]Fail to build op model[FUNC:ReportInnerError][FILE:log_inner.cpp][LINE:145]
+        build op model failed, result = 500002[FUNC:ReportInnerError][FILE:log_inner.cpp][LINE:145]
+</code></pre><p>问题原因：</p>
+<p>模型中的一个 Conv3D（三维卷积）算子在 NPU 上执行时失败了，因为 NPU 的一个特定优化（图融合）要求该算子的输入必须是<strong>静态形状（Static Shape）</strong>，而你的模型在运行时传入了**动态形状（Dynamic Shape）**的数据。</p>
+<p>关键证据：</p>
+<ol>
+<li>
+<p><strong>最终错误信息</strong>：codeCode<code>RuntimeError: The Inner error is reported as above. ... the current working operator name is Conv3D.</code>这明确指出，底层的 NPU 执行引擎在运行一个名为 Conv3D 的算子时崩溃了。</p>
+</li>
+<li>
+<p><strong>NPU 驱动/编译器报错</strong>：codeCode<code>Failed to run graph fusion pass [Conv3dToConv3dV2FusionPass]. ... Conv3dv2 only support static shape.[FUNC:Fusion][FILE:conv3d_to_conv3dv2_fusion_pass.cc][LINE:323]</code></p>
+<p>编译器<u>试图进行一个名为 Conv3dToConv3dV2FusionPass 的优化</u>。<u>这个优化的目的是将标准的 Conv3d 算子转换成一个在昇腾芯片上性能更高的版本 Conv3dV2。</u>但是，这个优化有一个严格的前提条件：<strong>Conv3dv2 只支持静态形状的输入</strong>。由于模型输入不满足这个条件，优化失败，进而导致整个图的编译和执行失败，最终程序崩溃。</p>
+</li>
+</ol>
+<p>解决办法：不让它优化</p>
+<pre tabindex="0"><code># 解释：尝试禁用 JIT 编译模式，让算子逐个执行，以绕过图编译/融合的错误
+# 这对解决你的 Conv3D 融合问题很可能有效
+torch.npu.set_compile_mode(jit_compile=False)
+
+# 解释：禁止使用 NPU 内部特定的、经过优化的数据格式（format）
+# 强制使用标准的 &#39;NCHW&#39; 等格式，可以提高算子兼容性，但可能降低性能
+torch.npu.config.allow_internal_format = False
+</code></pre><p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251111163809952.png" alt="" /></p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20251111163817547.png" alt="" /></p>
+</article>
  
       
 
@@ -3543,6 +4124,10 @@ https://github.com/alex-shpak/hugo-book
 
       
   
+  <div class="book-comments">
+
+</div>
+  
  
 
       <label for="menu-control" class="hidden book-menu-overlay"></label>
@@ -3553,7 +4138,25 @@ https://github.com/alex-shpak/hugo-book
       <div class="book-toc-content">
         
   
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#华为昇腾910适配记录">华为昇腾910适配记录</a>
+          <ul>
+            <li><a href="#昇腾配置信息">昇腾配置信息</a></li>
+            <li><a href="#环境安装">环境安装</a></li>
+            <li><a href="#图像增强">图像增强</a></li>
+            <li><a href="#pytorch推理">pytorch推理</a></li>
+            <li><a href="#ultralytics推理">ultralytics推理</a></li>
+            <li><a href="#yolo-pt模型">yolo pt模型</a></li>
+            <li><a href="#行为检测模型">行为检测模型</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
 
 
  

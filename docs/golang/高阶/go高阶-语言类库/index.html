@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content=" unsafe # 利用unsafe包修改私有成员 # 利用unsafe获取slice和map的长度 # 实现字符串和byte切片的零复制转换 # context # 译作“上下文”，准确说它是goroutine的上下文。主要用来在goroutine之间传递上下文信息，包括：取消信号、超时时间、截止时间、k-v等。
+<meta name="description" content=" unsafe # 利用unsafe包修改私有成员 # 利用unsafe获取slice和map的长度 # 实现字符串和byte切片的零复制转换 # context # 背景 |戴夫·切尼
+译作“上下文”，准确说它是goroutine的上下文。主要用来在goroutine之间传递上下文信息，包括：取消信号、超时时间、截止时间、k-v等。
 使用context几乎成为并发控制和超时控制的标准做法，与它协作的API都可以由外部控制执行“取消”操作，例如：取消一个HTTP请求的执行。
 另外，context.Context可以协调多个goroutine中的代码执行“取消”操作，并且可以存储键值对，最重要的是它是并发安全的操作。
 在Go的server里，对每个Request(请求)都会启动若干个goroutine同时工作：有些去内存查一些数据，有些去数据库拿数据，有些调用第三方接口获取相关数据等。
@@ -22,7 +23,8 @@ Go语言提供了一种机制在运行时更新变量和检查它们的值、调
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="Go高阶 语言类库" />
-<meta property="og:description" content=" unsafe # 利用unsafe包修改私有成员 # 利用unsafe获取slice和map的长度 # 实现字符串和byte切片的零复制转换 # context # 译作“上下文”，准确说它是goroutine的上下文。主要用来在goroutine之间传递上下文信息，包括：取消信号、超时时间、截止时间、k-v等。
+<meta property="og:description" content=" unsafe # 利用unsafe包修改私有成员 # 利用unsafe获取slice和map的长度 # 实现字符串和byte切片的零复制转换 # context # 背景 |戴夫·切尼
+译作“上下文”，准确说它是goroutine的上下文。主要用来在goroutine之间传递上下文信息，包括：取消信号、超时时间、截止时间、k-v等。
 使用context几乎成为并发控制和超时控制的标准做法，与它协作的API都可以由外部控制执行“取消”操作，例如：取消一个HTTP请求的执行。
 另外，context.Context可以协调多个goroutine中的代码执行“取消”操作，并且可以存储键值对，最重要的是它是并发安全的操作。
 在Go的server里，对每个Request(请求)都会启动若干个goroutine同时工作：有些去内存查一些数据，有些去数据库拿数据，有些调用第三方接口获取相关数据等。
@@ -47,7 +49,7 @@ Go语言提供了一种机制在运行时更新变量和检查它们的值、调
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.368f1a77091c6aea30616fff019b9c1ef0dfe52f297055d38ae614ab9dea18a7.js" integrity="sha256-No8adwkcauowYW//AZucHvDf5S8pcFXTiuYUq53qGKc=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.6bdda74825340bae47e59ee3a574b9f6838297d3d86c8c30c123467ced6fa3bd.js" integrity="sha256-a92nSCU0C65H5Z7jpXS59oOCl9PYbIwwwSNGfO1vo70=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -859,6 +861,19 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E9%9D%A2%E8%AF%95%E9%9B%86%E9%94%A6/" class="">面试集锦</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
   
 
@@ -1633,6 +1648,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/ai/computer-vision/yolo%E6%95%B0%E6%8D%AE%E9%9B%86/" class="">yolo数据集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB/" class="">人脸识别</a>
   
 
         </li>
@@ -3630,6 +3658,7 @@ https://github.com/alex-shpak/hugo-book
   context
   <a class="anchor" href="#context">#</a>
 </h1>
+<p><a href="https://dave.cheney.net/tag/context">背景 |戴夫·切尼</a></p>
 <p>译作“上下文”，准确说它是goroutine的上下文。主要用来在goroutine之间传递上下文信息，包括：<strong>取消信号、超时时间、截止时间、k-v等</strong>。</p>
 <p>使用context几乎成为并发控制和超时控制的标准做法，与它协作的API都可以由外部控制执行“取消”操作，例如：取消一个HTTP请求的执行。</p>
 <p>另外，context.Context可以协调多个goroutine中的代码执行“取消”操作，并且可以存储键值对，最重要的是它是并发安全的操作。</p>

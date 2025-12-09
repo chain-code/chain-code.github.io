@@ -241,6 +241,19 @@ func Copy(dst Writer, src Reader) (written int64, err error) { return copyBuffer
     </item>
     
     <item>
+      <title>面试集锦</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E9%9D%A2%E8%AF%95%E9%9B%86%E9%94%A6/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E9%9D%A2%E8%AF%95%E9%9B%86%E9%94%A6/</guid>
+      <description>一、并发与并行
+如何在 Go 中实现并发安全？ 描述 Go 的并发模型，Goroutine 是如何工作的？ 解释 Go 中的死锁，并提供如何避免死锁的策略？ 二、通道的高级用法
+通道的不同类型（缓冲通道和非缓冲通道）及其用例有哪些？ 如何优雅地关闭通道并处理相关的并发问题？ 在并发程序中，通常需要处理 goroutine 执行过程中产生的错误。请说明如何使用通道来收集和处理这些错误。提供一个示例，说明如何从多个并发执行的 goroutine 中收集错误信息。 解释为什么只有通道的发送者应该关闭通道，而接收者不应该关闭通道。在一个系统中，如果有多个发送者共享同一个通道，如何安全地关闭该通道？ 解释 select 语句在通道操作中的用途。如何使用 select 来同时处理多个通道的发送和接收操作？请提供一个示例。 三、性能优化
+Go 中常见的内存泄漏场景有哪些，如何排查和解决？ 解释逃逸分析以及它对性能优化的影响 描述你如何使用 pprof 进行性能分析？ Go 语言的垃圾回收机制如何影响应用程序的性能？你是如何优化垃圾回收的影响，以提高性能的？ 在微服务架构中，你如何通过 Go 实现服务之间的高效通信？请谈谈你在实现 RPC/HTTP API 时，对性能做了哪些优化？ 在 Go 中使用并发时，如何选择合适的并发模式（例如，goroutines 和 channels、sync 包中的工具等）来优化程序性能？请提供一个场景，并解释你的选择和实现方法。 描述在 Go 程序中，你是如何通过减少内存分配来优化性能的？请举例说明，比如利用 sync.Pool、减少逃逸分析中的堆分配等策略。 四、高级数据结构和算法
+Go 中的排序算法有哪些，如何选择合适的排序算法？ 在 Go 中实现高效的数据结构（如跳表、布隆过滤器）的策略 设计并实现一个并发安全的哈希表。提供 Get(key), Set(key, value), 和 Delete(key) 方法，并确保在多 goroutine 环境下操作的线程安全。 实现一个前缀树（Trie），它应该支持 insert, search, 和 startsWith 这三个操作。 编写一个函数，输入是一个区间的集合，其中每个区间包括左右端点，这些区间可能会重叠，需要合并并返回一个不重叠的区间列表。输出区间的列表需要按照左端点升序排列。 不使用任何库函数，设计并实现一个跳表（Skip List）。 五、系统设计与架构</description>
+    </item>
+    
+    <item>
       <title>go语言基础（二）</title>
       <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/</link>
       <pubDate>Tue, 26 Oct 2021 15:04:57 +0000</pubDate>

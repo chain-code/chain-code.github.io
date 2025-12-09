@@ -88,7 +88,8 @@ parm := make(map[string]string) parm[&amp;#34;path&amp;#34;] = &amp;#34;http://b
       <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
       
       <guid>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/</guid>
-      <description> unsafe # 利用unsafe包修改私有成员 # 利用unsafe获取slice和map的长度 # 实现字符串和byte切片的零复制转换 # context # 译作“上下文”，准确说它是goroutine的上下文。主要用来在goroutine之间传递上下文信息，包括：取消信号、超时时间、截止时间、k-v等。
+      <description> unsafe # 利用unsafe包修改私有成员 # 利用unsafe获取slice和map的长度 # 实现字符串和byte切片的零复制转换 # context # 背景 |戴夫·切尼
+译作“上下文”，准确说它是goroutine的上下文。主要用来在goroutine之间传递上下文信息，包括：取消信号、超时时间、截止时间、k-v等。
 使用context几乎成为并发控制和超时控制的标准做法，与它协作的API都可以由外部控制执行“取消”操作，例如：取消一个HTTP请求的执行。
 另外，context.Context可以协调多个goroutine中的代码执行“取消”操作，并且可以存储键值对，最重要的是它是并发安全的操作。
 在Go的server里，对每个Request(请求)都会启动若干个goroutine同时工作：有些去内存查一些数据，有些去数据库拿数据，有些调用第三方接口获取相关数据等。

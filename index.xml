@@ -1074,6 +1074,19 @@ Yolov8原理详细解析</description>
     </item>
     
     <item>
+      <title>人脸识别</title>
+      <link>https://chain-code.github.io/docs/ai/computer-vision/%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/computer-vision/%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB/</guid>
+      <description>原理 # insightface==0.7.3 人脸识别的技术本质是把一张人脸转换为一个在高维空间中可比较的向量，并以几何度量（通常是余弦相似度）来判断两张脸是否属于同一身份。
+工程实现中，人脸识别分为三层：检测与对齐、特征表示学习（Embedding）、相似度度量与决策。
+检测与对齐 # 检测器职责是从任意图像中找到人脸的边界框 bbox 。 检测模型通常采用单阶段（如 YOLO 系列）或人脸专用检测器（如 SCRFD、RetinaFace）。这类模型通过密集或稀疏锚点预测人脸框和分类得分，或者采用无锚点（anchor-free）的中心点方案。 det_size 决定输入分辨率，影响检测的召回率与速度。 关键点与对齐：成熟的人脸识别系统会用 5 点（眼角、鼻尖、嘴角）或更多关键点进行仿射对齐，将人脸标准化到统一视角与尺度（如 112×112）。InsightFace 的管线在内部完成该对齐，有助于抵抗姿态和光照变化，提高嵌入稳定性与跨域泛化。 图像预处理
+OpenCV 默认 BGR 通道，InsightFace 内部会完成必要的颜色空间转换与归一化。若以对齐后裁剪的人脸作为识别输入，通常会进行归一化到 [−1, 1] 或以 ImageNet 统计量归一化，确保网络对亮度和色彩变化不敏感。
+特征表示（Embedding） # 人脸识别的核心是学习一个“身份可分离”的向量空间。InsightFace 使用的识别网络常见为 ArcFace 家族（如 iresnet50/100），其训练目标是让同一身份的嵌入在角度空间上彼此靠近，不同身份远离。 ArcFace 的关键思想是“加性角度间隔（Additive Angular Margin, AAM-Softmax）”。设归一化后的特征向量为 (x)，类别中心向量为 (W)，二者的夹角为 (\theta)。ArcFace 在正类上将对数值从 (\cos(\theta)) 改为 (\cos(\theta + m))，其中 (m) 是角度间隔；整体缩放为 (s)： 正类对数值：(\ s \cdot \cos(\theta + m)) 负类对数值：(\ s \cdot \cos(\theta)) 这种在角度空间直接施加间隔的做法使得类间分割边界更清晰，训练收敛更稳定。训练完成后，网络输出的嵌入（一般维度为 512）在 L2 归一化后落在单位球面上，使得几何度量（特别是余弦相似度）与“身份相似性”高度一致。 InsightFace通常会给出 normed_embedding （已归一化）；若取的是 embedding ，上层相似度函数会再次进行范数归一化，从而保证度量一致性。 相似度度量与决策 # 相似度度量的主流选择是余弦相似度。 将向量强制转换为 float32 ； 对两向量做 L2 范数归一化； 用点积除以范数乘积得到 (\cos\theta)。 余弦相似度的性质： 当嵌入已 L2 归一化时，余弦相似度与欧氏距离单调相关； 取值范围 ([-1, 1])，但人脸嵌入的实际分布通常集中在 ([0, 1]) 内，越接近 1 表示越相似。 决策阈值：阈值的设定应基于验证数据的统计与业务风险偏好： 提高阈值可降低误接受率（FAR），但可能上升误拒绝率（FRR）。 降低阈值可提高召回与检索效果，但误识别风险增加。 在工程落地中，常用 ROC/DET 曲线或 EER（Equal Error Rate）作为标定依据。也可以引入多帧一致性策略：连续 N 帧相似度超过阈值才认定为同一人，从而显著降低瞬时误报。 InsightFace调用代码 # import insightface from .</description>
+    </item>
+    
+    <item>
       <title>代码整洁之道</title>
       <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E4%BB%A3%E7%A0%81%E6%95%B4%E6%B4%81%E4%B9%8B%E9%81%93/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -1677,6 +1690,19 @@ StringHeader 是字符串在go的底层结构。 type StringHeader struct { Data
     </item>
     
     <item>
+      <title>面试集锦</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E9%9D%A2%E8%AF%95%E9%9B%86%E9%94%A6/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/%E9%9D%A2%E8%AF%95%E9%9B%86%E9%94%A6/</guid>
+      <description>一、并发与并行
+如何在 Go 中实现并发安全？ 描述 Go 的并发模型，Goroutine 是如何工作的？ 解释 Go 中的死锁，并提供如何避免死锁的策略？ 二、通道的高级用法
+通道的不同类型（缓冲通道和非缓冲通道）及其用例有哪些？ 如何优雅地关闭通道并处理相关的并发问题？ 在并发程序中，通常需要处理 goroutine 执行过程中产生的错误。请说明如何使用通道来收集和处理这些错误。提供一个示例，说明如何从多个并发执行的 goroutine 中收集错误信息。 解释为什么只有通道的发送者应该关闭通道，而接收者不应该关闭通道。在一个系统中，如果有多个发送者共享同一个通道，如何安全地关闭该通道？ 解释 select 语句在通道操作中的用途。如何使用 select 来同时处理多个通道的发送和接收操作？请提供一个示例。 三、性能优化
+Go 中常见的内存泄漏场景有哪些，如何排查和解决？ 解释逃逸分析以及它对性能优化的影响 描述你如何使用 pprof 进行性能分析？ Go 语言的垃圾回收机制如何影响应用程序的性能？你是如何优化垃圾回收的影响，以提高性能的？ 在微服务架构中，你如何通过 Go 实现服务之间的高效通信？请谈谈你在实现 RPC/HTTP API 时，对性能做了哪些优化？ 在 Go 中使用并发时，如何选择合适的并发模式（例如，goroutines 和 channels、sync 包中的工具等）来优化程序性能？请提供一个场景，并解释你的选择和实现方法。 描述在 Go 程序中，你是如何通过减少内存分配来优化性能的？请举例说明，比如利用 sync.Pool、减少逃逸分析中的堆分配等策略。 四、高级数据结构和算法
+Go 中的排序算法有哪些，如何选择合适的排序算法？ 在 Go 中实现高效的数据结构（如跳表、布隆过滤器）的策略 设计并实现一个并发安全的哈希表。提供 Get(key), Set(key, value), 和 Delete(key) 方法，并确保在多 goroutine 环境下操作的线程安全。 实现一个前缀树（Trie），它应该支持 insert, search, 和 startsWith 这三个操作。 编写一个函数，输入是一个区间的集合，其中每个区间包括左右端点，这些区间可能会重叠，需要合并并返回一个不重叠的区间列表。输出区间的列表需要按照左端点升序排列。 不使用任何库函数，设计并实现一个跳表（Skip List）。 五、系统设计与架构</description>
+    </item>
+    
+    <item>
       <title>项目收藏</title>
       <link>https://chain-code.github.io/docs/ai/basic/%E9%A1%B9%E7%9B%AE%E6%94%B6%E8%97%8F/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -1746,7 +1772,8 @@ parm := make(map[string]string) parm[&amp;#34;path&amp;#34;] = &amp;#34;http://b
       <pubDate>Thu, 03 Nov 2022 13:46:08 +0800</pubDate>
       
       <guid>https://chain-code.github.io/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/</guid>
-      <description> unsafe # 利用unsafe包修改私有成员 # 利用unsafe获取slice和map的长度 # 实现字符串和byte切片的零复制转换 # context # 译作“上下文”，准确说它是goroutine的上下文。主要用来在goroutine之间传递上下文信息，包括：取消信号、超时时间、截止时间、k-v等。
+      <description> unsafe # 利用unsafe包修改私有成员 # 利用unsafe获取slice和map的长度 # 实现字符串和byte切片的零复制转换 # context # 背景 |戴夫·切尼
+译作“上下文”，准确说它是goroutine的上下文。主要用来在goroutine之间传递上下文信息，包括：取消信号、超时时间、截止时间、k-v等。
 使用context几乎成为并发控制和超时控制的标准做法，与它协作的API都可以由外部控制执行“取消”操作，例如：取消一个HTTP请求的执行。
 另外，context.Context可以协调多个goroutine中的代码执行“取消”操作，并且可以存储键值对，最重要的是它是并发安全的操作。
 在Go的server里，对每个Request(请求)都会启动若干个goroutine同时工作：有些去内存查一些数据，有些去数据库拿数据，有些调用第三方接口获取相关数据等。

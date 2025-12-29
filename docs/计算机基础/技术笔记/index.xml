@@ -92,7 +92,7 @@ swag init -g http/api.go (可选) 使用fmt格式化 SWAG 注释。(请先升级
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/v2ray%E8%AE%B0%E5%BD%95/</guid>
-      <description>准备 # 参考 # https://github.com/233boy/v2ray/wiki/V2Ray%E6%90%AD%E5%BB%BA%E8%AF%A6%E7%BB%86%E5%9B%BE%E6%96%87%E6%95%99%E7%A8%8B
+      <description>v2ray # 准备 # 参考 # https://github.com/233boy/v2ray/wiki/V2Ray%E6%90%AD%E5%BB%BA%E8%AF%A6%E7%BB%86%E5%9B%BE%E6%96%87%E6%95%99%E7%A8%8B
 https://whuwangyong.github.io/2023-03-18-v2ray-websocket-tls-web-cloudflare-guide/
 https://github.com/v2fly/v2ray-examples?tab=readme-ov-file
 域名 # 地址
@@ -238,6 +238,18 @@ mdat
 假设我们有一个包含 AAC 音频的 MP4 文件，读取音频数据的详细步骤如下：
 步骤 1：找到 moov盒子
 通常 moov在文件末尾（利于网络流媒体），也可能在文件开头。程序会先定位到它。 步骤 2：在 moov中定位音频轨道</description>
+    </item>
+    
+    <item>
+      <title>搭建自己流媒体库</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E6%B5%81%E5%AA%92%E4%BD%93%E5%BA%93/</link>
+      <pubDate>Wed, 02 Nov 2022 20:37:13 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E6%B5%81%E5%AA%92%E4%BD%93%E5%BA%93/</guid>
+      <description>https://emby.media/
+pt资源
+服务器
+https://github.com/xbmc/xbmc</description>
     </item>
     
     <item>

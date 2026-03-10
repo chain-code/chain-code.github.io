@@ -47,6 +47,10 @@
     <loc>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/</loc>
     <lastmod>2021-01-26T11:17:56+00:00</lastmod>
   </url><url>
+    <loc>https://chain-code.github.io/docs/ai/basic/agent-skills/</loc>
+  </url><url>
+    <loc>https://chain-code.github.io/docs/ai/basic/agent%E7%BB%8F%E5%85%B8%E8%8C%83%E5%BC%8F%E6%9E%84%E5%BB%BA/</loc>
+  </url><url>
     <loc>https://chain-code.github.io/docs/python/package/argparse/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/ai/basic/</loc>
@@ -82,6 +86,8 @@
     <loc>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/gin%E5%8F%82%E6%95%B0%E7%BB%91%E5%AE%9A/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/go-%E4%B8%AD%E4%BD%BF%E7%94%A8-sync.pool-%E6%97%B6%E5%8F%AF%E8%83%BD%E9%81%87%E5%88%B0%E7%9A%84%E9%99%B7%E9%98%B1/</loc>
+  </url><url>
+    <loc>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/goland%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95linux%E4%BB%A3%E7%A0%81/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/golangci-lint/</loc>
   </url><url>
@@ -213,6 +219,8 @@
   </url><url>
     <loc>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</loc>
   </url><url>
+    <loc>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E6%8C%82%E8%BD%BD-windows-%E5%85%B1%E4%BA%AB%E7%9B%AE%E5%BD%95%E5%88%B0-linux/</loc>
+  </url><url>
     <loc>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80-%E7%89%9B%E5%AE%A2/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A7%84%E8%8C%83%E5%8C%96/</loc>
@@ -226,6 +234,8 @@
     <loc>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98%E4%B8%80/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E7%89%9B%E5%AE%A2%E5%85%AB%E8%82%A1/</loc>
+  </url><url>
+    <loc>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E7%9B%91%E5%90%AC%E6%96%87%E4%BB%B6%E5%A4%B9%E6%96%B0%E5%A2%9E%E6%96%87%E4%BB%B6/</loc>
   </url><url>
     <loc>https://chain-code.github.io/docs/ai/basic/%E7%9B%B8%E5%85%B3%E5%B7%A5%E5%85%B7%E5%BA%93/</loc>
   </url><url>
@@ -378,6 +388,9 @@
     <loc>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/%E6%B5%81%E5%BC%8F%E6%95%B0%E6%8D%AE/</loc>
     <lastmod>2021-12-27T21:22:31+00:00</lastmod>
   </url><url>
+    <loc>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/%E7%BE%A4%E8%81%8A%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/</loc>
+    <lastmod>2021-12-27T21:22:31+00:00</lastmod>
+  </url><url>
     <loc>https://chain-code.github.io/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/</loc>
     <lastmod>2021-12-20T10:11:10+00:00</lastmod>
   </url><url>
@@ -479,6 +492,9 @@
     <lastmod>2022-11-02T20:37:13+08:00</lastmod>
   </url><url>
     <loc>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E6%B5%81%E5%AA%92%E4%BD%93%E5%BA%93/</loc>
+    <lastmod>2022-11-02T20:37:13+08:00</lastmod>
+  </url><url>
+    <loc>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E6%9F%90%E8%A1%8C%E8%BD%A6%E8%AE%B0%E5%BD%95%E4%BB%AA%E8%A7%A3%E6%9E%90/</loc>
     <lastmod>2022-11-02T20:37:13+08:00</lastmod>
   </url><url>
     <loc>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/</loc>

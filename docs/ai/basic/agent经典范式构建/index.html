@@ -1,0 +1,4816 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="从 LLM 到 Agent 的跨越 # 大语言模型（LLM）本身具备强大的推理能力，但它存在两个致命缺陷：一是幻觉（一本正经地胡说八道），二是被动（无法主动获取外部实时信息）。 Agent（智能体）的出现正是为了解决这些问题。如果在 LLM 的“大脑”之外，为其配备感知工具（Tools）、长期记忆（Memory）和规划能力（Planning），它就能从一个被动的问答机器进化为主动解决问题的智能实体。为了真正掌握 Agent 的运作机制，接下来的教程将剥离所有复杂的第三方框架（如 LangChain 或 CrewAI），回归本质。我们将仅使用 OpenAI 的官方 SDK 和基础的 Python 环境。这种“去黑盒化”的实现方式，虽然看似原始，但能让你最直观地理解 Agent 是如何思考、决策并执行的。
+构建“大脑”接口 (Foundation) # 万丈高楼平地起，在赋予 Agent 使用工具和规划的能力之前，我们需要先封装一个稳定、统一的接口来与 LLM 进行交互。这个基础类将作为我们所有后续 Agent 实例的思考引擎，当前使用的API是基于deepseek提供的。
+import os from openai import OpenAI from dotenv import load_dotenv from typing import List, Dict # 加载 .env 文件中的环境变量 load_dotenv() class HelloAgentsLLM: def __init__(self, model: str = None, api_key: str = None, base_url: str = None, timeout: int = None): &#34;&#34;&#34; 初始化客户端。优先使用传入参数，如果未提供，则从环境变量加载。 &#34;&#34;&#34; self.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="Agent经典范式构建" />
+<meta property="og:description" content="从 LLM 到 Agent 的跨越 # 大语言模型（LLM）本身具备强大的推理能力，但它存在两个致命缺陷：一是幻觉（一本正经地胡说八道），二是被动（无法主动获取外部实时信息）。 Agent（智能体）的出现正是为了解决这些问题。如果在 LLM 的“大脑”之外，为其配备感知工具（Tools）、长期记忆（Memory）和规划能力（Planning），它就能从一个被动的问答机器进化为主动解决问题的智能实体。为了真正掌握 Agent 的运作机制，接下来的教程将剥离所有复杂的第三方框架（如 LangChain 或 CrewAI），回归本质。我们将仅使用 OpenAI 的官方 SDK 和基础的 Python 环境。这种“去黑盒化”的实现方式，虽然看似原始，但能让你最直观地理解 Agent 是如何思考、决策并执行的。
+构建“大脑”接口 (Foundation) # 万丈高楼平地起，在赋予 Agent 使用工具和规划的能力之前，我们需要先封装一个稳定、统一的接口来与 LLM 进行交互。这个基础类将作为我们所有后续 Agent 实例的思考引擎，当前使用的API是基于deepseek提供的。
+import os from openai import OpenAI from dotenv import load_dotenv from typing import List, Dict # 加载 .env 文件中的环境变量 load_dotenv() class HelloAgentsLLM: def __init__(self, model: str = None, api_key: str = None, base_url: str = None, timeout: int = None): &#34;&#34;&#34; 初始化客户端。优先使用传入参数，如果未提供，则从环境变量加载。 &#34;&#34;&#34; self." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chain-code.github.io/docs/ai/basic/agent%E7%BB%8F%E5%85%B8%E8%8C%83%E5%BC%8F%E6%9E%84%E5%BB%BA/" /><meta property="article:section" content="docs" />
+
+
+<title>Agent经典范式构建 | Soulmate</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" >
+<link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.de496f3f3e7ce48e12a2ef600d34cf158165b5acfb2c314ca7351bb06f3327ff.js" integrity="sha256-3klvPz585I4Sou9gDTTPFYFltaz7LDFMpzUbsG8zJ/8=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo.png" alt="Logo" /><span>Soulmate</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>计算机基础</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e99d92668627838818961f696faae00" class="toggle"  />
+    <label for="section-1e99d92668627838818961f696faae00" class="flex justify-between">
+      <a role="button" class="">八股文</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="">操作系统基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/linux%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/" class="">Linux问题总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80-%E7%89%9B%E5%AE%A2/" class="">数据库基础-牛客</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E7%89%9B%E5%AE%A2%E5%85%AB%E8%82%A1/" class="">牛客八股</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E9%9D%A2%E8%A7%86%E9%A2%98%E6%80%BB%E7%BB%93%E4%B8%80/" class="">面视题总结（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E9%9D%A2%E8%A7%86%E9%A2%98%E6%80%BB%E7%BB%93%E4%BA%8C/" class="">面视题总结（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="">计算机网络基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="">数据库基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" class="">布隆过滤器</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/linux%E5%9F%BA%E7%A1%80/" class="">Linux基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/git%E5%9F%BA%E7%A1%80/" class="">Git基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-7fa249d52759877ce54cc95e18294cc0" class="toggle"  />
+    <label for="section-7fa249d52759877ce54cc95e18294cc0" class="flex justify-between">
+      <a role="button" class="">技术笔记</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/crontab%E4%BD%BF%E7%94%A8/" class="">crontab使用</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/goland%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95linux%E4%BB%A3%E7%A0%81/" class="">Goland远程调试Linux代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/libewf%E5%BA%93%E7%BC%96%E8%AF%91/" class="">libewf库编译</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/localhost%E4%B8%8E127.0.0.1/" class="">localhost与127.0.0.1</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/schtasks%E4%BD%BF%E7%94%A8/" class="">schtask使用</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/swagger/" class="">Swagger</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/v2ray%E8%AE%B0%E5%BD%95/" class="">V2ray记录</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/vim%E7%BC%96%E7%A8%8B%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="">Vim编程常用快捷键</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E4%BB%A3%E7%A0%81%E6%95%B4%E6%B4%81%E4%B9%8B%E9%81%93/" class="">代码整洁之道</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A/" class="">代码注释</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8github%E5%92%8Cgitlab/" class="">同时使用github和gitlab</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E6%8C%82%E8%BD%BD-windows-%E5%85%B1%E4%BA%AB%E7%9B%AE%E5%BD%95%E5%88%B0-linux/" class="">挂载 Windows 共享目录到 Linux</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E7%9B%91%E5%90%AC%E6%96%87%E4%BB%B6%E5%A4%B9%E6%96%B0%E5%A2%9E%E6%96%87%E4%BB%B6/" class="">监听文件夹新增文件</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E8%8E%B7%E5%8F%96%E5%86%85%E7%BD%91%E6%B4%BB%E8%B7%83ip/" class="">获取内网活跃IP</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E9%80%9A%E8%BF%87%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81%E8%AE%A1%E7%AE%97ip%E5%9C%B0%E5%9D%80%E8%8C%83%E5%9B%B4/" class="">通过子网掩码计算IP地址范围</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E9%85%8D%E7%BD%AEkylinv10/" class="">配置 Kylin V10</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/mp4%E6%A0%BC%E5%BC%8F%E5%88%86%E6%9E%90/" class="">MP4格式分析</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E6%B5%81%E5%AA%92%E4%BD%93%E5%BA%93/" class="">搭建自己流媒体库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E6%9F%90%E8%A1%8C%E8%BD%A6%E8%AE%B0%E5%BD%95%E4%BB%AA%E8%A7%A3%E6%9E%90/" class="">某行车记录仪解析</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E8%99%9A%E6%8B%9F%E7%BB%84%E7%BD%91/" class="">虚拟组网</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/" class="">个人博客搭建Hugo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhexo/" class="">个人博客搭建Hexo</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3dcacc5e7a7c646c608757dc5f042d92" class="toggle"  />
+    <label for="section-3dcacc5e7a7c646c608757dc5f042d92" class="flex justify-between">
+      <a role="button" class="">LeetCode</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-10-14-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%B8%80/" class="">golang力扣刷题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98%E4%B8%80/" class="">每日一题（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/%E7%BC%96%E7%A8%8B%E9%A2%98/" class="">编程题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-11-04-golang%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E4%BA%8C/" class="">golang力扣刷题（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/%E5%BF%85%E5%88%B7top101/" class="">必刷top101</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/leetcode/2021-10-28-leetcode%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" class="">LeetCode算法总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Golang</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-670eda717a06f31447c52422ec93a159" class="toggle"  />
+    <label for="section-670eda717a06f31447c52422ec93a159" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-04-07-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%80/" class="">go语言基础（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/channel/" class="">Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go-%E4%B8%AD%E4%BD%BF%E7%94%A8-sync.pool-%E6%97%B6%E5%8F%AF%E8%83%BD%E9%81%87%E5%88%B0%E7%9A%84%E9%99%B7%E9%98%B1/" class="">Go 中使用 sync.Pool 时可能遇到的陷阱</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/golangci-lint/" class="">golangci-lint</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/golang%E6%8E%A7%E6%B5%81/" class="">Golang控流</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/golang%E9%99%90%E6%B5%81%E5%AE%9E%E8%B7%B5/" class="">golang限流实践</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E6%B3%9B%E5%9E%8B%E4%BB%8B%E7%BB%8D/" class="">go泛型介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/panic/" class="">panic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/pprof/" class="">pprof</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/protobuf/" class="">ProtoBuf</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/url/" class="">URL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8C%85%E7%AE%A1%E7%90%86/" class="">包管理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="">单元测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/io.copy/" class="">奇怪的io.copy</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E7%94%A8%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">常用业务代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E9%9D%A2%E8%AF%95%E9%9B%86%E9%94%A6/" class="">面试集锦</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-10-26-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%BA%8C/" class="">go语言基础（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%89/" class="">go语言基础（三）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-go/" class="">数据结构-go</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E8%AF%AD%E8%A8%80%E5%BA%95%E5%B1%82%E5%9F%BA%E7%A1%80/" class="">go语言底层基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/2021-12-20-benchmark%E6%B5%8B%E8%AF%95/" class="">benchmark测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/go%E5%AE%89%E5%85%A8%E6%8C%87%E5%8D%97/" class="">Go安全指南</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/json%E5%BA%8F%E5%88%97%E5%8C%96/" class="">Json序列化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E4%BD%BF%E7%94%A8ollvm%E6%B7%B7%E6%B7%86hello-world/" class="">使用 Ollvm混淆 Hello World</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB%E5%90%88%E9%9B%86/" class="">经验分享合集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E5%9F%BA%E7%A1%80/goland%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/" class="">Goland常用技巧</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c453881a62c640f6a4cceec99c02477e" class="toggle"  />
+    <label for="section-c453881a62c640f6a4cceec99c02477e" class="flex justify-between">
+      <a role="button" class="">高阶</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" class="">Go高阶-语言基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90/" class="">Go内存对齐</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" class="">并发编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%81%BF%E5%9D%91%E6%8C%87%E5%8D%97/" class="">Go避坑指南</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%BA%93/" class="">Go高阶 语言类库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" class="">go性能优化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/go%E9%AB%98%E9%98%B6-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" class="">Go高阶 高级特性</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E9%AB%98%E9%98%B6/%E6%98%93%E9%94%99%E7%BB%86%E8%8A%82/" class="">易错细节</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f235e88e751d2cb18d527c1784763605" class="toggle"  />
+    <label for="section-f235e88e751d2cb18d527c1784763605" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/flag/" class="">Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/atomic/" class="">Atomic</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/os/" class="">Os</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strconv/" class="">Strconv</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sort/" class="">Sort</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/strings/" class="">Strings</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/reflect/" class="">Reflect</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/context/" class="">context</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/filepath/" class="">filepath</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/math/" class="">math</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/time/" class="">Time</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/package/sync/" class="">Sync</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-98f45c00d30ea45270982f872bd1c0bb" class="toggle"  />
+    <label for="section-98f45c00d30ea45270982f872bd1c0bb" class="flex justify-between">
+      <a role="button" class="">第三方库</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/resty/" class="">resty</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/diskqueue/" class="">diskqueue</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/golang/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/gofpdf/" class="">gofpdf</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>AI</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-9b671b3ce1ddd28af1b4312866c8b524" class="toggle" checked />
+    <label for="section-9b671b3ce1ddd28af1b4312866c8b524" class="flex justify-between">
+      <a role="button" class="">Basic</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/agent-skills/" class="">agent skills</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/agent%E7%BB%8F%E5%85%B8%E8%8C%83%E5%BC%8F%E6%9E%84%E5%BB%BA/" class="active">Agent经典范式构建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/cursor%E7%BB%AD%E6%9D%AF/" class="">cursor续杯</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/mcp%E6%9C%8D%E5%8A%A1/" class="">MCP服务</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/opencv_cuda%E7%BC%96%E8%AF%91/" class="">Opencv Cuda编译</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/pytorch%E9%A3%9F%E8%B0%B1/" class="">pytorch食谱</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/trae%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97%E5%88%86%E4%BA%AB/" class="">Trae使用心得分享</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/%E5%80%9F%E5%8A%A9ai%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B9%B3%E5%8F%B0%E5%A4%8D%E7%9B%98-/" class="">借助AI编程工具从零构建数据可视化平台复盘</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/%E5%8D%8E%E4%B8%BA%E6%98%87%E8%85%BE910b%E9%80%82%E9%85%8D%E8%AE%B0%E5%BD%95/" class="">华为昇腾910B适配记录</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="">基础知识</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/%E7%9B%B8%E5%85%B3%E5%B7%A5%E5%85%B7%E5%BA%93/" class="">相关工具库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/%E9%A1%B9%E7%9B%AE%E6%94%B6%E8%97%8F/" class="">项目收藏</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/ai%E7%9F%A5%E8%AF%86%E6%99%AE%E5%8F%8A/" class="">Ai知识普及</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-12d52a883bb94360d36ad3bbf0cb5fd3" class="toggle"  />
+    <label for="section-12d52a883bb94360d36ad3bbf0cb5fd3" class="flex justify-between">
+      <a role="button" class="">Computer Vision</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/ocr%E8%AF%86%E5%88%AB/" class="">Ocr识别</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/reid%E6%95%B0%E6%8D%AE%E9%9B%86/" class="">Reid数据集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/reid%E8%A1%8C%E4%BA%BA%E9%87%8D%E8%AF%86%E5%88%AB/" class="">Reid行人重识别</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/tracker%E7%9B%AE%E6%A0%87%E8%BF%BD%E8%B8%AA/" class="">tracker目标追踪</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/yolo-world/" class="">yolo-world</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/yolo%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" class="">yolo底层原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/yolo%E6%95%B0%E6%8D%AE%E9%9B%86/" class="">yolo数据集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB/" class="">人脸识别</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/%E5%9B%BE%E5%83%8F%E5%A2%9E%E5%BC%BA%E4%BB%8B%E7%BB%8D/" class="">图像增强介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/%E5%9B%BE%E5%83%8F%E8%B6%85%E5%88%86%E5%8E%9F%E7%90%86/" class="">图像超分原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/%E8%A7%86%E9%A2%91%E8%B6%85%E5%88%86/" class="">视频超分</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/computer-vision/yolov8%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B&#43;%E5%AE%9E%E8%B7%B5/" class="">Yolov8快速上手 实践</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-948cfe1684759289af9e39747f026a40" class="toggle"  />
+    <label for="section-948cfe1684759289af9e39747f026a40" class="flex justify-between">
+      <a role="button" class="">Generative AI</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/generative-ai/qwen2.5-vl%E6%BA%90%E7%A0%81%E9%83%A8%E7%BD%B2/" class="">Qwen2.5-vl源码部署</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/generative-ai/xinference%E5%9F%BA%E7%A1%80/" class="">Xinference基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/generative-ai/%E5%88%A9%E7%94%A8dspy%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90prompt/" class="">利用 Dspy自动生成 Prompt</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ac8e4e2fda641053d78fc10cbbde236e" class="toggle"  />
+    <label for="section-ac8e4e2fda641053d78fc10cbbde236e" class="flex justify-between">
+      <a role="button" class="">C</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/c&#43;&#43;%E9%83%A8%E7%BD%B2paddleocr/" class="">C&#43;&#43;部署PaddleOCR</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/cgo/" class="">CGo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/cgo%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/" class="">CGO遇到的问题解决</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81/" class="">业务代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/c/%E5%9C%A8cgo%E4%B8%AD%E9%9B%86%E6%88%90%E5%92%8C%E8%B0%83%E7%94%A8dll%E6%96%87%E4%BB%B6/" class="">在CGO中集成和调用DLL文件</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Python</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-9fa9875ee3af29ba8922d532968a7155" class="toggle"  />
+    <label for="section-9fa9875ee3af29ba8922d532968a7155" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/%E5%9F%BA%E7%A1%80/python%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E6%8E%92%E6%9F%A5%E6%96%B9%E6%B3%95/" class="">python内存泄漏排查方法</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/%E5%9F%BA%E7%A1%80/python%E5%9F%BA%E7%A1%80/" class="">python基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/%E5%9F%BA%E7%A1%80/python%E5%AE%89%E8%A3%85/" class="">python安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/%E5%9F%BA%E7%A1%80/venv%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/" class="">venv虚拟环境</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/%E5%9F%BA%E7%A1%80/%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B/" class="">开发实例</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/%E5%9F%BA%E7%A1%80/%E6%97%A5%E5%B8%B8%E5%B0%8F%E8%84%9A%E6%9C%AC/" class="">日常小脚本</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76d10924673a9347dff74c68c3ea9d86" class="toggle"  />
+    <label for="section-76d10924673a9347dff74c68c3ea9d86" class="flex justify-between">
+      <a role="button" class="">Package</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/argparse/" class="">argparse</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/collections/" class="">collections</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/detetime/" class="">datetime</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/decord/" class="">Decord</a>
+  
+
+        </li>
+      
+    
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/uvicorn/" class="">uvicorn</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/python/package/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="">正则表达式</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>数据库</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-94f26238d1ca3b5bcd40eadc7a88d726" class="toggle"  />
+    <label for="section-94f26238d1ca3b5bcd40eadc7a88d726" class="flex justify-between">
+      <a role="button" class="">MySql</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%982/" class="">MySql相关问题2</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%981/" class="">MySql相关问题1</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E9%94%81%E7%9B%B8%E5%85%B3%E6%80%BB%E7%BB%93/" class="">MySql锁相关总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/2021-04-20-mysql%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" class="">MySql基础总结</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mac%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="">Mac连接数据库所遇到的问题</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1/" class="">数据库设计</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="toggle"  />
+    <label for="section-01e4ef5e6295826a1eab8f1a7114ec2c" class="flex justify-between">
+      <a role="button" class="">Redis</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/redis%E9%9D%A2%E8%AF%95%E9%A2%98%E6%80%BB%E7%BB%932/" class="">Redis面试题总结2</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-21-redis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="">Redis集群搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2022-03-20-redis%E5%9F%BA%E7%A1%80/" class="">Redis基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="">redis面试总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8be9c2251abd1fe110e3c1520cac6177" class="toggle"  />
+    <label for="section-8be9c2251abd1fe110e3c1520cac6177" class="flex justify-between">
+      <a role="button" class="">SQLite</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/fts/" class="">fts</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite/" class="">Sqlite</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/sqlite/sqlite%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8F%92%E5%85%A5%E4%BC%98%E5%8C%96/" class="">Sqlite数据库插入优化</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f65a9544b5a0dd9c3cbedb29b743305e" class="toggle"  />
+    <label for="section-f65a9544b5a0dd9c3cbedb29b743305e" class="flex justify-between">
+      <a role="button" class="">基础</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/mongodb%E5%AE%89%E8%A3%85/" class="">Mongodb安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" class="">分库分表</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A7%84%E8%8C%83%E5%8C%96/" class="">数据库规范化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/xorm/" class="">Xorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/gorm/" class="">Gorm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/" class="">常见数据库的备份与恢复</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>系统架构</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%9F%BA%E7%A1%80/" class="">系统架构基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-083ca86fd1b56cca1f76a6d6b34dc093" class="toggle"  />
+    <label for="section-083ca86fd1b56cca1f76a6d6b34dc093" class="flex justify-between">
+      <a role="button" class="">设计模式</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E5%88%9B%E5%BB%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">创建型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%BB%93%E6%9E%84%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">结构型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="">行为型设计模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%89%A9%E5%B1%95/" class="">设计模式扩展</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a36f740001772a844eb3087eeb17eb6d" class="toggle"  />
+    <label for="section-a36f740001772a844eb3087eeb17eb6d" class="flex justify-between">
+      <a role="button" class="">分布式</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%88%86%E5%B8%83%E5%BC%8F/elasticsearch%E9%9D%A2%E8%AF%95%E9%A2%98/" class="">Elastic Search面试题</a>
+  
+
+        </li>
+      
+    
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%88%86%E5%B8%83%E5%BC%8F%E9%9D%A2%E8%AF%95%E9%A2%98/" class="">分布式面试题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%9C%BA%E6%99%AF%E9%A2%98/" class="">场景题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%88%86%E5%B8%83%E5%BC%8F/%E9%AB%98%E5%B9%B6%E5%8F%91%E9%AB%98%E5%8F%AF%E7%94%A8/" class="">高并发高可用</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-266e66094f86ce336245af3b8aaf0e2e" class="toggle"  />
+    <label for="section-266e66094f86ce336245af3b8aaf0e2e" class="flex justify-between">
+      <a role="button" class="">微服务</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/grpc/" class="">Grpc</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/grpc%E6%8B%A6%E6%88%AA%E5%99%A8retry/" class="">grpc拦截器retry</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E5%BE%AE%E6%9C%8D%E5%8A%A1/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="">微服务</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3d14fec58473cc9c35cafaca50699647" class="toggle"  />
+    <label for="section-3d14fec58473cc9c35cafaca50699647" class="flex justify-between">
+      <a role="button" class="">web框架</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/gin%E5%8F%82%E6%95%B0%E7%BB%91%E5%AE%9A/" class="">Gin参数绑定</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1/" class="">动态路由与静态路由</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/gin%E6%A1%86%E6%9E%B6/" class="">gin框架</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/%E6%B5%81%E5%BC%8F%E6%95%B0%E6%8D%AE/" class="">流式数据</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/%E7%BE%A4%E8%81%8A%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" class="">群聊系统设计</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a4047feef6f367d46b68d1e8995f5851" class="toggle"  />
+    <label for="section-a4047feef6f367d46b68d1e8995f5851" class="flex justify-between">
+      <a role="button" class="">前端</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/restfulapi/" class="">Restful API</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/vite&#43;vue%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE/" class="">Vite&#43;Vue快速搭建项目</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/vue3/" class="">Vue3</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/vue%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">Vue环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/websocket/" class="">Web Socket</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%89%8D%E7%AB%AF/webstorm-debug/" class="">WebStorm-debug</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5ee6dbeeb93d5d07b824c3368271f046" class="toggle"  />
+    <label for="section-5ee6dbeeb93d5d07b824c3368271f046" class="flex justify-between">
+      <a role="button" class="">区块链</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="toggle"  />
+    <label for="section-76bfb65f46ce25a0ff78d6cc4ad47773" class="flex justify-between">
+      <a role="button" class="">Fabric</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-02-25-fabric%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">fabric相关机制与原理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-10-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/" class="">智能合约</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-08-fabric-sdk-go%E8%AF%A6%E8%A7%A3/" class="">fabric-sdk-go详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric-ca%E8%AF%A6%E8%A7%A3/" class="">fabric-ca详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="toggle"  />
+    <label for="section-1e3df3eda5cf08a9c7e8cc723288fefb" class="flex justify-between">
+      <a role="button" class="">环境测试</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%B8%80/" class="">fabric网络中的报错（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-22-fabric%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%8A%A5%E9%94%99%E4%BA%8C/" class="">fabric网络中的报错（二）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-24-fabric%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">fabric环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric-solo%E8%8A%82%E7%82%B9%E6%B5%8B%E8%AF%95/" class="">solo节点测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-25-fabric%E5%A4%9A%E6%9C%BA%E6%90%AD%E5%BB%BA/" class="">fabric多机搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-12-20-%E9%83%A8%E7%BD%B2tape%E6%B5%8B%E8%AF%95/" class="">部署tape测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-05-01-%E6%89%8B%E5%8A%A8%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E6%90%AD%E5%BB%BAfabric%E7%BD%91%E7%BB%9C/" class="">手动生成ca证书搭建fabric网络</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95/2021-03-18-centos%E5%AE%89%E8%A3%85fabric1.2/" class="">centos安装fabric1.2</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-25aef1d59a561fcefcaecb043ef8afd2" class="toggle"  />
+    <label for="section-25aef1d59a561fcefcaecb043ef8afd2" class="flex justify-between">
+      <a role="button" class="">配置文件</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-05-01-cryptogen%E7%94%9F%E6%88%90%E7%9A%84%E8%AF%81%E4%B9%A6%E8%AF%A6%E8%A7%A3/" class="">cryptogen生成的证书详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-30-docker-compose-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">docker-compose.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-configtx-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">configtx.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/2021-03-29-crypto-config-yaml%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">crypto-config.yaml文件详解</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-04-14-%E5%8D%87%E7%BA%A7%E9%93%BE%E7%A0%81/" class="">升级链码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2022-03-25-%E5%8C%BA%E5%9D%97%E9%93%BE%E7%BD%91%E7%BB%9C%E6%B7%BB%E5%8A%A0%E7%BB%84%E7%BB%87/" class="">区块链网络添加组织</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-05-02-fabric%E6%B5%8F%E8%A7%88%E5%99%A8%E6%90%AD%E5%BB%BA/" class="">fabric浏览器搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-17-%E5%A6%82%E4%BD%95%E5%9C%A8%E5%B7%B2%E6%9C%89%E7%BB%84%E7%BB%87%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/" class="">如何在已有组织中增加节点</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/fabric/2021-04-15-fabric1.4%E5%A4%9A%E9%80%9A%E9%81%93%E5%AE%9E%E9%AA%8C/" class="">Fabric1.4多通道实验</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b07621083aa30b12de4c0333941e479f" class="toggle"  />
+    <label for="section-b07621083aa30b12de4c0333941e479f" class="flex justify-between">
+      <a role="button" class="">比特币</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%AF%94%E7%89%B9%E5%B8%81/2022-02-25-%E6%AF%94%E7%89%B9%E5%B8%81%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%8E%9F%E7%90%86/" class="">比特币相关机制与原理</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ff5477999ef29208270c84e8b56b2758" class="toggle"  />
+    <label for="section-ff5477999ef29208270c84e8b56b2758" class="flex justify-between">
+      <a role="button" class="">IPFS</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-12-05-go-ipfs-api/" class="">go-ipfs-api</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-12-ipfs-webui%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" class="">ipfs-webui可视化工具搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-07-08-ipfs%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E4%B8%80/" class="">IPFS基本原理（一）</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/ipfs/2021-06-02-ipfs%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C%E6%90%AD%E5%BB%BA/" class="">IPFS私有网络搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-77a0a17b06e8d04cfb0fba9952941706" class="toggle"  />
+    <label for="section-77a0a17b06e8d04cfb0fba9952941706" class="flex justify-between">
+      <a role="button" class="">密码学</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2022-08-15-%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" class="">区块链安全基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-04-12-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E5%AF%86/" class="">椭圆曲线加密</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/2021-03-04-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/" class="">密码学基础</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2e4d10b323fd668021dbd532575d8790" class="toggle"  />
+    <label for="section-2e4d10b323fd668021dbd532575d8790" class="flex justify-between">
+      <a role="button" class="">Docker</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E5%9F%BA%E7%A1%80/" class="">Docker基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/docker%E9%97%AE%E9%A2%98/" class="">Docker问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/dockerfile/" class="">Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/docker/2021-04-30-docker%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" class="">docker常用知识总结</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-70383d7f28a7ae4bf840a844eb61aa16" class="toggle"  />
+    <label for="section-70383d7f28a7ae4bf840a844eb61aa16" class="flex justify-between">
+      <a role="button" class="">共识算法</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/" class="">共识算法基础</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/2022-03-26-raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" class="">Raft共识算法</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E6%94%B6%E8%97%8F/" class="">开源项目收藏</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Agent经典范式构建</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#从-llm-到-agent-的跨越">从 LLM 到 Agent 的跨越</a>
+          <ul>
+            <li><a href="#构建大脑接口-foundation">构建“大脑”接口 (Foundation)</a></li>
+          </ul>
+        </li>
+        <li><a href="#核心范式拆解">核心范式拆解</a>
+          <ul>
+            <li><a href="#协同行动react-reasoning--acting">协同行动：ReAct (Reasoning + Acting)</a></li>
+            <li><a href="#宏观规划plan-and-solve-ps">宏观规划：Plan-and-Solve (PS)</a></li>
+            <li><a href="#自我进化reflection-self-correction">自我进化：Reflection (Self-Correction)</a></li>
+          </ul>
+        </li>
+        <li><a href="#范式融合与展望">范式融合与展望</a>
+          <ul>
+            <li><a href="#1-范式融合构建复合型-agent">1. 范式融合：构建复合型 Agent</a></li>
+            <li><a href="#2-未来展望agent-的进化方向">2. 未来展望：Agent 的进化方向</a></li>
+            <li><a href="#总结">总结</a></li>
+          </ul>
+        </li>
+        <li><a href="#参考">参考</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h2 id="从-llm-到-agent-的跨越">
+  从 LLM 到 Agent 的跨越
+  <a class="anchor" href="#%e4%bb%8e-llm-%e5%88%b0-agent-%e7%9a%84%e8%b7%a8%e8%b6%8a">#</a>
+</h2>
+<p>大语言模型（LLM）本身具备强大的推理能力，但它存在两个致命缺陷：一是幻觉（一本正经地胡说八道），二是被动（无法主动获取外部实时信息）。 Agent（智能体）的出现正是为了解决这些问题。如果在 LLM 的“大脑”之外，为其配备感知工具（Tools）、长期记忆（Memory）和规划能力（Planning），它就能从一个被动的问答机器进化为主动解决问题的智能实体。为了真正掌握 Agent 的运作机制，接下来的教程将剥离所有复杂的第三方框架（如 LangChain 或 CrewAI），回归本质。我们将仅使用 OpenAI 的官方 SDK 和基础的 Python 环境。这种“去黑盒化”的实现方式，虽然看似原始，但能让你最直观地理解 Agent 是如何思考、决策并执行的。</p>
+<h3 id="构建大脑接口-foundation">
+  构建“大脑”接口 (Foundation)
+  <a class="anchor" href="#%e6%9e%84%e5%bb%ba%e5%a4%a7%e8%84%91%e6%8e%a5%e5%8f%a3-foundation">#</a>
+</h3>
+<p>万丈高楼平地起，在赋予 Agent 使用工具和规划的能力之前，我们需要先封装一个稳定、统一的接口来与 LLM 进行交互。这个基础类将作为我们所有后续 Agent 实例的思考引擎，当前使用的API是基于<a href="https://www.deepseek.com/">deepseek</a>提供的。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> openai <span style="color:#f92672">import</span> OpenAI
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> dotenv <span style="color:#f92672">import</span> load_dotenv
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> typing <span style="color:#f92672">import</span> List, Dict
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 加载 .env 文件中的环境变量</span>
+</span></span><span style="display:flex;"><span>load_dotenv()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HelloAgentsLLM</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self, model: str <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>, api_key: str <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>, base_url: str <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>, timeout: int <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        初始化客户端。优先使用传入参数，如果未提供，则从环境变量加载。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>model <span style="color:#f92672">=</span> model <span style="color:#f92672">or</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#34;AI_MODEL_NAME&#34;</span>)
+</span></span><span style="display:flex;"><span>        api_key <span style="color:#f92672">=</span> api_key <span style="color:#f92672">or</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#34;AI_API_KEY&#34;</span>)
+</span></span><span style="display:flex;"><span>        base_url <span style="color:#f92672">=</span> base_url <span style="color:#f92672">or</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#34;AI_API_BASE_URL&#34;</span>)
+</span></span><span style="display:flex;"><span>        timeout <span style="color:#f92672">=</span> timeout <span style="color:#f92672">or</span> int(os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#34;AI_LLM_TIMEOUT&#34;</span>, <span style="color:#ae81ff">60</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> all([self<span style="color:#f92672">.</span>model, api_key, base_url]):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">ValueError</span>(<span style="color:#e6db74">&#34;模型ID、API密钥和服务地址必须被提供或在.env文件中定义。&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>client <span style="color:#f92672">=</span> OpenAI(api_key<span style="color:#f92672">=</span>api_key, base_url<span style="color:#f92672">=</span>base_url, timeout<span style="color:#f92672">=</span>timeout)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">think</span>(self, messages: List[Dict[str, str]], temperature: float <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) <span style="color:#f92672">-&gt;</span> str:
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        调用大语言模型进行思考，并返回其响应。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;🧠 正在调用 </span><span style="color:#e6db74">{</span>self<span style="color:#f92672">.</span>model<span style="color:#e6db74">}</span><span style="color:#e6db74"> 模型...&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>            response <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>client<span style="color:#f92672">.</span>chat<span style="color:#f92672">.</span>completions<span style="color:#f92672">.</span>create(
+</span></span><span style="display:flex;"><span>                model<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>model,
+</span></span><span style="display:flex;"><span>                messages<span style="color:#f92672">=</span>messages,
+</span></span><span style="display:flex;"><span>                temperature<span style="color:#f92672">=</span>temperature,
+</span></span><span style="display:flex;"><span>                stream<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>,
+</span></span><span style="display:flex;"><span>            )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 处理流式响应</span>
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">&#34;✅ 大语言模型响应成功:&#34;</span>)
+</span></span><span style="display:flex;"><span>            collected_content <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> chunk <span style="color:#f92672">in</span> response:
+</span></span><span style="display:flex;"><span>                content <span style="color:#f92672">=</span> chunk<span style="color:#f92672">.</span>choices[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>delta<span style="color:#f92672">.</span>content <span style="color:#f92672">or</span> <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>                print(content, end<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>, flush<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>                collected_content<span style="color:#f92672">.</span>append(content)
+</span></span><span style="display:flex;"><span>            print()  <span style="color:#75715e"># 在流式输出结束后换行</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">.</span>join(collected_content)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;❌ 调用LLM API时发生错误: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># --- 客户端使用示例 ---</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>        llmClient <span style="color:#f92672">=</span> HelloAgentsLLM()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        exampleMessages <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>            {<span style="color:#e6db74">&#34;role&#34;</span>: <span style="color:#e6db74">&#34;system&#34;</span>, <span style="color:#e6db74">&#34;content&#34;</span>: <span style="color:#e6db74">&#34;You are a helpful assistant that writes Python code.&#34;</span>},
+</span></span><span style="display:flex;"><span>            {<span style="color:#e6db74">&#34;role&#34;</span>: <span style="color:#e6db74">&#34;user&#34;</span>, <span style="color:#e6db74">&#34;content&#34;</span>: <span style="color:#e6db74">&#34;写一个快速排序算法&#34;</span>}
+</span></span><span style="display:flex;"><span>        ]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;--- 调用LLM ---&#34;</span>)
+</span></span><span style="display:flex;"><span>        responseText <span style="color:#f92672">=</span> llmClient<span style="color:#f92672">.</span>think(exampleMessages)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> responseText:
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">--- 完整模型响应 ---&#34;</span>)
+</span></span><span style="display:flex;"><span>            print(responseText)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">ValueError</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>        print(e)
+</span></span></code></pre></div><h2 id="核心范式拆解">
+  核心范式拆解
+  <a class="anchor" href="#%e6%a0%b8%e5%bf%83%e8%8c%83%e5%bc%8f%e6%8b%86%e8%a7%a3">#</a>
+</h2>
+<h3 id="协同行动react-reasoning--acting">
+  协同行动：ReAct (Reasoning + Acting)
+  <a class="anchor" href="#%e5%8d%8f%e5%90%8c%e8%a1%8c%e5%8a%a8react-reasoning--acting">#</a>
+</h3>
+<p>ReAct由Shunyu Yao于2022年提出，其核心思想是模仿人类解决问题的方式，将推理 (Reasoning) 与行动 (Acting) 显式地结合起来，形成一个“思考-行动-观察”的循环。</p>
+<h4 id="工作流程">
+  工作流程
+  <a class="anchor" href="#%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b">#</a>
+</h4>
+<p>在ReAct诞生之前，主流的方法可以分为两类：一类是“纯思考”型，如思维链 (Chain-of-Thought)，它能引导模型进行复杂的逻辑推理，但无法与外部世界交互，容易产生事实幻觉；另一类是“纯行动”型，模型直接输出要执行的动作，但缺乏规划和纠错能力。</p>
+<p>ReAct的巧妙之处在于，它认识到思考与行动是相辅相成的。思考指导行动，而行动的结果又反过来修正思考。为此，ReAct范式通过一种特殊的提示工程来引导模型，使其每一步的输出都遵循一个固定的轨迹：</p>
+<ul>
+<li>Thought (思考)： 这是智能体的“内心独白”。它会分析当前情况、分解任务、制定下一步计划，或者反思上一步的结果。</li>
+<li>Action (行动)： 这是智能体决定采取的具体动作，通常是调用一个外部工具，例如 Search[&lsquo;华为最新款手机&rsquo;]。</li>
+<li>Observation (观察)： 这是执行Action后从外部工具返回的结果，例如搜索结果的摘要或API的返回值。</li>
+</ul>
+<p>智能体将不断重复这个 Thought -&gt; Action -&gt; Observation 的循环，将新的观察结果追加到历史记录中，形成一个不断增长的上下文，直到它在Thought中认为已经找到了最终答案，然后输出结果。这个过程形成了一个强大的协同效应：推理使得行动更具目的性，而行动则为推理提供了事实依据，具体的流程如下图所示：</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20260123131714906.png" alt="" /></p>
+<p>这种机制特别适用于以下场景：</p>
+<ul>
+<li>需要外部知识的任务：如查询实时信息（天气、新闻、股价）、搜索专业领域的知识等。</li>
+<li>需要精确计算的任务：将数学问题交给计算器工具，避免LLM的计算错误。</li>
+<li>需要与API交互的任务：如操作数据库、调用某个服务的API来完成特定功能。</li>
+</ul>
+<h4 id="编码实现">
+  编码实现
+  <a class="anchor" href="#%e7%bc%96%e7%a0%81%e5%ae%9e%e7%8e%b0">#</a>
+</h4>
+<p>实现代码可在<a href="https://gitlab.forensix.cn/xudaqian/ai-agent/-/blob/main/react.py?ref_type=heads">gitlab</a>中找到</p>
+<h5 id="工具定义">
+  工具定义
+  <a class="anchor" href="#%e5%b7%a5%e5%85%b7%e5%ae%9a%e4%b9%89">#</a>
+</h5>
+<p>为了让大模型拥有和世界进行交互的能力，我们需要构建一个可以调用搜索引擎能力的工具，作为ReAct在解决问题是可以通过工具来获取相关的额外信息，这里我们使用<a href="https://www.tavily.com">tavily</a>来提供搜索的能力，首先需要安装对应的sdk</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pip install tavily-python
+</span></span></code></pre></div><ol>
+<li>定义模型所需工具</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> tavily <span style="color:#f92672">import</span> TavilyClient
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> dotenv <span style="color:#f92672">import</span> load_dotenv
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> typing <span style="color:#f92672">import</span> Dict, Any
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 加载 .env 文件中的环境变量</span>
+</span></span><span style="display:flex;"><span>load_dotenv()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">search</span>(query: str) <span style="color:#f92672">-&gt;</span> str:
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    一个基于 Tavily 的 AI 专用搜索引擎工具。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    它不仅返回网页链接，还能直接生成问题的简短答案或相关上下文。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;🔍 正在执行 [Tavily] 网页搜索: </span><span style="color:#e6db74">{</span>query<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>        api_key <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#34;TAVILY_API_KEY&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> api_key:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;错误: TAVILY_API_KEY 未在 .env 文件中配置。&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 初始化 Tavily 客户端</span>
+</span></span><span style="display:flex;"><span>        client <span style="color:#f92672">=</span> TavilyClient(api_key<span style="color:#f92672">=</span>api_key)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 执行搜索</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># search_depth=&#34;basic&#34; 速度快，&#34;advanced&#34; 质量高但慢</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># include_answer=True 让 Tavily 尝试直接生成一个简短回答</span>
+</span></span><span style="display:flex;"><span>        response <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>search(
+</span></span><span style="display:flex;"><span>            query<span style="color:#f92672">=</span>query,
+</span></span><span style="display:flex;"><span>            search_depth<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;basic&#34;</span>,
+</span></span><span style="display:flex;"><span>            include_answer<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>,
+</span></span><span style="display:flex;"><span>            max_results<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 智能解析: 优先返回 Tavily 生成的直接答案</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> response<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;answer&#34;</span>):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;直接答案: </span><span style="color:#e6db74">{</span>response[<span style="color:#e6db74">&#39;answer&#39;</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 如果没有直接答案，返回上下文片段 (Context)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> response<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;results&#34;</span>):
+</span></span><span style="display:flex;"><span>            snippets <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> i, res <span style="color:#f92672">in</span> enumerate(response[<span style="color:#e6db74">&#34;results&#34;</span>]):
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># 清洗内容，防止过长</span>
+</span></span><span style="display:flex;"><span>                content <span style="color:#f92672">=</span> res<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;content&#39;</span>, <span style="color:#e6db74">&#39;&#39;</span>)[:<span style="color:#ae81ff">300</span>]
+</span></span><span style="display:flex;"><span>                snippets<span style="color:#f92672">.</span>append(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;[</span><span style="color:#e6db74">{</span>i <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#e6db74">}</span><span style="color:#e6db74">] </span><span style="color:#e6db74">{</span>res<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;title&#39;</span>, <span style="color:#e6db74">&#39;&#39;</span>)<span style="color:#e6db74">}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{</span>content<span style="color:#e6db74">}</span><span style="color:#e6db74">...&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">.</span>join(snippets)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;对不起，没有找到关于 &#39;</span><span style="color:#e6db74">{</span>query<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39; 的信息。&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;搜索时发生错误: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ToolExecutor</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    一个工具执行器，负责管理和执行工具。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>tools: Dict[str, Dict[str, Any]] <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">register_tool</span>(self, name: str, description: str, func: callable):
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        向工具箱中注册一个新工具。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> name <span style="color:#f92672">in</span> self<span style="color:#f92672">.</span>tools:
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;警告:工具 &#39;</span><span style="color:#e6db74">{</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39; 已存在，将被覆盖。&#34;</span>)
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>tools[name] <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;description&#34;</span>: description, <span style="color:#e6db74">&#34;func&#34;</span>: func}
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;工具 &#39;</span><span style="color:#e6db74">{</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39; 已注册。&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_tool</span>(self, name: str) <span style="color:#f92672">-&gt;</span> callable:
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        根据名称获取一个工具的执行函数。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>tools<span style="color:#f92672">.</span>get(name, {})<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;func&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_available_tools</span>(self) <span style="color:#f92672">-&gt;</span> str:
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        获取所有可用工具的格式化描述字符串。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">.</span>join([
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;- </span><span style="color:#e6db74">{</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74">: </span><span style="color:#e6db74">{</span>info[<span style="color:#e6db74">&#39;description&#39;</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> name, info <span style="color:#f92672">in</span> self<span style="color:#f92672">.</span>tools<span style="color:#f92672">.</span>items()
+</span></span><span style="display:flex;"><span>        ])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 1. 初始化工具执行器</span>
+</span></span><span style="display:flex;"><span>    toolExecutor <span style="color:#f92672">=</span> ToolExecutor()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 2. 注册我们的实战搜索工具</span>
+</span></span><span style="display:flex;"><span>    search_description <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;一个网页搜索引擎。当你需要回答关于时事、事实以及在你的知识库中找不到的信息时，应使用此工具。&#34;</span>
+</span></span><span style="display:flex;"><span>    toolExecutor<span style="color:#f92672">.</span>register_tool(<span style="color:#e6db74">&#34;Search&#34;</span>, search_description, search)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 3. 打印可用的工具</span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">--- 可用的工具 ---&#34;</span>)
+</span></span><span style="display:flex;"><span>    print(toolExecutor<span style="color:#f92672">.</span>get_available_tools())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 4. 智能体的Action调用，这次我们问一个实时性的问题</span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">--- 执行 Action: Search[&#39;英伟达最新的GPU型号是什么&#39;] ---&#34;</span>)
+</span></span><span style="display:flex;"><span>    tool_name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Search&#34;</span>
+</span></span><span style="display:flex;"><span>    tool_input <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;英伟达最新的GPU型号是什么&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    tool_function <span style="color:#f92672">=</span> toolExecutor<span style="color:#f92672">.</span>get_tool(tool_name)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> tool_function:
+</span></span><span style="display:flex;"><span>        observation <span style="color:#f92672">=</span> tool_function(tool_input)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;--- 观察 (Observation) ---&#34;</span>)
+</span></span><span style="display:flex;"><span>        print(observation)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;错误:未找到名为 &#39;</span><span style="color:#e6db74">{</span>tool_name<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39; 的工具。&#34;</span>)
+</span></span></code></pre></div><p>输出结果：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>工具 <span style="color:#e6db74">&#39;Search&#39;</span> 已注册。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>--- 可用的工具 ---
+</span></span><span style="display:flex;"><span>- Search: 一个网页搜索引擎。当你需要回答关于时事、事实以及在你的知识库中找不到的信息时，应使用此工具。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>--- 执行 Action: Search<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;英伟达最新的GPU型号是什么&#39;</span><span style="color:#f92672">]</span> ---
+</span></span><span style="display:flex;"><span>🔍 正在执行 <span style="color:#f92672">[</span>Tavily<span style="color:#f92672">]</span> 网页搜索: 英伟达最新的GPU型号是什么
+</span></span><span style="display:flex;"><span>--- 观察 <span style="color:#f92672">(</span>Observation<span style="color:#f92672">)</span> ---
+</span></span><span style="display:flex;"><span>直接答案: 英伟达最新的GPU型号是H100，专为高性能AI训练优化。它具有极高的带宽和计算能力。H100在Transformer模型训练和推理性能方面表现卓越。
+</span></span></code></pre></div><h5 id="智能体实现">
+  智能体实现
+  <a class="anchor" href="#%e6%99%ba%e8%83%bd%e4%bd%93%e5%ae%9e%e7%8e%b0">#</a>
+</h5>
+<ol>
+<li>系统提示词设计</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># ReAct 提示词模板</span>
+</span></span><span style="display:flex;"><span>REACT_PROMPT_TEMPLATE <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">请注意，你是一个有能力调用外部工具的智能助手。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">可用工具如下:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#e6db74">{tools}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">请严格按照以下格式进行回应:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Thought: 你的思考过程，用于分析问题、拆解任务和规划下一步行动。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Action: 你决定采取的行动，必须是以下格式之一:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">- `{{tool_name}}[{{tool_input}}]`:调用一个可用工具。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">- `Finish[最终答案]`:当你认为已经获得最终答案时。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">- 当你收集到足够的信息，能够回答用户的最终问题时，你必须在Action:字段后使用 finish(answer=&#34;...&#34;) 来输出最终答案。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">现在，请开始解决以下问题:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Question: </span><span style="color:#e6db74">{question}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">History: </span><span style="color:#e6db74">{history}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+</span></span></code></pre></div><p>这个模板定义了智能体与LLM之间交互的规范：</p>
+<ul>
+<li>角色定义： “你是一个有能力调用外部工具的智能助手”，设定了LLM的角色。</li>
+<li>工具清单 ({tools})： 告知LLM它有哪些可用的“手脚”。</li>
+<li>格式规约 (Thought/Action)： 这是最重要的部分，它强制LLM的输出具有结构性，使我们能通过代码精确解析其意图。</li>
+<li>动态上下文 ({question}/{history})： 将用户的原始问题和不断累积的交互历史注入，让LLM基于完整的上下文进行决策。</li>
+</ul>
+<ol start="2">
+<li>智能体逻辑实现</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> tool <span style="color:#f92672">import</span> ToolExecutor, search, get_current_time
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> llm <span style="color:#f92672">import</span> HelloAgentsLLM
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>REACT_PROMPT_TEMPLATE <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">请注意，你是一个有能力调用外部工具的智能助手。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">可用工具如下:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#e6db74">{tools}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">请严格按照以下格式进行回应:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Thought: 你的思考过程，用于分析问题、拆解任务和规划下一步行动。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Action: 你决定采取的行动，必须是以下格式之一:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">- `{{tool_name}}[{{tool_input}}]`:调用一个可用工具。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">- `Finish[最终答案]`:当你认为已经获得最终答案时。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">- 当你收集到足够的信息，能够回答用户的最终问题时，你必须在Action:字段后使用 finish(answer=&#34;...&#34;) 来输出最终答案。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">现在，请开始解决以下问题:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Question: </span><span style="color:#e6db74">{question}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">History: </span><span style="color:#e6db74">{history}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ReActAgent</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self, llm_client: HelloAgentsLLM, tool_executor: ToolExecutor, max_steps: int <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>llm_client <span style="color:#f92672">=</span> llm_client
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>tool_executor <span style="color:#f92672">=</span> tool_executor
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>max_steps <span style="color:#f92672">=</span> max_steps
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>history <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">run</span>(self, question: str):
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        运行ReAct智能体来回答一个问题。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>history <span style="color:#f92672">=</span> []  <span style="color:#75715e"># 每次运行时重置历史记录</span>
+</span></span><span style="display:flex;"><span>        current_step <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> current_step <span style="color:#f92672">&lt;</span> self<span style="color:#f92672">.</span>max_steps:
+</span></span><span style="display:flex;"><span>            current_step <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;--- 第 </span><span style="color:#e6db74">{</span>current_step<span style="color:#e6db74">}</span><span style="color:#e6db74"> 步 ---&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 1. 格式化提示词</span>
+</span></span><span style="display:flex;"><span>            tools_desc <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>tool_executor<span style="color:#f92672">.</span>get_available_tools()
+</span></span><span style="display:flex;"><span>            history_str <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">.</span>join(self<span style="color:#f92672">.</span>history)
+</span></span><span style="display:flex;"><span>            prompt <span style="color:#f92672">=</span> REACT_PROMPT_TEMPLATE<span style="color:#f92672">.</span>format(
+</span></span><span style="display:flex;"><span>                tools<span style="color:#f92672">=</span>tools_desc,
+</span></span><span style="display:flex;"><span>                question<span style="color:#f92672">=</span>question,
+</span></span><span style="display:flex;"><span>                history<span style="color:#f92672">=</span>history_str
+</span></span><span style="display:flex;"><span>            )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 2. 调用LLM进行思考</span>
+</span></span><span style="display:flex;"><span>            messages <span style="color:#f92672">=</span> [{<span style="color:#e6db74">&#34;role&#34;</span>: <span style="color:#e6db74">&#34;user&#34;</span>, <span style="color:#e6db74">&#34;content&#34;</span>: prompt}]
+</span></span><span style="display:flex;"><span>            response_text <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>llm_client<span style="color:#f92672">.</span>think(messages<span style="color:#f92672">=</span>messages)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> response_text:
+</span></span><span style="display:flex;"><span>                print(<span style="color:#e6db74">&#34;错误:LLM未能返回有效响应。&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 3. 解析LLM的输出</span>
+</span></span><span style="display:flex;"><span>            thought, action <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>_parse_output(response_text)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> thought:
+</span></span><span style="display:flex;"><span>                print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;思考: </span><span style="color:#e6db74">{</span>thought<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> action:
+</span></span><span style="display:flex;"><span>                print(<span style="color:#e6db74">&#34;警告:未能解析出有效的Action，流程终止。&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 4. 执行Action</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> action<span style="color:#f92672">.</span>startswith(<span style="color:#e6db74">&#34;Finish&#34;</span>):
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># 如果是Finish指令，提取最终答案并结束</span>
+</span></span><span style="display:flex;"><span>                final_answer <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span><span style="color:#66d9ef">match</span>(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;Finish\[(.*)\]&#34;</span>, action)<span style="color:#f92672">.</span>group(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>                print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;🎉 最终答案: </span><span style="color:#e6db74">{</span>final_answer<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> final_answer
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            tool_name, tool_input <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>_parse_action(action)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> tool_name:
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># ... 处理无效Action格式 ...</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;🎬 行动: </span><span style="color:#e6db74">{</span>tool_name<span style="color:#e6db74">}</span><span style="color:#e6db74">[</span><span style="color:#e6db74">{</span>tool_input<span style="color:#e6db74">}</span><span style="color:#e6db74">]&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            tool_function <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>tool_executor<span style="color:#f92672">.</span>get_tool(tool_name)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> tool_function:
+</span></span><span style="display:flex;"><span>                observation <span style="color:#f92672">=</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;错误:未找到名为 &#39;</span><span style="color:#e6db74">{</span>tool_name<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39; 的工具。&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> tool_input:
+</span></span><span style="display:flex;"><span>                    observation <span style="color:#f92672">=</span> tool_function(tool_input)  <span style="color:#75715e"># 调用真实工具</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                    observation <span style="color:#f92672">=</span> tool_function()
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;👀 观察: </span><span style="color:#e6db74">{</span>observation<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 将本轮的Action和Observation添加到历史记录中</span>
+</span></span><span style="display:flex;"><span>            self<span style="color:#f92672">.</span>history<span style="color:#f92672">.</span>append(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Action: </span><span style="color:#e6db74">{</span>action<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>            self<span style="color:#f92672">.</span>history<span style="color:#f92672">.</span>append(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Observation: </span><span style="color:#e6db74">{</span>observation<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;已达到最大步数，流程终止。&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@staticmethod</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_parse_output</span>(text: str):
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;&#34;解析LLM的输出，提取Thought和Action。&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        thought_match <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>search(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;Thought: (.*)&#34;</span>, text)
+</span></span><span style="display:flex;"><span>        action_match <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>search(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;Action: (.*)&#34;</span>, text)
+</span></span><span style="display:flex;"><span>        thought <span style="color:#f92672">=</span> thought_match<span style="color:#f92672">.</span>group(<span style="color:#ae81ff">1</span>)<span style="color:#f92672">.</span>strip() <span style="color:#66d9ef">if</span> thought_match <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>        action <span style="color:#f92672">=</span> action_match<span style="color:#f92672">.</span>group(<span style="color:#ae81ff">1</span>)<span style="color:#f92672">.</span>strip() <span style="color:#66d9ef">if</span> action_match <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> thought, action
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@staticmethod</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_parse_action</span>(action_text: str):
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;&#34;解析Action字符串，提取工具名称和输入。&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">match</span> <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span><span style="color:#66d9ef">match</span>(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;(\w+)\[(.*)\]&#34;</span>, action_text)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#66d9ef">match</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">match</span><span style="color:#f92672">.</span>group(<span style="color:#ae81ff">1</span>), <span style="color:#66d9ef">match</span><span style="color:#f92672">.</span>group(<span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">None</span>, <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 1. 初始化工具执行器</span>
+</span></span><span style="display:flex;"><span>    tool_executor <span style="color:#f92672">=</span> ToolExecutor()
+</span></span><span style="display:flex;"><span>    llm_agent <span style="color:#f92672">=</span> HelloAgentsLLM()
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 2. 注册工具</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 搜索工具</span>
+</span></span><span style="display:flex;"><span>    search_description <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;一个网页搜索引擎。当你需要回答关于时事、事实以及在你的知识库中找不到的信息时，应使用此工具。&#34;</span>
+</span></span><span style="display:flex;"><span>    tool_executor<span style="color:#f92672">.</span>register_tool(<span style="color:#e6db74">&#34;Search&#34;</span>, search_description, search)
+</span></span><span style="display:flex;"><span>    time_description <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;获取当前系统精确时间的工具，用于回答时间日期问题、推算相对时间，并为处理涉及“最新”或“时效性”的任务（如搜索最新新闻）提供必要的时间基准。&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 获取时间工具</span>
+</span></span><span style="display:flex;"><span>    tool_executor<span style="color:#f92672">.</span>register_tool(<span style="color:#e6db74">&#34;CurrentTime&#34;</span>, time_description, get_current_time)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 获取时间工具</span>
+</span></span><span style="display:flex;"><span>    agent <span style="color:#f92672">=</span> ReActAgent(llm_agent, tool_executor)
+</span></span><span style="display:flex;"><span>    agent<span style="color:#f92672">.</span>run(<span style="color:#e6db74">&#34;华为最新的手机是哪一款？它的主要卖点是什么？&#34;</span>)
+</span></span></code></pre></div><p>输出结果：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>工具 <span style="color:#e6db74">&#39;Search&#39;</span> 已注册。
+</span></span><span style="display:flex;"><span>工具 <span style="color:#e6db74">&#39;CurrentTime&#39;</span> 已注册。
+</span></span><span style="display:flex;"><span>--- 第 <span style="color:#ae81ff">1</span> 步 ---
+</span></span><span style="display:flex;"><span>🧠 正在调用 deepseek-chat 模型...
+</span></span><span style="display:flex;"><span>✅ 大语言模型响应成功:
+</span></span><span style="display:flex;"><span>Thought: 用户询问华为最新的手机是哪一款以及其主要卖点。这是一个关于当前产品信息的问题，具有时效性。我的知识库可能没有最新的产品发布信息，因此我需要使用搜索工具来获取准确和最新的信息。为了确保搜索结果的时效性，我应该先获取当前时间，以便在搜索时能指定时间范围或验证信息的时效性。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Action: CurrentTime<span style="color:#f92672">[]</span>
+</span></span><span style="display:flex;"><span>思考: 用户询问华为最新的手机是哪一款以及其主要卖点。这是一个关于当前产品信息的问题，具有时效性。我的知识库可能没有最新的产品发布信息，因此我需要使用搜索工具来获取准确和最新的信息。为了确保搜索结果的时效性，我应该先获取当前时间，以便在搜索时能指定时间范围或验证信息的时效性。
+</span></span><span style="display:flex;"><span>🎬 行动: CurrentTime<span style="color:#f92672">[]</span>
+</span></span><span style="display:flex;"><span>👀 观察: 2025-12-24 14:59:27
+</span></span><span style="display:flex;"><span>--- 第 <span style="color:#ae81ff">2</span> 步 ---
+</span></span><span style="display:flex;"><span>🧠 正在调用 deepseek-chat 模型...
+</span></span><span style="display:flex;"><span>✅ 大语言模型响应成功:
+</span></span><span style="display:flex;"><span>Thought: 用户询问华为最新的手机型号及其主要卖点。这是一个关于当前产品信息的问题，具有时效性。我刚刚获取了当前时间是2025年12月24日。为了提供准确信息，我需要搜索关于华为最新手机型号的近期新闻或官方发布信息。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Action: Search<span style="color:#f92672">[</span>华为最新手机 2025年 型号 主要卖点<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>思考: 用户询问华为最新的手机型号及其主要卖点。这是一个关于当前产品信息的问题，具有时效性。我刚刚获取了当前时间是2025年12月24日。为了提供准确信息，我需要搜索关于华为最新手机型号的近期新闻或官方发布信息。
+</span></span><span style="display:flex;"><span>🎬 行动: Search<span style="color:#f92672">[</span>华为最新手机 2025年 型号 主要卖点<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>🔍 正在执行 <span style="color:#f92672">[</span>Tavily<span style="color:#f92672">]</span> 网页搜索: 华为最新手机 2025年 型号 主要卖点
+</span></span><span style="display:flex;"><span>👀 观察: 直接答案: 2025年华为手机主要卖点是拍照能力和时尚设计，特别是HUAWEI Mate <span style="color:#ae81ff">60</span> Pro，融合科技与美学。
+</span></span><span style="display:flex;"><span>--- 第 <span style="color:#ae81ff">3</span> 步 ---
+</span></span><span style="display:flex;"><span>🧠 正在调用 deepseek-chat 模型...
+</span></span><span style="display:flex;"><span>✅ 大语言模型响应成功:
+</span></span><span style="display:flex;"><span>Thought: 用户询问华为最新的手机是哪一款以及其主要卖点。根据历史记录，我已经获取了当前时间（2025年12月24日）并进行了搜索。搜索结果显示，在2025年，华为最新的旗舰手机之一是HUAWEI Mate <span style="color:#ae81ff">60</span> Pro，其主要卖点是拍照能力和时尚设计，融合了科技与美学。这个信息直接回答了用户的问题，并且基于当前时间，可以认为是“最新”的。因此，我可以基于这个观察结果来组织最终答案。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Action: Finish<span style="color:#f92672">[</span>根据2025年的信息，华为最新的旗舰手机之一是HUAWEI Mate <span style="color:#ae81ff">60</span> Pro。它的主要卖点在于其卓越的拍照能力和时尚的设计美学，体现了科技与艺术的融合。<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>思考: 用户询问华为最新的手机是哪一款以及其主要卖点。根据历史记录，我已经获取了当前时间（2025年12月24日）并进行了搜索。搜索结果显示，在2025年，华为最新的旗舰手机之一是HUAWEI Mate <span style="color:#ae81ff">60</span> Pro，其主要卖点是拍照能力和时尚设计，融合了科技与美学。这个信息直接回答了用户的问题，并且基于当前时间，可以认为是“最新”的。因此，我可以基于这个观察结果来组织最终答案。
+</span></span><span style="display:flex;"><span>🎉 最终答案: 根据2025年的信息，华为最新的旗舰手机之一是HUAWEI Mate <span style="color:#ae81ff">60</span> Pro。它的主要卖点在于其卓越的拍照能力和时尚的设计美学，体现了科技与艺术的融合。
+</span></span></code></pre></div><h3 id="宏观规划plan-and-solve-ps">
+  宏观规划：Plan-and-Solve (PS)
+  <a class="anchor" href="#%e5%ae%8f%e8%a7%82%e8%a7%84%e5%88%92plan-and-solve-ps">#</a>
+</h3>
+<p>Plan-and-Solve Prompting 是由 Lei Wang 在2023年提出。其核心动机是为了解决思维链在处理多步骤、复杂问题时容易“偏离轨道”的问题</p>
+<h4 id="工作流程-1">
+  工作流程
+  <a class="anchor" href="#%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b-1">#</a>
+</h4>
+<p>与 ReAct 将思考和行动融合在每一步不同，Plan-and-Solve 将整个流程解耦为两个核心阶段：</p>
+<ul>
+<li>规划阶段 (Planning Phase)： 首先，智能体会接收用户的完整问题。它的第一个任务不是直接去解决问题或调用工具，而是将问题分解，并制定出一个清晰、分步骤的行动计划。这个计划本身就是一次大语言模型的调用产物。</li>
+<li>执行阶段 (Solving Phase)： 在获得完整的计划后，智能体进入执行阶段。它会严格按照计划中的步骤，逐一执行。每一步的执行都可能是一次独立的 LLM 调用，或者是对上一步结果的加工处理，直到计划中的所有步骤都完成，最终得出答案。</li>
+</ul>
+<p>这种“先谋后动”的策略，使得智能体在处理需要长远规划的复杂任务时，能够保持更高的目标一致性，避免在中间步骤中迷失方向，具体的流程如下图所示：</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20260123131751430.png" alt="" /></p>
+<h4 id="编码实现-1">
+  编码实现
+  <a class="anchor" href="#%e7%bc%96%e7%a0%81%e5%ae%9e%e7%8e%b0-1">#</a>
+</h4>
+<p>实现代码可在<a href="https://gitlab.forensix.cn/xudaqian/ai-agent/-/blob/main/ps.py?ref_type=heads">gitlab</a>中找到</p>
+<ol>
+<li>规划阶段提示词</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>PLANNER_PROMPT_TEMPLATE <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">你是一个顶级的AI规划专家。你的任务是将用户提出的复杂问题分解成一个由多个简单步骤组成的行动计划。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">请确保计划中的每个步骤都是一个独立的、可执行的子任务，并且严格按照逻辑顺序排列。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">你的输出必须是一个Python列表，其中每个元素都是一个描述子任务的字符串。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">问题: </span><span style="color:#e6db74">{question}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">请严格按照以下格式输出你的计划,```python与```作为前后缀是必要的:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">-```python
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">[&#34;步骤1&#34;, &#34;步骤2&#34;, &#34;步骤3&#34;, ...]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">-```
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+</span></span></code></pre></div><ol start="2">
+<li>执行阶段提示词</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>EXECUTOR_PROMPT_TEMPLATE <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">你是一位顶级的AI执行专家。你的任务是严格按照给定的计划，一步步地解决问题。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">你将收到原始问题、完整的计划、以及到目前为止已经完成的步骤和结果。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">请你专注于解决“当前步骤”，并仅输出该步骤的最终答案，不要输出任何额外的解释或对话。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># 原始问题:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#e6db74">{question}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># 完整计划:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#e6db74">{plan}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># 历史步骤与结果:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#e6db74">{history}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># 当前步骤:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#e6db74">{current_step}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">请仅输出针对“当前步骤”的回答:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+</span></span></code></pre></div><ol start="3">
+<li>完整代码</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> ast
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> llm <span style="color:#f92672">import</span> HelloAgentsLLM
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Planner</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self, llm_client: HelloAgentsLLM):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>llm_client <span style="color:#f92672">=</span> llm_client
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">plan</span>(self, question: str) <span style="color:#f92672">-&gt;</span> list[str]:
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        根据用户问题生成一个行动计划。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        prompt <span style="color:#f92672">=</span> PLANNER_PROMPT_TEMPLATE<span style="color:#f92672">.</span>format(question<span style="color:#f92672">=</span>question)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 为了生成计划，我们构建一个简单的消息列表</span>
+</span></span><span style="display:flex;"><span>        messages <span style="color:#f92672">=</span> [{<span style="color:#e6db74">&#34;role&#34;</span>: <span style="color:#e6db74">&#34;user&#34;</span>, <span style="color:#e6db74">&#34;content&#34;</span>: prompt}]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;--- 正在生成计划 ---&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 使用流式输出来获取完整的计划</span>
+</span></span><span style="display:flex;"><span>        response_text <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>llm_client<span style="color:#f92672">.</span>think(messages<span style="color:#f92672">=</span>messages) <span style="color:#f92672">or</span> <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;✅ 计划已生成:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{</span>response_text<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 解析LLM输出的列表字符串</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 找到```python和```之间的内容</span>
+</span></span><span style="display:flex;"><span>            plan_str <span style="color:#f92672">=</span> response_text<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#34;```python&#34;</span>)[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#34;```&#34;</span>)[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>strip()
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 使用ast.literal_eval来安全地执行字符串，将其转换为Python列表</span>
+</span></span><span style="display:flex;"><span>            plan <span style="color:#f92672">=</span> ast<span style="color:#f92672">.</span>literal_eval(plan_str)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> plan <span style="color:#66d9ef">if</span> isinstance(plan, list) <span style="color:#66d9ef">else</span> []
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">except</span> (<span style="color:#a6e22e">ValueError</span>, <span style="color:#a6e22e">SyntaxError</span>, <span style="color:#a6e22e">IndexError</span>) <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;❌ 解析计划时出错: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;原始响应: </span><span style="color:#e6db74">{</span>response_text<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> []
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;❌ 解析计划时发生未知错误: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Executor</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self, llm_client: HelloAgentsLLM):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>llm_client <span style="color:#f92672">=</span> llm_client
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">execute</span>(self, question: str, plan: list[str]) <span style="color:#f92672">-&gt;</span> str:
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        根据计划，逐步执行并解决问题。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        response_text <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        history <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>  <span style="color:#75715e"># 用于存储历史步骤和结果的字符串</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">--- 正在执行计划 ---&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> i, step <span style="color:#f92672">in</span> enumerate(plan):
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">-&gt; 正在执行步骤 </span><span style="color:#e6db74">{</span>i <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">{</span>len(plan)<span style="color:#e6db74">}</span><span style="color:#e6db74">: </span><span style="color:#e6db74">{</span>step<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            prompt <span style="color:#f92672">=</span> EXECUTOR_PROMPT_TEMPLATE<span style="color:#f92672">.</span>format(
+</span></span><span style="display:flex;"><span>                question<span style="color:#f92672">=</span>question,
+</span></span><span style="display:flex;"><span>                plan<span style="color:#f92672">=</span>plan,
+</span></span><span style="display:flex;"><span>                history<span style="color:#f92672">=</span>history <span style="color:#66d9ef">if</span> history <span style="color:#66d9ef">else</span> <span style="color:#e6db74">&#34;无&#34;</span>,  <span style="color:#75715e"># 如果是第一步，则历史为空</span>
+</span></span><span style="display:flex;"><span>                current_step<span style="color:#f92672">=</span>step
+</span></span><span style="display:flex;"><span>            )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            messages <span style="color:#f92672">=</span> [{<span style="color:#e6db74">&#34;role&#34;</span>: <span style="color:#e6db74">&#34;user&#34;</span>, <span style="color:#e6db74">&#34;content&#34;</span>: prompt}]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            response_text <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>llm_client<span style="color:#f92672">.</span>think(messages<span style="color:#f92672">=</span>messages) <span style="color:#f92672">or</span> <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 更新历史记录，为下一步做准备</span>
+</span></span><span style="display:flex;"><span>            history <span style="color:#f92672">+=</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;步骤 </span><span style="color:#e6db74">{</span>i <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#e6db74">}</span><span style="color:#e6db74">: </span><span style="color:#e6db74">{</span>step<span style="color:#e6db74">}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">结果: </span><span style="color:#e6db74">{</span>response_text<span style="color:#e6db74">}</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;✅ 步骤 </span><span style="color:#e6db74">{</span>i <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> 已完成，结果: </span><span style="color:#e6db74">{</span>response_text<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 循环结束后，最后一步的响应就是最终答案</span>
+</span></span><span style="display:flex;"><span>        final_answer <span style="color:#f92672">=</span> response_text
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> final_answer
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PlanAndSolveAgent</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self, llm_client: HelloAgentsLLM):
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        初始化智能体，同时创建规划器和执行器实例。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>llm_client <span style="color:#f92672">=</span> llm_client
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>planner <span style="color:#f92672">=</span> Planner(self<span style="color:#f92672">.</span>llm_client)
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>executor <span style="color:#f92672">=</span> Executor(self<span style="color:#f92672">.</span>llm_client)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">run</span>(self, question: str):
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        运行智能体的完整流程:先规划，后执行。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">--- 开始处理问题 ---</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">问题: </span><span style="color:#e6db74">{</span>question<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 1. 调用规划器生成计划</span>
+</span></span><span style="display:flex;"><span>        plan <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>planner<span style="color:#f92672">.</span>plan(question)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 检查计划是否成功生成</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> plan:
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">--- 任务终止 --- </span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">无法生成有效的行动计划。&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 2. 调用执行器执行计划</span>
+</span></span><span style="display:flex;"><span>        final_answer <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>executor<span style="color:#f92672">.</span>execute(question, plan)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">--- 任务完成 ---</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">最终答案: </span><span style="color:#e6db74">{</span>final_answer<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    llm_client <span style="color:#f92672">=</span> HelloAgentsLLM()
+</span></span><span style="display:flex;"><span>    planner <span style="color:#f92672">=</span> PlanAndSolveAgent(llm_client)
+</span></span><span style="display:flex;"><span>    planner<span style="color:#f92672">.</span>run(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;一个水果店周一卖出了15个苹果。周二卖出的苹果数量是周一的两倍。周三卖出的数量比周二少了5个。请问这三天总共卖出了多少个苹果？&#34;</span>)
+</span></span></code></pre></div><p>输出结果：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>--- 开始处理问题 ---
+</span></span><span style="display:flex;"><span>问题: 一个水果店周一卖出了15个苹果。周二卖出的苹果数量是周一的两倍。周三卖出的数量比周二少了5个。请问这三天总共卖出了多少个苹果？
+</span></span><span style="display:flex;"><span>--- 正在生成计划 ---
+</span></span><span style="display:flex;"><span>🧠 正在调用 deepseek-chat 模型...
+</span></span><span style="display:flex;"><span>✅ 大语言模型响应成功:
+</span></span><span style="display:flex;"><span>-<span style="color:#e6db74">```</span>python
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span><span style="color:#e6db74">&#34;计算周二卖出的苹果数量：周一卖出的15个苹果乘以2&#34;</span>, <span style="color:#e6db74">&#34;计算周三卖出的苹果数量：周二卖出的数量减去5个&#34;</span>, <span style="color:#e6db74">&#34;计算三天卖出的苹果总数：将周一、周二、周三卖出的数量相加&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>-<span style="color:#e6db74">```</span>
+</span></span><span style="display:flex;"><span>✅ 计划已生成:
+</span></span><span style="display:flex;"><span>-<span style="color:#e6db74">```</span>python
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span><span style="color:#e6db74">&#34;计算周二卖出的苹果数量：周一卖出的15个苹果乘以2&#34;</span>, <span style="color:#e6db74">&#34;计算周三卖出的苹果数量：周二卖出的数量减去5个&#34;</span>, <span style="color:#e6db74">&#34;计算三天卖出的苹果总数：将周一、周二、周三卖出的数量相加&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>-<span style="color:#e6db74">```</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>--- 正在执行计划 ---
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>-&gt; 正在执行步骤 1/3: 计算周二卖出的苹果数量：周一卖出的15个苹果乘以2
+</span></span><span style="display:flex;"><span>🧠 正在调用 deepseek-chat 模型...
+</span></span><span style="display:flex;"><span>✅ 大语言模型响应成功:
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">30</span>
+</span></span><span style="display:flex;"><span>✅ 步骤 <span style="color:#ae81ff">1</span> 已完成，结果: <span style="color:#ae81ff">30</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>-&gt; 正在执行步骤 2/3: 计算周三卖出的苹果数量：周二卖出的数量减去5个
+</span></span><span style="display:flex;"><span>🧠 正在调用 deepseek-chat 模型...
+</span></span><span style="display:flex;"><span>✅ 大语言模型响应成功:
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">25</span>
+</span></span><span style="display:flex;"><span>✅ 步骤 <span style="color:#ae81ff">2</span> 已完成，结果: <span style="color:#ae81ff">25</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>-&gt; 正在执行步骤 3/3: 计算三天卖出的苹果总数：将周一、周二、周三卖出的数量相加
+</span></span><span style="display:flex;"><span>🧠 正在调用 deepseek-chat 模型...
+</span></span><span style="display:flex;"><span>✅ 大语言模型响应成功:
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">70</span>
+</span></span><span style="display:flex;"><span>✅ 步骤 <span style="color:#ae81ff">3</span> 已完成，结果: <span style="color:#ae81ff">70</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>--- 任务完成 ---
+</span></span><span style="display:flex;"><span>最终答案: <span style="color:#ae81ff">70</span>
+</span></span></code></pre></div><h3 id="自我进化reflection-self-correction">
+  自我进化：Reflection (Self-Correction)
+  <a class="anchor" href="#%e8%87%aa%e6%88%91%e8%bf%9b%e5%8c%96reflection-self-correction">#</a>
+</h3>
+<p>Reflexion 由 Noah Shinn 等人于 2023 年提出，其核心思想是模仿人类的“试错”与“自省”机制，通过引入语言反馈 (Verbal Reinforcement) 来诱导模型自我修正，形成一个“尝试-评估-改进”的迭代循环。</p>
+<h4 id="工作流程-2">
+  工作流程
+  <a class="anchor" href="#%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b-2">#</a>
+</h4>
+<p>其核心工作流程可以概括为一个简洁的三步循环：执行 -&gt; 反思 -&gt; 优化。</p>
+<ul>
+<li>执行 (Execution)：首先，智能体使用我们熟悉的方法（如 ReAct 或 Plan-and-Solve）尝试完成任务，生成一个初步的解决方案或行动轨迹。这可以看作是“初稿”。</li>
+<li>反思 (Reflection)：接着，智能体进入反思阶段。它会调用一个独立的、或者带有特殊提示词的大语言模型实例，来扮演一个“评审员”的角色。这个“评审员”会审视第一步生成的“初稿”，并从多个维度进行评估，例如：
+<ul>
+<li>事实性错误：是否存在与常识或已知事实相悖的内容？</li>
+<li>逻辑漏洞：推理过程是否存在不连贯或矛盾之处？</li>
+<li>效率问题：是否有更直接、更简洁的路径来完成任务？</li>
+<li>遗漏信息：是否忽略了问题的某些关键约束或方面？ 根据评估，它会生成一段结构化的反馈 (Feedback)，指出具体的问题所在和改进建议。</li>
+</ul>
+</li>
+<li>优化 (Refinement)：最后，智能体将“初稿”和“反馈”作为新的上下文，再次调用大语言模型，要求它根据反馈内容对初稿进行修正，生成一个更完善的“修订稿”。</li>
+</ul>
+<p>具体的流程如下图所示：</p>
+<p><img src="https://blockchaincode.oss-cn-hangzhou.aliyuncs.com/20260123131807568.png" alt="" /></p>
+<p>与前两种范式相比，Reflection 的价值在于：</p>
+<ul>
+<li>它为智能体提供了一个内部纠错回路，使其不再完全依赖于外部工具的反馈（ReAct 的 Observation），从而能够修正更高层次的逻辑和策略错误。</li>
+<li>它将一次性的任务执行，转变为一个持续优化的过程，显著提升了复杂任务的最终成功率和答案质量。</li>
+<li>它为智能体构建了一个临时的“短期记忆”。整个“执行-反思-优化”的轨迹形成了一个宝贵的经验记录，智能体不仅知道最终答案，还记得自己是如何从有缺陷的初稿迭代到最终版本的。更进一步，这个记忆系统还可以是多模态的，允许智能体反思和修正文本以外的输出（如代码、图像等），为构建更强大的多模态智能体奠定了基础。</li>
+</ul>
+<h4 id="编码实现-2">
+  编码实现
+  <a class="anchor" href="#%e7%bc%96%e7%a0%81%e5%ae%9e%e7%8e%b0-2">#</a>
+</h4>
+<p>实现代码可在<a href="https://gitlab.forensix.cn/xudaqian/ai-agent/-/blob/main/reflection.py?ref_type=heads">gitlab</a>中找到</p>
+<ol>
+<li>提示词设计</li>
+</ol>
+<ul>
+<li>
+<p>初始执行提示词 (Execution Prompt) ：这是智能体首次尝试解决问题的提示词，内容相对直接，只要求模型完成指定任务。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>INITIAL_PROMPT_TEMPLATE <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">你是一位资深的Python程序员。请根据以下要求，编写一个Python函数。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">你的代码必须包含完整的函数签名、文档字符串，并遵循PEP 8编码规范。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">要求: </span><span style="color:#e6db74">{task}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">请直接输出代码，不要包含任何额外的解释。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+</span></span></code></pre></div></li>
+<li>
+<p>反思提示词 (Reflection Prompt) ：这个提示词是 Reflection 机制的灵魂。它指示模型扮演“代码评审员”的角色，对上一轮生成的代码进行批判性分析，并提供具体的、可操作的反馈。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>REFLECT_PROMPT_TEMPLATE <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">你是一位极其严格的代码评审专家和资深算法工程师，对代码的性能有极致的要求。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">你的任务是审查以下Python代码，并专注于找出其在&lt;strong&gt;算法效率&lt;/strong&gt;上的主要瓶颈。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># 原始任务:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#e6db74">{task}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># 待审查的代码:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">-```python
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#e6db74">{code}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">-```
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">请分析该代码的时间复杂度，并思考是否存在一种&lt;strong&gt;算法上更优&lt;/strong&gt;的解决方案来显著提升性能。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">如果存在，请清晰地指出当前算法的不足，并提出具体的、可行的改进算法建议（例如，使用筛法替代试除法）。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">如果代码在算法层面已经达到最优，才能回答“无需改进”。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">请直接输出你的反馈，不要包含任何额外的解释。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+</span></span></code></pre></div></li>
+<li>
+<p>优化提示词 (Refinement Prompt) ：当收到反馈后，这个提示词将引导模型根据反馈内容，对原有代码进行修正和优化。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>REFINE_PROMPT_TEMPLATE <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">你是一位资深的Python程序员。你正在根据一位代码评审专家的反馈来优化你的代码。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># 原始任务:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#e6db74">{task}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># 你上一轮尝试的代码:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#e6db74">{last_code_attempt}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">评审员的反馈：
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#e6db74">{feedback}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">请根据评审员的反馈，生成一个优化后的新版本代码。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">你的代码必须包含完整的函数签名、文档字符串，并遵循PEP 8编码规范。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">请直接输出优化后的代码，不要包含任何额外的解释。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+</span></span></code></pre></div></li>
+</ul>
+<ol start="2">
+<li>记忆系统
+Reflection 的核心在于迭代，而迭代的前提是能够记住之前的尝试和获得的反馈。因此，一个“短期记忆”模块是实现该范式的必需品。这个记忆模块将负责存储每一次“执行-反思”循环的完整轨迹。</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> typing <span style="color:#f92672">import</span> List, Dict, Any, Optional
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Memory</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    一个简单的短期记忆模块，用于存储智能体的行动与反思轨迹。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        初始化一个空列表来存储所有记录。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>records: List[Dict[str, Any]] <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">add_record</span>(self, record_type: str, content: str):
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        向记忆中添加一条新记录。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        参数:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        - record_type (str): 记录的类型 (&#39;execution&#39; 或 &#39;reflection&#39;)。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        - content (str): 记录的具体内容 (例如，生成的代码或反思的反馈)。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        record <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;type&#34;</span>: record_type, <span style="color:#e6db74">&#34;content&#34;</span>: content}
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>records<span style="color:#f92672">.</span>append(record)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;📝 记忆已更新，新增一条 &#39;</span><span style="color:#e6db74">{</span>record_type<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39; 记录。&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_trajectory</span>(self) <span style="color:#f92672">-&gt;</span> str:
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        将所有记忆记录格式化为一个连贯的字符串文本，用于构建提示词。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        trajectory_parts <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> record <span style="color:#f92672">in</span> self<span style="color:#f92672">.</span>records:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> record[<span style="color:#e6db74">&#39;type&#39;</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;execution&#39;</span>:
+</span></span><span style="display:flex;"><span>                trajectory_parts<span style="color:#f92672">.</span>append(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;--- 上一轮尝试 (代码) ---</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{</span>record[<span style="color:#e6db74">&#39;content&#39;</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">elif</span> record[<span style="color:#e6db74">&#39;type&#39;</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;reflection&#39;</span>:
+</span></span><span style="display:flex;"><span>                trajectory_parts<span style="color:#f92672">.</span>append(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;--- 评审员反馈 ---</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{</span>record[<span style="color:#e6db74">&#39;content&#39;</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">.</span>join(trajectory_parts)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_last_execution</span>(self) <span style="color:#f92672">-&gt;</span> Optional[str]:
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        获取最近一次的执行结果 (例如，最新生成的代码)。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        如果不存在，则返回 None。
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> record <span style="color:#f92672">in</span> reversed(self<span style="color:#f92672">.</span>records):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> record[<span style="color:#e6db74">&#39;type&#39;</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;execution&#39;</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> record[<span style="color:#e6db74">&#39;content&#39;</span>]
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">None</span>
+</span></span></code></pre></div><ol start="3">
+<li>智能体实现</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ReflectionAgent</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self, llm_client, max_iterations<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>llm_client <span style="color:#f92672">=</span> llm_client
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>memory <span style="color:#f92672">=</span> Memory()
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>max_iterations <span style="color:#f92672">=</span> max_iterations
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">run</span>(self, task: str):
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">--- 开始处理任务 ---</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">任务: </span><span style="color:#e6db74">{</span>task<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># --- 1. 初始执行 ---</span>
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">--- 正在进行初始尝试 ---&#34;</span>)
+</span></span><span style="display:flex;"><span>        initial_prompt <span style="color:#f92672">=</span> INITIAL_PROMPT_TEMPLATE<span style="color:#f92672">.</span>format(task<span style="color:#f92672">=</span>task)
+</span></span><span style="display:flex;"><span>        initial_code <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>_get_llm_response(initial_prompt)
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>memory<span style="color:#f92672">.</span>add_record(<span style="color:#e6db74">&#34;execution&#34;</span>, initial_code)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># --- 2. 迭代循环:反思与优化 ---</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(self<span style="color:#f92672">.</span>max_iterations):
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">--- 第 </span><span style="color:#e6db74">{</span>i <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">{</span>self<span style="color:#f92672">.</span>max_iterations<span style="color:#e6db74">}</span><span style="color:#e6db74"> 轮迭代 ---&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># a. 反思</span>
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">-&gt; 正在进行反思...&#34;</span>)
+</span></span><span style="display:flex;"><span>            last_code <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>memory<span style="color:#f92672">.</span>get_last_execution()
+</span></span><span style="display:flex;"><span>            reflect_prompt <span style="color:#f92672">=</span> REFLECT_PROMPT_TEMPLATE<span style="color:#f92672">.</span>format(task<span style="color:#f92672">=</span>task, code<span style="color:#f92672">=</span>last_code)
+</span></span><span style="display:flex;"><span>            feedback <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>_get_llm_response(reflect_prompt)
+</span></span><span style="display:flex;"><span>            self<span style="color:#f92672">.</span>memory<span style="color:#f92672">.</span>add_record(<span style="color:#e6db74">&#34;reflection&#34;</span>, feedback)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># b. 检查是否需要停止</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;无需改进&#34;</span> <span style="color:#f92672">in</span> feedback:
+</span></span><span style="display:flex;"><span>                print(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">✅ 反思认为代码已无需改进，任务完成。&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># c. 优化</span>
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">-&gt; 正在进行优化...&#34;</span>)
+</span></span><span style="display:flex;"><span>            refine_prompt <span style="color:#f92672">=</span> REFINE_PROMPT_TEMPLATE<span style="color:#f92672">.</span>format(
+</span></span><span style="display:flex;"><span>                task<span style="color:#f92672">=</span>task,
+</span></span><span style="display:flex;"><span>                last_code_attempt<span style="color:#f92672">=</span>last_code,
+</span></span><span style="display:flex;"><span>                feedback<span style="color:#f92672">=</span>feedback
+</span></span><span style="display:flex;"><span>            )
+</span></span><span style="display:flex;"><span>            refined_code <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>_get_llm_response(refine_prompt)
+</span></span><span style="display:flex;"><span>            self<span style="color:#f92672">.</span>memory<span style="color:#f92672">.</span>add_record(<span style="color:#e6db74">&#34;execution&#34;</span>, refined_code)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        final_code <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>memory<span style="color:#f92672">.</span>get_last_execution()
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">--- 任务完成 ---</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">最终生成的代码:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">```python</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{</span>final_code<span style="color:#e6db74">}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">```&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> final_code
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_get_llm_response</span>(self, prompt: str) <span style="color:#f92672">-&gt;</span> str:
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;&#34;一个辅助方法，用于调用LLM并获取完整的流式响应。&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        messages <span style="color:#f92672">=</span> [{<span style="color:#e6db74">&#34;role&#34;</span>: <span style="color:#e6db74">&#34;user&#34;</span>, <span style="color:#e6db74">&#34;content&#34;</span>: prompt}]
+</span></span><span style="display:flex;"><span>        response_text <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>llm_client<span style="color:#f92672">.</span>think(messages<span style="color:#f92672">=</span>messages) <span style="color:#f92672">or</span> <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> response_text
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    llm_client <span style="color:#f92672">=</span> HelloAgentsLLM()
+</span></span><span style="display:flex;"><span>    reflection_agent <span style="color:#f92672">=</span> ReflectionAgent(llm_client)
+</span></span><span style="display:flex;"><span>    reflection_agent<span style="color:#f92672">.</span>run(task<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;编写一个Python函数，找出1到n之间所有的素数 (prime numbers)。&#34;</span>)
+</span></span></code></pre></div><p>输出结果：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>--- 开始处理任务 ---
+</span></span><span style="display:flex;"><span>任务: 编写一个Python函数，找出1到n之间所有的素数 <span style="color:#f92672">(</span>prime numbers<span style="color:#f92672">)</span>。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>--- 正在进行初始尝试 ---
+</span></span><span style="display:flex;"><span>🧠 正在调用 deepseek-chat 模型...
+</span></span><span style="display:flex;"><span>✅ 大语言模型响应成功:
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>python代码<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>📝 记忆已更新，新增一条 <span style="color:#e6db74">&#39;execution&#39;</span> 记录。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>--- 第 1/3 轮迭代 ---
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>-&gt; 正在进行反思...
+</span></span><span style="display:flex;"><span>🧠 正在调用 deepseek-chat 模型...
+</span></span><span style="display:flex;"><span>✅ 大语言模型响应成功:
+</span></span><span style="display:flex;"><span>当前代码使用了标准的埃拉托斯特尼筛法，其时间复杂度为 O<span style="color:#f92672">(</span>n log log n<span style="color:#f92672">)</span>，这在算法层面对于生成从1到n的所有素数已经接近最优。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>然而，该实现存在一个主要的性能瓶颈：内存使用和缓存效率。<span style="color:#e6db74">`</span>is_prime<span style="color:#e6db74">`</span> 列表长度为 <span style="color:#e6db74">`</span>n+1<span style="color:#e6db74">`</span>，当 <span style="color:#e6db74">`</span>n<span style="color:#e6db74">`</span> 很大（例如超过 10^8）时，会消耗大量内存（约 <span style="color:#e6db74">`</span>n<span style="color:#e6db74">`</span> 字节），并且对一个大数组进行顺序访问和修改，可能导致缓存未命中率较高，影响速度。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>**算法上更优的解决方案**：
+</span></span><span style="display:flex;"><span>可以采用**分段筛法（Segmented Sieve）**。其核心思想是将区间 <span style="color:#e6db74">`</span><span style="color:#f92672">[</span>2, n<span style="color:#f92672">]</span><span style="color:#e6db74">`</span> 分成多个较小的段，每次只筛一个段，从而将内存使用量从 O<span style="color:#f92672">(</span>n<span style="color:#f92672">)</span> 降低到 O<span style="color:#f92672">(</span>√n + S<span style="color:#f92672">)</span>，其中 S 是段的大小。这允许处理远大于内存容量的 <span style="color:#e6db74">`</span>n<span style="color:#e6db74">`</span>。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>**具体改进建议**：
+</span></span><span style="display:flex;"><span>1.  计算所有小于等于 √n 的素数（使用普通筛法）。
+</span></span><span style="display:flex;"><span>2.  将区间 <span style="color:#e6db74">`</span><span style="color:#f92672">[</span>2, n<span style="color:#f92672">]</span><span style="color:#e6db74">`</span> 划分为大小为 <span style="color:#e6db74">`</span>segment_size<span style="color:#e6db74">`</span>（通常约为 √n 或与CPU缓存匹配）的段。
+</span></span><span style="display:flex;"><span>3.  对于每个段 <span style="color:#e6db74">`</span><span style="color:#f92672">[</span>low, high<span style="color:#f92672">]</span><span style="color:#e6db74">`</span>，创建一个布尔数组 <span style="color:#e6db74">`</span>is_prime_segment<span style="color:#e6db74">`</span> 表示该段内的数是否为素数（初始为True）。
+</span></span><span style="display:flex;"><span>4.  对于第1步中得到的每个小素数 <span style="color:#e6db74">`</span>p<span style="color:#e6db74">`</span>，在段 <span style="color:#e6db74">`</span><span style="color:#f92672">[</span>low, high<span style="color:#f92672">]</span><span style="color:#e6db74">`</span> 内找到第一个 <span style="color:#e6db74">`</span>p<span style="color:#e6db74">`</span> 的倍数，然后标记段内所有 <span style="color:#e6db74">`</span>p<span style="color:#e6db74">`</span> 的倍数为非素数。
+</span></span><span style="display:flex;"><span>5.  收集该段中剩余的素数。
+</span></span><span style="display:flex;"><span>6.  重复步骤3-5，直到处理完整个区间。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>分段筛法的时间复杂度仍为 O<span style="color:#f92672">(</span>n log log n<span style="color:#f92672">)</span>，但空间复杂度显著降低，并且由于更好地利用了CPU缓存，实际运行速度（特别是对于非常大的 <span style="color:#e6db74">`</span>n<span style="color:#e6db74">`</span>）可以比普通筛法快数倍。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>因此，对于处理极大 <span style="color:#e6db74">`</span>n<span style="color:#e6db74">`</span> 的场景，当前代码在算法效率上**存在改进空间**，应采用分段筛法进行优化。
+</span></span><span style="display:flex;"><span>📝 记忆已更新，新增一条 <span style="color:#e6db74">&#39;reflection&#39;</span> 记录。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>-&gt; 正在进行优化...
+</span></span><span style="display:flex;"><span>🧠 正在调用 deepseek-chat 模型...
+</span></span><span style="display:flex;"><span>✅ 大语言模型响应成功:
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>python代码<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>--- 第 2/3 轮迭代 ---
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>-&gt; 正在进行反思...
+</span></span><span style="display:flex;"><span>🧠 正在调用 deepseek-chat 模型...
+</span></span><span style="display:flex;"><span>✅ 大语言模型响应成功:
+</span></span><span style="display:flex;"><span>当前代码实现了分段筛法，时间复杂度为 O<span style="color:#f92672">(</span>n log log n<span style="color:#f92672">)</span>，空间复杂度为 O<span style="color:#f92672">(</span>√n<span style="color:#f92672">)</span>。对于大范围（例如 n &gt; 10^7）的素数查找，这已经是理论最优的算法之一。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>然而，在算法层面仍存在一个可优化的点：**小素数筛选部分可以进一步优化以减少冗余操作**。具体来说，在生成小素数（≤ √n）时，代码使用了标准的埃拉托斯特尼筛法，但其内层循环的起始点可以更精确地优化。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>**改进建议**：
+</span></span><span style="display:flex;"><span>1. **优化小素数筛法的内层循环**：在标记合数时，可以从 <span style="color:#e6db74">`</span>i*i<span style="color:#e6db74">`</span> 开始，步长为 <span style="color:#e6db74">`</span>i<span style="color:#e6db74">`</span>，但当前代码在 <span style="color:#e6db74">`</span>i*i &lt; limit<span style="color:#e6db74">`</span> 时才进入内层循环。虽然这避免了小数字的冗余标记，但对于接近 √n 的素数，<span style="color:#e6db74">`</span>i*i<span style="color:#e6db74">`</span> 可能已经超出 <span style="color:#e6db74">`</span>limit<span style="color:#e6db74">`</span>，导致循环被跳过。实际上，当 <span style="color:#e6db74">`</span>i<span style="color:#e6db74">`</span> 较大时，<span style="color:#e6db74">`</span>i*i<span style="color:#e6db74">`</span> 可能远大于 <span style="color:#e6db74">`</span>limit<span style="color:#e6db74">`</span>，因此这个检查是必要的，但可以进一步优化循环条件，避免不必要的判断。
+</span></span><span style="display:flex;"><span>2. **使用位图（bit array）替代布尔列表**：虽然这更多是内存和常数优化，但可以显著减少缓存未命中，提升实际性能。例如，使用 <span style="color:#e6db74">`</span>bytearray<span style="color:#e6db74">`</span> 或 <span style="color:#e6db74">`</span>bitarray<span style="color:#e6db74">`</span> 库。
+</span></span><span style="display:flex;"><span>3. **并行化分段处理**：对于极大的 n（例如 n &gt; 10^9），可以考虑将不同段分配给多个线程或进程并行筛选，但这需要处理并发和合并结果。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>**具体优化代码示例（小素数筛选部分）**：
+</span></span><span style="display:flex;"><span>（python代码）
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>**总结**：当前算法在渐进复杂度上已是最优，但通过上述低级优化（如使用 <span style="color:#e6db74">`</span>bytearray<span style="color:#e6db74">`</span> 和切片赋值）可以提升常数因子，尤其在大规模数据时效果明显。因此，从纯算法角度看，无需改进；但从极致性能角度，建议实施上述低级优化。
+</span></span><span style="display:flex;"><span>📝 记忆已更新，新增一条 <span style="color:#e6db74">&#39;reflection&#39;</span> 记录。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>✅ 反思认为代码已无需改进，任务完成。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>--- 任务完成 ---
+</span></span><span style="display:flex;"><span>最终生成的代码:
+</span></span><span style="display:flex;"><span>（python代码）
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><h2 id="范式融合与展望">
+  范式融合与展望
+  <a class="anchor" href="#%e8%8c%83%e5%bc%8f%e8%9e%8d%e5%90%88%e4%b8%8e%e5%b1%95%e6%9c%9b">#</a>
+</h2>
+<p>单一的 Agent 范式（如 ReAct 或 Plan-and-Solve）就像是掌握了特定技能的单兵，虽然在特定领域表现出色，但在面对极其复杂、长周期或容错率低的任务时，往往显得力不从心。为了构建真正的“通用智能体”，我们需要将这些范式进行<strong>融合</strong>，取长补短，并关注未来 Agent 技术演进的几个关键趋势。</p>
+<h3 id="1-范式融合构建复合型-agent">
+  1. 范式融合：构建复合型 Agent
+  <a class="anchor" href="#1-%e8%8c%83%e5%bc%8f%e8%9e%8d%e5%90%88%e6%9e%84%e5%bb%ba%e5%a4%8d%e5%90%88%e5%9e%8b-agent">#</a>
+</h3>
+<p>在实际的工程实践中，最强大的 Agent 往往不是单一范式的生搬硬套，而是采用 <strong>&ldquo;Planner-Executor-Critic&rdquo; (规划-执行-评估)</strong> 的复合架构。这种架构将前面提到的三种范式有机地结合在了一起：</p>
+<ul>
+<li>
+<p><strong>大脑 (Planner) - 基于 Plan-and-Solve：</strong></p>
+<ul>
+<li><strong>职责：</strong> 负责宏观把控。它不直接处理细节，而是利用 Plan-and-Solve 的思想，将用户模糊、复杂的需求（如“帮我写一个类似 Flappy Bird 的游戏”）拆解为一系列清晰的子任务（1. 编写游戏循环；2. 设计物理引擎；3. 绘制UI）。</li>
+<li><strong>优势：</strong> 防止 Agent 在细节中迷失方向，确保长期目标的一致性。</li>
+</ul>
+</li>
+<li>
+<p><strong>手脚 (Executor) - 基于 ReAct：</strong></p>
+<ul>
+<li><strong>职责：</strong> 负责具体落地。针对 Planner 下发的每一个子任务，启动一个 ReAct 循环。它调用工具（搜索引擎、代码解释器、文件系统）来解决具体问题。</li>
+<li><strong>优势：</strong> 能够灵活应对外部环境的变化，利用工具弥补 LLM 知识的不足。</li>
+</ul>
+</li>
+<li>
+<p><strong>质检员 (Critic) - 基于 Reflection：</strong></p>
+<ul>
+<li><strong>职责：</strong> 负责质量把控。在 Executor 完成任务后，Critic 介入进行评估。它检查代码是否可运行、答案是否准确。如果不通过，它会产生反馈，要求 Executor 重试或 Planner 调整计划。</li>
+<li><strong>优势：</strong> 提供了自我纠错的闭环，大幅提高了最终输出的可靠性。</li>
+</ul>
+</li>
+</ul>
+<p>这种融合模式将线性的执行过程变成了一个<strong>动态的、可回溯的图结构</strong>。</p>
+<h3 id="2-未来展望agent-的进化方向">
+  2. 未来展望：Agent 的进化方向
+  <a class="anchor" href="#2-%e6%9c%aa%e6%9d%a5%e5%b1%95%e6%9c%9bagent-%e7%9a%84%e8%bf%9b%e5%8c%96%e6%96%b9%e5%90%91">#</a>
+</h3>
+<p>随着 LLM 能力的提升，Agent 正处在从“玩具”走向“生产力工具”的关键转折点。以下是几个核心的演进趋势：</p>
+<h4 id="21-从-single-agent-到-multi-agent-systems-mas">
+  2.1 从 Single Agent 到 Multi-Agent Systems (MAS)
+  <a class="anchor" href="#21-%e4%bb%8e-single-agent-%e5%88%b0-multi-agent-systems-mas">#</a>
+</h4>
+<p>目前的 Agent 大多是“单打独斗”。未来的趋势是<strong>多智能体协作</strong>。</p>
+<ul>
+<li>
+<p><strong>角色专业化：</strong> 就像软件开发团队一样，我们不再试图让一个 Agent 既懂产品又懂开发还懂测试。而是构建一个由“产品经理 Agent”、“架构师 Agent”、“工程师 Agent”组成的团队（如 MetaGPT, AutoGen 框架）。</p>
+</li>
+<li>
+<p><strong>标准化作业程序 (SOP)：</strong> 通过定义明确的 SOP，让不同的 Agent 按照既定流程交互，能够解决远超单个 LLM 上下文限制的超大型任务。</p>
+</li>
+</ul>
+<h4 id="22-从无状态到长期记忆-long-term-memory">
+  2.2 从“无状态”到“长期记忆” (Long-term Memory)
+  <a class="anchor" href="#22-%e4%bb%8e%e6%97%a0%e7%8a%b6%e6%80%81%e5%88%b0%e9%95%bf%e6%9c%9f%e8%ae%b0%e5%bf%86-long-term-memory">#</a>
+</h4>
+<p>目前的 Agent 大多依赖有限的 Context Window（上下文窗口）。一旦对话结束，记忆即消失。</p>
+<ul>
+<li>未来 Agent 将标配<strong>向量数据库 (Vector DB)</strong> 或<strong>知识图谱</strong>作为海马体。</li>
+<li>它们不仅能记住几分钟前的对话，还能记住用户的偏好、过往的交互历史以及特定领域的知识库，实现类似 MemGPT 的<strong>无限上下文</strong>体验。</li>
+</ul>
+<h4 id="24-从对话框到操作系统-computer-use--embodied-ai">
+  2.4 从“对话框”到“操作系统” (Computer Use / Embodied AI)
+  <a class="anchor" href="#24-%e4%bb%8e%e5%af%b9%e8%af%9d%e6%a1%86%e5%88%b0%e6%93%8d%e4%bd%9c%e7%b3%bb%e7%bb%9f-computer-use--embodied-ai">#</a>
+</h4>
+<p>目前的 Agent 主要存在于聊天窗口中。未来的 Agent 将具备<strong>具身性 (Embodiment)</strong> 或 <strong>OS 操作能力</strong>。</p>
+<ul>
+<li><strong>Computer Use:</strong> 如 Anthropic 的 Claude Computer Use，Agent 可以像人类一样控制鼠标、键盘，浏览网页、操作 Excel、使用 Photoshop，直接在 GUI 层面解决问题，而不仅仅是调用 API。</li>
+<li><strong>具身智能:</strong> Agent 将接入机器人硬件，感知物理世界并与之交互。</li>
+</ul>
+<h4 id="25-从文本生成到代码执行-code-as-action">
+  2.5 从“文本生成”到“代码执行” (Code-as-Action)
+  <a class="anchor" href="#25-%e4%bb%8e%e6%96%87%e6%9c%ac%e7%94%9f%e6%88%90%e5%88%b0%e4%bb%a3%e7%a0%81%e6%89%a7%e8%a1%8c-code-as-action">#</a>
+</h4>
+<p>对于逻辑计算和精确任务，纯文本生成的可靠性远不如代码。</p>
+<ul>
+<li>未来的 Agent 将更加依赖<strong>沙箱环境 (Sandbox)</strong>。在遇到数学计算、数据分析或复杂逻辑时，Agent 会优先编写并执行 Python 代码来获取结果，而不是靠“脑补”生成答案。这被称为 <em>Program-Aided Language Models (PAL)</em>。</li>
+</ul>
+<h3 id="总结">
+  总结
+  <a class="anchor" href="#%e6%80%bb%e7%bb%93">#</a>
+</h3>
+<p>Agent 的构建本质上是在弥补 LLM 与现实世界之间的鸿沟。</p>
+<ul>
+<li><strong>ReAct</strong> 解决了<strong>手</strong>的问题（工具使用）；</li>
+<li><strong>Plan-and-Solve</strong> 解决了<strong>脑</strong>的问题（逻辑规划）；</li>
+<li><strong>Reflection</strong> 解决了<strong>心</strong>的问题（自我审视）；</li>
+</ul>
+<p>而<strong>范式融合</strong>则是将这三者合二为一，创造出真正具备解决复杂问题能力的数字实体。接下来的旅程，不仅仅是编写 Prompt，更是设计能够自我演进的智能系统架构。</p>
+<h2 id="参考">
+  参考
+  <a class="anchor" href="#%e5%8f%82%e8%80%83">#</a>
+</h2>
+<ul>
+<li>
+<p><a href="https://arxiv.org/abs/2210.03629">Yao S, Zhao J, Yu D, et al. React: Synergizing reasoning and acting in language models[C]//International Conference on Learning Representations (ICLR). 2023.</a></p>
+</li>
+<li>
+<p><a href="https://arxiv.org/abs/2305.04091">Wang L, Xu W, Lan Y, et al. Plan-and-solve prompting: Improving zero-shot chain-of-thought reasoning by large language models[J]. arXiv preprint arXiv:2305.04091, 2023.</a></p>
+</li>
+<li>
+<p><a href="https://arxiv.org/abs/2303.11366">Shinn N, Cassano F, Gopinath A, et al. Reflexion: Language agents with verbal reinforcement learning[J]. Advances in Neural Information Processing Systems, 2023, 36: 8634-8652.</a></p>
+</li>
+<li>
+<p><a href="https://datawhalechina.github.io/hello-agents/#/./chapter4/%E7%AC%AC%E5%9B%9B%E7%AB%A0%20%E6%99%BA%E8%83%BD%E4%BD%93%E7%BB%8F%E5%85%B8%E8%8C%83%E5%BC%8F%E6%9E%84%E5%BB%BA">智能体经典范式构建</a></p>
+</li>
+</ul>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#从-llm-到-agent-的跨越">从 LLM 到 Agent 的跨越</a>
+          <ul>
+            <li><a href="#构建大脑接口-foundation">构建“大脑”接口 (Foundation)</a></li>
+          </ul>
+        </li>
+        <li><a href="#核心范式拆解">核心范式拆解</a>
+          <ul>
+            <li><a href="#协同行动react-reasoning--acting">协同行动：ReAct (Reasoning + Acting)</a></li>
+            <li><a href="#宏观规划plan-and-solve-ps">宏观规划：Plan-and-Solve (PS)</a></li>
+            <li><a href="#自我进化reflection-self-correction">自我进化：Reflection (Self-Correction)</a></li>
+          </ul>
+        </li>
+        <li><a href="#范式融合与展望">范式融合与展望</a>
+          <ul>
+            <li><a href="#1-范式融合构建复合型-agent">1. 范式融合：构建复合型 Agent</a></li>
+            <li><a href="#2-未来展望agent-的进化方向">2. 未来展望：Agent 的进化方向</a></li>
+            <li><a href="#总结">总结</a></li>
+          </ul>
+        </li>
+        <li><a href="#参考">参考</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

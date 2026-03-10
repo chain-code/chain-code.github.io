@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content=" 流式数据 # ">
+<meta name="description" content="流式数据SSE # func (v *VideoApi) VideosInfo(c *gin.Context, p *param.VideosParam) { setSSEHeaders(c) callback := func(progress *param.VideoAnalyzeProgress) { d, err := json.Marshal(progress) if err != nil { common.Log.Errorf(&#34;Marshal progress error: %v&#34;, err) return } _, err = fmt.Fprintf(c.Writer, &#34;data: %s\n\n&#34;, d) if err != nil { common.Log.Infof(&#34;sse sending json err: %v&#34;, err) return } c.Writer.Flush() //这里推送 } filePaths, err := service.AnalyzeVideosFromParamWithProgress(p) if err != nil { common.Log.Errorf(&#34;AnalyzeVideo: %v&#34;, err) callback(&amp;param.VideoAnalyzeProgress{ Type: param.">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="流式数据" />
-<meta property="og:description" content=" 流式数据 # " />
+<meta property="og:description" content="流式数据SSE # func (v *VideoApi) VideosInfo(c *gin.Context, p *param.VideosParam) { setSSEHeaders(c) callback := func(progress *param.VideoAnalyzeProgress) { d, err := json.Marshal(progress) if err != nil { common.Log.Errorf(&#34;Marshal progress error: %v&#34;, err) return } _, err = fmt.Fprintf(c.Writer, &#34;data: %s\n\n&#34;, d) if err != nil { common.Log.Infof(&#34;sse sending json err: %v&#34;, err) return } c.Writer.Flush() //这里推送 } filePaths, err := service.AnalyzeVideosFromParamWithProgress(p) if err != nil { common.Log.Errorf(&#34;AnalyzeVideo: %v&#34;, err) callback(&amp;param.VideoAnalyzeProgress{ Type: param." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/%E6%B5%81%E5%BC%8F%E6%95%B0%E6%8D%AE/" /><meta property="article:section" content="docs" />
 <meta property="article:published_time" content="2021-12-27T21:22:31+00:00" />
@@ -17,7 +17,7 @@
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.a669d97f9141ff7963c4536ce06792a85ae1c74747b601bfd2a84c28343fb190.js" integrity="sha256-pmnZf5FB/3ljxFNs4GeSqFrhx0dHtgG/0qhMKDQ/sZA=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.de496f3f3e7ce48e12a2ef600d34cf158165b5acfb2c314ca7351bb06f3327ff.js" integrity="sha256-3klvPz585I4Sou9gDTTPFYFltaz7LDFMpzUbsG8zJ/8=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -288,6 +288,19 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/goland%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95linux%E4%BB%A3%E7%A0%81/" class="">Goland远程调试Linux代码</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/libewf%E5%BA%93%E7%BC%96%E8%AF%91/" class="">libewf库编译</a>
   
 
@@ -405,6 +418,32 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E6%8C%82%E8%BD%BD-windows-%E5%85%B1%E4%BA%AB%E7%9B%AE%E5%BD%95%E5%88%B0-linux/" class="">挂载 Windows 共享目录到 Linux</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E7%9B%91%E5%90%AC%E6%96%87%E4%BB%B6%E5%A4%B9%E6%96%B0%E5%A2%9E%E6%96%87%E4%BB%B6/" class="">监听文件夹新增文件</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E8%8E%B7%E5%8F%96%E5%86%85%E7%BD%91%E6%B4%BB%E8%B7%83ip/" class="">获取内网活跃IP</a>
   
 
@@ -458,6 +497,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E6%B5%81%E5%AA%92%E4%BD%93%E5%BA%93/" class="">搭建自己流媒体库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E6%9F%90%E8%A1%8C%E8%BD%A6%E8%AE%B0%E5%BD%95%E4%BB%AA%E8%A7%A3%E6%9E%90/" class="">某行车记录仪解析</a>
   
 
         </li>
@@ -1378,6 +1430,32 @@ https://github.com/alex-shpak/hugo-book
 
           
   <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/agent-skills/" class="">agent skills</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/basic/agent%E7%BB%8F%E5%85%B8%E8%8C%83%E5%BC%8F%E6%9E%84%E5%BB%BA/" class="">Agent经典范式构建</a>
+  
+
+        </li>
+      
     
       
         <li>
@@ -2731,6 +2809,19 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/%E7%BE%A4%E8%81%8A%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" class="">群聊系统设计</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/web%E6%A1%86%E6%9E%B6/beego%E6%A1%86%E6%9E%B6/" class="">Beego框架</a>
   
 
@@ -3575,7 +3666,7 @@ https://github.com/alex-shpak/hugo-book
   <ul>
     <li>
       <ul>
-        <li><a href="#流式数据">流式数据</a></li>
+        <li><a href="#流式数据sse">流式数据SSE</a></li>
       </ul>
     </li>
   </ul>
@@ -3590,11 +3681,51 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown"><h2 id="流式数据">
-  流式数据
-  <a class="anchor" href="#%e6%b5%81%e5%bc%8f%e6%95%b0%e6%8d%ae">#</a>
+  <article class="markdown"><h2 id="流式数据sse">
+  流式数据SSE
+  <a class="anchor" href="#%e6%b5%81%e5%bc%8f%e6%95%b0%e6%8d%aesse">#</a>
 </h2>
-</article>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">v</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">VideoApi</span>) <span style="color:#a6e22e">VideosInfo</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">param</span>.<span style="color:#a6e22e">VideosParam</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">setSSEHeaders</span>(<span style="color:#a6e22e">c</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">callback</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">progress</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">param</span>.<span style="color:#a6e22e">VideoAnalyzeProgress</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">d</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">Marshal</span>(<span style="color:#a6e22e">progress</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">common</span>.<span style="color:#a6e22e">Log</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;Marshal progress error: %v&#34;</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Fprintf</span>(<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Writer</span>, <span style="color:#e6db74">&#34;data: %s\n\n&#34;</span>, <span style="color:#a6e22e">d</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">common</span>.<span style="color:#a6e22e">Log</span>.<span style="color:#a6e22e">Infof</span>(<span style="color:#e6db74">&#34;sse sending json err: %v&#34;</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Writer</span>.<span style="color:#a6e22e">Flush</span>()    <span style="color:#75715e">//这里推送
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">filePaths</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">service</span>.<span style="color:#a6e22e">AnalyzeVideosFromParamWithProgress</span>(<span style="color:#a6e22e">p</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">common</span>.<span style="color:#a6e22e">Log</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;AnalyzeVideo: %v&#34;</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">callback</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">param</span>.<span style="color:#a6e22e">VideoAnalyzeProgress</span>{
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">Type</span>:     <span style="color:#a6e22e">param</span>.<span style="color:#a6e22e">AnalyzerTypeError</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">Progress</span>: <span style="color:#ae81ff">100</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">Error</span>:    <span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>(),
+</span></span><span style="display:flex;"><span>		})
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">service</span>.<span style="color:#a6e22e">AnalyzeVideosWithProgress</span>(<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Request</span>.<span style="color:#a6e22e">Context</span>(), <span style="color:#a6e22e">filePaths</span>, <span style="color:#a6e22e">callback</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">callback</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">param</span>.<span style="color:#a6e22e">VideoAnalyzeProgress</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Type</span>:     <span style="color:#a6e22e">param</span>.<span style="color:#a6e22e">AnalyzerTypeSuccess</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Progress</span>: <span style="color:#ae81ff">100</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">Count</span>:    len(<span style="color:#a6e22e">filePaths</span>),
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">setSSEHeaders</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Writer</span>.<span style="color:#a6e22e">Header</span>().<span style="color:#a6e22e">Set</span>(<span style="color:#e6db74">&#34;Content-Type&#34;</span>, <span style="color:#e6db74">&#34;text/event-stream&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Writer</span>.<span style="color:#a6e22e">Header</span>().<span style="color:#a6e22e">Set</span>(<span style="color:#e6db74">&#34;Cache-Control&#34;</span>, <span style="color:#e6db74">&#34;no-cache&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Writer</span>.<span style="color:#a6e22e">Header</span>().<span style="color:#a6e22e">Set</span>(<span style="color:#e6db74">&#34;Connection&#34;</span>, <span style="color:#e6db74">&#34;keep-alive&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Writer</span>.<span style="color:#a6e22e">Flush</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></article>
  
       
 
@@ -3637,7 +3768,7 @@ https://github.com/alex-shpak/hugo-book
   <ul>
     <li>
       <ul>
-        <li><a href="#流式数据">流式数据</a></li>
+        <li><a href="#流式数据sse">流式数据SSE</a></li>
       </ul>
     </li>
   </ul>

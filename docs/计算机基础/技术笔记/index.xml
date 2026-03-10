@@ -26,6 +26,19 @@ crontab 是用来让使用者在固定时间或固定间隔执行程序之用，
     </item>
     
     <item>
+      <title>Goland远程调试Linux代码</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/goland%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95linux%E4%BB%A3%E7%A0%81/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/goland%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95linux%E4%BB%A3%E7%A0%81/</guid>
+      <description>一、rsync简介及安装 # 首先我们需要将Windows主机上的代码上传至Linux主机，并且希望每次修改代码后，Linux端可以与Windows端保持同步。rsync这款工具解决了这个问题，它能同步更新两处计算机的文件与目录，并适当利用差分编码以减少数据传输量。这个工具需要在两处安装：
+Linux主机安装rsync服务端，直接使用命令：apt-get install -y rsync Windows本机安装rsync客户端，到 https://github.com/itefixnet/cwrsync-client/releases/download/v6.4.7/cwrsync_6.4.7_x64_free.zip下载并解压 该工具需要与Goland结合使用，具体操作方法见下文。
+1、配置支持代码上传服务器
+点击打开配置界面
+1、服务器执行下面命令安装go环境生成dlv可执行文件 # # 安装go wget https://golang.google.cn/dl/go1.20.6.linux-amd64.tar.gz tar -C /usr/local -xzf go1.20.6.linux-amd64.tar.gz vi /etc/profile # 添加下面内容到末尾 export PATH=$PATH:/usr/local/go/bin source /etc/profile # 安装dlv go install github.com/go-delve/delve/cmd/dlv@latest 2、代码上传到服务器执行以下编译命令 # go build -tags server -gcflags=all=&amp;#34;-N -l&amp;#34; 3、在docker-compose.yml中增加开放2345端口，增加映射组件文件、dlv文件到容器内部 # volumes: - /home/check1/master/master:/app/master # 需要将上面编译的组件代码映射替换容器内部组件 - /root/go/bin/dlv:/app/dlv # 将dlv文件映射入容器 ports: - &amp;#34;2345:2345&amp;#34; # 开放2345端口 4、启动容器，进入容器内部，启动代码调试 # # 进入容器 docker exec -it gemaster bash # 开启监听 attach 参数代表 监听的go程序运行的进程id dlv attach 1 --headless --listen=:2345 --api-version=2 --accept-multiclient --log 5、使用goland连接调试代码 # 直接启动就能调试网络版组件代码</description>
+    </item>
+    
+    <item>
       <title>libewf库编译</title>
       <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/libewf%E5%BA%93%E7%BC%96%E8%AF%91/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -168,6 +181,41 @@ ssh-keygen -t rsa -C &amp;#34;github邮箱地址&amp;#34; -f ~/.ssh/github_rsa 2
     </item>
     
     <item>
+      <title>挂载 Windows 共享目录到 Linux</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E6%8C%82%E8%BD%BD-windows-%E5%85%B1%E4%BA%AB%E7%9B%AE%E5%BD%95%E5%88%B0-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E6%8C%82%E8%BD%BD-windows-%E5%85%B1%E4%BA%AB%E7%9B%AE%E5%BD%95%E5%88%B0-linux/</guid>
+      <description>挂载 Windows 共享目录到 Linux 第一步：安装 cifs-utils
+bashsudo apt-get install -y cifs-utils 第二步：创建挂载点（已存在可跳过）
+bashsudo mkdir -p /mnt/data/evidence 第三步：挂载
+bashsudo mount -t cifs //172.16.60.97/testing /mnt/data/evidence \ -o username=你的Windows用户名,password=你的密码,uid=1000,gid=1000 如果共享目录无需认证（匿名访问）：
+bashsudo mount -t cifs //172.16.60.97/testing /mnt/data/evidence \ -o guest,uid=1000,gid=1000 第四步：验证挂载成功
+bashdf -h | grep evidence ls /mnt/data/evidence 永久挂载（重启后自动挂载） 编辑 /etc/fstab：
+bashsudo nano /etc/fstab 添加一行：
+//172.16.60.97/testing /mnt/data/evidence cifs username=用户名,password=密码,uid=1000,gid=1000,_netdev 0 0 保存后测试：
+bashsudo mount -a </description>
+    </item>
+    
+    <item>
+      <title>监听文件夹新增文件</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E7%9B%91%E5%90%AC%E6%96%87%E4%BB%B6%E5%A4%B9%E6%96%B0%E5%A2%9E%E6%96%87%E4%BB%B6/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E7%9B%91%E5%90%AC%E6%96%87%E4%BB%B6%E5%A4%B9%E6%96%B0%E5%A2%9E%E6%96%87%E4%BB%B6/</guid>
+      <description>监听文件夹新增文件 # 业务需求，需要监听一个文件夹是否有新增文件，文件数目1000w，还要考虑文件是否已经上传完毕，程序跑在docker内。
+在 Linux 环境下，处理“大文件异步写入”是一个经典的同步问题。如果你直接在监视到文件创建时就读取，由于文件还在写入，你的程序会读取到不完整的数据。
+以下是几种最常用且可靠的解决方案，按推荐程度排序：
+采用“写入-重命名”模式（最推荐，最稳健）（我的业务有技术人员私自上传，被pass) # 这是工业界的标准做法。其核心思想是：不要让监听程序直接看到正在写入的文件。
+流程：写入程序先将文件写到一个临时目录，或者起一个特殊后缀名（例如：data.xml.tmp）。文件完全写完并关闭后，调用 mv (rename) 将文件移动到监听目录，或者重命名为最终文件名（data.xml）。 为什么有效： 在同一个文件系统中，mv 操作是原子的（Atomic）。这意味着监听程序感知到文件存在的那一瞬间，文件已经完整地在那儿了。 **代码逻辑：**监听程序只处理 *.xml，忽略 *.tmp。 配合“标志文件”（Marker Files） # 如果你对写入端有控制权，可以在写完主文件后，再创建一个极小的 .done 文件。
+**流程：**写入 bigfile.dat。写完后，创建一个 bigfile.dat.ok 空文件。 监听端： 只监视 .ok 后缀的文件，一旦发现，就去处理同名的 .dat 文件。 观察文件大小和修改时间（轮询法） # 这是最原始的方法，适用于无法获取内核通知的情况（如 NFS 挂载目录）。
+**逻辑：**获取文件当前的 size 和 mtime。等待一段时间（如 1-2 秒）。再次获取 size 和 mtime。如果两次结果完全一致，则初步判定文件写入完成。 缺点： 不够优雅，且如果写入方网络很慢，可能会产生误判。 经过测试，不可用，windows在文件写入开始，日期和大小就已经写入，并不会随着数据传输而改变。Linux没有测。
+循环遍历问题 # 根据您的需求（找到新增文件并添加），我给您分析几种合理的处理方案：
+方案一：文件系统监控（fsnotify）⭐⭐⭐⭐⭐ # 原理：实时监听文件系统事件
+优点： - 实时性最高，文件创建后立即响应 - CPU占用极低，事件驱动 - 适合长期运行的服务 缺点： - Windows上监控数量有限制（约64K句柄） - 需要递归添加所有子目录到监控 - 程序重启期间的文件变化会遗漏 适用场景：文件不频繁、目录层级可控 方案二：增量扫描（基于修改时间）⭐⭐⭐⭐ # 原理：只扫描最近修改过的目录</description>
+    </item>
+    
+    <item>
       <title>获取内网活跃IP</title>
       <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E8%8E%B7%E5%8F%96%E5%86%85%E7%BD%91%E6%B4%BB%E8%B7%83ip/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -253,6 +301,23 @@ https://github.com/xbmc/xbmc</description>
     </item>
     
     <item>
+      <title>某行车记录仪解析</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E6%9F%90%E8%A1%8C%E8%BD%A6%E8%AE%B0%E5%BD%95%E4%BB%AA%E8%A7%A3%E6%9E%90/</link>
+      <pubDate>Wed, 02 Nov 2022 20:37:13 +0800</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E6%9F%90%E8%A1%8C%E8%BD%A6%E8%AE%B0%E5%BD%95%E4%BB%AA%E8%A7%A3%E6%9E%90/</guid>
+      <description>数据块解析步骤 # 文件头 # ⽂件名： REC0000.264 ⽂件内容解析：
+⽂件头：以 mxm_v20160101_00 开头，正式的头有 magic ： 0x64616568 （ head ）
+⾸扇区 - LBA0
+偏移位置 字节数 含义 0x00 16 疑似固件版本 0x10 4 MAGIC （ head ） 0x14 4 索引区偏移 可以看到索引显示2048，转到2048
+索引区 # 索引区仅记录关键帧位置
+偏移位置 字节数 含义 0x18 4 MAGIC （前 3 字节是 idx ，最 后⼀个字节可能是序号，表⽰ 索引表的编号，可能可以是 1 、 2 、 3…… ） 0x1C 4 索引条⽬的⻓度 如图索引条目长度为9520，从起始位置偏移9520，到达索引末尾。
+接下来从 0x20 偏移开始就是实际的索引条⽬
+索引条⽬解析 （每条记录的⻓度是 28 字节）
+偏移位置 字节数 含义 0x0 1 帧类型： 0x69 （ i ）： I 帧 0x70 （ p ）： P 帧 0x62 （ b ）： b 帧？看着不像，根据规律这种类型的数 据⻓度较短（ 10 或 44 字节） 0x1 2 ⽬前在该样本⽂件内都是同 ⼀个值： 0x2e2e ，是否可 以认为是⼀个帧头 MAGIC ？ 0x3 1 帧类型，和 0x0 未知上的值⼀致 （在样本⽂件中 I 帧类型的 这 4 字节为 0x69 0x2e 0x2e 0x69 ， P 帧 为0x70 0x2e 0x2e 0x70 ） 0x4 4 与⾸扇区中标识的时间戳相同，可能是该录像机的初始化时间 0x8 1 未知 0x9 1 通道号， 与画⾯上的通道号 相同 0xa 2 未知 0xc 8 微秒级别的时间戳，是画⾯上的时间⽔印时间 0x14 4 帧⻓度 0x18 4 帧数据的绝对偏移偏移 数据区 # 索引条⽬的末尾有 MAGIC -&amp;gt; 0x6f72657a （ zero ），然后 0x04 偏移位置上的 4 字节数据 是数据区的相对偏移（表⽰当前位置到数据区的距离）</description>
+    </item>
+    
+    <item>
       <title>虚拟组网</title>
       <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E8%99%9A%E6%8B%9F%E7%BB%84%E7%BD%91/</link>
       <pubDate>Wed, 02 Nov 2022 20:37:13 +0800</pubDate>
@@ -270,7 +335,7 @@ https://github.com/slackhq/nebula?tab=readme-ov-file</description>
       
       <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/2022-08-27-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BAhugo/</guid>
       <description>基于Macbook M2芯片（主要原因是换电脑了，同时自己主学go语言，于是打算将Hexo换成Hugo，练练手)
-https://copyfuture.com/blogs-details/20191229203259169ljtxcq9vmlzjyvfhttp://scarletsky.github.io/2019/05/02/migrate-hexo-to-hugo/https://www.tomczhen.com/2019/06/04/getting-start-blog-with-hugo/https://lequ7.com/guan-yu-hugo-bo-ke-qian-yi-zhi-lu-cong-hexo-huan-cheng-hugo.htmlhttps://blog.csdn.net/hqweay/article/details/101233371 搭建过程从头开始
+https://copyfuture.com/blogs-details/20191229203259169ljtxcq9vmlzjyvfhttp://scarletsky.github.io/2019/05/02/migrate-hexo-to-hugo/https://www.tomczhen.com/2019/06/04/getting-start-blog-with-hugo/https://lequ7.com/guan-yu-hugo-bo-ke-qian-yi-zhi-lu-cong-hexo-huan-cheng-hugo.htmlhttps://blog.csdn.net/hqweay/article/details/101233371 搭建过程从头开始 。
 环境安装 # 安装Homebrew # /bin/zsh -c &amp;#34;$(curl -fsSL https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&amp;#34; 根据提示安装Git
 根据提示往下选择
 运行source /Users/wangb/.zprofile 运行brew doctor根据提示处理现有的问题

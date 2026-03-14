@@ -58,6 +58,18 @@ irm https://raw.githubusercontent.com/yeongpin/cursor-free-vip/main/scripts/inst
     </item>
     
     <item>
+      <title>Neo4j图形数据库</title>
+      <link>https://chain-code.github.io/docs/ai/basic/neo4j%E5%9B%BE%E5%BD%A2%E6%95%B0%E6%8D%AE%E5%BA%93/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/ai/basic/neo4j%E5%9B%BE%E5%BD%A2%E6%95%B0%E6%8D%AE%E5%BA%93/</guid>
+      <description>简介 # Neo4j 是一个高性能的 NoSQL 图形数据库，它将数据存储为节点和关系（边），而不是传统的表格形式。专门用于处理高度互联的数据。
+主要特点：
+使用 Cypher 查询语言（专为图形数据库设计） 支持 ACID 事务 可视化图形界面（Neo4j Browser） 适用于社交网络、推荐系统、知识图谱、欺诈检测等场景 安装 Neo4j # 使用 Docker 安装（推荐，最简单）
+REGISTRY=registry-mirror.forensix.cn TAG=apoc-dozerdb-5.26.3 NEO4J_PASS=1HzkUyoVykNV WEB_PORT=7474 BOLT_PORT=7687 NEO4J_SERVER_MEMORY_HEAP_INITIAL_SIZE=8G NEO4J_SERVER_MEMORY_HEAP_MAX_SIZE=8G NEO4J_SERVER_MEMORY_PAGECACHE_SIZE=16G NEO4J_MAX_DATABASES=10000 BACKUP_TAG=1.5.0.385-neo4j BACKUP_NAME=huoyan-neo4j BACKUP_PASSPHRASE=Op!xoFNNU5dP8AY# BACKUP_STORAGE=borg BACKUP_LOGICAL_INCR_CRON=daily BACKUP_LOGICAL_FULL_CRON=weekly BACKUP_VERIFY_FAST_CRON=monthly BACKUP_VERIFY_FULL_CRON=yearly BACKUP_VERIFY_FULL_IGNORE_OSS=true BACKUP_VERIFY_ONLINE=true BACKUP_DUMP_PATH=./backup/dump BACKUP_RESTORE_PATH=./backup/restore BACKUP_CONFIG_PATH=./backup/config BACKUP_CACHE_PATH=./backup/cache BACKUP_OSS_TYPE= BACKUP_OSS_ACCESS_KEY= BACKUP_OSS_SECRET_KEY= BACKUP_OSS_ENDPOINT= BACKUP_OSS_BUCKET= BACKUP_OSS_CRON= BACKUP_HOST= BACKUP_PORT= BACKUP_BORG_PORT= BACKUP_RESTIC_PORT= BACKUP_TOKEN= TRUST_BACKUP_SERVER=true 查询数据库是否存在 # docker exec -it 6df312464227 cypher-shell -u neo4j -p &amp;#39;1HzkUyoVykNV&amp;#39; -d system &amp;#34;SHOW DATABASES YIELD name WHERE name=&amp;#39;case17relationgraph&amp;#39; RETURN count(*) AS cnt;&amp;#34; 6df312464227容器名 1HzkUyoVykNV Neo4j密码 case5relationgraph 数据库名 验证Qdrant数据集是否存在 # CID=17; KEY=&amp;#39;QToV7Bk7JLHu&amp;#39;; BASE=&amp;#39;http://172.</description>
+    </item>
+    
+    <item>
       <title>Opencv Cuda编译</title>
       <link>https://chain-code.github.io/docs/ai/basic/opencv_cuda%E7%BC%96%E8%AF%91/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

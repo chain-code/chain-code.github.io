@@ -75,7 +75,7 @@ Redis安装（Mac） # 直接brew安装</description>
       <pubDate>Sun, 02 May 2021 20:45:09 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/%E6%95%B0%E6%8D%AE%E5%BA%93/redis/2021-05-02-redis%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/</guid>
-      <description>1、什么是redis? 2、Reids的特点 3、使用redis有哪些好处？ 4、redis相比memcached有哪些优势？ 5、Memcache与Redis的区别都有哪些？ 6、redis适用于的场景? 7、redis的缓存失效策略和主键失效机制 8、为什么redis需要把所有数据放到内存中? 9、Redis是单进程单线程的 10、redis的并发竞争问题如何解决? 11、redis常见性能问题和解决方案 12、redis事物的了解CAS(check-and-set 操作实现乐观锁 )? 13、WATCH命令和基于CAS的乐观锁? 14、使用过Redis分布式锁么，它是什么回事？ 15、假如Redis里面有1亿个key，其中有10w个key是以某个固定的已知的前缀开头的，如果将它们全部找出来？ 16、使用过Redis做异步队列么，你是怎么用的？ 17、如果有大量的key需要设置同一时间过期，一般需要注意什么？ 18、Redis如何做持久化的？ 19、Pipeline有什么好处，为什么要用pipeline？ 20、Redis的同步机制了解么？ 21、是否使用过Redis集群，集群的原理是什么？ 什么是redis? # redis是一个高性能的key-value数据库，它是完全开源免费的，而且redis是一个NOSQL类型数据库，是为了解决高并发、高扩展，大数据存储等一系列的问题而产生的数据库解决方案，是一个非关系型的数据库
+      <description>什么是redis? # redis是一个高性能的key-value数据库，它是完全开源免费的，而且redis是一个NOSQL类型数据库，是为了解决高并发、高扩展，大数据存储等一系列的问题而产生的数据库解决方案，是一个非关系型的数据库
 Reids的特点 # Redis本质上是一个Key-Value类型的内存数据库，很像memcached（一个高性能的分布式内存缓存系统），整个数据库统统加载在内存当中进行操作，定期通过异步操作把数据库数据flush到硬盘上进行保存。因为是纯内存操作，Redis的性能非常出色，每秒可以处理超过 10万次读写操作，是已知性能最快的Key-Value DB。
 Redis的出色之处不仅仅是性能，Redis最大的魅力是支持保存多种数据结构，此外单个value的最大限制是1GB，不像 memcached只能保存1MB的数据，因此Redis可以用来实现很多有用的功能，比方说用他的List来做FIFO双向链表，实现一个轻量级的高性 能消息队列服务，用他的Set可以做高性能的tag系统等等。另外Redis也可以对存入的Key-Value设置expire时间，因此也可以被当作一 个功能加强版的memcached来用。
 Redis的主要缺点是数据库容量受到物理内存的限制，不能用作海量数据的高性能读写，因此Redis适合的场景主要局限在较小数据量的高性能操作和运算上。
@@ -96,7 +96,13 @@ Reids的集群模式 # 主从模式 # 这个模式主要为了解决单节点故
 Cluster模式 # 它将数据自动分片到多个节点上，每个节点只负责一部分数据。
 Redis Cluster采用主从复制模式来提高可用性。每个分片都有一个主节点和多个从节点。主节点负责处理写操作，而从节点负责复制主节点的数据并处理读请求。
 Redis Cluster能够自动检测节点的故障。当一个主节点失去连接或不可达时，Redis Cluster会尝试将该节点标记为不可用，并从可用的从节点中提升一个新的主节点。
-Redis Cluster是适用于大规模应用的解决方案，它提供了更好的横向扩展和容错能力。它自动管理数据分片和故障转移，减少了运维的负担。</description>
+Redis Cluster是适用于大规模应用的解决方案，它提供了更好的横向扩展和容错能力。它自动管理数据分片和故障转移，减少了运维的负担。
+Cluster模式的特点是数据分片存储在不同的节点上，每个节点都可以单独对外提供读写服务。不存在单点故障的问题。
+Redis Cluster中使用事务和lua有什么限制？ # **在 Redis Cluster 中，事务不能跨多个节点执行。**事务中涉及的所有键必须位于同一节点上。如果尝试在一个事务中包含多个分片的键，事务将失败。另外，对 WATCH 命令也用同样的限制，要求他只能监视位于同一分片上的键。
+**执行 Lua 脚本时，脚本中访问的所有键也必须位于同一节点。**Redis 不会在节点之间迁移数据来支持跨节点的脚本执行。
+是否使用过Redis集群，集群的原理是什么？ # Redis Sentinal着眼于高可用，在master宕机时会自动将slave提升为master，继续提供服务。
+Redis Cluster着眼于扩展性，在单个redis内存不足时，使用Cluster进行分片存储。
+是Redis的数据分片？ # 是一种将一个Redis数据集分割成多个部分，分别存储在不同的Redis节点上的技术。从而提高Redis集群的性能和可扩展性。</description>
     </item>
     
   </channel>

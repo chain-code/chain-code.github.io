@@ -121,6 +121,22 @@ func AddFloat32(a float32, b float32) float32 {return a + b}func AddString(a 
     </item>
     
     <item>
+      <title>g的使用</title>
+      <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/g%E7%9A%84%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/g%E7%9A%84%E4%BD%BF%E7%94%A8/</guid>
+      <description>g 安装与使用说明 # 1. g 是什么 # g 是一个 Go 版本管理器，用来在一台机器上安装、切换、卸载多个 Go 版本。
+它解决的核心问题有两个：
+同一台机器需要同时维护多个 Go 版本。 项目依赖升级后，本机 Go 版本太旧，go build 直接失败。 g 的工作方式不是替换系统自带的 Go，而是把当前选中的版本链接到 ~\.g\go，再通过 PATH 让终端优先命中 ~\.g\go\bin\go.exe。
+这意味着：
+g use 1.24.13 只表示 g 已经把当前版本切到了 1.24.13。 真正执行 go version 时看到哪个版本，还取决于当前终端的 PATH 顺序。 2. g 的安装 # 本文档面向 Windows + PowerShell。
+2.1 为什么这里不用一键安装脚本 # 这次实际安装过程中，g 的 install.ps1 在本机 Windows PowerShell 5.1 下报了解析错误，原因是脚本里用了较新的 PowerShell 语法。
+因此，当前机器更稳的方案是：
+手动下载 g 的 Windows amd64 发布包。 把 g.</description>
+    </item>
+    
+    <item>
       <title>panic</title>
       <link>https://chain-code.github.io/docs/golang/%E5%9F%BA%E7%A1%80/panic/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

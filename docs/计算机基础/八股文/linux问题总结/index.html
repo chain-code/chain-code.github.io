@@ -27,7 +27,7 @@ tail -f [选项] [文件] tail -f /var/log/syslog # 实时查看 syslog 日志 t
 <link rel="icon" href="/favicon.png" >
 <link rel="stylesheet" href="/book.min.f8de3645fe00591b41524aee174e19edd98a22255a2930a0cdc82a94835ba387.css" integrity="sha256-&#43;N42Rf4AWRtBUkruF04Z7dmKIiVaKTCgzcgqlINbo4c=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.161287f4c7fee12507f3d67f0e1cea7dc8d53e6b988f80ef5600c28fe13163e8.js" integrity="sha256-FhKH9Mf&#43;4SUH89Z/DhzqfcjVPmuYj4DvVgDCj&#43;ExY&#43;g=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.5af9da2a86032414aee64121ffbee95d036b1f3a57b1df25c027b63f890a13af.js" integrity="sha256-WvnaKoYDJBSu5kEh/77pXQNrHzpXsd8lwCe2P4kKE68=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -148,6 +148,19 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E7%89%9B%E5%AE%A2%E5%85%AB%E8%82%A1/" class="">牛客八股</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93&#43;%E7%AD%94%E6%A1%88/" class="">问题总结&#43;答案</a>
   
 
         </li>
@@ -3705,6 +3718,13 @@ https://github.com/alex-shpak/hugo-book
         <li>
           <ul>
             <li><a href="#你如何查看日志做分析的">你如何查看日志，做分析的？</a></li>
+            <li><a href="#查网络与进程">查网络与进程</a></li>
+            <li><a href="#11-进程管理命令核心">1.1 进程管理命令（核心）</a></li>
+            <li><a href="#12-系统资源查看命令">1.2 系统资源查看命令</a></li>
+            <li><a href="#13-网络与端口命令">1.3 网络与端口命令</a></li>
+            <li><a href="#14-日志与文本操作命令">1.4 日志与文本操作命令</a></li>
+            <li><a href="#15-权限与系统配置命令">1.5 权限与系统配置命令</a></li>
+            <li><a href="#16-go-专属排查命令">1.6 Go 专属排查命令</a></li>
           </ul>
         </li>
       </ul>
@@ -4005,6 +4025,272 @@ sort file.txt | uniq -c   # 显示每行出现次数
 <p><code>awk</code> 是一种强大的文本处理工具和编程语言，特别适合处理结构化文本数据（如日志、CSV等）。</p>
 </li>
 </ul>
+<h3 id="查网络与进程">
+  查网络与进程
+  <a class="anchor" href="#%e6%9f%a5%e7%bd%91%e7%bb%9c%e4%b8%8e%e8%bf%9b%e7%a8%8b">#</a>
+</h3>
+<ul>
+<li><strong>netstat / ss</strong>：查看网络连接。
+<ul>
+<li><em>举例</em>：查看8080端口被谁占用：ss -tlnp | grep 8080。</li>
+</ul>
+</li>
+<li><strong>lsof</strong>：查看打开的文件/端口。<em>举例</em>：查看某个进程打开了哪些文件：lsof -p <pid>。</li>
+</ul>
+<h3 id="11-进程管理命令核心">
+  1.1 进程管理命令（核心）
+  <a class="anchor" href="#11-%e8%bf%9b%e7%a8%8b%e7%ae%a1%e7%90%86%e5%91%bd%e4%bb%a4%e6%a0%b8%e5%bf%83">#</a>
+</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">命令</th>
+<th style="text-align:left">参数说明</th>
+<th style="text-align:left">使用场景</th>
+<th style="text-align:left">示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>ps</code></td>
+<td style="text-align:left">-ef：全格式显示所有进程；-aux：显示 CPU / 内存占比</td>
+<td style="text-align:left">查看进程 PID、状态、启动命令</td>
+<td style="text-align:left">`ps -ef</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>top</code></td>
+<td style="text-align:left">-H：显示线程；-p PID：监控指定进程</td>
+<td style="text-align:left">实时监控进程 CPU / 内存 / Load</td>
+<td style="text-align:left"><code>top</code>（全局）<code>top -H -p 1234</code>（查进程 1234 的线程）</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>htop</code></td>
+<td style="text-align:left">top 增强版，可视化操作</td>
+<td style="text-align:left">直观查看进程资源</td>
+<td style="text-align:left"><code>htop</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>lsof</code></td>
+<td style="text-align:left">-p PID：查进程打开文件；-i: 端口：查端口占用</td>
+<td style="text-align:left">句柄排查、端口占用、文件锁</td>
+<td style="text-align:left"><code>lsof -p 1234</code>（查进程打开文件）<code>lsof -i :8080</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>kill</code></td>
+<td style="text-align:left">-9：强制杀死；-15：优雅退出</td>
+<td style="text-align:left">终止异常进程</td>
+<td style="text-align:left"><code>kill -9 1234</code>（强制杀）<code>kill 1234</code>（优雅退出）</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>nohup</code></td>
+<td style="text-align:left">后台运行，日志输出到 nohup.out</td>
+<td style="text-align:left">启动后台服务</td>
+<td style="text-align:left"><code>nohup ./master &amp;</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="12-系统资源查看命令">
+  1.2 系统资源查看命令
+  <a class="anchor" href="#12-%e7%b3%bb%e7%bb%9f%e8%b5%84%e6%ba%90%e6%9f%a5%e7%9c%8b%e5%91%bd%e4%bb%a4">#</a>
+</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">命令</th>
+<th style="text-align:left">参数</th>
+<th style="text-align:left">作用</th>
+<th style="text-align:left">示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>uptime</code></td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">查看系统 Load、运行时间、在线用户</td>
+<td style="text-align:left"><code>uptime</code> → <code>10:00:00 up 10 days, 2 users, load average: 0.50, 0.60, 0.70</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>free</code></td>
+<td style="text-align:left">-h：人性化单位；-m：MB 显示</td>
+<td style="text-align:left">查看内存总容量 / 已用 / 可用 / 缓存</td>
+<td style="text-align:left"><code>free -h</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>df</code></td>
+<td style="text-align:left">-h：人性化；-i：查看 inode</td>
+<td style="text-align:left">查看磁盘使用率、挂载点</td>
+<td style="text-align:left"><code>df -h</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>du</code></td>
+<td style="text-align:left">-sh：统计目录总大小；-s：汇总</td>
+<td style="text-align:left">查看文件 / 目录占用空间</td>
+<td style="text-align:left"><code>du -sh ./*</code>（查当前目录大小）</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>iostat</code></td>
+<td style="text-align:left">-x 1：每秒刷新，显示扩展 IO 信息</td>
+<td style="text-align:left">查看磁盘 IO 使用率、响应时间</td>
+<td style="text-align:left"><code>iostat -x 1</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>iotop</code></td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">实时查看进程 IO 占用</td>
+<td style="text-align:left"><code>iotop</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="13-网络与端口命令">
+  1.3 网络与端口命令
+  <a class="anchor" href="#13-%e7%bd%91%e7%bb%9c%e4%b8%8e%e7%ab%af%e5%8f%a3%e5%91%bd%e4%bb%a4">#</a>
+</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">命令</th>
+<th style="text-align:left">作用</th>
+<th style="text-align:left">示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>netstat -tulpn</code></td>
+<td style="text-align:left">查看所有 TCP/UDP 监听端口、进程 PID</td>
+<td style="text-align:left">`netstat -tulpn</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>ss -tulpn</code></td>
+<td style="text-align:left">比 netstat 更快的端口查看工具</td>
+<td style="text-align:left"><code>ss -tulpn</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>telnet IP 端口</code></td>
+<td style="text-align:left">测试端口连通性</td>
+<td style="text-align:left"><code>telnet 127.0.0.1 8080</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>ping IP</code></td>
+<td style="text-align:left">测试网络连通性</td>
+<td style="text-align:left"><code>ping 192.168.1.100</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>curl IP:端口</code></td>
+<td style="text-align:left">测试 HTTP 服务可用性</td>
+<td style="text-align:left"><code>curl 127.0.0.1:8080/health</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>tcpdump</code></td>
+<td style="text-align:left">抓包分析网络请求</td>
+<td style="text-align:left"><code>tcpdump -i any port 8080</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="14-日志与文本操作命令">
+  1.4 日志与文本操作命令
+  <a class="anchor" href="#14-%e6%97%a5%e5%bf%97%e4%b8%8e%e6%96%87%e6%9c%ac%e6%93%8d%e4%bd%9c%e5%91%bd%e4%bb%a4">#</a>
+</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">命令</th>
+<th style="text-align:left">作用</th>
+<th style="text-align:left">示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>tail -f 日志文件</code></td>
+<td style="text-align:left">实时刷新日志</td>
+<td style="text-align:left"><code>tail -f master.log</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>tail -n 1000 日志文件</code></td>
+<td style="text-align:left">查看最后 1000 行日志</td>
+<td style="text-align:left"><code>tail -n 1000 master.log</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>grep &quot;关键字&quot; 日志文件</code></td>
+<td style="text-align:left">搜索日志关键字</td>
+<td style="text-align:left"><code>grep &quot;error&quot; master.log</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>grep -C 10 &quot;关键字&quot; 日志</code></td>
+<td style="text-align:left">显示关键字前后 10 行</td>
+<td style="text-align:left"><code>grep -C 10 &quot;panic&quot; master.log</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>vim 文件名</code></td>
+<td style="text-align:left">编辑文件</td>
+<td style="text-align:left"><code>vim app.ini</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="15-权限与系统配置命令">
+  1.5 权限与系统配置命令
+  <a class="anchor" href="#15-%e6%9d%83%e9%99%90%e4%b8%8e%e7%b3%bb%e7%bb%9f%e9%85%8d%e7%bd%ae%e5%91%bd%e4%bb%a4">#</a>
+</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">命令</th>
+<th style="text-align:left">作用</th>
+<th style="text-align:left">示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>chmod 755 文件名</code></td>
+<td style="text-align:left">修改文件权限</td>
+<td style="text-align:left"><code>chmod 755 master</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>chown 用户:用户组 文件名</code></td>
+<td style="text-align:left">修改文件归属</td>
+<td style="text-align:left"><code>chown root:root master</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>ulimit -n</code></td>
+<td style="text-align:left">查看 / 修改文件最大句柄数</td>
+<td style="text-align:left"><code>ulimit -n 65535</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>systemctl status 服务</code></td>
+<td style="text-align:left">查看系统服务状态</td>
+<td style="text-align:left"><code>systemctl status redis</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="16-go-专属排查命令">
+  1.6 Go 专属排查命令
+  <a class="anchor" href="#16-go-%e4%b8%93%e5%b1%9e%e6%8e%92%e6%9f%a5%e5%91%bd%e4%bb%a4">#</a>
+</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">命令</th>
+<th style="text-align:left">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>go tool pprof http://IP:端口/debug/pprof/profile</code></td>
+<td style="text-align:left">采集 CPU 性能分析（30s）</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>go tool pprof http://IP:端口/debug/pprof/heap</code></td>
+<td style="text-align:left">采集内存堆分析</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>go tool pprof http://IP:端口/debug/pprof/goroutine</code></td>
+<td style="text-align:left">查看协程数量 / 泄漏</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>go tool pprof http://IP:端口/debug/pprof/block</code></td>
+<td style="text-align:left">查看阻塞 / 锁竞争</td>
+</tr>
+</tbody>
+</table>
 </article>
  
       
@@ -4051,6 +4337,13 @@ sort file.txt | uniq -c   # 显示每行出现次数
         <li>
           <ul>
             <li><a href="#你如何查看日志做分析的">你如何查看日志，做分析的？</a></li>
+            <li><a href="#查网络与进程">查网络与进程</a></li>
+            <li><a href="#11-进程管理命令核心">1.1 进程管理命令（核心）</a></li>
+            <li><a href="#12-系统资源查看命令">1.2 系统资源查看命令</a></li>
+            <li><a href="#13-网络与端口命令">1.3 网络与端口命令</a></li>
+            <li><a href="#14-日志与文本操作命令">1.4 日志与文本操作命令</a></li>
+            <li><a href="#15-权限与系统配置命令">1.5 权限与系统配置命令</a></li>
+            <li><a href="#16-go-专属排查命令">1.6 Go 专属排查命令</a></li>
           </ul>
         </li>
       </ul>

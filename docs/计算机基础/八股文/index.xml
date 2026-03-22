@@ -67,6 +67,25 @@ HTTP/HTTPS TCP/UDP 网络模型 系统设计</description>
     </item>
     
     <item>
+      <title>问题总结&#43;答案</title>
+      <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93&#43;%E7%AD%94%E6%A1%88/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93&#43;%E7%AD%94%E6%A1%88/</guid>
+      <description>架构相关 # 内存如何管理的？* # 内存监控，阈值警告 增加GC 使用sync.Pool复用对象 使用pprof监控，优化程序，排查内存泄露 主程序对子程序如何监控的？ # 一、基本监控流程
+启动子进程 使用os/exec包的Command创建子进程 设置标准输入/输出流 调用Start()方法异步启动子进程 基础状态监控 通过Wait()方法阻塞等待子进程退出 获取子进程的退出状态码 区分正常退出与异常退出情况 进程存活检查 定期检查进程PID是否存在 验证进程状态是否仍在运行 设置超时检测机制 二、高级监控方案
+资源使用监控 定期采集CPU使用率 监控内存占用情况 跟踪线程/文件描述符数量 设置资源使用阈值告警 进程组管理 创建独立的进程组 确保能完整终止整个进程树 防止产生孤儿进程 健康检查机制 实现TCP/HTTP健康检查接口 设计业务逻辑就绪检查 设置检查超时时间 三、生产级监控流程
+Supervisor模式 子进程崩溃后自动重启 实现指数退避重试策略 设置最大重启次数限制 优雅终止流程 先发送TERM信号尝试正常退出 超时后发送KILL信号强制终止 处理残留资源清理 集成监控系统 暴露Prometheus监控指标 对接集中式日志系统 实现告警通知机制 通信协议相关 # WebSocket使用考虑，ws用来做什么？为什么采用这个？有没有调查过还有没有其他更好的方案？ # ws介绍
+&amp;ldquo;gorilla/websocket&amp;rdquo;
+进度更新
+通知
+其他比如MQ轻量级发布/订阅消息协议等其他消息队列不适合
+go里面用什么库实现的ws，通过什么保证它的长连接的？ # 第三方库 gorilla/websocket（推荐）
+特点： 功能丰富（支持压缩、自定义协议、并发控制）。 高性能，广泛用于生产环境。 长连接保持机制
+WebSocket 的长连接依赖以下技术实现稳定性和可靠性：</description>
+    </item>
+    
+    <item>
       <title>面视题总结（一）</title>
       <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E5%85%AB%E8%82%A1%E6%96%87/%E9%9D%A2%E8%A7%86%E9%A2%98%E6%80%BB%E7%BB%93%E4%B8%80/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

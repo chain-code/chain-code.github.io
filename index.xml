@@ -298,6 +298,15 @@ deque是为了高效实现插入和删除操作的双向列表，适合用于队
     </item>
     
     <item>
+      <title>cron</title>
+      <link>https://chain-code.github.io/docs/golang/package/cron/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/golang/package/cron/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>crontab使用</title>
       <link>https://chain-code.github.io/docs/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/crontab%E4%BD%BF%E7%94%A8/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -1824,13 +1833,41 @@ Go 中的排序算法有哪些，如何选择合适的排序算法？ 在 Go 中
     </item>
     
     <item>
+      <title>项目使用</title>
+      <link>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chain-code.github.io/docs/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8/</guid>
+      <description>计算哈希 # 什么是策略模式 策略模式就是：把一组可以互相替换的算法或处理方式单独封装起来，在运行时根据条件选择其中一种，而不是把所有逻辑硬写死在一大坨 if/switch 里。
+一句话理解： 同一个目标，不同的做法，可切换。
+它的特点
+都是在解决同一类问题，只是实现方式不同。 调用方只关心“我要做这件事”，不关心具体算法细节。 可以在运行时根据参数、配置、环境选择不同策略。 新增一种做法时，通常不用改主流程太多，扩展性更好。 能把复杂分支拆开，减少一个函数里堆太多细节。 这里为什么说用到了策略模式 在 hash.go 里：
+这两个分支做的事情本质上是同一件事：计算哈希。 但它们的处理策略完全不同：
+CalcSourceMediaHash 处理的是源介质，可能是物理盘、逻辑盘、E01 镜像，disk.go CalcFilesHash 处理的是文件集合，要先批量取数据、并发算哈希、汇总结果、更新进度，file.go 所以这里适合用“策略”的原因是：
+目标相同：都是哈希计算任务 输入相近：都基于 HashCalcParam 实现差异大：一个偏介质读取，一个偏文件批处理 运行时选择：由 ScopeType 决定用哪种做法 扫描 # 模板方法模式 # 什么是： 把整体流程骨架固定下来，把可变步骤留给具体任务实现。
+特点： 主流程统一。 变化点集中在少数钩子方法。 框架负责生命周期，业务负责具体动作。
+这里为什么用到了： 真正的任务启动、初始化、状态更新、退出清理，是任务框架统一调度的，最后才回调到具体任务
+为什么这样做： 扫描任务很多，如果每个任务都自己写一套“初始化语言、起协程、上报状态、异常清理”，代码会非常散。用模板方法后，公共部分进框架，任务本身只写扫描逻辑。
+策略模式 # 什么是： 同一目标下，准备多种可替换的处理方式，运行时根据条件选择其中一种。
+特点： 目标一致，实现不同。 运行时可切换。 把大分支拆成独立策略。
+这里为什么用到了： 深度扫描里并不是只有一种“扫法”。 在 deepscan.go 开始，会根据品牌、是否指定品牌、分区品牌等条件，选择不同扫描策略：
+performSingleShardmountScan deepByFeatureRecovery deepByMount deepByShardmount 更典型的是 deepscan.go，processPartitions() 固定了“遍历所有分区”的通用流程，而把具体扫描动作通过 action func(&amp;hellip;) error 传进去。 这就是很典型的“骨架相同，动作可替换”。</description>
+    </item>
+    
+    <item>
       <title>项目收藏</title>
       <link>https://chain-code.github.io/docs/ai/basic/%E9%A1%B9%E7%9B%AE%E6%94%B6%E8%97%8F/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chain-code.github.io/docs/ai/basic/%E9%A1%B9%E7%9B%AE%E6%94%B6%E8%97%8F/</guid>
       <description>https://github.com/Yuliang-Liu/MonkeyOCR
-系统性的 LLM 学习教程</description>
+系统性的 LLM 学习教程
+Kuberwastaken/claurst：你最喜欢的终端编码代理，现已在Rust中，Claude代码泄露与发现解析
+ultraworkers/claw-code：历史上最快突破10万星的⭐仓库。更好的工具，能实现真实的任务。内置Rust，使用oh-my-codex。
+概览 | 深入 Claude Code 源码
+Claude Code 完整源码泄露了，花了一天读完全部源码，这是我发现的 - 知乎
+飞书云文档
+从打字claude到编排代理、钩子、技能和 MCP 服务器——通过可视化教程、复制粘贴模板和引导式学习路径。</description>
     </item>
     
     <item>
